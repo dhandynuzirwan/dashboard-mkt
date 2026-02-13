@@ -21,3 +21,7 @@ Route::get('/data-kpi', function () {
 Route::get('/simulasi-gaji', function () {
     return view('simulasi-gaji');
 });
+
+Route::get('/pipeline', function () {
+    return view('pipeline');
+});
