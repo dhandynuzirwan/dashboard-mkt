@@ -81,7 +81,7 @@
                 <ul class="nav nav-collapse">
                     <li>
                         <a href="components/avatars.html">
-                        <span class="sub-item">Tambah Prospek Baru</span>
+                        <span class="sub-item">Data Prospek</span>
                         </a>
                     </li>
                     <li>
