@@ -209,7 +209,8 @@
                             <th>SOURCE</th>
                             <th>UPDATE FU</th>
                             <th>STATUS AKHIR DATA</th>
-                            <th>KETERANGAN</th>
+                            <th>CATATAN</th>
+                            <th>KETERANGAN CTA</th>
                             <th>ACTION</th>
                           </tr>
                         </thead>
@@ -228,6 +229,7 @@
                                 <td>Terhubung HRD</td>
                                 <td>Masuk Penawaran</td>
                                 <td>PT INDO, Ibu Sinta (0888229)</td>
+                                <td>Sulit dihubungi</td>
                                 <td><a href="#" class="btn btn-primary btn-sm">Edit</a></td>
                                 <td><a href="#" class="btn btn-success btn-sm">CTA</a></td>
                         </tbody>
