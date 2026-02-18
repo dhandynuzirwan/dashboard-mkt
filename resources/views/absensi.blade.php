@@ -8,13 +8,13 @@
             <div class="page-inner">
                 <div class="d-flex align-items-left align-items-md-center flex-column flex-md-row pt-2 pb-4">
                     <div>
-                        <h3 class="fw-bold mb-3">Penggajian</h3>
-                        <h6 class="op-7 mb-2">Manejemen Data Gaji Karyawan</h6>
+                        <h3 class="fw-bold mb-3">Absensi</h3>
+                        <h6 class="op-7 mb-2">Manejemen Data Absensi Karyawan</h6>
                     </div>
                 </div>
                 <div class="card">
                   <div class="card-header">
-                    <div class="card-title">Tabel Data Gaji Karyawan</div>
+                    <div class="card-title">Tabel Data Absensi Karyawan</div>
                   </div>
                   <div class="card-body">
                     <div class="table-responsive">
@@ -22,11 +22,14 @@
                         <thead>
                           <tr>
                             <th>No</th>
-                            <th>Nama</th>
-                            <th>Target Call</th>
-                            <th>Target (Rp)</th>
-                            <th>Gaji Pokok</th>
-                            <th>Tunjungan</th>
+                            <th>Marketing</th>
+                            <th>Bulan</th>
+                            <th>Tahun</th>
+                            <th>Hadir</th>
+                            <th>Sakit</th>
+                            <th>Izin</th>
+                            <th>Alpha</th>
+                            <th>%</th>
                             <th>Action</th>
                           </tr>
                         </thead>
@@ -34,10 +37,13 @@
                             <tr>
                                 <td>1</td>
                                 <td>John Doe</td>
-                                <td>100</td>
-                                <td>10.000.000</td>
-                                <td>5.000.000</td>
-                                <td>2.000.000</td>
+                                <td>Januari</td>
+                                <td>2026</td>
+                                <td>20</td>
+                                <td>2</td>
+                                <td>1</td>
+                                <td>0</td>
+                                <td>90%</td>
                                 <td>
                                     <a href="#" class="btn btn-info btn-sm">Edit</a>
                                     <a href="#" class="btn btn-danger btn-sm">Delete</a>
@@ -46,10 +52,13 @@
                             <tr>
                                 <td>2</td>
                                 <td>Jane Smith</td>
-                                <td>150</td>
-                                <td>15.000.000</td>
-                                <td>7.500.000</td>
-                                <td>3.000.000</td>
+                                <td>Februari</td>
+                                <td>2026</td>
+                                <td>18</td>
+                                <td>1</td>
+                                <td>2</td>
+                                <td>1</td>
+                                <td>85%</td>
                                 <td>
                                     <a href="#" class="btn btn-info btn-sm">Edit</a>
                                     <a href="#" class="btn btn-danger btn-sm">Delete</a>
@@ -58,10 +67,13 @@
                             <tr>
                                 <td>3</td>
                                 <td>Michael Johnson</td>
-                                <td>200</td>
-                                <td>20.000.000</td>
-                                <td>10.000.000</td>
-                                <td>4.000.000</td>
+                                <td>Maret</td>
+                                <td>2026</td>
+                                <td>22</td>
+                                <td>0</td>
+                                <td>1</td>
+                                <td>0</td>
+                                <td>95%</td>
                                 <td>
                                     <a href="#" class="btn btn-info btn-sm">Edit</a>
                                     <a href="#" class="btn btn-danger btn-sm">Delete</a>

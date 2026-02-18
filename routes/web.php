@@ -29,3 +29,7 @@ Route::get('/pipeline', function () {
 Route::get('/user', function () {
     return view('user');
 });
+
+Route::get('/absensi', function () {
+    return view('absensi');
+});

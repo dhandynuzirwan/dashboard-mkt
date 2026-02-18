@@ -89,6 +89,11 @@
                             <span class="sub-item">Penggajian</span>
                             </a>
                         </li>
+                        <li>
+                            <a href="components/avatars.html">
+                            <span class="sub-item">Absensi</span>
+                            </a>
+                        </li>
                     </ul>
                 </div>
             </li>
