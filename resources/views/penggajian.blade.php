@@ -22,18 +22,18 @@
                         <thead>
                           <tr>
                             <th>No</th>
-                            <th>Nama</th>
+                            <th>Marketing</th>
                             <th>Target Call</th>
                             <th>Target (Rp)</th>
                             <th>Gaji Pokok</th>
-                            <th>Tunjungan</th>
+                            <th>Tunjangan</th>
                             <th>Action</th>
                           </tr>
                         </thead>
                         <tbody>
                             <tr>
                                 <td>1</td>
-                                <td>John Doe</td>
+                                <td>Marketing 1</td>
                                 <td>100</td>
                                 <td>10.000.000</td>
                                 <td>5.000.000</td>
@@ -45,7 +45,7 @@
                             </tr>
                             <tr>
                                 <td>2</td>
-                                <td>Jane Smith</td>
+                                <td>Marketing 2</td>
                                 <td>150</td>
                                 <td>15.000.000</td>
                                 <td>7.500.000</td>
@@ -57,7 +57,7 @@
                             </tr>
                             <tr>
                                 <td>3</td>
-                                <td>Michael Johnson</td>
+                                <td>Marketing 3</td>
                                 <td>200</td>
                                 <td>20.000.000</td>
                                 <td>10.000.000</td>

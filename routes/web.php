@@ -50,3 +50,11 @@ Route::get('/form-cta', function () {
 Route::get('/form-tambah-pengguna', function () {
     return view('form-tambah-pengguna');
 })->name('form-tambah-pengguna');
+
+Route::get('/form-penggajian', function () {
+    return view('form-penggajian');
+})->name('form-penggajian');
+
+Route::get('/form-absensi', function () {
+    return view('form-absensi');
+})->name('form-absensi');
