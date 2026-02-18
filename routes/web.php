@@ -25,3 +25,7 @@ Route::get('/simulasi-gaji', function () {
 Route::get('/pipeline', function () {
     return view('pipeline');
 });
+
+Route::get('/user', function () {
+    return view('user');
+});

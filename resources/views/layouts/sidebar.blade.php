@@ -72,25 +72,46 @@
             <h4 class="text-section">Menu Admin</h4>
             </li>
             <li class="nav-item">
-            <a data-bs-toggle="collapse" href="#base">
-                <i class="fas fa-layer-group"></i>
-                <p>Pipeline</p>
-                <span class="caret"></span>
-            </a>
-            <div class="collapse" id="base">
-                <ul class="nav nav-collapse">
-                    <li>
-                        <a href="components/avatars.html">
-                        <span class="sub-item">Data Prospek</span>
-                        </a>
-                    </li>
-                    <li>
-                        <a href="components/buttons.html">
-                        <span class="sub-item">Pipeline Marketing</span>
-                        </a>
-                    </li>
-                </ul>
-            </div>
+                <a data-bs-toggle="collapse" href="#human-resources">
+                    <i class="fas fa-server"></i>
+                    <p>Human Resources</p>
+                    <span class="caret"></span>
+                </a>
+                <div class="collapse" id="human-resources">
+                    <ul class="nav nav-collapse">
+                        <li>
+                            <a href="components/avatars.html">
+                            <span class="sub-item">Data Pengguna</span>
+                            </a>
+                        </li>
+                        <li>
+                            <a href="components/avatars.html">
+                            <span class="sub-item">Penggajian</span>
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+            </li>
+            <li class="nav-item">
+                <a data-bs-toggle="collapse" href="#marketing-sales">
+                    <i class="fas fa-layer-group"></i>
+                    <p>Marketing & Sales</p>
+                    <span class="caret"></span>
+                </a>
+                <div class="collapse" id="marketing-sales">
+                    <ul class="nav nav-collapse">                        
+                        <li>
+                            <a href="components/avatars.html">
+                            <span class="sub-item">Data Prospek</span>
+                            </a>
+                        </li>
+                        <li>
+                            <a href="components/buttons.html">
+                            <span class="sub-item">Pipeline Marketing</span>
+                            </a>
+                        </li>
+                    </ul>
+                </div>
             </li>
         </ul>
         </div>
