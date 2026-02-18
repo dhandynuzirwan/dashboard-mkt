@@ -56,7 +56,7 @@
                                     </div>
                                     <div class="form-group">
                                         <label for="sertifikasi">Sertifikasi</label>
-                                        <select class="form-control" id="sertifikasi" name="sertifikasi">
+                                        <select class="form-select form-control" id="sertifikasi" name="sertifikasi">
                                             <option value="">Pilih Sertifikasi</option>
                                             <option value="kemnaker">Sertifikat KEMENAKER</option>
                                             <option value="bnsp">Sertifikat BNSP</option>
@@ -67,7 +67,7 @@
                                     </div>
                                     <div class="form-group">
                                         <label for="skema_pelatihan">Skema Pelatihan</label>
-                                        <select class="form-control" id="skema_pelatihan" name="skema_pelatihan">
+                                        <select class="form-select form-control" id="skema_pelatihan" name="skema_pelatihan">
                                             <option value="">Pilih Skema Pelatihan</option>
                                             <option value="skema_a">Skema A</option>
                                             <option value="skema_b">Skema B</option>
@@ -106,7 +106,7 @@
                                     </div>
                                     <div class="form-group">
                                         <label for="update_penawaran">Update Penawaran</label>
-                                        <select class="form-control" id="update_penawaran" name="update_penawaran">
+                                        <select class="form-select form-control" id="update_penawaran" name="update_penawaran">
                                             <option value="">Pilih Update Penawaran</option>
                                             <option value="under_review">Under Review</option>
                                             <option value="hold">Hold</option>

@@ -46,3 +46,7 @@ Route::get('/form-prospek', function () {
 Route::get('/form-cta', function () {
     return view('form-cta');
 })->name('form-cta');
+
+Route::get('/form-tambah-pengguna', function () {
+    return view('form-tambah-pengguna');
+})->name('form-tambah-pengguna');

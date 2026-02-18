@@ -33,8 +33,19 @@
                                         <input type="text" class="form-control" id="nama" name="nama" placeholder="Masukkan Nama">
                                     </div>
                                     <div class="form-group">
-                                        <label for="email">Email</label>
-                                        <input type="email" class="form-control" id="email" name="email" placeholder="Masukkan Email">
+                                        <label for="username">Username</label>
+                                        <div class="input-group">
+                                            <input
+                                            type="text"
+                                            class="form-control"
+                                            placeholder="Username"
+                                            aria-label="username"
+                                            aria-describedby="basic-addon2"
+                                            />
+                                            <span class="input-group-text" id="basic-addon2"
+                                            >@gmail.com</span
+                                            >
+                                        </div>
                                     </div>
                                     <div class="form-group">
                                         <label for="no_hp">No HP</label>
@@ -43,10 +54,13 @@
                                     <div class="form-group">
                                         <label for="password">Password</label>
                                         <input type="password" class="form-control" id="password" name="password" placeholder="Masukkan Password">
-                                    </div>          
+                                    </div>
                                     <div class="form-group">
                                         <label for="role">Role</label>
-                                        <select class="form-control" id="role" name="role">
+                                        <select
+                                            class="form-select form-control"
+                                            id="role"
+                                        >
                                             <option value="">Pilih Role</option>
                                             <option value="super_admin">Super Admin</option>
                                             <option value="admin">Admin</option>
