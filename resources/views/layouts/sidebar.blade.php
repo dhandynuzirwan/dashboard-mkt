@@ -43,22 +43,22 @@
             <div class="collapse" id="dashboard">
                 <ul class="nav nav-collapse">
                 <li>
-                    <a href="../demo1/index.html">
+                    <a href="{{ route('dashboard.progress') }}">
                     <span class="sub-item">Dashboard Progress</span>
                     </a>
                 </li>
                 <li>
-                    <a href="../demo1/index.html">
+                    <a href="{{ route('revenue') }}">
                     <span class="sub-item">Revenue</span>
                     </a>
                 </li>
                 <li>
-                    <a href="../demo1/index.html">
+                <a href="{{ route('data-kpi') }}">
                     <span class="sub-item">Data KPI</span>
                     </a>
                 </li>
                 <li>
-                    <a href="../demo1/index.html">
+                    <a href="{{ route('simulasi-gaji') }}">
                     <span class="sub-item">Simulasi Gaji</span>
                     </a>
                 </li>
@@ -80,17 +80,17 @@
                 <div class="collapse" id="human-resources">
                     <ul class="nav nav-collapse">
                         <li>
-                            <a href="components/avatars.html">
+                            <a href="{{ route('user') }}">
                             <span class="sub-item">Data Pengguna</span>
                             </a>
                         </li>
                         <li>
-                            <a href="components/avatars.html">
+                            <a href="{{ route('simulasi-gaji') }}">
                             <span class="sub-item">Penggajian</span>
                             </a>
                         </li>
                         <li>
-                            <a href="components/avatars.html">
+                            <a href="{{ route('absensi') }}">
                             <span class="sub-item">Absensi</span>
                             </a>
                         </li>
@@ -106,12 +106,12 @@
                 <div class="collapse" id="marketing-sales">
                     <ul class="nav nav-collapse">                        
                         <li>
-                            <a href="components/avatars.html">
-                            <span class="sub-item">Data Prospek</span>
+                            <a href="{{ route('data-prospek') }}">
+                            <span class="sub-item">Tambah Data Prospek</span>
                             </a>
                         </li>
                         <li>
-                            <a href="components/buttons.html">
+                            <a href="{{ route('pipeline') }}">
                             <span class="sub-item">Pipeline Marketing</span>
                             </a>
                         </li>
