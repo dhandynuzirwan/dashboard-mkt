@@ -3,7 +3,7 @@
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
-    return view('dashboard');
+    return view('dashboard-progress');
 });
 
 Route::get('/revenue', function () {
@@ -37,3 +37,7 @@ Route::get('/absensi', function () {
 Route::get('/data-prospek', function () {
     return view('data-prospek');
 })->name('data-prospek');
+
+Route::get('/penggajian', function () {
+    return view('penggajian');
+})->name('penggajian');
