@@ -42,3 +42,7 @@ Route::get('/absensi', function () {
 Route::get('/form-prospek', function () {
     return view('form-prospek');
 })->name('form-prospek');
+
+Route::get('/form-cta', function () {
+    return view('form-cta');
+})->name('form-cta');
