@@ -38,10 +38,6 @@ Route::get('/absensi', function () {
     return view('absensi');
 })->name('absensi');
 
-Route::get('/data-prospek', function () {
-    return view('data-prospek');
-})->name('data-prospek');
-
 //form input data prospek
 Route::get('/form-prospek', function () {
     return view('form-prospek');
