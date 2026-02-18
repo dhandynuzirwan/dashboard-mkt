@@ -41,9 +41,7 @@
                 <span class="caret"></span>
             </a>
             <div class="collapse" id="dashboard">
-                <ul class="nav nav-collapse">
-                <li>
-                    <a href="{{ route('dashboard.progress') }}">
+                <ul clas                    <a href="{{ route('dashboard.progress') }}">
                     <span class="sub-item">Dashboard Progress</span>
                     </a>
                 </li>
@@ -84,8 +82,9 @@
                             <span class="sub-item">Data Pengguna</span>
                             </a>
                         </li>
+                        
                         <li>
-                            <a href="{{ route('simulasi-gaji') }}">
+                            <a href="{{ route('penggajian') }}">
                             <span class="sub-item">Penggajian</span>
                             </a>
                         </li>
@@ -112,6 +111,11 @@
                         </li>
                         <li>
                             <a href="{{ route('pipeline') }}">
+           </li>
+                        <li>
+                            <a href="components/buttons.html">
+<li>
+                            <a href="components/buttons.html">
                             <span class="sub-item">Pipeline Marketing</span>
                             </a>
                         </li>

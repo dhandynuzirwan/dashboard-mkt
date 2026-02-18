@@ -22,6 +22,10 @@ Route::get('/simulasi-gaji', function () {
     return view('simulasi-gaji');
 })-> name ('simulasi-gaji');
 
+Route::get('/penggajian', function () {
+    return view('penggajian');
+})-> name ('penggajian');
+
 Route::get('/pipeline', function () {
     return view('pipeline');
 })-> name ('pipeline');
