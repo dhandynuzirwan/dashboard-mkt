@@ -35,24 +35,23 @@
                     <div class="collapse {{ request()->routeIs('dashboard.*') ? 'show' : '' }}" id="dashboard">
                         <ul class="nav nav-collapse">
 
+                    <div class="collapse {{ request()->routeIs('dashboard.*', 'revenue', 'data-kpi', 'simulasi-gaji') ? 'show' : '' }}" id="dashboard">
+                        <ul class="nav nav-collapse">
                             <li class="{{ request()->routeIs('dashboard.progress') ? 'active' : '' }}">
                                 <a href="{{ route('dashboard.progress') }}">
                                     <span class="sub-item">Dashboard Progress</span>
                                 </a>
                             </li>
-
                             <li class="{{ request()->routeIs('revenue') ? 'active' : '' }}">
                                 <a href="{{ route('revenue') }}">
                                     <span class="sub-item">Revenue</span>
                                 </a>
                             </li>
-
                             <li class="{{ request()->routeIs('data-kpi') ? 'active' : '' }}">
                                 <a href="{{ route('data-kpi') }}">
                                     <span class="sub-item">Data KPI</span>
                                 </a>
                             </li>
-
                             <li class="{{ request()->routeIs('simulasi-gaji') ? 'active' : '' }}">
                                 <a href="{{ route('simulasi-gaji') }}">
                                     <span class="sub-item">Simulasi Gaji</span>
