@@ -8,8 +8,8 @@
             <div class="page-inner">
                 <div class="d-flex align-items-left align-items-md-center flex-column flex-md-row pt-2 pb-4">
                     <div>
-                        <h3 class="fw-bold mb-3">Dashboard PT</h3>
-                        <h6 class="op-7 mb-2">Laporan Terintegrasi & Pipeline Prospek</h6>
+                        <h3 class="fw-bold mb-3">REVENUE</h3>
+                        {{-- <h6 class="op-7 mb-2">Laporan Terintegrasi & Pipeline Prospek</h6> --}}
                     </div>
                     {{-- <div class="ms-md-auto py-2 py-md-0">
                         <a href="#" class="btn btn-label-info btn-round me-2">Manage</a>
@@ -29,12 +29,12 @@
                     </div> --}}
                     <div class="table-responsive">
                       <table class="table table-bordered">
-                        <thead>
+                        <thead class="bg-primary text-white">
                             <tr>
                                 <th rowspan="2">MARKETING</th>                                
-                                <th colspan="3">TARGET</th>                                
-                                <th colspan="9">TOTAL PENAWARAN</th>
-                                <th colspan="8">TOTAL DEAL</th>
+                                <th colspan="3" class="text-center">TARGET</th>                                
+                                <th colspan="9" class="text-center">TOTAL PENAWARAN</th>
+                                <th colspan="8" class="text-center">TOTAL DEAL</th>
                                 <th rowspan="2">TOTAL DEAL</th>
                                 <th rowspan="2">ACTION</th>
                             </tr>
