@@ -12,6 +12,16 @@
                         <h6 class="op-7 mb-2">Manejemen Data Pengguna</h6>
                     </div>
                 </div>
+                {{-- // Tombol Tambah Pengguna mengarah ke form-tambah-pengguna --}}
+                <div class="mb-4">
+                    <a href="{{ route('form-tambah-pengguna') }}" class="btn btn-success">
+                        <span class="btn-label">
+                            <i class="fa fa-plus"></i>
+                        </span>
+                        Tambah Pengguna
+                    </a>
+                </div>
+                
                 <div class="card">
                   <div class="card-header">
                     <div class="card-title">Tabel Data Pengguna</div>

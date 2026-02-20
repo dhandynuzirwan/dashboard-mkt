@@ -12,6 +12,14 @@
                         <h6 class="op-7 mb-2">Manejemen Data Gaji Karyawan</h6>
                     </div>
                 </div>
+                <div class="mb-4">
+                    <a href="{{ route('form-penggajian') }}" class="btn btn-success">
+                        <span class="btn-label">
+                            <i class="fa fa-plus"></i>
+                        </span>
+                        Tambah Data
+                    </a>
+                </div>
                 <div class="card">
                   <div class="card-header">
                     <div class="card-title">Tabel Data Gaji Karyawan</div>

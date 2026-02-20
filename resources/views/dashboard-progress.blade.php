@@ -407,17 +407,32 @@
                             </div>
                         </div>
                     </div>
-                    <div class="card border shadow-sm mt-4">
-                        <div class="card-header">
-                            <div class="card-title">Grafik Ach Target Marketing</div>
-                        </div>
-                        <div class="card-body">
-                            <div style="max-width: 500px; margin: auto;">
-                                <canvas id="achTargetChart"></canvas>
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="card border shadow-sm">
+                                <div class="card-header">
+                                    <div class="card-title">Grafik Ach Target Marketing</div>
+                                </div>
+                                <div class="card-body">
+                                    <div style="max-width: 500px; margin: auto;">
+                                        <canvas id="achTargetChart"></canvas>
+                                    </div>
+                                </div>
                             </div>
                         </div>
-                    </div>
-
+                        <div class="col-md-6">
+                            <div class="card border shadow-sm">
+                            <div class="card-header">
+                                <div class="card-title">Produktivitas</div>
+                            </div>
+                            <div class="card-body">
+                                <div class="chart-container">
+                                <canvas id="multipleLineChart"></canvas>
+                                </div>
+                            </div>
+                            </div>
+                        </div>   
+                    </div>                                     
                 </div>
             </div>
         </div>
@@ -478,6 +493,81 @@
                     });
                 }
 
+                var multipleLineChart = document.getElementById("multipleLineChart").getContext("2d");
+                    myMultipleLineChart = new Chart(multipleLineChart, {
+                        type: "line",
+                        data: {
+                            labels: ["Marketing 1", "Marketing 2", "Marketing 3", "Marketing 4", "Marketing 5"],
+                            datasets: [{
+                                label: "A",
+                                borderColor: "#1d7af3",
+                                pointBackgroundColor: "#1d7af3",
+                                backgroundColor: "transparent",
+                                fill: false,
+                                borderWidth: 2,
+                                data: [65, 59, 80, 81, 56], // Turun di akhir
+                            }, {
+                                label: "B",
+                                borderColor: "#59d05d",
+                                pointBackgroundColor: "#59d05d",
+                                backgroundColor: "transparent",
+                                fill: false,
+                                borderWidth: 2,
+                                data: [28, 48, 40, 19, 86], // Fluktuatif tajam
+                            }, {
+                                label: "C",
+                                borderColor: "#f3545d",
+                                pointBackgroundColor: "#f3545d",
+                                backgroundColor: "transparent",
+                                fill: false,
+                                borderWidth: 2,
+                                data: [45, 25, 16, 36, 67], // Mulai rendah lalu naik
+                            }, {
+                                label: "D",
+                                borderColor: "#f3c05d",
+                                pointBackgroundColor: "#f3c05d",
+                                backgroundColor: "transparent",
+                                fill: false,
+                                borderWidth: 2,
+                                data: [30, 70, 45, 60, 40], // Naik turun di tengah
+                            }, {
+                                label: "E",
+                                borderColor: "#a052f0",
+                                pointBackgroundColor: "#a052f0",
+                                backgroundColor: "transparent",
+                                fill: false,
+                                borderWidth: 2,
+                                data: [80, 20, 50, 40, 90], // Kontras tinggi
+                            }, {
+                                label: "F",
+                                borderColor: "#00c9ff",
+                                pointBackgroundColor: "#00c9ff",
+                                backgroundColor: "transparent",
+                                fill: false,
+                                borderWidth: 2,
+                                data: [15, 30, 60, 25, 30], // Performa rendah stabil
+                            }],
+                        },
+                        options: {
+                            responsive: true,
+                            maintainAspectRatio: false,
+                            legend: {
+                                position: "top",
+                            },
+                            tooltips: {
+                                mode: "index",
+                                intersect: false,
+                            },
+                            scales: {
+                                yAxes: [{
+                                    ticks: {
+                                        beginAtZero: true,
+                                        suggestedMax: 100 // Memberi ruang di atas grafik
+                                    }
+                                }]
+                            }
+                        },
+                    });
             });
         </script>
     @endsection

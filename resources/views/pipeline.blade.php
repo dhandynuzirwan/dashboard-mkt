@@ -231,7 +231,8 @@
                                 <td>PT INDO, Ibu Sinta (0888229)</td>
                                 <td>Sulit dihubungi</td>
                                 <td><a href="#" class="btn btn-primary btn-sm">Edit</a></td>
-                                <td><a href="#" class="btn btn-success btn-sm">CTA</a></td>
+                                <td><a href="{{ route('form-cta', 1) }}" class="btn btn-success btn-sm">CTA</a></td>
+                            </tr>
                         </tbody>
                       </table>
                     </div>

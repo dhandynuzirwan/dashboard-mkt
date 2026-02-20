@@ -18,6 +18,7 @@
                             <div class="card-header">
                                 <div class="card-title">Form Tambah Pengguna</div>
                             </div>
+                            
                             <div class="card-body">
                                 <div class="row">
                                     
@@ -66,7 +67,18 @@
                                             <option value="admin">Admin</option>
                                             <option value="user">User</option>
                                         </select>
-                                    </div>                       
+                                    </div>
+                                    <div class="form-group">
+                                        <div>
+                                            <button
+                                            type="submit"
+                                            class="btn btn-primary"
+                                            >
+                                            Submit
+                                            </button>
+                                        </div>
+                                    </div>
+                                    
                                 </div>
                             </div>
                         </div>
