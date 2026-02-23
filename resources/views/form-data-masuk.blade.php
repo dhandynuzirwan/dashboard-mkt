@@ -30,15 +30,6 @@
                                 <table class="table table-bordered text-nowrap" id="tableProspek" style="min-width: 1500px">
                                     <thead class="bg-light text-center">
                                         <tr>
-                                            {{--         
-                                                <th>PERUSAHAAN</th>
-                                                <th>NO TELP</th>
-                                                <th>UNIT BISNIS</th>
-                                                <th>EMAIL PERUSAHAAN</th>
-                                                <th>STATUS EMAIL</th>
-                                                <th>WA PIC</th>
-                                                <th>ALAMAT PERUSAHAAN</th>
-                                                <th>SOURCE</th> --}}
                                             <th style="width: 200px;">Perusahaan</th>
                                             <th style="width: 150px;">Nomor Telp</th>
                                             <th style="width: 200px;">Unit Bisnis</th>
