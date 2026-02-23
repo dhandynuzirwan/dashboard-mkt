@@ -89,7 +89,7 @@
                                     </a>
                                 </li>
                                 <li class="{{ request()->routeIs('penggajian') ? 'active' : '' }}">
-                                    <a href="{{ route('penggajian') }}">
+                                    <a href="{{ route('penggajian.index') }}">
                                         <span class="sub-item">Penggajian</span>
                                     </a>
                                 </li>

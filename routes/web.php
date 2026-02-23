@@ -5,6 +5,7 @@ use App\Http\Controllers\ProspekController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\PenggajianController;
 
 /*
 |--------------------------------------------------------------------------
@@ -22,6 +23,7 @@ Route::post('/login', function (Request $request) {
 
     if (Auth::attempt($credentials)) {
         $request->session()->regenerate();
+
         return redirect()->route('dashboard.progress');
     }
 
@@ -33,9 +35,9 @@ Route::post('/logout', function (Request $request) {
     Auth::logout();
     $request->session()->invalidate();
     $request->session()->regenerateToken();
+
     return redirect()->route('login');
 })->name('logout');
-
 
 /*
 |--------------------------------------------------------------------------
@@ -79,7 +81,6 @@ Route::middleware('auth')->group(function () {
         return view('form-data-masuk');
     })->name('form-data-masuk');
 
-
     /*
     |--------------------------------------------------------------------------
     | SUPERADMIN ONLY
@@ -90,6 +91,7 @@ Route::middleware('auth')->group(function () {
 
         Route::get('/user', function () {
             $users = \App\Models\User::all();
+
             return view('user', compact('users'));
         })->name('user');
 
@@ -131,8 +133,16 @@ Route::middleware('auth')->group(function () {
         Route::get('/form-absensi', function () {
             return view('form-absensi');
         })->name('form-absensi');
-    });
 
+        Route::get('/penggajian', [PenggajianController::class, 'index'])
+            ->name('penggajian.index');
+
+        Route::get('/form-penggajian', [PenggajianController::class, 'create'])
+            ->name('form-penggajian');
+
+        Route::post('/penggajian/store', [PenggajianController::class, 'store'])
+            ->name('penggajian.store');
+    });
 
     /*
     |--------------------------------------------------------------------------
@@ -152,7 +162,6 @@ Route::middleware('auth')->group(function () {
 
         Route::post('/prospek/store', [ProspekController::class, 'store'])->name('prospek.store');
     });
-
 
     /*
     |--------------------------------------------------------------------------
