@@ -13,16 +13,15 @@
                         <p class="text-muted">Klik pada kolom <b>Perusahaan</b>, lalu tekan <b>Ctrl + V</b> untuk copas 12 kolom sekaligus dari Excel.</p>
                     </div>
                     <div class="card-body">
-                        <form id="bulkForm" action="{{ route('prospek.bulkStore') }}" method="POST">
+                        <form id="bulkForm" action="" method="POST">
                             @csrf
                             
                             <div class="row mb-4">
                                 <div class="col-md-6">
                                     <label>Marketing</label>
                                     <select name="marketing_id" class="form-select">
-                                        @foreach($marketings as $m)
-                                            <option value="{{ $m->id }}">{{ $m->nama }}</option>
-                                        @endforeach
+                                        <option value="1">Marketing 1</option>
+                                        <option value="2">Marketing 2</option>
                                     </select>
                                 </div>
                                 <div class="col-md-6">

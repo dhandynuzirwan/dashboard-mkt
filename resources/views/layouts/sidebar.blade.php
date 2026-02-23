@@ -30,19 +30,24 @@
         <div class="sidebar-content">
             <ul class="nav nav-secondary">
                 
-                <li class="nav-item {{ request()->routeIs('dashboard.*', 'revenue', 'data-kpi', 'simulasi-gaji') ? 'active' : '' }}">
+                <li class="nav-item {{ request()->routeIs('dashboard.*', 'pipeline', 'revenue', 'data-kpi', 'simulasi-gaji') ? 'active' : '' }}">
                     <a data-bs-toggle="collapse" href="#dashboard" 
-                    class="{{ request()->routeIs('dashboard.*', 'revenue', 'data-kpi', 'simulasi-gaji') ? '' : 'collapsed' }}" 
-                    aria-expanded="{{ request()->routeIs('dashboard.*', 'revenue', 'data-kpi', 'simulasi-gaji') ? 'true' : 'false' }}">
+                    class="{{ request()->routeIs('dashboard.*', 'pipeline', 'revenue', 'data-kpi', 'simulasi-gaji') ? '' : 'collapsed' }}" 
+                    aria-expanded="{{ request()->routeIs('dashboard.*', 'pipeline', 'revenue', 'data-kpi', 'simulasi-gaji') ? 'true' : 'false' }}">
                         <i class="fas fa-home"></i>
                         <p>Dashboard</p>
                         <span class="caret"></span>
                     </a>
-                    <div class="collapse {{ request()->routeIs('dashboard.*', 'revenue', 'data-kpi', 'simulasi-gaji') ? 'show' : '' }}" id="dashboard">
+                    <div class="collapse {{ request()->routeIs('dashboard.*', 'pipeline', 'revenue', 'data-kpi', 'simulasi-gaji') ? 'show' : '' }}" id="dashboard">
                         <ul class="nav nav-collapse">
                             <li class="{{ request()->routeIs('dashboard.progress') ? 'active' : '' }}">
                                 <a href="{{ route('dashboard.progress') }}">
-                                    <span class="sub-item">Dashboard Progress</span>
+                                    <span class="sub-item">Dashboard</span>
+                                </a>
+                            </li>
+                            <li class="{{ request()->routeIs('pipeline') ? 'active' : '' }}">
+                                <a href="{{ route('pipeline') }}">
+                                    <span class="sub-item">Pipeline Marketing</span>
                                 </a>
                             </li>
                             <li class="{{ request()->routeIs('revenue') ? 'active' : '' }}">
@@ -113,11 +118,6 @@
                             <li class="{{ request()->routeIs('form-prospek') ? 'active' : '' }}">
                                 <a href="{{ route('form-prospek') }}">
                                     <span class="sub-item">Tambah Data Prospek</span>
-                                </a>
-                            </li>
-                            <li class="{{ request()->routeIs('pipeline') ? 'active' : '' }}">
-                                <a href="{{ route('pipeline') }}">
-                                    <span class="sub-item">Pipeline Marketing</span>
                                 </a>
                             </li>
                             <li class="{{ request()->routeIs('data-masuk') ? 'active' : '' }}">
