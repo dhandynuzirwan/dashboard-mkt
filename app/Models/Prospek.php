@@ -19,4 +19,8 @@ class Prospek extends Model
     public function marketing() {
         return $this->belongsTo(User::class, 'marketing_id');
     }
+    // Relasi ke CTA    public function cta() {
+    public function cta() {
+        return $this->hasOne(Cta::class);
+    }
 }

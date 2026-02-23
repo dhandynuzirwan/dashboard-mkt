@@ -10,8 +10,11 @@ use Illuminate\Support\Facades\DB;
 class ProspekController extends Controller
 {
     // Menampilkan Pipeline (Hasil Data)
-    public function index() {
-        $prospeks = Prospek::with('marketing')->latest()->get();
+    public function index() 
+    {
+        // Mengambil data prospek beserta relasi marketing dan cta-nya
+        $prospeks = Prospek::with(['marketing', 'cta'])->latest()->get();
+        
         return view('pipeline', compact('prospeks'));
     }
 

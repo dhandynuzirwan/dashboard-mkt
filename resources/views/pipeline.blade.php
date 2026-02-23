@@ -276,22 +276,26 @@
                           </tr>
                         </thead>
                         <tbody>
-                            <tr>
-                                <td>1</td>
-                                <td>Marketing 1</td>
-                                <td>2024-01-01</td>
-                                <td>PT. Maju Jaya</td>
-                                <td>Teknisi K3 Listrik</td>
-                                <td>5</td>
-                                <td>KEMENAKER RI</td>
-                                <td>Public Training</td>
-                                <td>Rp 50.000.000</td>
-                                <td>Rp 35.000.000</td>
-                                <td><a href="#">Nama File</a></td>
-                                <td>Under Review</td>
-                                <td>Belum ada kabar</td>
-                                <td><a href="#" class="btn btn-primary btn-sm">Edit</a></td>
-                            </tr>
+                            @foreach($prospeks as $data)
+                                @if($data->cta)
+                                    <tr>
+                                        <td>{{ $data->id }}</td>
+                                        <td>{{ $data->marketing?->name }}</td>
+                                        <td>{{ $data->tanggal_prospek }}</td>
+                                        <td>{{ $data->perusahaan }}</td>
+                                        <td>{{ $data->cta->judul_permintaan }}</td>
+                                        <td>{{ $data->cta->jumlah_peserta }}</td>
+                                        <td>{{ $data->cta->sertifikasi }}</td>
+                                        <td>{{ $data->cta->skema }}</td>
+                                        <td>Rp {{ number_format($data->cta->harga_penawaran, 0, ',', '.') }}</td>
+                                        <td>Rp {{ number_format($data->cta->harga_vendor, 0, ',', '.') }}</td>
+                                        <td><a href="#">{{ $data->cta->proposal_penawaran ?? 'Tidak Ada' }}</a></td>
+                                        <td>{{ $data->cta->status_penawaran ?? 'Belum Diisi' }}</td>
+                                        <td>{{ $data->cta?->keterangan ?? 'Tidak Ada' }}</td>
+                                        <td><a href="" class="btn btn-primary btn-sm">Edit</a></td>
+                                    </tr>
+                                @endif
+                            @endforeach
                         </tbody>
                       </table>
                     </div>

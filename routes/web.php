@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\CTAController;
 use App\Http\Controllers\ProspekController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -39,6 +40,7 @@ Route::middleware('auth')->group(function () {
         return view('dashboard-progress');
     })->name('dashboard.progress');
 
+    Route::get('/pipeline', [ProspekController::class, 'index'])->name('pipeline');
     Route::get('/prospek', [ProspekController::class, 'index'])->name('prospek.index');
 
     Route::get('/revenue', function () {
@@ -56,6 +58,7 @@ Route::middleware('auth')->group(function () {
     //HUMAN RESOURCES superadmin only
     Route::middleware('role:superadmin')->group(function () {
 
+        
         Route::get('/user', function () {
             return view('user');
         })->name('user');
@@ -71,17 +74,19 @@ Route::middleware('auth')->group(function () {
     });
 
     // MARKETING & SALES superadmin + admin
-    Route::middleware('role:superadmin,admin,marketing')->group(function () {
-
-        Route::get('/pipeline', function () {
-            return view('pipeline');
-        })->name('pipeline');
+    Route::middleware('role:superadmin,admin')->group(function () {
 
         Route::get('/prospek', [ProspekController::class, 'index'])->name('prospek.index');
         Route::get('/form-prospek', [ProspekController::class, 'create'])->name('form-prospek');
         Route::get('/prospek/create', [ProspekController::class, 'create'])->name('prospek.create');
         Route::post('/prospek/store', [ProspekController::class, 'store'])->name('prospek.store');
 
+    });
+
+    Route::middleware('role:marketing')->group(function () {
+
+        Route::get('/form-cta/{prospek_id}', [CTAController::class, 'create'])->name('form-cta');
+        Route::post('/cta/store', [CTAController::class, 'store'])->name('cta.store');
     });
 
 });
@@ -105,10 +110,6 @@ Route::get('/simulasi-gaji', function () {
 Route::get('/penggajian', function () {
     return view('penggajian');
 })-> name ('penggajian');
-
-Route::get('/pipeline', function () {
-    return view('pipeline');
-})-> name ('pipeline');
 
 Route::get('/user', function () {
     return view('user');
