@@ -32,7 +32,7 @@
                         <thead class="bg-primary text-white">
                             <tr>
                                 <th rowspan="2" class="text-center">MARKETING</th>
-                                <th colspan="4" class="text-center">ABSENSI</th>                                
+                                <th colspan="3" class="text-center">ABSENSI</th>                                
                                 <th colspan="3" class="text-center">PROGRESS</th>
                                 <th colspan="3" class="text-center">REVENEW</th>
                                 <th colspan="4" class="text-center">TOTAL PENCAPAIAN KPI</th>
@@ -42,7 +42,6 @@
                                 <th>JADWAL</th>
                                 <th>HADIR</th>
                                 <th>ACH</th>
-                                <th>%</th>
 
                                 {{-- Progress --}}
                                 <th>TARGET</th>
@@ -66,7 +65,6 @@
                                 <td>Marketing 1</td>
                                 <td>22</td>
                                 <td>20</td>
-                                <td>18</td>
                                 <td>90%</td>
                                 <td>100</td>
                                 <td>85</td>

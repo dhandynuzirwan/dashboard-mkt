@@ -42,7 +42,7 @@
                                 {{-- Target --}}
                                 <th>TARGET</th>
                                 <th>ACHIEVE</th>
-                                <th>% PROG</th>
+                                <th>AVG</th>
 
                                 {{-- Total Penawan --}}
                                 <th>KEMEN</th>

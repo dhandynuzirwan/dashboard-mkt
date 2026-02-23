@@ -9,7 +9,7 @@
             <div class="page-inner">
                 <div class="card">
                     <div class="card-header">
-                        <h4 class="card-title">Input Massal Data Prospek</h4>
+                        <h4 class="card-title">Input Massal Data Masuk</h4>
                         <p class="text-muted">Klik pada kolom <b>Perusahaan</b>, lalu tekan <b>Ctrl + V</b> untuk copas 12 kolom sekaligus dari Excel.</p>
                     </div>
                     <div class="card-body">
@@ -17,54 +17,48 @@
                             @csrf
                             
                             <div class="row mb-4">
-                                <div class="col-md-6">
+                                <div>
                                     <label>Marketing</label>
                                     <select name="marketing_id" class="form-select">
                                         <option value="1">Marketing 1</option>
                                         <option value="2">Marketing 2</option>
                                     </select>
                                 </div>
-                                <div class="col-md-6">
-                                    <label>Tanggal Prospek</label>
-                                    <input type="date" name="tanggal_prospek" class="form-control" value="{{ date('Y-m-d') }}">
-                                </div>
                             </div>
 
                             <div class="table-responsive">
-                                <table class="table table-bordered text-nowrap" id="tableProspek" style="min-width: 4000px;">
+                                <table class="table table-bordered text-nowrap" id="tableProspek" style="min-width: 1500px;">
                                     <thead class="bg-light text-center">
                                         <tr>
+                                            {{--         
+                                                <th>PERUSAHAAN</th>
+                                                <th>NO TELP</th>
+                                                <th>UNIT BISNIS</th>
+                                                <th>EMAIL PERUSAHAAN</th>
+                                                <th>STATUS EMAIL</th>
+                                                <th>WA PIC</th>
+                                                <th>ALAMAT PERUSAHAAN</th>
+                                                <th>SOURCE</th> --}}
                                             <th style="width: 200px;">Perusahaan</th>
-                                            <th style="width: 150px;">Telp</th>
-                                            <th style="width: 200px;">Email</th>
-                                            <th style="width: 150px;">Jabatan</th>
-                                            <th style="width: 200px;">Nama HRD/PIC</th>
-                                            <th style="width: 150px;">WA HRD/PIC</th>
-                                            <th style="width: 150px;">WA Baru</th>
-                                            <th style="width: 200px;">Lokasi</th>
-                                            <th style="width: 150px;">Sumber</th>
-                                            <th style="width: 150px;">Update Terakhir</th>
-                                            <th style="width: 150px;">Status</th>
-                                            <th style="width: 250px;">Deskripsi</th>
-                                            <th style="width: 250px;">Catatan</th>
-                                            <th style="width: 50px;">Aksi</th>
+                                            <th style="width: 150px;">Nomor Telp</th>
+                                            <th style="width: 200px;">Unit Bisnis</th>
+                                            <th style="width: 150px;">Email Perusahaan</th>
+                                            <th style="width: 150px;">Status Email</th>
+                                            <th style="width: 150px;">WA PIC</th>
+                                            <th style="width: 200px;">Alamat Perusahaan</th>
+                                            <th style="width: 150px;">Source</th>
                                         </tr>
                                     </thead>
                                     <tbody>
                                         <tr>
                                             <td><input type="text" name="rows[0][perusahaan]" class="form-control paste-input" placeholder="Paste di sini"></td>
                                             <td><input type="text" name="rows[0][telp]" class="form-control"></td>
-                                            <td><input type="email" name="rows[0][email]" class="form-control"></td>
-                                            <td><input type="text" name="rows[0][jabatan]" class="form-control"></td>
-                                            <td><input type="text" name="rows[0][nama_pic]" class="form-control"></td>
+                                            <td><input type="text" name="rows[0][unit_bisnis]" class="form-control"></td>
+                                            <td><input type="email" name="rows[0][email_perusahaan]" class="form-control"></td>
+                                            <td><input type="text" name="rows[0][status_email]" class="form-control"></td>
                                             <td><input type="text" name="rows[0][wa_pic]" class="form-control"></td>
-                                            <td><input type="text" name="rows[0][wa_baru]" class="form-control"></td>
-                                            <td><input type="text" name="rows[0][lokasi]" class="form-control"></td>
-                                            <td><input type="text" name="rows[0][sumber]" class="form-control"></td>
-                                            <td><input type="text" name="rows[0][update_terakhir]" class="form-control"></td>
-                                            <td><input type="text" name="rows[0][status]" class="form-control"></td>
-                                            <td><textarea name="rows[0][deskripsi]" class="form-control" rows="1"></textarea></td>
-                                            <td><textarea name="rows[0][catatan]" class="form-control" rows="1"></textarea></td>
+                                            <td><input type="text" name="rows[0][alamat_perusahaan]" class="form-control"></td>
+                                            <td><input type="text" name="rows[0][source]" class="form-control"></td>
                                             <td><button type="button" class="btn btn-danger btn-sm remove-row">×</button></td>
                                         </tr>
                                     </tbody>

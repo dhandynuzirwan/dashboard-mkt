@@ -18,6 +18,7 @@
                             <div class="card-header">
                                 <div class="card-title">Form Tambah Pengguna</div>
                             </div>
+                            
                             <div class="card-body">
                                 <div class="row">
                                     
@@ -43,7 +44,7 @@
                                             aria-describedby="basic-addon2"
                                             />
                                             <span class="input-group-text" id="basic-addon2"
-                                            >@gmail.com</span
+                                            >@company.com</span
                                             >
                                         </div>
                                     </div>
@@ -64,9 +65,20 @@
                                             <option value="">Pilih Role</option>
                                             <option value="super_admin">Super Admin</option>
                                             <option value="admin">Admin</option>
-                                            <option value="user">User</option>
+                                            <option value="Marketing">Marketing</option>
                                         </select>
-                                    </div>                       
+                                    </div>
+                                    <div class="form-group">
+                                        <div>
+                                            <button
+                                            type="submit"
+                                            class="btn btn-primary"
+                                            >
+                                            Submit
+                                            </button>
+                                        </div>
+                                    </div>
+                                    
                                 </div>
                             </div>
                         </div>
