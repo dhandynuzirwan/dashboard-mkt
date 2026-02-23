@@ -121,9 +121,7 @@
                                 </a>
                             </li>
                             <li class="{{ request()->routeIs('data-masuk') ? 'active' : '' }}">
-                                <a href="
-                                {{-- {{ route('data-masuk') }} --}}
-                                 ">
+                                <a href="{{ route('data-masuk') }}">
                                     <span class="sub-item">Data Masuk</span>
                                 </a>
                             </li>

@@ -58,3 +58,11 @@ Route::get('/form-penggajian', function () {
 Route::get('/form-absensi', function () {
     return view('form-absensi');
 })->name('form-absensi');
+
+Route::get('/data-masuk', function () {
+    return view('data-masuk');
+})->name('data-masuk');
+
+Route::get('/form-data-masuk', function () {
+    return view('form-data-masuk');
+})->name('form-data-masuk');
