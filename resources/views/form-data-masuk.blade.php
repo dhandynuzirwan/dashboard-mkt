@@ -27,7 +27,7 @@
                             </div>
 
                             <div class="table-responsive">
-                                <table class="table table-bordered text-nowrap" id="tableProspek" style="min-width: 1500px;">
+                                <table class="table table-bordered text-nowrap" id="tableProspek" style="min-width: 1500px">
                                     <thead class="bg-light text-center">
                                         <tr>
                                             {{--         
@@ -44,9 +44,10 @@
                                             <th style="width: 200px;">Unit Bisnis</th>
                                             <th style="width: 150px;">Email Perusahaan</th>
                                             <th style="width: 150px;">Status Email</th>
-                                            <th style="width: 150px;">WA PIC</th>
+                                            <th style="width: 200px;">WA PIC</th>
                                             <th style="width: 200px;">Alamat Perusahaan</th>
                                             <th style="width: 150px;">Source</th>
+                                            <th style="width: 100px;">Action</th>
                                         </tr>
                                     </thead>
                                     <tbody>
@@ -64,7 +65,6 @@
                                     </tbody>
                                 </table>
                             </div>
-
                             <div class="mt-3">
                                 <button type="button" id="addRow" class="btn btn-secondary btn-sm">Tambah Baris Manual</button>
                                 <button type="submit" class="btn btn-primary btn-sm float-end">Simpan Semua Data</button>
