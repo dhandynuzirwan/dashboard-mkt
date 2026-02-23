@@ -197,14 +197,16 @@
                       <table class="table table-bordered">
                         <thead>
                           <tr>
-                            <th>ID</th>
+                            <th>ID PROSPEK</th>
+                            <th>Marketing</th>
                             <th>DATE</th>                    
                             <th>PERUSAHAAN</th>
                             <th>NO TELP</th>
                             <th>EMAIL</th>
                             <th>JABATAN</th>
                             <th>NAMA</th>
-                            <th>TELP PIC</th>
+                            <th>WA PIC</th>
+                            <th>WA BARU</th>
                             <th>ALAMAT PERUSAHAAN</th>
                             <th>SOURCE</th>
                             <th>UPDATE FU</th>
@@ -217,6 +219,7 @@
                         <tbody>
                             <tr>
                                 <td>1</td>
+                                <td>Marketing 1</td>
                                 <td>2024-01-01</td>
                                 <td>PT. Maju Jaya</td>
                                 <td>08123456789</td>
@@ -224,6 +227,7 @@
                                 <td>HRD</td>
                                 <td>John Doe</td>
                                 <td>08123456789</td>
+                                <td>08198765432</td>
                                 <td>Jl. Raya Maju Jaya No. 123</td>
                                 <td>Database Marketing</td>
                                 <td>Terhubung HRD</td>

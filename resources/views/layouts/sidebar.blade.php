@@ -100,15 +100,15 @@
                     </div>
                 </li>
 
-                <li class="nav-item {{ request()->routeIs('form-prospek', 'pipeline') ? 'active' : '' }}">
+                <li class="nav-item {{ request()->routeIs('form-prospek', 'pipeline', 'data-masuk') ? 'active' : '' }}">
                     <a data-bs-toggle="collapse" href="#marketing-sales"
-                    class="{{ request()->routeIs('form-prospek', 'pipeline') ? '' : 'collapsed' }}"
-                    aria-expanded="{{ request()->routeIs('form-prospek', 'pipeline') ? 'true' : 'false' }}">
+                    class="{{ request()->routeIs('form-prospek', 'pipeline', 'data-masuk') ? '' : 'collapsed' }}"
+                    aria-expanded="{{ request()->routeIs('form-prospek', 'pipeline', 'data-masuk') ? 'true' : 'false' }}">
                         <i class="fas fa-layer-group"></i>
                         <p>Marketing & Sales</p>
                         <span class="caret"></span>
                     </a>
-                    <div class="collapse {{ request()->routeIs('form-prospek', 'pipeline') ? 'show' : '' }}" id="marketing-sales">
+                    <div class="collapse {{ request()->routeIs('form-prospek', 'pipeline', 'data-masuk') ? 'show' : '' }}" id="marketing-sales">
                         <ul class="nav nav-collapse">                        
                             <li class="{{ request()->routeIs('form-prospek') ? 'active' : '' }}">
                                 <a href="{{ route('form-prospek') }}">
@@ -118,6 +118,13 @@
                             <li class="{{ request()->routeIs('pipeline') ? 'active' : '' }}">
                                 <a href="{{ route('pipeline') }}">
                                     <span class="sub-item">Pipeline Marketing</span>
+                                </a>
+                            </li>
+                            <li class="{{ request()->routeIs('data-masuk') ? 'active' : '' }}">
+                                <a href="
+                                {{-- {{ route('data-masuk') }} --}}
+                                 ">
+                                    <span class="sub-item">Data Masuk</span>
                                 </a>
                             </li>
                         </ul>
