@@ -105,6 +105,7 @@
                         <p>Marketing & Sales</p>
                         <span class="caret"></span>
                     </a>
+<<<<<<< HEAD
                     <div class="collapse {{ request()->routeIs('form-prospek', 'pipeline') ? 'show' : '' }}"
                         id="marketing-sales">
                         <ul class="nav nav-collapse">
@@ -116,6 +117,16 @@
                                 </li>
                             @endif
                             <li class="{{ request()->routeIs('pipeline') ? 'active' : '' }}">
+=======
+                    <div class="collapse" id="marketing-sales">
+                        <ul class="nav nav-collapse">
+                            <li>
+                                <a href="{{ route('data-prospek') }}">
+                                    <span class="sub-item">Tambah Data Prospek</span>
+                                </a>
+                            </li>
+                            <li>
+>>>>>>> 67bb2e87175bafb0540ed5da88ac8e5e21a8fda7
                                 <a href="{{ route('pipeline') }}">
                                     <span class="sub-item">Pipeline Marketing</span>
                                 </a>
