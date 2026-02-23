@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\ProspekController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
@@ -38,6 +39,8 @@ Route::middleware('auth')->group(function () {
         return view('dashboard-progress');
     })->name('dashboard.progress');
 
+    Route::get('/prospek', [ProspekController::class, 'index'])->name('prospek.index');
+
     Route::get('/revenue', function () {
         return view('revenue');
     })->name('revenue');
@@ -70,13 +73,14 @@ Route::middleware('auth')->group(function () {
     // MARKETING & SALES superadmin + admin
     Route::middleware('role:superadmin,admin,marketing')->group(function () {
 
-        Route::get('/form-prospek', function () {
-            return view('form-prospek');
-        })->name('form-prospek');
-
         Route::get('/pipeline', function () {
             return view('pipeline');
         })->name('pipeline');
+
+        Route::get('/prospek', [ProspekController::class, 'index'])->name('prospek.index');
+        Route::get('/form-prospek', [ProspekController::class, 'create'])->name('form-prospek');
+        Route::get('/prospek/create', [ProspekController::class, 'create'])->name('prospek.create');
+        Route::post('/prospek/store', [ProspekController::class, 'store'])->name('prospek.store');
 
     });
 
@@ -115,10 +119,6 @@ Route::get('/absensi', function () {
 })->name('absensi');
 
 //form input data prospek
-
-Route::get('/form-prospek', function () {
-    return view('form-prospek');
-})->name('form-prospek');
 
 Route::get('/form-cta', function () {
     return view('form-cta');

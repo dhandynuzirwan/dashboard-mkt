@@ -217,26 +217,28 @@
                           </tr>
                         </thead>
                         <tbody>
+                            @foreach($prospeks as $data)
                             <tr>
-                                <td>1</td>
-                                <td>Marketing 1</td>
-                                <td>2024-01-01</td>
-                                <td>PT. Maju Jaya</td>
-                                <td>08123456789</td>
-                                <td>marketing@ptmaju.com</td>
-                                <td>HRD</td>
-                                <td>John Doe</td>
-                                <td>08123456789</td>
-                                <td>08198765432</td>
-                                <td>Jl. Raya Maju Jaya No. 123</td>
-                                <td>Database Marketing</td>
-                                <td>Terhubung HRD</td>
-                                <td>Masuk Penawaran</td>
-                                <td>PT INDO, Ibu Sinta (0888229)</td>
-                                <td>Sulit dihubungi</td>
+                                <td>{{ $data->id }}</td>
+                                <td>{{ $data->marketing?->name }}</td>
+                                <td>{{ $data->tanggal_prospek }}</td>
+                                <td>{{ $data->perusahaan }}</td>
+                                <td>{{ $data->telp }}</td>
+                                <td>{{ $data->email }}</td>
+                                <td>{{ $data->jabatan }}</td>
+                                <td>{{ $data->nama_pic }}</td>
+                                <td>{{ $data->wa_pic }}</td>
+                                <td>{{ $data->wa_baru }}</td>
+                                <td>{{ $data->lokasi }}</td>
+                                <td>{{ $data->sumber }}</td>
+                                <td>{{ $data->update_terakhir }}</td>
+                                <td>{{ $data->status }}</td>
+                                <td>{{ $data->deskripsi }}</td>
+                                <td>{{ $data->catatan }}</td>
                                 <td><a href="#" class="btn btn-primary btn-sm">Edit</a></td>
-                                <td><a href="{{ route('form-cta', 1) }}" class="btn btn-success btn-sm">CTA</a></td>
+                                <td><a href="{{ route('form-cta', $data->id) }}" class="btn btn-success btn-sm">CTA</a></td>
                             </tr>
+                            @endforeach
                         </tbody>
                       </table>
                     </div>
