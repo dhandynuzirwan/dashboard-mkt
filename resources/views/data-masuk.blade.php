@@ -202,38 +202,36 @@
                       scroll horizontally on small devices
                     </div> --}}
                     <div class="table-responsive">
-                      <table class="table table-bordered">
-                        <thead>
-                          <tr>
-                            <th>Marketing</th>               
-                            <th>PERUSAHAAN</th>
-                            <th>NO TELP</th>
-                            <th>UNIT BISNIS</th>
-                            <th>EMAIL PERUSAHAAN</th>
-                            <th>STATUS EMAIL</th>
-                            <th>WA PIC</th>
-                            <th>ALAMAT PERUSAHAAN</th>
-                            <th>SOURCE</th>
-                            <th>ACTION</th>
-                          </tr>
-                        </thead>
-                        <tbody>
-                            <tr>
-                                <td>Marketing 1</td>
-                                <td>PT. Maju Jaya</td>
-                                <td>08123456789</td>
-                                <td>Rumah Sakit</td>
-                                <td>marketing@ptmaju.com</td>
-                                <td>Terhubung</td>
-                                <td>08198765432</td>
-                                <td>Jl. Raya Maju Jaya No. 123</td>
-                                <td>Database Marketing</td>
-                                <td><a href="#" class="btn btn-primary btn-sm">Edit</a></td>
-                                <td><a href="#" class="btn btn-danger btn-sm">Delete</a></td>
-                                
-                            </tr>
-                        </tbody>
-                      </table>
+                        <table class="table table-bordered">
+                            <thead>
+                                <tr>
+                                    <th>Marketing</th>
+                                    <th>Perusahaan</th>
+                                    <th>Unit Bisnis</th>
+                                    <th>Email</th>
+                                    <th>Status Email</th>
+                                    <th>WhatsApp</th>
+                                    <th>Sumber</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach($allData as $item)
+                                <tr>
+                                    <td>{{ $item->marketing->name }}</td>
+                                    <td>{{ $item->perusahaan }}</td>
+                                    <td>{{ $item->unit_bisnis }}</td>
+                                    <td>{{ $item->email }}</td>
+                                    <td>
+                                        <span class="badge {{ $item->status_email == 'Valid' ? 'badge-success' : 'badge-danger' }}">
+                                            {{ $item->status_email }}
+                                        </span>
+                                    </td>
+                                    <td>{{ $item->wa_baru ?? $item->wa_pic }}</td>
+                                    <td>{{ $item->sumber }}</td>
+                                </tr>
+                                @endforeach
+                            </tbody>
+                        </table>
                     </div>
                   </div>
                 </div>

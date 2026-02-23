@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\CTAController;
+use App\Http\Controllers\DataMasukController;
 use App\Http\Controllers\ProspekController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -72,14 +73,6 @@ Route::middleware('auth')->group(function () {
     Route::get('/simulasi-gaji', function () {
         return view('simulasi-gaji');
     })->name('simulasi-gaji');
-
-    Route::get('/data-masuk', function () {
-        return view('data-masuk');
-    })->name('data-masuk');
-
-    Route::get('/form-data-masuk', function () {
-        return view('form-data-masuk');
-    })->name('form-data-masuk');
 
     /*
     |--------------------------------------------------------------------------
@@ -161,6 +154,12 @@ Route::middleware('auth')->group(function () {
         Route::get('/prospek/create', [ProspekController::class, 'create'])->name('prospek.create');
 
         Route::post('/prospek/store', [ProspekController::class, 'store'])->name('prospek.store');
+
+        Route::get('/data-masuk', [DataMasukController::class, 'index'])->name('data-masuk');
+
+        Route::get('/form-data-masuk', [DataMasukController::class, 'create'])->name('form-data-masuk');
+
+        Route::post('/data-masuk/store', [DataMasukController::class, 'store'])->name('data-masuk.store');
     });
 
     /*
