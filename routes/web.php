@@ -6,6 +6,12 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
 
+/*
+|--------------------------------------------------------------------------
+| AUTH
+|--------------------------------------------------------------------------
+*/
+
 Route::get('/login', function () {
     return view('auth.login');
 })->name('login');
@@ -16,7 +22,7 @@ Route::post('/login', function (Request $request) {
 
     if (Auth::attempt($credentials)) {
         $request->session()->regenerate();
-        return redirect('/');
+        return redirect()->route('dashboard.progress');
     }
 
     return back()->with('error', 'Email atau password salah');
@@ -27,21 +33,31 @@ Route::post('/logout', function (Request $request) {
     Auth::logout();
     $request->session()->invalidate();
     $request->session()->regenerateToken();
-
-    return redirect('/login');
+    return redirect()->route('login');
 })->name('logout');
 
-Route::middleware('auth')->group(function () {
-    Route::get('/', function () {
-        return view('dashboard-progress');
-    });
 
-    Route::get('/dashboard-progress', function () {
+/*
+|--------------------------------------------------------------------------
+| AUTHENTICATED ROUTES
+|--------------------------------------------------------------------------
+*/
+
+Route::middleware('auth')->group(function () {
+
+    /*
+    |--------------------------------------------------------------------------
+    | DASHBOARD
+    |--------------------------------------------------------------------------
+    */
+
+    Route::get('/', function () {
         return view('dashboard-progress');
     })->name('dashboard.progress');
 
-    Route::get('/pipeline', [ProspekController::class, 'index'])->name('pipeline');
-    Route::get('/prospek', [ProspekController::class, 'index'])->name('prospek.index');
+    Route::get('/dashboard-progress', function () {
+        return view('dashboard-progress');
+    });
 
     Route::get('/revenue', function () {
         return view('revenue');
@@ -55,13 +71,50 @@ Route::middleware('auth')->group(function () {
         return view('simulasi-gaji');
     })->name('simulasi-gaji');
 
-    //HUMAN RESOURCES superadmin only
+    Route::get('/data-masuk', function () {
+        return view('data-masuk');
+    })->name('data-masuk');
+
+    Route::get('/form-data-masuk', function () {
+        return view('form-data-masuk');
+    })->name('form-data-masuk');
+
+
+    /*
+    |--------------------------------------------------------------------------
+    | SUPERADMIN ONLY
+    |--------------------------------------------------------------------------
+    */
+
     Route::middleware('role:superadmin')->group(function () {
 
-        
         Route::get('/user', function () {
-            return view('user');
+            $users = \App\Models\User::all();
+            return view('user', compact('users'));
         })->name('user');
+
+        Route::get('/form-tambah-pengguna', function () {
+            return view('form-tambah-pengguna');
+        })->name('form-tambah-pengguna');
+
+        Route::post('/user/store', function (Request $request) {
+
+            $request->validate([
+                'name' => 'required|string|max:255',
+                'email' => 'required|email|unique:users,email',
+                'password' => 'required|min:6',
+                'role' => 'required|in:superadmin,admin,marketing',
+            ]);
+
+            \App\Models\User::create([
+                'name' => $request->name,
+                'email' => $request->email,
+                'password' => $request->password, // auto hash via cast di model
+                'role' => $request->role,
+            ]);
+
+            return redirect()->route('user')->with('success', 'User berhasil ditambahkan');
+        })->name('user.store');
 
         Route::get('/penggajian', function () {
             return view('penggajian');
@@ -71,76 +124,46 @@ Route::middleware('auth')->group(function () {
             return view('absensi');
         })->name('absensi');
 
+        Route::get('/form-penggajian', function () {
+            return view('form-penggajian');
+        })->name('form-penggajian');
+
+        Route::get('/form-absensi', function () {
+            return view('form-absensi');
+        })->name('form-absensi');
     });
 
-    // MARKETING & SALES superadmin + admin
+
+    /*
+    |--------------------------------------------------------------------------
+    | SUPERADMIN + ADMIN
+    |--------------------------------------------------------------------------
+    */
+
     Route::middleware('role:superadmin,admin')->group(function () {
 
-        Route::get('/prospek', [ProspekController::class, 'index'])->name('prospek.index');
-        Route::get('/form-prospek', [ProspekController::class, 'create'])->name('form-prospek');
-        Route::get('/prospek/create', [ProspekController::class, 'create'])->name('prospek.create');
-        Route::post('/prospek/store', [ProspekController::class, 'store'])->name('prospek.store');
+        Route::get('/pipeline', [ProspekController::class, 'index'])->name('pipeline');
 
+        Route::get('/prospek', [ProspekController::class, 'index'])->name('prospek.index');
+
+        Route::get('/form-prospek', [ProspekController::class, 'create'])->name('form-prospek');
+
+        Route::get('/prospek/create', [ProspekController::class, 'create'])->name('prospek.create');
+
+        Route::post('/prospek/store', [ProspekController::class, 'store'])->name('prospek.store');
     });
+
+
+    /*
+    |--------------------------------------------------------------------------
+    | MARKETING ONLY
+    |--------------------------------------------------------------------------
+    */
 
     Route::middleware('role:marketing')->group(function () {
 
         Route::get('/form-cta/{prospek_id}', [CTAController::class, 'create'])->name('form-cta');
+
         Route::post('/cta/store', [CTAController::class, 'store'])->name('cta.store');
     });
-
 });
-
-Route::get('/revenue', function () {
-    return view('revenue');
-})->name ('revenue');
-
-Route::get('/dashboard-progress', function () {
-    return view('dashboard-progress');
-})->name('dashboard.progress');
-
-Route::get('/data-kpi', function () {
-    return view('Data-KPI');
-})->name ('data-kpi');
-
-Route::get('/simulasi-gaji', function () {
-    return view('simulasi-gaji');
-})-> name ('simulasi-gaji');
-
-Route::get('/penggajian', function () {
-    return view('penggajian');
-})-> name ('penggajian');
-
-Route::get('/user', function () {
-    return view('user');
-})-> name ('user');
-
-Route::get('/absensi', function () {
-    return view('absensi');
-})->name('absensi');
-
-//form input data prospek
-
-Route::get('/form-cta', function () {
-    return view('form-cta');
-})->name('form-cta');
-
-Route::get('/form-tambah-pengguna', function () {
-    return view('form-tambah-pengguna');
-})->name('form-tambah-pengguna');
-
-Route::get('/form-penggajian', function () {
-    return view('form-penggajian');
-})->name('form-penggajian');
-
-Route::get('/form-absensi', function () {
-    return view('form-absensi');
-})->name('form-absensi');
-
-Route::get('/data-masuk', function () {
-    return view('data-masuk');
-})->name('data-masuk');
-
-Route::get('/form-data-masuk', function () {
-    return view('form-data-masuk');
-})->name('form-data-masuk');
