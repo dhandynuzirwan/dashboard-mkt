@@ -10,48 +10,48 @@
             <div class="container">
                 <div class="page-inner">
 
-                    {{-- ================= HEADER + FILTER + CLOCK ================= --}}
+                    {{-- FILTER SECTION --}}
                     <div class="card mb-4">
                         <div class="card-body">
-                            <div class="row align-items-end">
-
-                                <div class="col-md-3">
-                                    <label>Dari Tanggal</label>
-                                    <input type="date" class="form-control">
+                            <form action="{{ route('dashboard.progress') }}" method="GET">
+                                <div class="row align-items-end">
+                                    <div class="col-md-3">
+                                        <label>Dari Tanggal</label>
+                                        <input type="date" name="start_date" value="{{ $start }}" class="form-control">
+                                    </div>
+                                    <div class="col-md-3">
+                                        <label>Sampai Tanggal</label>
+                                        <input type="date" name="end_date" value="{{ $end }}" class="form-control">
+                                    </div>
+                                    <div class="col-md-3">
+                                        <label>Marketing</label>
+                                        <select name="marketing_id" class="form-control">
+                                            <option value="">Semua Marketing</option>
+                                            @foreach($all_marketing as $m)
+                                                <option value="{{ $m->id }}" {{ request('marketing_id') == $m->id ? 'selected' : '' }}>{{ $m->name }}</option>
+                                            @endforeach
+                                        </select>
+                                    </div>
+                                    <div class="col-md-1">
+                                        <button type="submit" class="btn btn-primary w-100"><i class="fa fa-filter"></i></button>
+                                    </div>
+                                    <div class="col-md-2 text-end">
+                                        <small id="live-date" class="d-block text-muted"></small>
+                                        <small id="live-clock" class="fw-bold text-primary"></small>
+                                    </div>
                                 </div>
-
-                                <div class="col-md-3">
-                                    <label>Sampai Tanggal</label>
-                                    <input type="date" class="form-control">
-                                </div>
-
-                                <div class="col-md-2">
-                                    <button class="btn btn-primary w-100">
-                                        Filter
-                                    </button>
-                                </div>
-
-                                {{-- CLOCK KECIL SEBARIS --}}
-                                <div class="col-md-4 text-end">
-                                    <small id="live-date" class="d-block text-muted"></small>
-                                    <small id="live-clock" class="fw-bold text-primary"></small>
-                                </div>
-
-                            </div>
+                            </form>
                         </div>
                     </div>
 
-                    {{-- ================= STAT CARDS (STYLE CHART MINI) ================= --}}
-                    <div class="card border shadow-sm">
-                        <div class="card-header">
-                            <div class="card-title">Tabel Progress Marketing</div>
-                        </div>
+                    {{-- TABEL PROGRESS MARKETING --}}
+                    <div class="card shadow-sm">
+                        <div class="card-header"><div class="card-title">Tabel Progress Marketing</div></div>
                         <div class="card-body">
                             <div class="table-responsive">
                                 <table class="table table-bordered align-middle text-center">
                                     <thead class="table-light">
                                         <tr>
-                                            <th>No</th>
                                             <th>Marketing</th>
                                             <th>Target</th>
                                             <th>Pencapaian</th>
@@ -59,92 +59,75 @@
                                         </tr>
                                     </thead>
                                     <tbody>
-
+                                        @foreach($marketings as $m)
                                         <tr>
-                                            <th scope="row">1</th>
-                                            <td>INTAN 1</td>
-                                            <td>600</td>
-                                            <td>139</td>
-                                            <td style="width: 250px;">
+                                            <td class="fw-bold">{{ $m->name }}</td>
+                                            <td>{{ $m->target_total }}</td>
+                                            <td>{{ $m->pencapaian }}</td>
+                                            <td style="width: 300px;">
                                                 <div class="d-flex align-items-center">
-                                                    <div class="progress flex-1" style="height: 6px; width: 100%;">
-                                                        <div class="progress-bar bg-primary" style="width: 23.17%"></div>
+                                                    <div class="progress flex-1" style="height: 10px; width: 100%;">
+                                                        <div class="progress-bar {{ $m->ach_persen < 50 ? 'bg-danger' : ($m->ach_persen < 80 ? 'bg-warning' : 'bg-success') }}" 
+                                                            style="width: {{ $m->ach_persen }}%"></div>
                                                     </div>
-                                                    <span class="ms-2 fw-bold">23,17%</span>
+                                                    <span class="ms-2 fw-bold">{{ number_format($m->ach_persen, 2) }}%</span>
                                                 </div>
                                             </td>
                                         </tr>
-
-                                        <tr>
-                                            <th scope="row">2</th>
-                                            <td>INTAN 2</td>
-                                            <td>600</td>
-                                            <td>156</td>
-                                            <td style="width: 250px;">
-                                                <div class="d-flex align-items-center">
-                                                    <div class="progress flex-1" style="height: 6px; width: 100%;">
-                                                        <div class="progress-bar bg-info" style="width: 26%"></div>
-                                                    </div>
-                                                    <span class="ms-2 fw-bold">26,00%</span>
-                                                </div>
-                                            </td>
-                                        </tr>
-
-                                        <tr>
-                                            <th scope="row">3</th>
-                                            <td>INTAN 3</td>
-                                            <td>600</td>
-                                            <td>151</td>
-                                            <td style="width: 250px;">
-                                                <div class="d-flex align-items-center">
-                                                    <div class="progress flex-1" style="height: 6px; width: 100%;">
-                                                        <div class="progress-bar bg-warning" style="width: 25.17%"></div>
-                                                    </div>
-                                                    <span class="ms-2 fw-bold">25,17%</span>
-                                                </div>
-                                            </td>
-                                        </tr>
-
-                                        <tr>
-                                            <th scope="row">4</th>
-                                            <td>INTAN 4</td>
-                                            <td>600</td>
-                                            <td>163</td>
-                                            <td style="width: 250px;">
-                                                <div class="d-flex align-items-center">
-                                                    <div class="progress flex-1" style="height: 6px; width: 100%;">
-                                                        <div class="progress-bar bg-success" style="width: 27.17%"></div>
-                                                    </div>
-                                                    <span class="ms-2 fw-bold">27,17%</span>
-                                                </div>
-                                            </td>
-                                        </tr>
-
-                                        <tr>
-                                            <th scope="row">5</th>
-                                            <td>INTAN 5</td>
-                                            <td>600</td>
-                                            <td>158</td>
-                                            <td style="width: 250px;">
-                                                <div class="d-flex align-items-center">
-                                                    <div class="progress flex-1" style="height: 6px; width: 100%;">
-                                                        <div class="progress-bar bg-danger" style="width: 26.33%"></div>
-                                                    </div>
-                                                    <span class="ms-2 fw-bold">26,33%</span>
-                                                </div>
-                                            </td>
-                                        </tr>
-
-                                        <!-- TOTAL -->
-                                        <tr class="fw-bold table-primary">
-                                            <th colspan="2">TOTAL</th>
-                                            <td>3000</td>
-                                            <td>767</td>
-                                            <td>25,57%</td>
-                                        </tr>
-
+                                        @endforeach
                                     </tbody>
                                 </table>
+                            </div>
+                        </div>
+                    </div>
+
+                    {{-- TABEL UPDATE PENAWARAN --}}
+                    <div class="card shadow-sm mt-4">
+                        <div class="card-header"><div class="card-title">Tabel Update Penawaran</div></div>
+                        <div class="card-body">
+                            <div class="table-responsive">
+                                <table class="table table-bordered text-center align-middle">
+                                    <thead class="table-light">
+                                        <tr>
+                                            <th>Marketing</th>
+                                            <th>Masuk Penawaran</th>
+                                            <th>Deal</th>
+                                            <th>Hold</th>
+                                            <th>Kalah Harga</th>
+                                            <th>Total FU</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        @foreach($marketings as $m)
+                                        <tr>
+                                            <td>{{ $m->name }}</td>
+                                            <td><span class="badge badge-info">{{ $m->review }}</span></td>
+                                            <td><span class="badge badge-success">{{ $m->deal }}</span></td>
+                                            <td><span class="badge badge-warning">{{ $m->hold }}</span></td>
+                                            <td><span class="badge badge-danger">{{ $m->kalah }}</span></td>
+                                            <td>
+                                                <button class="btn btn-sm btn-primary btn-round btn-detail" data-id="{{ $m->id }}">
+                                                    {{ $m->total_penawaran }} Detail
+                                                </button>
+                                            </td>
+                                        </tr>
+                                        @endforeach
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>    
+                    
+                    {{-- MODAL DETAIL --}}
+                    <div class="modal fade" id="modalDetail" tabindex="-1">
+                        <div class="modal-dialog modal-lg">
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <h5 class="modal-title fw-bold">Detail Penawaran & FU</h5>
+                                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                                </div>
+                                <div class="modal-body" id="detailBody">
+                                    </div>
                             </div>
                         </div>
                     </div>
@@ -223,7 +206,7 @@
                                 <table class="table table-bordered align-middle text-center">
                                     <thead class="table-light">
                                         <tr>
-                                            <th>No</th>
+                                            <th>Marketing</th>
                                             <th>Perpanjangan Sertifikat</th>
                                             <th>Data Tidak Valid & Tidak Terhubung</th>
                                             <th>Dapat Email</th>
@@ -235,173 +218,48 @@
                                         </tr>
                                     </thead>
                                     <tbody>
+                                        @php 
+                                            // Inisialisasi total untuk baris bawah
+                                            $t_perpanjangan = 0; $t_invalid = 0; $t_email = 0; $t_wa = 0;
+                                            $t_compro = 0; $t_manja = 0; $t_manja_ulang = 0; $t_pelatihan = 0;
+                                        @endphp
 
+                                        @foreach($marketings as $m)
                                         <tr>
-                                            <th scope="row">1</th>
-                                            <td>0</td>
-                                            <td>41</td>
-                                            <td>0</td>
-                                            <td>0</td>
-                                            <td>23</td>
-                                            <td>0</td>
-                                            <td>0</td>
-                                            <td>2</td>
+                                            <td>{{ $m->name }}</th>
+                                            <td>{{ $m->count_perpanjangan }}</td>
+                                            <td>{{ $m->count_invalid }}</td>
+                                            <td>{{ $m->count_email }}</td>
+                                            <td>{{ $m->count_wa }}</td>
+                                            <td>{{ $m->count_compro }}</td>
+                                            <td>{{ $m->count_manja }}</td>
+                                            <td>{{ $m->count_manja_ulang }}</td>
+                                            <td>{{ $m->count_pelatihan }}</td>
                                         </tr>
+                                        @php
+                                            // Tambahkan ke total keseluruhan
+                                            $t_perpanjangan += $m->count_perpanjangan;
+                                            $t_invalid      += $m->count_invalid;
+                                            $t_email        += $m->count_email;
+                                            $t_wa           += $m->count_wa;
+                                            $t_compro       += $m->count_compro;
+                                            $t_manja        += $m->count_manja;
+                                            $t_manja_ulang  += $m->count_manja_ulang;
+                                            $t_pelatihan    += $m->count_pelatihan;
+                                        @endphp
+                                        @endforeach
 
-                                        <tr>
-                                            <th scope="row">2</th>
-                                            <td>0</td>
-                                            <td>20</td>
-                                            <td>0</td>
-                                            <td>0</td>
-                                            <td>9</td>
-                                            <td>0</td>
-                                            <td>0</td>
-                                            <td>2</td>
-                                        </tr>
-
-                                        <tr>
-                                            <th scope="row">3</th>
-                                            <td>0</td>
-                                            <td>34</td>
-                                            <td>0</td>
-                                            <td>0</td>
-                                            <td>9</td>
-                                            <td>0</td>
-                                            <td>0</td>
-                                            <td>1</td>
-                                        </tr>
-
-                                        <tr>
-                                            <th scope="row">4</th>
-                                            <td>0</td>
-                                            <td>20</td>
-                                            <td>1</td>
-                                            <td>0</td>
-                                            <td>58</td>
-                                            <td>0</td>
-                                            <td>0</td>
-                                            <td>3</td>
-                                        </tr>
-
-                                        <tr>
-                                            <th scope="row">5</th>
-                                            <td>0</td>
-                                            <td>11</td>
-                                            <td>0</td>
-                                            <td>0</td>
-                                            <td>70</td>
-                                            <td>0</td>
-                                            <td>0</td>
-                                            <td>0</td>
-                                        </tr>
-
-                                        <!-- TOTAL -->
                                         <tr class="fw-bold table-primary">
                                             <th>TOTAL</th>
-                                            <td>0</td>
-                                            <td>126</td>
-                                            <td>1</td>
-                                            <td>0</td>
-                                            <td>169</td>
-                                            <td>0</td>
-                                            <td>0</td>
-                                            <td>8</td>
+                                            <td>{{ $t_perpanjangan }}</td>
+                                            <td>{{ $t_invalid }}</td>
+                                            <td>{{ $t_email }}</td>
+                                            <td>{{ $t_wa }}</td>
+                                            <td>{{ $t_compro }}</td>
+                                            <td>{{ $t_manja }}</td>
+                                            <td>{{ $t_manja_ulang }}</td>
+                                            <td>{{ $t_pelatihan }}</td>
                                         </tr>
-
-                                    </tbody>
-                                </table>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="card border shadow-sm mt-4">
-                        <div class="card-header">
-                            <div class="card-title">Tabel Update Penawaran</div>
-                        </div>
-                        <div class="card-body">
-                            <div class="table-responsive">
-                                <table class="table table-bordered align-middle text-center">
-                                    <thead class="table-light">
-                                        <tr>
-                                            <th>No</th>
-                                            <th>Masuk Penawaran</th>
-                                            <th>Under Review</th>
-                                            <th>Deal</th>
-                                            <th>Hold</th>
-                                            <th>Kalah Harga</th>
-                                            <th>Terlambat FU</th>
-                                            <th>Total FU</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-
-                                        <tr>
-                                            <th scope="row">1</th>
-                                            <td>4</td>
-                                            <td>1</td>
-                                            <td>0</td>
-                                            <td>0</td>
-                                            <td>0</td>
-                                            <td>0</td>
-                                            <td>139</td>
-                                        </tr>
-
-                                        <tr>
-                                            <th scope="row">2</th>
-                                            <td>22</td>
-                                            <td>9</td>
-                                            <td>10</td>
-                                            <td>0</td>
-                                            <td>0</td>
-                                            <td>0</td>
-                                            <td>156</td>
-                                        </tr>
-
-                                        <tr>
-                                            <th scope="row">3</th>
-                                            <td>4</td>
-                                            <td>4</td>
-                                            <td>0</td>
-                                            <td>0</td>
-                                            <td>0</td>
-                                            <td>0</td>
-                                            <td>151</td>
-                                        </tr>
-
-                                        <tr>
-                                            <th scope="row">4</th>
-                                            <td>2</td>
-                                            <td>3</td>
-                                            <td>1</td>
-                                            <td>0</td>
-                                            <td>0</td>
-                                            <td>0</td>
-                                            <td>163</td>
-                                        </tr>
-
-                                        <tr>
-                                            <th scope="row">5</th>
-                                            <td>35</td>
-                                            <td>8</td>
-                                            <td>2</td>
-                                            <td>0</td>
-                                            <td>0</td>
-                                            <td>0</td>
-                                            <td>158</td>
-                                        </tr>
-
-                                        <!-- TOTAL -->
-                                        <tr class="fw-bold table-primary">
-                                            <th>TOTAL</th>
-                                            <td>67</td>
-                                            <td>25</td>
-                                            <td>13</td>
-                                            <td>0</td>
-                                            <td>0</td>
-                                            <td>0</td>
-                                            <td>767</td>
-                                        </tr>
-
                                     </tbody>
                                 </table>
                             </div>
@@ -439,6 +297,24 @@
 
         {{-- ================= SCRIPT ================= --}}
         <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+        <script>
+            // Logika AJAX untuk Popup Detail
+            document.querySelectorAll('.btn-detail').forEach(button => {
+                button.addEventListener('click', function() {
+                    const mId = this.getAttribute('data-id');
+                    $('#modalDetail').modal('show');
+                    document.getElementById('detailBody').innerHTML = '<p class="text-center">Memuat data...</p>';
+                    
+                    // Ganti URL ini sesuai route detail Anda
+                    fetch(`/marketing-detail/${mId}?start={{ $start }}&end={{ $end }}`)
+                        .then(response => response.text())
+                        .then(html => {
+                            document.getElementById('detailBody').innerHTML = html;
+                        });
+                });
+            });
+        </script>
 
         <script>
             document.addEventListener("DOMContentLoaded", function() {

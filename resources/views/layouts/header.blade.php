@@ -1,3 +1,15 @@
+@php
+    // Hitung jumlah penawaran (CTA) yang masuk HARI INI saja
+    $notifCount = \App\Models\Cta::whereDate('created_at', \Carbon\Carbon::today())->count();
+    
+    // Ambil 5 penawaran terbaru hari ini untuk ditampilkan di dropdown list
+    $recentCtas = \App\Models\Cta::with('prospek')
+                    ->whereDate('created_at', \Carbon\Carbon::today())
+                    ->latest()
+                    ->take(5)
+                    ->get();
+@endphp
+
 <div class="main-header">
     <div class="main-header-logo">
         <div class="logo-header" data-background-color="dark">
@@ -21,14 +33,14 @@
     <nav class="navbar navbar-header navbar-header-transparent navbar-expand-lg border-bottom">
         <div class="container-fluid">
             <nav class="navbar navbar-header-left navbar-expand-lg navbar-form nav-search p-0 d-none d-lg-flex">
-                <div class="input-group">
+                <form action="{{ route('search.global') }}" method="GET" class="input-group">
                     <div class="input-group-prepend">
                         <button type="submit" class="btn btn-search pe-1">
                             <i class="fa fa-search search-icon"></i>
                         </button>
                     </div>
-                    <input type="text" placeholder="Search ..." class="form-control" />
-                </div>
+                    <input type="text" name="q" value="{{ request('q') }}" placeholder="Cari prospek, penawaran, atau marketing..." class="form-control" />
+                </form>
             </nav>
 
             <ul class="navbar-nav topbar-nav ms-md-auto align-items-center">
@@ -48,8 +60,48 @@
                 <li class="nav-item topbar-icon dropdown hidden-caret">
                     <a class="nav-link dropdown-toggle" href="#" id="notifDropdown" role="button" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                         <i class="fa fa-bell"></i>
-                        <span class="notification">4</span>
+                        @if($notifCount > 0)
+                            <span class="notification">{{ $notifCount }}</span>
+                        @endif
                     </a>
+                    <ul class="dropdown-menu notif-box animated fadeIn" aria-labelledby="notifDropdown">
+                        <li>
+                            <div class="dropdown-title">
+                                Ada {{ $notifCount }} Penawaran Baru Hari Ini
+                            </div>
+                        </li>
+                        <li>
+                            <div class="notif-scroll scrollbar-outer">
+                                <div class="notif-center">
+                                    @forelse($recentCtas as $cta)
+                                        <a href="{{ route('dashboard.progress') }}"> {{-- Arahkan ke dashboard untuk cek detail --}}
+                                            <div class="notif-icon notif-primary">
+                                                <i class="fa fa-file-invoice-dollar"></i>
+                                            </div>
+                                            <div class="notif-content">
+                                                <span class="block fw-bold">
+                                                    {{ $cta->prospek->nama_perusahaan ?? 'Penawaran Baru' }}
+                                                </span>
+                                                <span class="block small text-muted">
+                                                    {{ $cta->judul_permintaan }} ({{ $cta->sertifikasi }})
+                                                </span>
+                                                <span class="time">{{ $cta->created_at->format('H:i') }}</span>
+                                            </div>
+                                        </a>
+                                    @empty
+                                        <div class="text-center p-3 text-muted">
+                                            <small>Belum ada penawaran masuk hari ini.</small>
+                                        </div>
+                                    @endforelse
+                                </div>
+                            </div>
+                        </li>
+                        <li>
+                            <a class="see-all" href="{{ route('dashboard.progress') }}">
+                                Lihat Semua Progress <i class="fa fa-angle-right"></i>
+                            </a>
+                        </li>
+                    </ul>
                 </li>
 
                 @php

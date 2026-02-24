@@ -1,7 +1,9 @@
 <?php
 
 use App\Http\Controllers\CtaController;
+use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\DataMasukController;
+use App\Http\Controllers\GlobalSearchController;
 use App\Http\Controllers\KpiController;
 use App\Http\Controllers\ProspekController;
 use App\Http\Controllers\PenggajianController;
@@ -45,14 +47,14 @@ Route::post('/logout', function (Request $request) {
 
 Route::middleware('auth')->group(function () {
 
-    // --- DASHBOARD & UMUM ---
-    Route::get('/', function () {
-        return view('dashboard-progress');
-    })->name('dashboard.progress');
+    // --- DASHBOARD UTAMA ---
+    // Arahkan root (/) dan /dashboard-progress ke Controller yang sama
+    Route::get('/', [DashboardController::class, 'index'])->name('dashboard.progress');
+    Route::get('/dashboard-progress', [DashboardController::class, 'index']);
+    Route::get('/search', [GlobalSearchController::class, 'index'])->name('search.global');
 
-    Route::get('/dashboard-progress', function () {
-        return view('dashboard-progress');
-    });
+    // Route untuk AJAX Detail Popup (Modal) di Dashboard
+    Route::get('/marketing-detail/{id}', [DashboardController::class, 'getDetail'])->name('marketing.detail');
 
     Route::get('/revenue', [RevenueController::class, 'index'])
         ->name('revenue');
