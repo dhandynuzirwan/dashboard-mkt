@@ -45,12 +45,12 @@
 
                                 {{-- Progress --}}
                                 <th>TARGET</th>
-                                <th>AVG</th>
+                                <th>REALISASI</th>
                                 <th>ACH</th>
 
                                 {{-- Reveneuw --}}
                                 <th>TARGET</th>
-                                <th>AVG</th>
+                                <th>AKTUAL</th>
                                 <th>ACH</th>
 
                                 {{-- Total Pencapaian KPI --}}
@@ -61,22 +61,34 @@
                             </tr>
                         </thead>
                         <tbody>
+                            @foreach($marketings as $m)
                             <tr>
-                                <td>Marketing 1</td>
-                                <td>22</td>
-                                <td>20</td>
-                                <td>90%</td>
-                                <td>100</td>
-                                <td>85</td>
-                                <td>85%</td>
-                                <td>200</td>
-                                <td>180</td>
-                                <td>90%</td>
-                                <td>90</td>
-                                <td>85</td>
-                                <td>90</td>
-                                <td>265</td>
+                                <td class="fw-bold">{{ $m->name }}</td>
+
+                                {{-- Absensi --}}
+                                <td class="text-center">{{ $m->absensi_jadwal }}</td>
+                                <td class="text-center">{{ $m->absensi_hadir }}</td>
+                                <td class="text-center fw-bold">{{ number_format($m->absensi_ach, 1) }}%</td>
+
+                                {{-- Progress --}}
+                                <td class="text-center">{{ $m->progress_target }}</td>
+                                <td class="text-center">{{ $m->progress_real }}</td>
+                                <td class="text-center fw-bold text-primary">{{ number_format($m->progress_ach, 1) }}%</td>
+
+                                {{-- Revenue --}}
+                                <td class="small">{{ number_format($m->revenue_target, 0, ',', '.') }}</td>
+                                <td class="small text-success">{{ number_format($m->revenue_actual, 0, ',', '.') }}</td>
+                                <td class="text-center fw-bold text-success">{{ number_format($m->revenue_ach, 1) }}%</td>
+
+                                {{-- Total Pencapaian --}}
+                                <td class="text-center small">{{ number_format($m->absensi_ach, 1) }}%</td>
+                                <td class="text-center small">{{ number_format($m->progress_ach, 1) }}%</td>
+                                <td class="text-center small">{{ number_format($m->revenue_ach, 1) }}%</td>
+                                <td class="text-center fw-bold bg-dark text-white">
+                                    {{ number_format($m->total_kpi, 1) }}%
+                                </td>
                             </tr>
+                            @endforeach
                         </tbody>
                       </table>
                     </div>

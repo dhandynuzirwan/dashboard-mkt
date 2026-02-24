@@ -35,7 +35,7 @@
                                 <th rowspan="2">INCOME</th>  
                                 <th rowspan="2">KPI</th>                         
                                 <th colspan="4" class="text-center">SESUAI KPI</th>                                
-                                <th colspan="5" class="text-center">KEBIJAKAN KPI</th>
+                                <th colspan="5" class="text-center">KEBIJAKAN KPI (Kurang dari 70%)</th>
                                 <th rowspan="2">ACTION</th>
                             </tr>
                             <tr>

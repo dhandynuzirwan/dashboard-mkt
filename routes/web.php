@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\CtaController;
 use App\Http\Controllers\DataMasukController;
+use App\Http\Controllers\KpiController;
 use App\Http\Controllers\ProspekController;
 use App\Http\Controllers\PenggajianController;
 use App\Http\Controllers\RevenueController;
@@ -55,9 +56,7 @@ Route::middleware('auth')->group(function () {
     Route::get('/revenue', [RevenueController::class, 'index'])
         ->name('revenue');
 
-    Route::get('/data-kpi', function () {
-        return view('Data-KPI');
-    })->name('data-kpi');
+    Route::get('/data-kpi', [KpiController::class, 'index'])->name('data-kpi');
 
     Route::get('/simulasi-gaji', function () {
         return view('simulasi-gaji');
