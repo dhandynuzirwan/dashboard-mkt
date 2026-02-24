@@ -47,8 +47,20 @@
                                                 <td>Rp {{ number_format($item->gaji_pokok, 0, ',', '.') }}</td>
                                                 <td>Rp {{ number_format($item->tunjangan, 0, ',', '.') }}</td>
                                                 <td>
-                                                    <a href="#" class="btn btn-info btn-sm">Edit</a>
-                                                    <a href="#" class="btn btn-danger btn-sm">Delete</a>
+                                                    <a href="{{ route('penggajian.edit', $item->id) }}"
+                                                        class="btn btn-info btn-sm">
+                                                        Edit
+                                                    </a>
+
+                                                    <form action="{{ route('penggajian.destroy', $item->id) }}"
+                                                        method="POST" style="display:inline;">
+                                                        @csrf
+                                                        @method('DELETE')
+                                                        <button class="btn btn-danger btn-sm"
+                                                            onclick="return confirm('Yakin hapus data ini?')">
+                                                            Delete
+                                                        </button>
+                                                    </form>
                                                 </td>
                                             </tr>
                                         @endforeach

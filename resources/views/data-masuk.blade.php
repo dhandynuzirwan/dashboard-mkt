@@ -1,88 +1,82 @@
 @extends('layouts.app') @section('content')
 
-<div class="wrapper">
-    @include('layouts.sidebar')
-    <div class="main-panel">
-        @include('layouts.header')
-        <div class="container">
-            <div class="page-inner">
-                <div class="d-flex align-items-left align-items-md-center flex-column flex-md-row pt-2 pb-4">
-                    <div>
-                        <h3 class="fw-bold mb-3">Data Masuk</h3>
-                        <h6 class="op-7 mb-2">Database Marketing</h6>
-                    </div>
-                    {{-- <div class="ms-md-auto py-2 py-md-0">
+    <div class="wrapper">
+        @include('layouts.sidebar')
+        <div class="main-panel">
+            @include('layouts.header')
+            <div class="container">
+                <div class="page-inner">
+                    <div class="d-flex align-items-left align-items-md-center flex-column flex-md-row pt-2 pb-4">
+                        <div>
+                            <h3 class="fw-bold mb-3">Data Masuk</h3>
+                            <h6 class="op-7 mb-2">Database Marketing</h6>
+                        </div>
+                        {{-- <div class="ms-md-auto py-2 py-md-0">
                         <a href="#" class="btn btn-label-info btn-round me-2">Manage</a>
                         <a href="#" class="btn btn-primary btn-round">Add Customer</a>
                     </div> --}}
-                </div>
-                <div class="row">
-                    <div class="col-sm-6 col-md-3">
-                        <div class="card card-stats card-round">
-                            <div class="card-body">
-                                <div class="row align-items-center">
-                                <div class="col-icon">
-                                    <div
-                                    class="icon-big text-center icon-primary bubble-shadow-small"
-                                    >
-                                    <i class="fas fa-bullseye"></i>
+                    </div>
+                    <div class="row">
+                        <div class="col-sm-6 col-md-3">
+                            <div class="card card-stats card-round">
+                                <div class="card-body">
+                                    <div class="row align-items-center">
+                                        <div class="col-icon">
+                                            <div class="icon-big text-center icon-primary bubble-shadow-small">
+                                                <i class="fas fa-bullseye"></i>
+                                            </div>
+                                        </div>
+                                        <div class="col col-stats ms-3 ms-sm-0">
+                                            <div class="numbers">
+                                                <p class="card-category">Total Data</p>
+                                                <h4 class="card-title">2.400</h4>
+                                            </div>
+                                        </div>
                                     </div>
                                 </div>
-                                <div class="col col-stats ms-3 ms-sm-0">
-                                    <div class="numbers">
-                                    <p class="card-category">Total Data</p>
-                                    <h4 class="card-title">2.400</h4>
+                            </div>
+                        </div>
+                        <div class="col-sm-6 col-md-3">
+                            <div class="card card-stats card-round">
+                                <div class="card-body">
+                                    <div class="row align-items-center">
+                                        <div class="col-icon">
+                                            <div class="icon-big text-center icon-primary bubble-shadow-small">
+                                                <i class="fas fa-award"></i>
+                                            </div>
+                                        </div>
+                                        <div class="col col-stats ms-3 ms-sm-0">
+                                            <div class="numbers">
+                                                <p class="card-category">Data ADS</p>
+                                                <h4 class="card-title">470</h4>
+                                            </div>
+                                        </div>
                                     </div>
                                 </div>
+                            </div>
+                        </div>
+                        <div class="col-sm-6 col-md-3">
+                            <div class="card card-stats card-round">
+                                <div class="card-body">
+                                    <div class="row align-items-center">
+                                        <div class="col-icon">
+                                            <div class="icon-big text-center icon-primary bubble-shadow-small">
+                                                <i class="fas fa-percentage"></i>
+                                            </div>
+                                        </div>
+                                        <div class="col col-stats ms-3 ms-sm-0">
+                                            <div class="numbers">
+                                                <p class="card-category">Data Manual</p>
+                                                <h4 class="card-title">19%</h4>
+                                            </div>
+                                        </div>
+                                    </div>
                                 </div>
                             </div>
                         </div>
                     </div>
-                    <div class="col-sm-6 col-md-3">
-                        <div class="card card-stats card-round">
-                            <div class="card-body">
-                                <div class="row align-items-center">
-                                <div class="col-icon">
-                                    <div
-                                    class="icon-big text-center icon-primary bubble-shadow-small"
-                                    >
-                                    <i class="fas fa-award"></i>
-                                    </div>
-                                </div>
-                                <div class="col col-stats ms-3 ms-sm-0">
-                                    <div class="numbers">
-                                    <p class="card-category">Data ADS</p>
-                                    <h4 class="card-title">470</h4>
-                                    </div>
-                                </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col-sm-6 col-md-3">
-                        <div class="card card-stats card-round">
-                            <div class="card-body">
-                                <div class="row align-items-center">
-                                <div class="col-icon">
-                                    <div
-                                    class="icon-big text-center icon-primary bubble-shadow-small"
-                                    >
-                                    <i class="fas fa-percentage"></i>
-                                    </div>
-                                </div>
-                                <div class="col col-stats ms-3 ms-sm-0">
-                                    <div class="numbers">
-                                    <p class="card-category">Data Manual</p>
-                                    <h4 class="card-title">19%</h4>
-                                    </div>
-                                </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                {{-- jika ingin dua tabel side by side --}}
-                {{-- <div class="row">
+                    {{-- jika ingin dua tabel side by side --}}
+                    {{-- <div class="row">
                     <div class="col-sm-12 col-md-6">
                         <div class="card">
                             <div class="card-header">
@@ -182,60 +176,82 @@
                         </div>
                     </div>
                 </div> --}}
-                <div class="mb-4">
-                    <a href="{{ route('form-data-masuk') }}" class="btn btn-success">
-                        <span class="btn-label">
-                            <i class="fa fa-plus"></i>
-                        </span>
-                        Tambah Data Masuk
-                    </a>
-                </div>
-                <div class="card">
-                  <div class="card-header">
-                    <div class="card-title">Tabel Data Masuk</div>
-                  </div>
-                  <div class="card-body">
-                    {{-- <div class="card-sub">
+                    <div class="mb-4">
+                        <a href="{{ route('form-data-masuk') }}" class="btn btn-success">
+                            <span class="btn-label">
+                                <i class="fa fa-plus"></i>
+                            </span>
+                            Tambah Data Masuk
+                        </a>
+                    </div>
+                    <div class="card">
+                        <div class="card-header">
+                            <div class="card-title">Tabel Data Masuk</div>
+                        </div>
+                        <div class="card-body">
+                            {{-- <div class="card-sub">
                       Create responsive tables by wrapping any table with
                       <code class="highlighter-rouge">.table-responsive</code>
                       <code class="highlighter-rouge">DIV</code> to make them
                       scroll horizontally on small devices
                     </div> --}}
-                    <div class="table-responsive">
-                        <table class="table table-bordered">
-                            <thead>
-                                <tr>
-                                    <th>Marketing</th>
-                                    <th>Perusahaan</th>
-                                    <th>Unit Bisnis</th>
-                                    <th>Email</th>
-                                    <th>Status Email</th>
-                                    <th>WhatsApp</th>
-                                    <th>Sumber</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                @foreach($allData as $item)
-                                <tr>
-                                    <td>{{ $item->marketing->name }}</td>
-                                    <td>{{ $item->perusahaan }}</td>
-                                    <td>{{ $item->unit_bisnis }}</td>
-                                    <td>{{ $item->email }}</td>
-                                    <td>
-                                        <span class="badge {{ $item->status_email == 'Valid' ? 'badge-success' : 'badge-danger' }}">
-                                            {{ $item->status_email }}
-                                        </span>
-                                    </td>
-                                    <td>{{ $item->wa_baru ?? $item->wa_pic }}</td>
-                                    <td>{{ $item->sumber }}</td>
-                                </tr>
-                                @endforeach
-                            </tbody>
-                        </table>
+                            <div class="table-responsive">
+                                <table class="table table-bordered">
+                                    <thead>
+                                        <tr>
+                                            <th>Marketing</th>
+                                            <th>Perusahaan</th>
+                                            <th>Unit Bisnis</th>
+                                            <th>Email</th>
+                                            <th>Status Email</th>
+                                            <th>WhatsApp</th>
+                                            <th>Sumber</th>
+                                            @if (auth()->user()->role == 'superadmin' || auth()->user()->role == 'admin')
+                                                <th>Aksi</th>
+                                            @endif
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        @foreach ($allData as $item)
+                                            <tr>
+                                                <td>{{ $item->marketing->name }}</td>
+                                                <td>{{ $item->perusahaan }}</td>
+                                                <td>{{ $item->unit_bisnis }}</td>
+                                                <td>{{ $item->email }}</td>
+                                                <td>
+                                                    <span
+                                                        class="badge {{ $item->status_email == 'Valid' ? 'badge-success' : 'badge-danger' }}">
+                                                        {{ $item->status_email }}
+                                                    </span>
+                                                </td>
+                                                <td>{{ $item->wa_baru ?? $item->wa_pic }}</td>
+                                                <td>{{ $item->sumber }}</td>
+                                                @if (auth()->user()->role == 'superadmin' || auth()->user()->role == 'admin')
+                                                    <td>
+                                                        <a href="{{ route('data-masuk.edit', $item->id) }}"
+                                                            class="btn btn-warning btn-sm">
+                                                            Edit
+                                                        </a>
+
+                                                        <form action="{{ route('data-masuk.destroy', $item->id) }}"
+                                                            method="POST" style="display:inline;">
+                                                            @csrf
+                                                            @method('DELETE')
+                                                            <button class="btn btn-danger btn-sm"
+                                                                onclick="return confirm('Yakin hapus data ini?')">
+                                                                Delete
+                                                            </button>
+                                                        </form>
+                                                    </td>
+                                                @endif
+                                            </tr>
+                                        @endforeach
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
                     </div>
-                  </div>
                 </div>
             </div>
         </div>
     </div>
-</div>

@@ -12,6 +12,7 @@ class DataMasukController extends Controller
     public function index()
     {
         $allData = DataMasuk::with('marketing')->latest()->get();
+
         return view('data-masuk', compact('allData'));
     }
 
@@ -19,6 +20,7 @@ class DataMasukController extends Controller
     public function create()
     {
         $marketings = User::where('role', 'marketing')->get();
+
         return view('form-data-masuk', compact('marketings'));
     }
 
@@ -34,19 +36,21 @@ class DataMasukController extends Controller
         try {
             // 2. Proses Simpan Massal
             foreach ($request->rows as $row) {
-                if (empty($row['perusahaan'])) continue;
+                if (empty($row['perusahaan'])) {
+                    continue;
+                }
 
                 \App\Models\DataMasuk::create([
-                    'marketing_id'  => $request->marketing_id,
-                    'perusahaan'    => $row['perusahaan'],
-                    'telp'          => $row['telp'],
-                    'unit_bisnis'   => $row['unit_bisnis'],
-                    'email'         => $row['email'],
-                    'status_email'  => $row['status_email'],
-                    'wa_pic'        => $row['wa_pic'],
-                    'wa_baru'       => $row['wa_baru'],
-                    'lokasi'        => $row['alamat_perusahaan'] ?? $row['lokasi'], // Sesuaikan dengan key di blade
-                    'sumber'        => $row['source'] ?? $row['sumber'], // Sesuaikan dengan key di blade
+                    'marketing_id' => $request->marketing_id,
+                    'perusahaan' => $row['perusahaan'],
+                    'telp' => $row['telp'],
+                    'unit_bisnis' => $row['unit_bisnis'],
+                    'email' => $row['email'],
+                    'status_email' => $row['status_email'],
+                    'wa_pic' => $row['wa_pic'],
+                    'wa_baru' => $row['wa_baru'],
+                    'lokasi' => $row['alamat_perusahaan'] ?? $row['lokasi'], // Sesuaikan dengan key di blade
+                    'sumber' => $row['source'] ?? $row['sumber'], // Sesuaikan dengan key di blade
                 ]);
             }
 
@@ -55,7 +59,53 @@ class DataMasukController extends Controller
             return redirect()->route('data-masuk')->with('success', 'Data Masuk Berhasil Disimpan!');
 
         } catch (\Exception $e) {
-            return back()->with('error', 'Terjadi kesalahan: ' . $e->getMessage());
+            return back()->with('error', 'Terjadi kesalahan: '.$e->getMessage());
         }
+    }
+
+    // ================= EDIT =================
+    public function edit($id)
+    {
+        $data = DataMasuk::findOrFail($id);
+        $marketings = User::where('role', 'marketing')->get();
+
+        return view('form-data-masuk-edit', compact('data', 'marketings'));
+    }
+
+    // ================= UPDATE =================
+    public function update(Request $request, $id)
+    {
+        $request->validate([
+            'marketing_id' => 'required',
+            'perusahaan' => 'required',
+        ]);
+
+        $data = DataMasuk::findOrFail($id);
+
+        $data->update([
+            'marketing_id' => $request->marketing_id,
+            'perusahaan' => $request->perusahaan,
+            'telp' => $request->telp,
+            'unit_bisnis' => $request->unit_bisnis,
+            'email' => $request->email,
+            'status_email' => $request->status_email,
+            'wa_pic' => $request->wa_pic,
+            'wa_baru' => $request->wa_baru,
+            'lokasi' => $request->lokasi,
+            'sumber' => $request->sumber,
+        ]);
+
+        return redirect()->route('data-masuk')
+            ->with('success', 'Data berhasil diupdate');
+    }
+
+    // ================= DELETE =================
+    public function destroy($id)
+    {
+        $data = DataMasuk::findOrFail($id);
+        $data->delete();
+
+        return redirect()->route('data-masuk')
+            ->with('success', 'Data berhasil dihapus');
     }
 }

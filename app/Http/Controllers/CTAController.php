@@ -12,6 +12,7 @@ class CtaController extends Controller
     public function create($prospek_id)
     {
         $prospek = Prospek::with('marketing')->findOrFail($prospek_id);
+
         return view('form-cta', compact('prospek'));
     }
 
@@ -28,5 +29,43 @@ class CtaController extends Controller
         Cta::create($request->all());
 
         return redirect()->route('pipeline')->with('success', 'Data CTA berhasil ditambahkan!');
+    }
+
+    public function edit($id)
+    {
+        $cta = Cta::with('prospek')->findOrFail($id);
+
+        // Pastikan hanya marketing pemilik prospek yang bisa edit
+        if ($cta->prospek->marketing_id != auth()->id()) {
+            abort(403, 'Unauthorized');
+        }
+
+        return view('form-cta-edit', compact('cta'));
+    }
+
+    public function update(Request $request, $id)
+    {
+        $cta = Cta::with('prospek')->findOrFail($id);
+
+        if ($cta->prospek->marketing_id != auth()->id()) {
+            abort(403, 'Unauthorized');
+        }
+
+        $request->validate([
+            'judul_permintaan' => 'required',
+            'jumlah_peserta' => 'required|numeric',
+            'sertifikasi' => 'required',
+            'skema' => 'required',
+            'harga_penawaran' => 'required|numeric',
+            'harga_vendor' => 'required|numeric',
+            'proposal_link' => 'nullable|url',
+            'status_penawaran' => 'required',
+            'keterangan' => 'nullable',
+        ]);
+
+        $cta->update($request->all());
+
+        return redirect()->route('pipeline')
+            ->with('success', 'CTA berhasil diupdate!');
     }
 }
