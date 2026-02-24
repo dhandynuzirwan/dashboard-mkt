@@ -28,7 +28,7 @@
                       scroll horizontally on small devices
                     </div> --}}
                     <div class="table-responsive">
-                      <table class="table table-bordered">
+                      <table class="table table-bordered" style="min-width: 2000px">
                         <thead class="bg-primary text-white">
                             <tr>
                                 <th rowspan="2">MARKETING</th>  
@@ -52,43 +52,40 @@
                                 <th>TUNJ KEMAHALAN</th>
                                 <th>TOTAL</th>
                             </tr>
+                        </thead>
                         <tbody>
+                            @foreach($marketings as $m)
                             <tr>
-                                <td>MARKETING 1</td>
-                                <td>10.000.000</td>
-                                <td>8.000.000</td>
-                                <td>90%</td>
-                                <td>85%</td>
-                                <td>80%</td>
-                                <td>255%</td>
-                                <td>5.000.000</td>
-                                <td>2.000.000</td>
-                                <td>1.500.000</td>
-                                <td>500.000</td>
-                                <td>9.000.000</td>
-                                <td>
-                                    <a href="#" class="btn btn-sm btn-primary">Edit</a>
-                                    <a href="#" class="btn btn-sm btn-danger">Delete</a>
+                                <td class="fw-bold">{{ $m->name }}</td>
+                                <td class="small text-end">Rp {{ number_format($m->income, 0, ',', '.') }}</td>
+                                <td class="text-center">
+                                    <span class="badge {{ $m->kpi_persen >= 70 ? 'badge-success' : 'badge-danger' }}">
+                                        {{ number_format($m->kpi_persen, 1) }}%
+                                    </span>
+                                </td>
+
+                                {{-- SESUAI KPI --}}
+                                <td class="text-center">{{ number_format($m->ach_absensi, 1) }}%</td>
+                                <td class="text-center">{{ number_format($m->ach_progress, 1) }}%</td>
+                                <td class="text-center">{{ number_format($m->ach_revenue, 1) }}%</td>
+                                <td class="text-center fw-bold">{{ number_format($m->kpi_persen, 1) }}%</td>
+
+                                {{-- KEBIJAKAN KPI --}}
+                                <td class="small text-end">Rp {{ number_format($m->gapok_hitung, 0, ',', '.') }}</td>
+                                <td class="small text-end text-primary">Rp {{ number_format($m->fee_marketing, 0, ',', '.') }}</td>
+                                <td class="small text-end">Rp {{ number_format($m->progress_val, 0, ',', '.') }}</td>
+                                <td class="small text-end">Rp {{ number_format($m->tunj_kemahalan, 0, ',', '.') }}</td>
+                                
+                                {{-- TOTAL --}}
+                                <td class="small text-end fw-bold bg-dark text-white">
+                                    Rp {{ number_format($m->total_gaji, 0, ',', '.') }}
+                                </td>
+
+                                <td class="text-center">
+                                    <button class="btn btn-sm btn-info"><i class="fa fa-print"></i> Slip</button>
                                 </td>
                             </tr>
-                            <tr>
-                                <td>MARKETING 2</td>
-                                <td>8.000.000</td>
-                                <td>75%</td>
-                                <td>80%</td>
-                                <td>70%</td>
-                                <td>75%</td>
-                                <td>225%</td>
-                                <td>4.000.000</td>
-                                <td>1.500.000</td>
-                                <td>1.200.000</td>
-                                <td>400.000</td>
-                                <td>7.100.000</td>
-                                <td>
-                                    <a href="#" class="btn btn-sm btn-primary">Edit</a>
-                                    <a href="#" class="btn btn-sm btn-danger">Delete</a>
-                                </td>
-                            </tr>                            
+                            @endforeach
                         </tbody>
                       </table>
                     </div>

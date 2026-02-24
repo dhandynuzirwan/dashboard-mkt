@@ -6,6 +6,7 @@ use App\Http\Controllers\KpiController;
 use App\Http\Controllers\ProspekController;
 use App\Http\Controllers\PenggajianController;
 use App\Http\Controllers\RevenueController;
+use App\Http\Controllers\SalaryController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
@@ -58,9 +59,7 @@ Route::middleware('auth')->group(function () {
 
     Route::get('/data-kpi', [KpiController::class, 'index'])->name('data-kpi');
 
-    Route::get('/simulasi-gaji', function () {
-        return view('simulasi-gaji');
-    })->name('simulasi-gaji');
+    Route::get('/simulasi-gaji', [SalaryController::class, 'index'])->name('simulasi-gaji');
 
 
     /*
