@@ -23,7 +23,7 @@
     <div class="sidebar-wrapper scrollbar scrollbar-inner">
         <div class="sidebar-content">
             <ul class="nav nav-secondary">
-                @if (in_array(auth()->user()->role, ['superadmin', 'admin', 'marketing']))
+                {{-- @if (in_array(auth()->user()->role, ['superadmin', 'admin', 'marketing'])) --}}
                     <li
                         class="nav-item {{ request()->routeIs('dashboard.*', 'pipeline', 'revenue', 'data-kpi', 'simulasi-gaji') ? 'active' : '' }}">
                         <a data-bs-toggle="collapse" href="#dashboard"
@@ -64,16 +64,16 @@
                             </ul>
                         </div>
                     </li>
-                @endif
-                @if (in_array(auth()->user()->role, ['superadmin', 'admin']))
+                {{-- @endif --}}
+                {{-- @if (in_array(auth()->user()->role, ['superadmin', 'admin'])) --}}
                 <li class="nav-section">
                     <span class="sidebar-mini-icon">
                         <i class="fa fa-ellipsis-h"></i>
                     </span>
                     <h4 class="text-section">Menu Admin</h4>
                 </li>
-                @endif
-                @if (in_array(auth()->user()->role, ['superadmin']))
+                {{-- @endif --}}
+                {{-- @if (in_array(auth()->user()->role, ['superadmin'])) --}}
                     <li class="nav-item {{ request()->routeIs('user', 'penggajian', 'absensi') ? 'active' : '' }}">
                         <a data-bs-toggle="collapse" href="#human-resources"
                             class="{{ request()->routeIs('user', 'penggajian', 'absensi') ? '' : 'collapsed' }}"
@@ -103,8 +103,8 @@
                             </ul>
                         </div>
                     </li>
-                @endif
-                @if (in_array(auth()->user()->role, ['superadmin', 'admin']))
+                {{-- @endif --}}
+                {{-- @if (in_array(auth()->user()->role, ['superadmin', 'admin'])) --}}
                 <li class="nav-item {{ request()->routeIs('form-prospek', 'pipeline', 'data-masuk') ? 'active' : '' }}">
                     <a data-bs-toggle="collapse" href="#marketing-sales"
                         class="{{ request()->routeIs('form-prospek', 'pipeline', 'data-masuk') ? '' : 'collapsed' }}"
@@ -129,7 +129,7 @@
                         </ul>
                     </div>
                 </li>
-                @endif
+                {{-- @endif --}}
             </ul>
         </div>
     </div>

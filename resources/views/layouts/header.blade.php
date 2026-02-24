@@ -1,9 +1,8 @@
 <div class="main-header">
     <div class="main-header-logo">
-        <!-- Logo Header -->
         <div class="logo-header" data-background-color="dark">
             <a href="index.html" class="logo">
-                <img src="assets/img/kaiadmin/logo_light.svg" alt="navbar brand" class="navbar-brand" height="20" />
+                <img src="{{ asset('assets/img/kaiadmin/logo_light.svg') }}" alt="navbar brand" class="navbar-brand" height="20" />
             </a>
             <div class="nav-toggle">
                 <button class="btn btn-toggle toggle-sidebar">
@@ -17,9 +16,8 @@
                 <i class="gg-more-vertical-alt"></i>
             </button>
         </div>
-        <!-- End Logo Header -->
-    </div>
-    <!-- Navbar Header -->
+        </div>
+
     <nav class="navbar navbar-header navbar-header-transparent navbar-expand-lg border-bottom">
         <div class="container-fluid">
             <nav class="navbar navbar-header-left navbar-expand-lg navbar-form nav-search p-0 d-none d-lg-flex">
@@ -35,8 +33,7 @@
 
             <ul class="navbar-nav topbar-nav ms-md-auto align-items-center">
                 <li class="nav-item topbar-icon dropdown hidden-caret d-flex d-lg-none">
-                    <a class="nav-link dropdown-toggle" data-bs-toggle="dropdown" href="#" role="button"
-                        aria-expanded="false" aria-haspopup="true">
+                    <a class="nav-link dropdown-toggle" data-bs-toggle="dropdown" href="#" role="button" aria-expanded="false" aria-haspopup="true">
                         <i class="fa fa-search"></i>
                     </a>
                     <ul class="dropdown-menu dropdown-search animated fadeIn">
@@ -49,82 +46,30 @@
                 </li>
 
                 <li class="nav-item topbar-icon dropdown hidden-caret">
-                    <a class="nav-link dropdown-toggle" href="#" id="notifDropdown" role="button"
-                        data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                    <a class="nav-link dropdown-toggle" href="#" id="notifDropdown" role="button" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                         <i class="fa fa-bell"></i>
                         <span class="notification">4</span>
                     </a>
-                    {{-- <ul
-            class="dropdown-menu notif-box animated fadeIn"
-            aria-labelledby="notifDropdown"
-            >
-            <li>
-                <div class="dropdown-title">
-                You have 4 new notification
-                </div>
-            </li>
-            <li>
-                <div class="notif-scroll scrollbar-outer">
-                <div class="notif-center">
-                    <a href="#">
-                    <div class="notif-icon notif-primary">
-                        <i class="fa fa-user-plus"></i>
-                    </div>
-                    <div class="notif-content">
-                        <span class="block"> New user registered </span>
-                        <span class="time">5 minutes ago</span>
-                    </div>
-                    </a>
-                    <a href="#">
-                    <div class="notif-icon notif-success">
-                        <i class="fa fa-comment"></i>
-                    </div>
-                    <div class="notif-content">
-                        <span class="block">
-                        Rahmad commented on Admin
-                        </span>
-                        <span class="time">12 minutes ago</span>
-                    </div>
-                    </a>
-                    <a href="#">
-                    <div class="notif-img">
-                        <img
-                        src="assets/img/profile2.jpg"
-                        alt="Img Profile"
-                        />
-                    </div>
-                    <div class="notif-content">
-                        <span class="block">
-                        Reza send messages to you
-                        </span>
-                        <span class="time">12 minutes ago</span>
-                    </div>
-                    </a>
-                    <a href="#">
-                    <div class="notif-icon notif-danger">
-                        <i class="fa fa-heart"></i>
-                    </div>
-                    <div class="notif-content">
-                        <span class="block"> Farrah liked Admin </span>
-                        <span class="time">17 minutes ago</span>
-                    </div>
-                    </a>
-                </div>
-                </div>
-            </li>
-            <li>
-                <a class="see-all" href="javascript:void(0);"
-                >See all notifications<i class="fa fa-angle-right"></i>
-                </a>
-            </li>
-            </ul> --}}
                 </li>
 
+                @php
+                    $userRole = Auth::user()->role;
+                    if ($userRole == 'superadmin') {
+                        $avatarUrl = 'https://cdn-icons-png.flaticon.com/512/430/430876.png';
+                        $badgeClass = 'badge-danger';
+                    } elseif ($userRole == 'admin') {
+                        $avatarUrl = 'https://cdn-icons-png.flaticon.com/512/999/999104.png';
+                        $badgeClass = 'badge-primary';
+                    } else {
+                        $avatarUrl = 'https://cdn-icons-png.flaticon.com/512/14379/14379379.png';
+                        $badgeClass = 'badge-success';
+                    }
+                @endphp
+
                 <li class="nav-item topbar-user dropdown hidden-caret">
-                    <a class="dropdown-toggle profile-pic" data-bs-toggle="dropdown" href="#"
-                        aria-expanded="false">
+                    <a class="dropdown-toggle profile-pic" data-bs-toggle="dropdown" href="#" aria-expanded="false">
                         <div class="avatar-sm">
-                            <img src="assets/img/profile.jpg" alt="..." class="avatar-img rounded-circle" />
+                            <img src="{{ $avatarUrl }}" alt="profile" class="avatar-img rounded-circle" />
                         </div>
                         <span class="profile-username">
                             <span class="op-7">Hi,</span>
@@ -136,32 +81,20 @@
                             <li>
                                 <div class="user-box">
                                     <div class="avatar-lg">
-                                        <img src="assets/img/profile.jpg" alt="image profile"
-                                            class="avatar-img rounded" />
+                                        <img src="{{ $avatarUrl }}" alt="profile image" class="avatar-img rounded" />
                                     </div>
                                     <div class="u-text">
-                                        <h4>Nama Lengkap</h4>
-                                        <p class="text-muted">hello@example.com</p>
-                                        {{-- <a
-                        href="profile.html"
-                        class="btn btn-xs btn-secondary btn-sm"
-                        >View Profile</a
-                    > --}}
+                                        <h4>{{ Auth::user()->name }}</h4>
+                                        <span class="badge {{ $badgeClass }}">{{ strtoupper($userRole) }}</span>
                                     </div>
                                 </div>
                             </li>
                             <li>
                                 <div class="dropdown-divider"></div>
-                                {{-- <a class="dropdown-item" href="#">My Profile</a>
-                <a class="dropdown-item" href="#">My Balance</a>
-                <a class="dropdown-item" href="#">Inbox</a>
-                <div class="dropdown-divider"></div>
-                <a class="dropdown-item" href="#">Account Setting</a>
-                <div class="dropdown-divider"></div> --}}
                                 <form method="POST" action="{{ route('logout') }}">
                                     @csrf
-                                    <button type="submit" class="dropdown-item">
-                                        Logout
+                                    <button type="submit" class="dropdown-item text-danger fw-bold">
+                                        <i class="fas fa-sign-out-alt me-2"></i> Logout
                                     </button>
                                 </form>
                             </li>
@@ -171,5 +104,4 @@
             </ul>
         </div>
     </nav>
-    <!-- End Navbar -->
 </div>

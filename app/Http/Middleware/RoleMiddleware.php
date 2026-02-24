@@ -15,7 +15,8 @@ class RoleMiddleware
         }
 
         if (!in_array(auth()->user()->role, $roles)) {
-            abort(403);
+            // Mengembalikan view khusus daripada mematikan script dengan abort
+            return response(view('errors.no-access'));
         }
 
         return $next($request);
