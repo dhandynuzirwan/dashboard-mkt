@@ -1,6 +1,6 @@
 <?php
 
-use App\Http\Controllers\CTAController;
+use App\Http\Controllers\CtaController;
 use App\Http\Controllers\DataMasukController;
 use App\Http\Controllers\ProspekController;
 use Illuminate\Http\Request;
@@ -170,8 +170,8 @@ Route::middleware('auth')->group(function () {
 
     Route::middleware('role:marketing')->group(function () {
 
-        Route::get('/form-cta/{prospek_id}', [CTAController::class, 'create'])->name('form-cta');
+        Route::get('/form-cta/{prospek_id}', [CtaController::class, 'create'])->name('form-cta');
 
-        Route::post('/cta/store', [CTAController::class, 'store'])->name('cta.store');
+        Route::post('/cta/store', [CtaController::class, 'store'])->name('cta.store');
     });
 });

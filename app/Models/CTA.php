@@ -4,7 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 
-class CTA extends Model
+class Cta extends Model
 {
     protected $fillable = [
         'prospek_id', 'judul_permintaan', 'jumlah_peserta', 'sertifikasi', 
