@@ -10,12 +10,55 @@ use Illuminate\Support\Facades\DB;
 class ProspekController extends Controller
 {
     // Menampilkan Pipeline (Hasil Data)
-    public function index() 
+    public function index(Request $request) 
     {
-        // Mengambil data prospek beserta relasi marketing dan cta-nya
-        $prospeks = Prospek::with(['marketing', 'cta'])->latest()->get();
-        
-        return view('pipeline', compact('prospeks'));
+        // Ambil data marketing untuk dropdown filter
+        $marketings = \App\Models\User::where('role', 'marketing')->get();
+
+        // Query dasar dengan relasi
+        $query = \App\Models\Prospek::with(['marketing', 'cta']);
+
+        // 1. Filter Rentang Waktu
+        if ($request->start_date && $request->end_date) {
+            $query->whereBetween('tanggal_prospek', [$request->start_date, $request->end_date]);
+        }
+
+        // 2. Filter Status CTA (Sudah di-CTA atau Belum)
+        if ($request->cta_status) {
+            if ($request->cta_status == 'pending') {
+                $query->whereDoesntHave('cta');
+            } elseif ($request->cta_status == 'done') {
+                $query->whereHas('cta');
+            }
+        }
+
+        // 3. Filter Marketing
+        if ($request->marketing_id) {
+            $query->where('marketing_id', $request->marketing_id);
+        }
+
+        // 4. FILTER STATUS (Sekarang mengambil dari tabel CTA kolom status_penawaran)
+        if ($request->status) {
+            $query->whereHas('cta', function($q) use ($request) {
+                $q->where('status_penawaran', $request->status);
+            });
+        }
+
+        $prospeks = $query->latest()->get();
+
+        // --- LOGIKA UNTUK CARD STATS (Tetap Sama) ---
+        $stats = [
+            'total_prospek' => $prospeks->count(),
+            'total_cta'     => $prospeks->whereNotNull('cta')->count(),
+            'total_nilai'   => $prospeks->sum(function($item) {
+                                    return $item->cta ? $item->cta->harga_penawaran : 0;
+                            }),
+            'total_deal'    => $prospeks->filter(function($item) {
+                                    return $item->cta && $item->cta->status_penawaran == 'deal';
+                            })->count()
+        ];
+
+        return view('pipeline', compact('prospeks', 'marketings', 'stats'));
     }
 
     // Menampilkan Form Input Massal

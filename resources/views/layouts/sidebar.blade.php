@@ -65,12 +65,14 @@
                         </div>
                     </li>
                 @endif
+                @if (in_array(auth()->user()->role, ['superadmin', 'admin']))
                 <li class="nav-section">
                     <span class="sidebar-mini-icon">
                         <i class="fa fa-ellipsis-h"></i>
                     </span>
                     <h4 class="text-section">Menu Admin</h4>
                 </li>
+                @endif
                 @if (in_array(auth()->user()->role, ['superadmin']))
                     <li class="nav-item {{ request()->routeIs('user', 'penggajian', 'absensi') ? 'active' : '' }}">
                         <a data-bs-toggle="collapse" href="#human-resources"
@@ -102,8 +104,8 @@
                         </div>
                     </li>
                 @endif
-                <li
-                    class="nav-item {{ request()->routeIs('form-prospek', 'pipeline', 'data-masuk') ? 'active' : '' }}">
+                @if (in_array(auth()->user()->role, ['superadmin', 'admin']))
+                <li class="nav-item {{ request()->routeIs('form-prospek', 'pipeline', 'data-masuk') ? 'active' : '' }}">
                     <a data-bs-toggle="collapse" href="#marketing-sales"
                         class="{{ request()->routeIs('form-prospek', 'pipeline', 'data-masuk') ? '' : 'collapsed' }}"
                         aria-expanded="{{ request()->routeIs('form-prospek', 'pipeline', 'data-masuk') ? 'true' : 'false' }}">
@@ -113,14 +115,12 @@
                     </a>
                     <div class="collapse {{ request()->routeIs('form-prospek', 'pipeline', 'data-masuk') ? 'show' : '' }}"
                         id="marketing-sales">
-                        <ul class="nav nav-collapse">
-                            @if (in_array(auth()->user()->role, ['superadmin', 'admin']))
-                                <li class="{{ request()->routeIs('form-prospek') ? 'active' : '' }}">
-                                    <a href="{{ route('form-prospek') }}">
-                                        <span class="sub-item">Tambah Data Prospek</span>
-                                    </a>
-                                </li>
-                            @endif
+                        <ul class="nav nav-collapse">                            
+                            <li class="{{ request()->routeIs('form-prospek') ? 'active' : '' }}">
+                                <a href="{{ route('form-prospek') }}">
+                                    <span class="sub-item">Tambah Data Prospek</span>
+                                </a>
+                            </li>
                             <li class="{{ request()->routeIs('data-masuk') ? 'active' : '' }}">
                                 <a href="{{ route('data-masuk') }}">
                                     <span class="sub-item">Data Masuk</span>
@@ -129,6 +129,7 @@
                         </ul>
                     </div>
                 </li>
+                @endif
             </ul>
         </div>
     </div>
