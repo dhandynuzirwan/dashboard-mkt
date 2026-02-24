@@ -4,6 +4,7 @@ use App\Http\Controllers\CtaController;
 use App\Http\Controllers\DataMasukController;
 use App\Http\Controllers\ProspekController;
 use App\Http\Controllers\PenggajianController;
+use App\Http\Controllers\RevenueController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
@@ -51,9 +52,8 @@ Route::middleware('auth')->group(function () {
         return view('dashboard-progress');
     });
 
-    Route::get('/revenue', function () {
-        return view('revenue');
-    })->name('revenue');
+    Route::get('/revenue', [RevenueController::class, 'index'])
+        ->name('revenue');
 
     Route::get('/data-kpi', function () {
         return view('Data-KPI');

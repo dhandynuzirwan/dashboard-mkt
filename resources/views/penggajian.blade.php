@@ -30,7 +30,7 @@
                                         <tr>
                                             <th>No</th>
                                             <th>Marketing</th>
-                                            <th>Target Call</th>
+                                            <th>Target Call Harian</th>
                                             <th>Target (Rp)</th>
                                             <th>Gaji Pokok</th>
                                             <th>Tunjangan</th>

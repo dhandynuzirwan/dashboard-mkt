@@ -33,8 +33,8 @@
                             <tr>
                                 <th rowspan="2">MARKETING</th>                                
                                 <th colspan="3" class="text-center">TARGET</th>                                
-                                <th colspan="9" class="text-center">TOTAL PENAWARAN</th>
-                                <th colspan="8" class="text-center">TOTAL DEAL</th>
+                                <th colspan="6" class="text-center">TOTAL PENAWARAN</th>
+                                <th colspan="6" class="text-center">TOTAL DEAL</th>
                                 <th rowspan="2">TOTAL DEAL</th>
                                 <th rowspan="2">ACTION</th>
                             </tr>
@@ -45,57 +45,56 @@
                                 <th>AVG</th>
 
                                 {{-- Total Penawan --}}
-                                <th>KEMEN</th>
+                                <th>KEMENAKER</th>
                                 <th>BNSP</th>
-                                <th>S INT</th>
+                                <th>INTERNAL</th>
                                 <th>PP SIO</th>
-                                <th>RUA</th>
-                                <th>SK HUB</th>
-                                <th>RE BNSP</th>
-                                <th>ESDM</th>
+                                <th>RIKSA UJI ALAT</th>
                                 <th>TOT</th>
 
                                 {{-- Total Deal --}}
-                                <th>KEMEN</th>
+                                <th>KEMENAKER</th>
                                 <th>BNSP</th>
-                                <th>S INT</th>
+                                <th>INTERNAL</th>
                                 <th>PP SIO</th>
-                                <th>RUA</th>
-                                <th>SK HUB</th>
-                                <th>RE BNSP</th>
-                                <th>ESDM</th>
+                                <th>RIKSA UJI ALAT</th>
+                                <th>TOT</th>
                             </tr>
                         </thead>
-                        <tbody>
-                            <tr>
-                                <td>Marketing  1</td>
-                                <td>100</td>
-                                <td>80</td>
-                                <td>80%</td>
+                            <tbody>
+                                @foreach($marketings as $m)
+                                <tr>
+                                    <td class="fw-bold">{{ $m->name }}</td>
+                                    
+                                    {{-- TARGET AREA --}}
+                                    <td class="small">{{ number_format($m->target, 0, ',', '.') }}</td>
+                                    <td class="small text-success fw-bold">{{ number_format($m->achieve, 0, ',', '.') }}</td>
+                                    <td><span class="badge badge-info">{{ number_format($m->avg, 1) }}%</span></td>
 
-                                <td>10</td>
-                                <td>5</td>
-                                <td>8</td>
-                                <td>7</td>
-                                <td>6</td>
-                                <td>4</td>
-                                <td>3</td>
-                                <td>2</td>
-                                <td>45</td>
+                                    {{-- RUPIAH PENAWARAN --}}
+                                    <td class="text-end small">{{ number_format($m->rp_pen_kemenaker, 0, ',', '.') }}</td>
+                                    <td class="text-end small">{{ number_format($m->rp_pen_bnsp, 0, ',', '.') }}</td>
+                                    <td class="text-end small">{{ number_format($m->rp_pen_internal, 0, ',', '.') }}</td>
+                                    <td class="text-end small">{{ number_format($m->rp_pen_ppsio, 0, ',', '.') }}</td>
+                                    <td class="text-end small">{{ number_format($m->rp_pen_riksa, 0, ',', '.') }}</td>
+                                    <td class="text-end fw-bold bg-light">{{ number_format($m->total_rp_pen, 0, ',', '.') }}</td>
 
-                                <td>8</td>
-                                <td>4</td>
-                                <td>6</td>
-                                <td>5</td>
-                                <td>4</td>
-                                <td>3</td>
-                                <td>2</td>
-                                <td>1</td>
+                                    {{-- RUPIAH DEAL --}}
+                                    <td class="text-end small">{{ number_format($m->rp_deal_kemenaker, 0, ',', '.') }}</td>
+                                    <td class="text-end small">{{ number_format($m->rp_deal_bnsp, 0, ',', '.') }}</td>
+                                    <td class="text-end small">{{ number_format($m->rp_deal_internal, 0, ',', '.') }}</td>
+                                    <td class="text-end small">{{ number_format($m->rp_deal_ppsio, 0, ',', '.') }}</td>
+                                    <td class="text-end small">{{ number_format($m->rp_deal_riksa, 0, ',', '.') }}</td>
+                                    <td class="text-end fw-bold bg-success text-white">{{ number_format($m->total_rp_deal, 0, ',', '.') }}</td>
 
-                                <td>34</td>
-                                <td><a href="#" class="btn btn-sm btn-primary">Detail</a></td>
-                            </tr>
-                        </tbody>
+                                    {{-- TOTAL AKHIR --}}
+                                    <td class="text-end fw-bold text-primary">{{ number_format($m->total_rp_deal, 0, ',', '.') }}</td>
+                                    <td class="text-center">
+                                        <button class="btn btn-sm btn-primary">Detail</button>
+                                    </td>
+                                </tr>
+                                @endforeach
+                            </tbody>
                       </table>
                     </div>
                   </div>

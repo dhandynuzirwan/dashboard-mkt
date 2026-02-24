@@ -14,6 +14,7 @@ class Cta extends Model
 
     public function prospek()
     {
-        return $this->belongsTo(Prospek::class);
+        return $this->belongsTo(Prospek::class, 'prospek_id');
     }
+    // app/Models/Cta.php
 }
