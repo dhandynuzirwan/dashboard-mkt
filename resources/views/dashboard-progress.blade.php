@@ -132,7 +132,7 @@
                         </div>
                     </div>
 
-                    <div class="card border shadow-sm mt-4">
+                    {{-- <div class="card border shadow-sm mt-4">
                         <div class="card-header">
                             <div class="card-title">Tabel Update FU</div>
                         </div>
@@ -196,7 +196,7 @@
                                 </table>
                             </div>
                         </div>
-                    </div>
+                    </div> --}}
                     <div class="card border shadow-sm mt-4">
                         <div class="card-header">
                             <div class="card-title">Tabel Status Akhir Data</div>
@@ -219,25 +219,23 @@
                                     </thead>
                                     <tbody>
                                         @php 
-                                            // Inisialisasi total untuk baris bawah
                                             $t_perpanjangan = 0; $t_invalid = 0; $t_email = 0; $t_wa = 0;
                                             $t_compro = 0; $t_manja = 0; $t_manja_ulang = 0; $t_pelatihan = 0;
                                         @endphp
 
                                         @foreach($marketings as $m)
                                         <tr>
-                                            <td>{{ $m->name }}</th>
-                                            <td>{{ $m->count_perpanjangan }}</td>
-                                            <td>{{ $m->count_invalid }}</td>
-                                            <td>{{ $m->count_email }}</td>
-                                            <td>{{ $m->count_wa }}</td>
-                                            <td>{{ $m->count_compro }}</td>
-                                            <td>{{ $m->count_manja }}</td>
-                                            <td>{{ $m->count_manja_ulang }}</td>
-                                            <td>{{ $m->count_pelatihan }}</td>
+                                            <td class="text-start fw-bold">{{ $m->name }}</td>
+                                            <td>{{ $m->count_perpanjangan ?? 0 }}</td>
+                                            <td>{{ $m->count_invalid ?? 0 }}</td>
+                                            <td>{{ $m->count_email ?? 0 }}</td>
+                                            <td>{{ $m->count_wa ?? 0 }}</td>
+                                            <td>{{ $m->count_compro ?? 0 }}</td>
+                                            <td>{{ $m->count_manja ?? 0 }}</td>
+                                            <td>{{ $m->count_manja_ulang ?? 0 }}</td>
+                                            <td>{{ $m->count_pelatihan ?? 0 }}</td>
                                         </tr>
                                         @php
-                                            // Tambahkan ke total keseluruhan
                                             $t_perpanjangan += $m->count_perpanjangan;
                                             $t_invalid      += $m->count_invalid;
                                             $t_email        += $m->count_email;
@@ -250,7 +248,7 @@
                                         @endforeach
 
                                         <tr class="fw-bold table-primary">
-                                            <th>TOTAL</th>
+                                            <td>TOTAL</td>
                                             <td>{{ $t_perpanjangan }}</td>
                                             <td>{{ $t_invalid }}</td>
                                             <td>{{ $t_email }}</td>
@@ -319,48 +317,38 @@
         <script>
             document.addEventListener("DOMContentLoaded", function() {
 
-                // LIVE CLOCK
+                // 1. LIVE CLOCK (Tetap sama)
                 function updateClock() {
                     const now = new Date();
-                    document.getElementById("live-date").innerHTML =
-                        now.toLocaleDateString('id-ID');
-                    document.getElementById("live-clock").innerHTML =
-                        now.toLocaleTimeString('id-ID');
+                    document.getElementById("live-date").innerHTML = now.toLocaleDateString('id-ID');
+                    document.getElementById("live-clock").innerHTML = now.toLocaleTimeString('id-ID');
                 }
                 setInterval(updateClock, 1000);
                 updateClock();
 
-
-                // PIE CHART ACH TARGET
-                const ctx = document.getElementById('achTargetChart');
-
-                if (ctx) {
-                    new Chart(ctx, {
+                // 2. PIE CHART - KONTRIBUSI REVENUE
+                const ctxPie = document.getElementById('achTargetChart');
+                if (ctxPie) {
+                    new Chart(ctxPie, {
                         type: 'pie',
                         data: {
-                            labels: ['INTAN 1', 'INTAN 2', 'INTAN 3', 'INTAN 4', 'INTAN 5'],
+                            labels: @json($pieLabels),
                             datasets: [{
-                                data: [23.17, 26.00, 25.17, 27.17, 26.33],
-                                backgroundColor: [
-                                    '#0d6efd',
-                                    '#0dcaf0',
-                                    '#ffc107',
-                                    '#198754',
-                                    '#dc3545'
-                                ],
+                                data: @json($pieData),
+                                backgroundColor: ['#0d6efd', '#0dcaf0', '#ffc107', '#198754', '#dc3545', '#6610f2'],
                                 borderWidth: 1
                             }]
                         },
                         options: {
                             responsive: true,
                             plugins: {
-                                legend: {
-                                    position: 'bottom'
-                                },
+                                legend: { position: 'bottom' },
                                 tooltip: {
                                     callbacks: {
                                         label: function(context) {
-                                            return context.label + ': ' + context.raw + '%';
+                                            let label = context.label || '';
+                                            let value = context.raw || 0;
+                                            return label + ': Rp ' + value.toLocaleString('id-ID');
                                         }
                                     }
                                 }
@@ -369,81 +357,38 @@
                     });
                 }
 
-                var multipleLineChart = document.getElementById("multipleLineChart").getContext("2d");
-                    myMultipleLineChart = new Chart(multipleLineChart, {
+                // 3. MULTIPLE LINE CHART - TREN PRODUKTIVITAS
+                const ctxLine = document.getElementById("multipleLineChart").getContext("2d");
+                if (ctxLine) {
+                    new Chart(ctxLine, {
                         type: "line",
                         data: {
-                            labels: ["Marketing 1", "Marketing 2", "Marketing 3", "Marketing 4", "Marketing 5"],
-                            datasets: [{
-                                label: "A",
-                                borderColor: "#1d7af3",
-                                pointBackgroundColor: "#1d7af3",
-                                backgroundColor: "transparent",
-                                fill: false,
-                                borderWidth: 2,
-                                data: [65, 59, 80, 81, 56], // Turun di akhir
-                            }, {
-                                label: "B",
-                                borderColor: "#59d05d",
-                                pointBackgroundColor: "#59d05d",
-                                backgroundColor: "transparent",
-                                fill: false,
-                                borderWidth: 2,
-                                data: [28, 48, 40, 19, 86], // Fluktuatif tajam
-                            }, {
-                                label: "C",
-                                borderColor: "#f3545d",
-                                pointBackgroundColor: "#f3545d",
-                                backgroundColor: "transparent",
-                                fill: false,
-                                borderWidth: 2,
-                                data: [45, 25, 16, 36, 67], // Mulai rendah lalu naik
-                            }, {
-                                label: "D",
-                                borderColor: "#f3c05d",
-                                pointBackgroundColor: "#f3c05d",
-                                backgroundColor: "transparent",
-                                fill: false,
-                                borderWidth: 2,
-                                data: [30, 70, 45, 60, 40], // Naik turun di tengah
-                            }, {
-                                label: "E",
-                                borderColor: "#a052f0",
-                                pointBackgroundColor: "#a052f0",
-                                backgroundColor: "transparent",
-                                fill: false,
-                                borderWidth: 2,
-                                data: [80, 20, 50, 40, 90], // Kontras tinggi
-                            }, {
-                                label: "F",
-                                borderColor: "#00c9ff",
-                                pointBackgroundColor: "#00c9ff",
-                                backgroundColor: "transparent",
-                                fill: false,
-                                borderWidth: 2,
-                                data: [15, 30, 60, 25, 30], // Performa rendah stabil
-                            }],
+                            labels: @json($lineLabels),
+                            datasets: @json($lineDatasets)
                         },
                         options: {
-                            responsive: true,
-                            maintainAspectRatio: false,
-                            legend: {
-                                position: "top",
-                            },
-                            tooltips: {
-                                mode: "index",
-                                intersect: false,
-                            },
                             scales: {
-                                yAxes: [{
+                                y: {
                                     ticks: {
-                                        beginAtZero: true,
-                                        suggestedMax: 100 // Memberi ruang di atas grafik
+                                        // Mengubah 10.000.000 menjadi 10jt agar tidak kepanjangan
+                                        callback: function(value) {
+                                            return 'Rp ' + (value / 1000000) + 'jt';
+                                        }
                                     }
-                                }]
+                                }
+                            },
+                            plugins: {
+                                tooltip: {
+                                    callbacks: {
+                                        label: function(context) {
+                                            return context.dataset.label + ': Rp ' + context.raw.toLocaleString('id-ID');
+                                        }
+                                    }
+                                }
                             }
-                        },
+                        }
                     });
+                }
             });
         </script>
     @endsection

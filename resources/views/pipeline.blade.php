@@ -66,8 +66,9 @@
                         </div>
                     </div>
                     <div class="row">
+                        {{-- Total Prospek --}}
                         <div class="col-sm-6 col-md-3">
-                            <div class="card card-stats card-round">
+                            <div class="card card-stats card-round card-animate">
                                 <div class="card-body">
                                     <div class="row align-items-center">
                                         <div class="col-icon">
@@ -79,6 +80,7 @@
                                             <div class="numbers">
                                                 <p class="card-category">Total Prospek</p>
                                                 <h4 class="card-title">{{ number_format($stats['total_prospek']) }}</h4>
+                                                <p class="text-muted small mb-0">Database masuk</p>
                                             </div>
                                         </div>
                                     </div>
@@ -86,8 +88,9 @@
                             </div>
                         </div>
 
+                        {{-- Total Penawaran --}}
                         <div class="col-sm-6 col-md-3">
-                            <div class="card card-stats card-round">
+                            <div class="card card-stats card-round card-animate">
                                 <div class="card-body">
                                     <div class="row align-items-center">
                                         <div class="col-icon">
@@ -99,6 +102,13 @@
                                             <div class="numbers">
                                                 <p class="card-category">Total Penawaran</p>
                                                 <h4 class="card-title">{{ number_format($stats['total_cta']) }}</h4>
+                                                <p class="text-info small mb-0">
+                                                    @if($stats['total_prospek'] > 0)
+                                                        {{ round(($stats['total_cta'] / $stats['total_prospek']) * 100, 1) }}% Rate CTA
+                                                    @else
+                                                        0% Rate CTA
+                                                    @endif
+                                                </p>
                                             </div>
                                         </div>
                                     </div>
@@ -106,8 +116,9 @@
                             </div>
                         </div>
 
+                        {{-- Nilai Pipeline --}}
                         <div class="col-sm-6 col-md-3">
-                            <div class="card card-stats card-round">
+                            <div class="card card-stats card-round card-animate">
                                 <div class="card-body">
                                     <div class="row align-items-center">
                                         <div class="col-icon">
@@ -118,8 +129,8 @@
                                         <div class="col col-stats ms-3 ms-sm-0">
                                             <div class="numbers">
                                                 <p class="card-category">Nilai Pipeline</p>
-                                                <h4 class="card-title">Rp
-                                                    {{ number_format($stats['total_nilai'], 0, ',', '.') }}</h4>
+                                                <h4 class="card-title" style="font-size: 1.1rem;">Rp {{ number_format($stats['total_nilai'], 0, ',', '.') }}</h4>
+                                                <p class="text-success small mb-0">Potensi Omzet</p>
                                             </div>
                                         </div>
                                     </div>
@@ -127,8 +138,9 @@
                             </div>
                         </div>
 
+                        {{-- Project Deal --}}
                         <div class="col-sm-6 col-md-3">
-                            <div class="card card-stats card-round">
+                            <div class="card card-stats card-round card-animate">
                                 <div class="card-body">
                                     <div class="row align-items-center">
                                         <div class="col-icon">
@@ -140,6 +152,13 @@
                                             <div class="numbers">
                                                 <p class="card-category">Project Deal</p>
                                                 <h4 class="card-title">{{ number_format($stats['total_deal']) }}</h4>
+                                                <p class="text-secondary small mb-0">
+                                                    @if($stats['total_cta'] > 0)
+                                                        {{ round(($stats['total_deal'] / $stats['total_cta']) * 100, 1) }}% Closing Rate
+                                                    @else
+                                                        0% Closing
+                                                    @endif
+                                                </p>
                                             </div>
                                         </div>
                                     </div>
@@ -147,6 +166,24 @@
                             </div>
                         </div>
                     </div>
+
+                    <style>
+                        /* Efek hover agar lebih interaktif */
+                        .card-animate {
+                            transition: transform 0.3s ease, box-shadow 0.3s ease;
+                            cursor: default;
+                        }
+                        .card-animate:hover {
+                            transform: translateY(-5px);
+                            box-shadow: 0 10px 20px rgba(0,0,0,0.1) !important;
+                        }
+                        .card-category {
+                            font-weight: 600;
+                            text-transform: uppercase;
+                            font-size: 0.75rem;
+                            letter-spacing: 0.5px;
+                        }
+                    </style>
                     {{-- jika ingin dua tabel side by side --}}
                     {{-- <div class="row">
                     <div class="col-sm-12 col-md-6">

@@ -121,8 +121,8 @@
                                     <span class="sub-item">Tambah Data Prospek</span>
                                 </a>
                             </li>
-                            <li class="{{ request()->routeIs('data-masuk') ? 'active' : '' }}">
-                                <a href="{{ route('data-masuk') }}">
+                            <li class="{{ request()->routeIs('data-masuk.index') ? 'active' : '' }}">
+                                <a href="{{ route('data-masuk.index') }}">
                                     <span class="sub-item">Data Masuk</span>
                                 </a>
                             </li>
