@@ -12,6 +12,12 @@ class CtaController extends Controller
     public function create($prospek_id)
     {
         $prospek = Prospek::with('marketing')->findOrFail($prospek_id);
+        $authUser = auth()->user();
+
+        // 🔐 Jika marketing, hanya boleh buka prospek miliknya
+        if ($authUser->role === 'marketing' && $prospek->marketing_id != $authUser->id) {
+            abort(403, 'Unauthorized');
+        }
 
         return view('form-cta', compact('prospek'));
     }

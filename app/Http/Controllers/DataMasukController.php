@@ -11,9 +11,24 @@ class DataMasukController extends Controller
     // Menampilkan daftar database data
     public function index()
     {
-        $allData = DataMasuk::with('marketing')->latest()->get();
 
-        return view('data-masuk', compact('allData'));
+    $allData = DataMasuk::with('marketing')->latest()->get();
+
+    // Total semua data
+    $totalData = DataMasuk::count();
+
+    // Data ADS (case insensitive)
+    $dataAds = DataMasuk::whereRaw("LOWER(sumber) = ?", ['ads'])->count();
+
+    // Data Manual = selain ADS
+    $dataManual = DataMasuk::whereRaw("LOWER(sumber) != ?", ['ads'])->count();
+
+    return view('data-masuk', compact(
+        'allData',
+        'totalData',
+        'dataAds',
+        'dataManual'
+    ));
     }
 
     // Menampilkan form input data baru

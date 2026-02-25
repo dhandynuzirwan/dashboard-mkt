@@ -12,18 +12,27 @@ class ProspekController extends Controller
     // Menampilkan Pipeline (Hasil Data)
     public function index(Request $request)
     {
-        // Ambil data marketing untuk dropdown filter
-        $marketings = \App\Models\User::where('role', 'marketing')->get();
+        $user = auth()->user();
 
-        // Query dasar dengan relasi
-        $query = \App\Models\Prospek::with(['marketing', 'cta']);
+        // Ambil data marketing untuk dropdown filter
+        $marketings = User::where('role', 'marketing')->get();
+
+        // Query dasar
+        $query = Prospek::with(['marketing', 'cta']);
+
+        // 🔐 BATASI DATA UNTUK MARKETING
+        if ($user->role === 'marketing') {
+            $query->where('marketing_id', $user->id);
+        }
+
+        // ================= FILTER =================
 
         // 1. Filter Rentang Waktu
         if ($request->start_date && $request->end_date) {
             $query->whereBetween('tanggal_prospek', [$request->start_date, $request->end_date]);
         }
 
-        // 2. Filter Status CTA (Sudah di-CTA atau Belum)
+        // 2. Filter Status CTA
         if ($request->cta_status) {
             if ($request->cta_status == 'pending') {
                 $query->whereDoesntHave('cta');
@@ -32,21 +41,20 @@ class ProspekController extends Controller
             }
         }
 
-        // 3. Filter Marketing
-        if ($request->marketing_id) {
+        // 3. Filter Marketing (HANYA kalau bukan marketing)
+        if ($request->marketing_id && $user->role !== 'marketing') {
             $query->where('marketing_id', $request->marketing_id);
         }
 
-        // 4. FILTER STATUS (Sekarang mengambil dari tabel CTA kolom status_penawaran)
+        // 4. Filter Status Penawaran
         if ($request->status) {
             $query->whereHas('cta', function ($q) use ($request) {
                 $q->where('status_penawaran', $request->status);
             });
         }
 
-        $prospeks = $query->latest()->get();
+        $prospeks = $query->orderBy('id', 'asc')->paginate(10);
 
-        // --- LOGIKA UNTUK CARD STATS (Tetap Sama) ---
         $stats = [
             'total_prospek' => $prospeks->count(),
             'total_cta' => $prospeks->whereNotNull('cta')->count(),
