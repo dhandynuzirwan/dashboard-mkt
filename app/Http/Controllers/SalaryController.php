@@ -19,25 +19,29 @@ class SalaryController extends Controller
             $gaji = Penggajian::where('user_id', $user->id)->first();
             $gapokDasar = $gaji->gaji_pokok ?? 0;
             $tunjanganKemahalan = $gaji->tunjangan ?? 0;
-            $targetCallHarian = $gaji->target_call_harian ?? 0;
-            $targetRevenue = $gaji->target_revenue ?? 0;
+            $targetCallHarian = $gaji->target_call ?? 0;
+            $targetRevenue = $gaji->target ?? 0;
 
             // 2. HITUNG KPI (Sama seperti halaman Data KPI)
             $absensiHadir = 20; // Placeholder nanti ambil dari tabel Absensi
             $absensiAch = ($absensiHadir / $hariEfektif) * 100;
+            $absensiKpi = $absensiAch*0.1; // Bisa diberi bobot jika ingin
 
             $progressReal = Prospek::where('marketing_id', $user->id)->count();
             $progressTarget = $targetCallHarian * $hariEfektif;
             $progressAch = ($progressTarget > 0) ? ($progressReal / $progressTarget) * 100 : 0;
+            $progressKpi = $progressAch*0.3; // Bisa diberi bobot jika ingin
+
 
             $incomeDeal = Cta::whereHas('prospek', function($q) use ($user) {
                 $q->where('marketing_id', $user->id);
-            })->where('status_penawaran', 'Deal')->sum('harga_penawaran');
+            })->where('status_penawaran', 'deal')->sum('harga_penawaran');
             
             $revenueAch = ($targetRevenue > 0) ? ($incomeDeal / $targetRevenue) * 100 : 0;
+            $revenueKpi = $revenueAch*0.6; // Bisa diberi bobot jika ingin
 
             // TOTAL KPI (Rata-rata)
-            $totalKpiPersen = ($absensiAch + $progressAch + $revenueAch) / 3;
+            $totalKpiPersen = ($absensiKpi + $progressKpi + $revenueKpi) / 1;
 
             // 3. LOGIKA SIMULASI GAJI
             $user->income = $incomeDeal;
@@ -53,7 +57,7 @@ class SalaryController extends Controller
             $user->fee_marketing = $user->income * ($totalKpiPersen / 100) * $multiplier;
 
             // PROGRESS: Persen Absensi * GAPOK
-            $user->progress_val = ($absensiAch / 100) * $user->gapok_hitung;
+            $user->progress_val = ($absensiKpi / 100) * $user->gapok_hitung;
 
             $user->tunj_kemahalan = $tunjanganKemahalan;
 
@@ -61,9 +65,9 @@ class SalaryController extends Controller
             $user->total_gaji = $user->gapok_hitung + $user->fee_marketing + $user->progress_val + $user->tunj_kemahalan;
 
             // Data untuk kolom "Sesuai KPI" (Hanya nilai Ach)
-            $user->ach_absensi = $absensiAch;
-            $user->ach_progress = $progressAch;
-            $user->ach_revenue = $revenueAch;
+            $user->ach_absensi = $absensiKpi; // Bisa diberi bobot jika ingin
+            $user->ach_progress = $progressKpi; // Bisa diberi bobot jika ingin
+            $user->ach_revenue = $revenueKpi; // Bisa diberi bobot jika ingin
 
             return $user;
         });

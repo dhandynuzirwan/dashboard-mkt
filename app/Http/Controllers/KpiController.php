@@ -25,11 +25,13 @@ class KpiController extends Controller
             $user->absensi_jadwal = $hariEfektif;
             $user->absensi_hadir  = 20; // Contoh statis
             $user->absensi_ach    = ($user->absensi_jadwal > 0) ? ($user->absensi_hadir / $user->absensi_jadwal) * 100 : 0;
+            $user->absensi_kpi = $user->absensi_ach*0.1; // Bisa diberi bobot jika ingin
 
             // 3. LOGIKA PROGRESS (Berdasarkan jumlah Prospek/Call)
             $user->progress_target = $target_call * $hariEfektif;
             $user->progress_real   = Prospek::where('marketing_id', $user->id)->count(); // Ganti marketing_id sesuai kolom asli
             $user->progress_ach    = ($user->progress_target > 0) ? ($user->progress_real / $user->progress_target) * 100 : 0;
+            $user->progress_kpi = $user->progress_ach*0.3; // Bisa diberi bobot jika ingin
 
             // 4. LOGIKA REVENUE (Berdasarkan Deal di CTA)
             $user->revenue_target = $target;
@@ -38,10 +40,11 @@ class KpiController extends Controller
             })->where('status_penawaran', 'Deal')->sum('harga_penawaran');
             
             $user->revenue_ach = ($user->revenue_target > 0) ? ($user->revenue_actual / $user->revenue_target) * 100 : 0;
+            $user->revenue_kpi = $user->revenue_ach*0.6; // Bisa diberi bobot jika ingin
 
             // 5. TOTAL PENCAPAIAN KPI (Rata-rata dari 3 poin)
             // Kamu bisa memberikan bobot di sini, misal Revenue lebih besar bobotnya
-            $user->total_kpi = ($user->absensi_ach + $user->progress_ach + $user->revenue_ach) / 3;
+            $user->total_kpi = ($user->absensi_ach*0.1 + $user->progress_ach*0.3 + $user->revenue_ach*0.6) / 1;
 
             return $user;
         });

@@ -20,20 +20,20 @@ class RevenueController extends Controller
             })->get();
 
             // 1. RUPIAH TOTAL PENAWARAN (Berdasarkan kolom harga_penawaran di model kamu)
-            $user->rp_pen_kemenaker = $cta->where('sertifikasi', 'KEMENAKER')->sum('harga_penawaran');
-            $user->rp_pen_bnsp      = $cta->where('sertifikasi', 'BNSP')->sum('harga_penawaran');
-            $user->rp_pen_internal  = $cta->where('sertifikasi', 'INTERNAL')->sum('harga_penawaran');
-            $user->rp_pen_ppsio     = $cta->where('sertifikasi', 'PP SIO')->sum('harga_penawaran');
-            $user->rp_pen_riksa     = $cta->where('sertifikasi', 'RIKSA UJI ALAT')->sum('harga_penawaran');
+            $user->rp_pen_kemenaker = $cta->where('sertifikasi', 'kemnaker')->sum('harga_penawaran');
+            $user->rp_pen_bnsp      = $cta->where('sertifikasi', 'bnsp')->sum('harga_penawaran');
+            $user->rp_pen_internal  = $cta->where('sertifikasi', 'internal')->sum('harga_penawaran');
+            $user->rp_pen_ppsio     = $cta->where('sertifikasi', 'sio')->sum('harga_penawaran');
+            $user->rp_pen_riksa     = $cta->where('sertifikasi', 'riksa')->sum('harga_penawaran');
             $user->total_rp_pen     = $cta->sum('harga_penawaran');
 
             // 2. RUPIAH TOTAL DEAL (Status_penawaran == 'Deal')
-            $deal = $cta->where('status_penawaran', 'Deal');
-            $user->rp_deal_kemenaker = $deal->where('sertifikasi', 'KEMENAKER')->sum('harga_penawaran');
-            $user->rp_deal_bnsp      = $deal->where('sertifikasi', 'BNSP')->sum('harga_penawaran');
-            $user->rp_deal_internal  = $deal->where('sertifikasi', 'INTERNAL')->sum('harga_penawaran');
-            $user->rp_deal_ppsio     = $deal->where('sertifikasi', 'PP SIO')->sum('harga_penawaran');
-            $user->rp_deal_riksa     = $deal->where('sertifikasi', 'RIKSA UJI ALAT')->sum('harga_penawaran');
+            $deal = $cta->where('status_penawaran', 'deal');
+            $user->rp_deal_kemenaker = $deal->where('sertifikasi', 'kemnaker')->sum('harga_penawaran');
+            $user->rp_deal_bnsp      = $deal->where('sertifikasi', 'bnsp')->sum('harga_penawaran');
+            $user->rp_deal_internal  = $deal->where('sertifikasi', 'internal')->sum('harga_penawaran');
+            $user->rp_deal_ppsio     = $deal->where('sertifikasi', 'sio')->sum('harga_penawaran');
+            $user->rp_deal_riksa     = $deal->where('sertifikasi', 'riksa')->sum('harga_penawaran');
             $user->total_rp_deal     = $deal->sum('harga_penawaran');
 
             // Target & Achieve

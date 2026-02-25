@@ -63,7 +63,7 @@
                                             <select class="form-select" name="skema" required>
                                                 <option value="Online Training">Online Training</option>
                                                 <option value="Offline Training">Offline Training</option>
-                                                <option value="Imhouse Training">Inhouse Training</option>
+                                                <option value="Inhouse Training">Inhouse Training</option>
                                             </select>
                                         </div>
 

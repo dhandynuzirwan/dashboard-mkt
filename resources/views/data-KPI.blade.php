@@ -81,9 +81,9 @@
                                 <td class="text-center fw-bold text-success">{{ number_format($m->revenue_ach, 1) }}%</td>
 
                                 {{-- Total Pencapaian --}}
-                                <td class="text-center small">{{ number_format($m->absensi_ach, 1) }}%</td>
-                                <td class="text-center small">{{ number_format($m->progress_ach, 1) }}%</td>
-                                <td class="text-center small">{{ number_format($m->revenue_ach, 1) }}%</td>
+                                <td class="text-center small">{{ number_format($m->absensi_kpi, 1) }}%</td>
+                                <td class="text-center small">{{ number_format($m->progress_kpi, 1) }}%</td>
+                                <td class="text-center small">{{ number_format($m->revenue_kpi, 1) }}%</td>
                                 <td class="text-center fw-bold bg-dark text-white">
                                     {{ number_format($m->total_kpi, 1) }}%
                                 </td>
