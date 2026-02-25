@@ -335,7 +335,10 @@
                                             </tr>
                                         @endforeach
                                     </tbody>
-                                </table>
+                                </table>                                
+                            </div>
+                            <div class="demo mt-3 d-flex justify-content-center">
+                                {{ $prospeks->links('partials.pagination') }} 
                             </div>
                         </div>
                     </div>
@@ -349,7 +352,7 @@
                       <code class="highlighter-rouge">.table-responsive</code>
                       <code class="highlighter-rouge">DIV</code> to make them
                       scroll horizontally on small devices
-                    </div> --}}
+                        </div> --}}
                             <div class="table-responsive">
                                 <table class="table table-bordered">
                                     <thead>
@@ -443,7 +446,10 @@
                                             @endif
                                         @endforeach
                                     </tbody>
-                                </table>
+                                </table>                                
+                            </div>
+                            <div class="demo mt-3 d-flex justify-content-center">
+                                {{ $ctaProspeks->links('partials.pagination') }}
                             </div>
                         </div>
                     </div>

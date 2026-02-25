@@ -13,26 +13,20 @@ class ProspekController extends Controller
     public function index(Request $request)
     {
         $user = auth()->user();
-
-        // Ambil data marketing untuk dropdown filter
         $marketings = User::where('role', 'marketing')->get();
 
-        // Query dasar
+        // 1. Buat Query Dasar untuk Filter
         $query = Prospek::with(['marketing', 'cta']);
 
-        // 🔐 BATASI DATA UNTUK MARKETING
         if ($user->role === 'marketing') {
             $query->where('marketing_id', $user->id);
         }
 
-        // ================= FILTER =================
-
-        // 1. Filter Rentang Waktu
+        // ================= APPLY FILTER =================
         if ($request->start_date && $request->end_date) {
             $query->whereBetween('tanggal_prospek', [$request->start_date, $request->end_date]);
         }
 
-        // 2. Filter Status CTA
         if ($request->cta_status) {
             if ($request->cta_status == 'pending') {
                 $query->whereDoesntHave('cta');
@@ -41,32 +35,44 @@ class ProspekController extends Controller
             }
         }
 
-        // 3. Filter Marketing (HANYA kalau bukan marketing)
         if ($request->marketing_id && $user->role !== 'marketing') {
             $query->where('marketing_id', $request->marketing_id);
         }
 
-        // 4. Filter Status Penawaran
         if ($request->status) {
             $query->whereHas('cta', function ($q) use ($request) {
                 $q->where('status_penawaran', $request->status);
             });
         }
 
-        $prospeks = $query->orderBy('id', 'asc')->paginate(10);
+        // 2. HITUNG STATS DARI KESELURUHAN DATA (Sebelum Paginate)
+        // Kita clone query agar tidak merusak query utama untuk tabel
+        $statsData = (clone $query)->get(); 
 
         $stats = [
-            'total_prospek' => $prospeks->count(),
-            'total_cta' => $prospeks->whereNotNull('cta')->count(),
-            'total_nilai' => $prospeks->sum(function ($item) {
-                return $item->cta ? $item->cta->harga_penawaran : 0;
-            }),
-            'total_deal' => $prospeks->filter(function ($item) {
-                return $item->cta && $item->cta->status_penawaran == 'deal';
-            })->count(),
+            'total_prospek' => $statsData->count(),
+            'total_cta'     => $statsData->whereNotNull('cta')->count(),
+            'total_nilai'   => $statsData->sum(fn($item) => $item->cta->harga_penawaran ?? 0),
+            'total_deal'    => $statsData->filter(fn($item) => 
+                                optional($item->cta)->status_penawaran == 'deal'
+                            )->count(),
         ];
 
-        return view('pipeline', compact('prospeks', 'marketings', 'stats'));
+        // 3. PAGINATION INDEPENDEN
+        // Tabel Pipeline (Semua data sesuai filter)
+        $prospeks = (clone $query)
+            ->orderBy('id', 'asc')
+            ->paginate(10, ['*'], 'page_pipeline') // Nama parameter URL: page_pipeline
+            ->withQueryString();
+
+        // Tabel CTA (Hanya data yang memiliki CTA)
+        $ctaProspeks = (clone $query)
+            ->whereHas('cta')
+            ->orderBy('id', 'asc')
+            ->paginate(10, ['*'], 'page_cta') // Nama parameter URL: page_cta
+            ->withQueryString();
+
+        return view('pipeline', compact('prospeks', 'ctaProspeks', 'marketings', 'stats'));
     }
 
     // Menampilkan Form Input Massal
