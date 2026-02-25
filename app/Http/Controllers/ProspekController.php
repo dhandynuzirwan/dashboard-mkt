@@ -53,7 +53,7 @@ class ProspekController extends Controller
             });
         }
 
-        $prospeks = $query->latest()->get();
+        $prospeks = $query->orderBy('id', 'asc')->paginate(10);
 
         $stats = [
             'total_prospek' => $prospeks->count(),
