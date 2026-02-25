@@ -2,49 +2,73 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\User;
 use App\Models\Cta;
-use App\Models\Prospek;
 use App\Models\Penggajian;
-use Illuminate\Http\Request;
+use App\Models\Prospek;
+use App\Models\User;
 
 class KpiController extends Controller
 {
     public function index()
     {
-        $hariEfektif = 22; // Bisa dibuat dinamis nanti
+        $hariEfektif = 22;
+        $authUser = auth()->user();
 
-        $marketings = User::where('role', 'marketing')->get()->map(function($user) use ($hariEfektif) {
-            // 1. AMBIL TARGET DARI TABEL PENGGAJIAN
+        // 🔐 FILTER ROLE
+        if ($authUser->role === 'marketing') {
+            $users = User::where('id', $authUser->id)->get();
+        } else {
+            $users = User::where('role', 'marketing')->get();
+        }
+
+        $marketings = $users->map(function ($user) use ($hariEfektif) {
+
+            // ================= TARGET DARI PENGGAJIAN =================
             $penggajian = Penggajian::where('user_id', $user->id)->first();
-            
+
             $target_call = $penggajian->target_call ?? 0;
-            $target    = $penggajian->target ?? 0;
+            $target = $penggajian->target ?? 0;
 
-            // 2. LOGIKA ABSENSI (Placeholder karena tabel belum ada)
+            // ================= ABSENSI =================
             $user->absensi_jadwal = $hariEfektif;
-            $user->absensi_hadir  = 20; // Contoh statis
-            $user->absensi_ach    = ($user->absensi_jadwal > 0) ? ($user->absensi_hadir / $user->absensi_jadwal) * 100 : 0;
-            $user->absensi_kpi = $user->absensi_ach*0.1; // Bisa diberi bobot jika ingin
+            $user->absensi_hadir = 20; // sementara statis
+            $user->absensi_ach = ($hariEfektif > 0)
+                ? ($user->absensi_hadir / $hariEfektif) * 100
+                : 0;
 
-            // 3. LOGIKA PROGRESS (Berdasarkan jumlah Prospek/Call)
+            $user->absensi_kpi = $user->absensi_ach * 0.1;
+
+            // ================= PROGRESS =================
             $user->progress_target = $target_call * $hariEfektif;
-            $user->progress_real   = Prospek::where('marketing_id', $user->id)->count(); // Ganti marketing_id sesuai kolom asli
-            $user->progress_ach    = ($user->progress_target > 0) ? ($user->progress_real / $user->progress_target) * 100 : 0;
-            $user->progress_kpi = $user->progress_ach*0.3; // Bisa diberi bobot jika ingin
 
-            // 4. LOGIKA REVENUE (Berdasarkan Deal di CTA)
+            $user->progress_real = Prospek::where('marketing_id', $user->id)->count();
+
+            $user->progress_ach = ($user->progress_target > 0)
+                ? ($user->progress_real / $user->progress_target) * 100
+                : 0;
+
+            $user->progress_kpi = $user->progress_ach * 0.3;
+
+            // ================= REVENUE =================
             $user->revenue_target = $target;
-            $user->revenue_actual = Cta::whereHas('prospek', function($q) use ($user) {
-                $q->where('marketing_id', $user->id); // Sesuaikan nama kolom di prospeks
-            })->where('status_penawaran', 'Deal')->sum('harga_penawaran');
-            
-            $user->revenue_ach = ($user->revenue_target > 0) ? ($user->revenue_actual / $user->revenue_target) * 100 : 0;
-            $user->revenue_kpi = $user->revenue_ach*0.6; // Bisa diberi bobot jika ingin
 
-            // 5. TOTAL PENCAPAIAN KPI (Rata-rata dari 3 poin)
-            // Kamu bisa memberikan bobot di sini, misal Revenue lebih besar bobotnya
-            $user->total_kpi = ($user->absensi_ach*0.1 + $user->progress_ach*0.3 + $user->revenue_ach*0.6) / 1;
+            $user->revenue_actual = Cta::whereHas('prospek', function ($q) use ($user) {
+                $q->where('marketing_id', $user->id);
+            })
+                ->where('status_penawaran', 'deal') // kecil semua biar konsisten
+                ->sum('harga_penawaran');
+
+            $user->revenue_ach = ($user->revenue_target > 0)
+                ? ($user->revenue_actual / $user->revenue_target) * 100
+                : 0;
+
+            $user->revenue_kpi = $user->revenue_ach * 0.6;
+
+            // ================= TOTAL KPI =================
+            $user->total_kpi =
+                ($user->absensi_ach * 0.1) +
+                ($user->progress_ach * 0.3) +
+                ($user->revenue_ach * 0.6);
 
             return $user;
         });

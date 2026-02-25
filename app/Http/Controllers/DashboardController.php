@@ -20,8 +20,8 @@ class DashboardController extends Controller
         if ($marketing_filter) {
             $query->where('id', $marketing_filter);
         }
-        
-        $marketings = $query->get()->map(function($user) use ($start, $end, $hariEfektif) {
+
+        $marketings = $query->get()->map(function ($user) use ($start, $end, $hariEfektif) {
             // Ambil data penggajian untuk target
             $gaji = \App\Models\Penggajian::where('user_id', $user->id)->first();
             $targetCallHarian = $gaji->target_call ?? 0;
@@ -29,13 +29,13 @@ class DashboardController extends Controller
             // Tabel Progress Marketing
             $user->target_total = $targetCallHarian * $hariEfektif;
             $user->pencapaian = \App\Models\Prospek::where('marketing_id', $user->id)
-                                ->whereBetween('created_at', [$start, $end])->count();
+                ->whereBetween('created_at', [$start, $end])->count();
             $user->ach_persen = ($user->target_total > 0) ? ($user->pencapaian / $user->target_total) * 100 : 0;
 
             // Tabel Update Penawaran (Data dari CTA)
-            $cta = \App\Models\Cta::whereHas('prospek', function($q) use ($user) {
-                        $q->where('marketing_id', $user->id);
-                    })->whereBetween('created_at', [$start, $end])->get();
+            $cta = \App\Models\Cta::whereHas('prospek', function ($q) use ($user) {
+                $q->where('marketing_id', $user->id);
+            })->whereBetween('created_at', [$start, $end])->get();
 
             $user->total_penawaran = $cta->count();
             $user->deal = $cta->where('status_penawaran', 'deal')->count();
@@ -45,18 +45,18 @@ class DashboardController extends Controller
 
             // Ambil semua data prospek marketing ini dalam rentang tanggal
             $prospeks = \App\Models\Prospek::where('marketing_id', $user->id) // Sesuaikan kolom marketing_id
-                        ->whereBetween('created_at', [$start, $end])
-                        ->get();
+                ->whereBetween('created_at', [$start, $end])
+                ->get();
 
             // Hitung masing-masing status secara dinamis
             $user->count_perpanjangan = $prospeks->where('status', 'Perpanjangan Sertifikat')->count();
-            $user->count_invalid      = $prospeks->where('status', 'Data Tidak Valid & Tidak Terhubung')->count();
-            $user->count_email        = $prospeks->where('status', 'Dapat Email')->count();
-            $user->count_wa           = $prospeks->where('status', 'Dapat No WA HRD')->count();
-            $user->count_compro       = $prospeks->where('status', 'Request Compro')->count();
-            $user->count_manja        = $prospeks->where('status', 'Manja')->count();
-            $user->count_manja_ulang  = $prospeks->where('status', 'Manja Ulang')->count();
-            $user->count_pelatihan    = $prospeks->where('status', 'Request Permintaan Pelatihan')->count();
+            $user->count_invalid = $prospeks->where('status', 'Data Tidak Valid & Tidak Terhubung')->count();
+            $user->count_email = $prospeks->where('status', 'Dapat Email')->count();
+            $user->count_wa = $prospeks->where('status', 'Dapat No WA HRD')->count();
+            $user->count_compro = $prospeks->where('status', 'Request Compro')->count();
+            $user->count_manja = $prospeks->where('status', 'Manja')->count();
+            $user->count_manja_ulang = $prospeks->where('status', 'Manja Ulang')->count();
+            $user->count_pelatihan = $prospeks->where('status', 'Request Permintaan Pelatihan')->count();
 
             return $user;
         });
@@ -68,20 +68,23 @@ class DashboardController extends Controller
 
     public function getDetail(Request $request, $id)
     {
-        // Ambil filter tanggal dari request (agar detailnya sinkron dengan filter di dashboard)
+        $authUser = auth()->user();
+
+        // 🔐 Kalau marketing, hanya boleh akses detail miliknya sendiri
+        if ($authUser->role === 'marketing' && $authUser->id != $id) {
+            abort(403, 'Unauthorized access');
+        }
+
         $start = $request->query('start');
         $end = $request->query('end');
 
-        // Cari data penawaran (CTA) yang dimiliki oleh marketing tersebut lewat Prospek
-        $details = \App\Models\Cta::whereHas('prospek', function($q) use ($id) {
-                        // Pastikan 'marketing_id' sesuai dengan nama kolom di tabel prospeks kamu
-                        $q->where('marketing_id', $id); 
-                    })
-                    ->with('prospek') // Load data prospek agar bisa ambil nama perusahaannya
-                    ->whereBetween('created_at', [$start, $end])
-                    ->get();
+        $details = \App\Models\Cta::whereHas('prospek', function ($q) use ($id) {
+            $q->where('marketing_id', $id);
+        })
+            ->with('prospek')
+            ->whereBetween('created_at', [$start, $end])
+            ->get();
 
-        // Mengembalikan view khusus (partial) yang hanya berisi tabel untuk modal
         return view('partials.modal-detail-penawaran', compact('details'));
     }
 }
