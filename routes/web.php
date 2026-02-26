@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\AbsensiController;
 use App\Http\Controllers\CtaController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\DataMasukController;
@@ -176,6 +177,7 @@ Route::middleware('auth')->group(function () {
                 'email' => 'required|email|unique:users,email',
                 'password' => 'required|min:6',
                 'role' => 'required|in:superadmin,admin,marketing',
+                'fingerspot_id' => 'nullable|string|unique:users,fingerspot_id',
             ]);
 
             \App\Models\User::create([
@@ -183,6 +185,7 @@ Route::middleware('auth')->group(function () {
                 'email' => $request->email,
                 'password' => $request->password, // Auto hash jika diatur di model
                 'role' => $request->role,
+                'fingerspot_id' => $request->fingerspot_id,
             ]);
 
             return redirect()->route('user')->with('success', 'User berhasil ditambahkan');
@@ -193,13 +196,17 @@ Route::middleware('auth')->group(function () {
         Route::get('/form-penggajian', [PenggajianController::class, 'create'])->name('form-penggajian');
         Route::post('/penggajian/store', [PenggajianController::class, 'store'])->name('penggajian.store');
 
-        Route::get('/absensi', function () {
-            return view('absensi');
-        })->name('absensi');
-
-        Route::get('/form-absensi', function () {
-            return view('form-absensi');
-        })->name('form-absensi');
+        // Pastikan nama routenya 'absensi' (tanpa .index)
+        Route::prefix('absensi')->group(function () {
+            // Gunakan '/' agar URL-nya cukup http://127.0.0.1:8000/absensi
+            // Dan ganti .name('absensi.index') menjadi .name('absensi')
+            Route::get('/', [AbsensiController::class, 'index'])->name('absensi'); 
+            
+            Route::get('/mapping', [AbsensiController::class, 'mapping'])->name('absensi.mapping');
+            Route::post('/mapping', [AbsensiController::class, 'storeMapping'])->name('absensi.store_mapping');
+            Route::post('/sync', [AbsensiController::class, 'syncFingerspot'])->name('absensi.sync');
+            Route::post('/import', [AbsensiController::class, 'importManual'])->name('absensi.import');
+        });
     });
 
 });
