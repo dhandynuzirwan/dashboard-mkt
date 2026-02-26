@@ -21,8 +21,11 @@ class AbsensiController extends Controller
         // Gunakan 'absensi.index' jika filenya ada di folder resources/views/absensi/index.blade.php
         $absensi = AbsensiLog::with('user')->orderBy('tanggal', 'desc')->paginate(10);
         $users = User::all();
+
+        // Tambahkan ini
+        $perizinans = Perizinan::with('user')->latest()->get();
         
-        return view('absensi', compact('absensi', 'users'));
+        return view('absensi', compact('absensi', 'users', 'perizinans'));
     }
 
     public function mapping()
@@ -120,5 +123,67 @@ class AbsensiController extends Controller
 
         return back()->with('success', "Proses selesai. $successCount data masuk.")
                     ->with('audit_ids', $auditLogs);
+    }
+
+    public function importIzin(Request $request)
+    {
+        $request->validate(['file_izin' => 'required']);
+
+        $file = $request->file('file_izin');
+        $handle = fopen($file->getRealPath(), "r");
+        
+        $successCount = 0;
+        $rowNum = 0;
+
+        while (($row = fgetcsv($handle, 1000, ",")) !== FALSE) {
+            $rowNum++;
+            if ($rowNum == 1) continue; // Lewati baris header
+
+            // Mapping kolom berdasarkan file CSV Fingerspot kamu
+            $idFingerspot = trim($row[2]); // Kolom ID (ADM.001, dsb)
+            $namaIzin     = $row[5];       // Kolom Nama Izin
+            $tanggalRaw   = $row[6];       // Kolom Tanggal Izin (19 Feb 2026)
+            $statusRaw    = $row[8];       // Kolom Status Persetujuan (Diterima)
+            $catatan      = $row[9];       // Kolom Catatan
+
+            // Cari User berdasarkan ID Fingerspot
+            $user = \App\Models\User::where('fingerspot_id', $idFingerspot)->first();
+
+            if ($user && !empty($tanggalRaw)) {
+                try {
+                    // Konversi tanggal "19 Feb 2026" menjadi "2026-02-19"
+                    $tanggal = \Carbon\Carbon::parse($tanggalRaw)->format('Y-m-d');
+
+                    // Mapping status: Fingerspot "Diterima" -> Database "approved"
+                    $statusMap = [
+                        'Diterima' => 'approved',
+                        'Ditolak'  => 'rejected',
+                        'Pending'  => 'pending'
+                    ];
+                    $status = $statusMap[$statusRaw] ?? 'pending';
+
+                    // Membuat external_id unik (gabungan ID + Tanggal + Jenis Izin)
+                    // Ini untuk mencegah data ganda jika file diupload ulang
+                    $extId = md5($idFingerspot . $tanggal . $namaIzin);
+
+                    \App\Models\Perizinan::updateOrCreate(
+                        ['external_id' => $extId],
+                        [
+                            'user_id'    => $user->id,
+                            'tanggal'    => $tanggal,
+                            'jenis'      => $namaIzin,
+                            'keterangan' => $catatan == '-' ? null : $catatan,
+                            'status'     => $status,
+                        ]
+                    );
+                    $successCount++;
+                } catch (\Exception $e) {
+                    continue; // Lewati jika ada format tanggal yang rusak
+                }
+            }
+        }
+        fclose($handle);
+
+        return back()->with('success', "Berhasil mengimpor $successCount data izin karyawan.");
     }
 }
