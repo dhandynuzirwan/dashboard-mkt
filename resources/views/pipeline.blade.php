@@ -5,7 +5,7 @@
                 <div>
                     <h3 class="fw-bold mb-3">Pipeline Marketing</h3>
                     <h6 class="op-7 mb-2">Laporan Terintegrasi & Pipeline Prospek</h6>
-                    <div class="badge badge-info">
+                    <div class="badge badge-info mb-3">
                         <i class="fas fa-clock me-2"></i> <span id="realtime-clock">Memuat waktu...</span>
                     </div>
                     <div class="row">
@@ -31,6 +31,7 @@
                             </div>
                         </div>
 
+
                         {{-- Total Penawaran --}}
                         <div class="col-sm-6 col-md-3">
                             <div class="card card-stats card-round card-animate">
@@ -46,8 +47,9 @@
                                                 <p class="card-category">Total Penawaran</p>
                                                 <h4 class="card-title">{{ number_format($stats['total_cta']) }}</h4>
                                                 <p class="text-info small mb-0">
-                                                    @if($stats['total_prospek'] > 0)
-                                                        {{ round(($stats['total_cta'] / $stats['total_prospek']) * 100, 1) }}% Rate CTA
+                                                    @if ($stats['total_prospek'] > 0)
+                                                        {{ round(($stats['total_cta'] / $stats['total_prospek']) * 100, 1) }}%
+                                                        Rate CTA
                                                     @else
                                                         0% Rate CTA
                                                     @endif
@@ -72,7 +74,8 @@
                                         <div class="col col-stats ms-3 ms-sm-0">
                                             <div class="numbers">
                                                 <p class="card-category">Nilai Pipeline</p>
-                                                <h4 class="card-title" style="font-size: 1.1rem;">Rp {{ number_format($stats['total_nilai'], 0, ',', '.') }}</h4>
+                                                <h4 class="card-title" style="font-size: 1.1rem;">Rp
+                                                    {{ number_format($stats['total_nilai'], 0, ',', '.') }}</h4>
                                                 <p class="text-success small mb-0">Potensi Omzet</p>
                                             </div>
                                         </div>
@@ -96,8 +99,9 @@
                                                 <p class="card-category">Project Deal</p>
                                                 <h4 class="card-title">{{ number_format($stats['total_deal']) }}</h4>
                                                 <p class="text-secondary small mb-0">
-                                                    @if($stats['total_cta'] > 0)
-                                                        {{ round(($stats['total_deal'] / $stats['total_cta']) * 100, 1) }}% Closing Rate
+                                                    @if ($stats['total_cta'] > 0)
+                                                        {{ round(($stats['total_deal'] / $stats['total_cta']) * 100, 1) }}%
+                                                        Closing Rate
                                                     @else
                                                         0% Closing
                                                     @endif
@@ -109,26 +113,30 @@
                             </div>
                         </div>
                     </div>
-                        </div></div>
-                    <style>
-                        /* Efek hover agar lebih interaktif */
-                        .card-animate {
-                            transition: transform 0.3s ease, box-shadow 0.3s ease;
-                            cursor: default;
-                        }
-                        .card-animate:hover {
-                            transform: translateY(-5px);
-                            box-shadow: 0 10px 20px rgba(0,0,0,0.1) !important;
-                        }
-                        .card-category {
-                            font-weight: 600;
-                            text-transform: uppercase;
-                            font-size: 0.75rem;
-                            letter-spacing: 0.5px;
-                        }
-                    </style>
-                    {{-- jika ingin dua tabel side by side --}}
-                    {{-- <div class="row">
+                </div>
+            </div>
+        </div>
+        <style>
+            /* Efek hover agar lebih interaktif */
+            .card-animate {
+                transition: transform 0.3s ease, box-shadow 0.3s ease;
+                cursor: default;
+            }
+
+            .card-animate:hover {
+                transform: translateY(-5px);
+                box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1) !important;
+            }
+
+            .card-category {
+                font-weight: 600;
+                text-transform: uppercase;
+                font-size: 0.75rem;
+                letter-spacing: 0.5px;
+            }
+        </style>
+        {{-- jika ingin dua tabel side by side --}}
+        {{-- <div class="row">
                     <div class="col-sm-12 col-md-6">
                         <div class="card">
                             <div class="card-header">
@@ -228,214 +236,214 @@
                         </div>
                     </div>
                 </div> --}}
-            <div class="card">
-                <div class="card-header">
-                    <div class="card-title">Tabel Pipeline</div>
-                </div>
-                <div class="card-body">
-                    {{-- <div class="card-sub">
+        <div class="card">
+            <div class="card-header">
+                <div class="card-title">Tabel Pipeline</div>
+            </div>
+            <div class="card-body">
+                {{-- <div class="card-sub">
                       Create responsive tables by wrapping any table with
                       <code class="highlighter-rouge">.table-responsive</code>
                       <code class="highlighter-rouge">DIV</code> to make them
                       scroll horizontally on small devices
                     </div> --}}
-                            <div class="table-responsive">
-                                <table class="table table-bordered">
-                                    <thead>
-                                        <tr>
-                                            <th>ID PROSPEK</th>
-                                            <th>Marketing</th>
-                                            <th>STATUS CTA</th>
-                                            <th>DATE</th>
-                                            <th>PERUSAHAAN</th>
-                                            <th>NO TELP</th>
-                                            <th>EMAIL</th>
-                                            <th>JABATAN</th>
-                                            <th>NAMA</th>
-                                            <th>WA PIC</th>
-                                            <th>WA BARU</th>
-                                            <th>ALAMAT PERUSAHAAN</th>
-                                            <th>SOURCE</th>
-                                            <th>UPDATE FU</th>
-                                            <th>STATUS AKHIR DATA</th>
-                                            <th>CATATAN</th>
-                                            <th>KETERANGAN CTA</th>
-                                            <th>ACTION</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        @foreach ($prospeks as $data)
-                                            <tr>
-                                                <td>{{ $data->id }}</td>
-                                                <td>{{ $data->marketing?->name }}</td>
-                                                <td>
-                                                    @if (!$data->cta)
-                                                        <span class="badge badge-warning">Waiting CTA</span>
-                                                    @else
-                                                        <span class="badge badge-success">On Progress</span>
-                                                    @endif
-                                                </td>
-                                                <td>{{ $data->tanggal_prospek }}</td>
-                                                <td>{{ $data->perusahaan }}</td>
-                                                <td>{{ $data->telp }}</td>
-                                                <td>{{ $data->email }}</td>
-                                                <td>{{ $data->jabatan }}</td>
-                                                <td>{{ $data->nama_pic }}</td>
-                                                <td>{{ $data->wa_pic }}</td>
-                                                <td>{{ $data->wa_baru }}</td>
-                                                <td>{{ $data->lokasi }}</td>
-                                                <td>{{ $data->sumber }}</td>
-                                                <td>{{ $data->update_terakhir }}</td>
-                                                <td>{{ $data->status }}</td>
-                                                <td>{{ $data->deskripsi }}</td>
-                                                <td>{{ $data->catatan }}</td>
-                                                <td class="text-center">
-                                                    <div class="d-flex justify-content-center align-items-center"
-                                                        style="gap: 5px;">
-                                                        @if ($data->cta && in_array(auth()->user()->role, ['superadmin', 'admin']))
-    <a href="{{ route('cta.edit', $data->cta->id) }}"
-        class="btn btn-primary btn-sm">
-        <i class="fas fa-edit"></i> Edit
-    </a>
-@endif
+                <div class="table-responsive">
+                    <table class="table table-bordered">
+                        <thead>
+                            <tr>
+                                <th>ID PROSPEK</th>
+                                <th>Marketing</th>
+                                <th>STATUS CTA</th>
+                                <th>DATE</th>
+                                <th>PERUSAHAAN</th>
+                                <th>NO TELP</th>
+                                <th>EMAIL</th>
+                                <th>JABATAN</th>
+                                <th>NAMA</th>
+                                <th>WA PIC</th>
+                                <th>WA BARU</th>
+                                <th>ALAMAT PERUSAHAAN</th>
+                                <th>SOURCE</th>
+                                <th>UPDATE FU</th>
+                                <th>STATUS AKHIR DATA</th>
+                                <th>CATATAN</th>
+                                <th>KETERANGAN CTA</th>
+                                <th>ACTION</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach ($prospeks as $data)
+                                <tr>
+                                    <td>{{ $data->id }}</td>
+                                    <td>{{ $data->marketing?->name }}</td>
+                                    <td>
+                                        @if (!$data->cta)
+                                            <span class="badge badge-warning">Waiting CTA</span>
+                                        @else
+                                            <span class="badge badge-success">On Progress</span>
+                                        @endif
+                                    </td>
+                                    <td>{{ $data->tanggal_prospek }}</td>
+                                    <td>{{ $data->perusahaan }}</td>
+                                    <td>{{ $data->telp }}</td>
+                                    <td>{{ $data->email }}</td>
+                                    <td>{{ $data->jabatan }}</td>
+                                    <td>{{ $data->nama_pic }}</td>
+                                    <td>{{ $data->wa_pic }}</td>
+                                    <td>{{ $data->wa_baru }}</td>
+                                    <td>{{ $data->lokasi }}</td>
+                                    <td>{{ $data->sumber }}</td>
+                                    <td>{{ $data->update_terakhir }}</td>
+                                    <td>{{ $data->status }}</td>
+                                    <td>{{ $data->deskripsi }}</td>
+                                    <td>{{ $data->catatan }}</td>
+                                    <td class="text-center">
+                                        <div class="d-flex justify-content-center align-items-center" style="gap: 5px;">
+                                            @if ($data->cta && in_array(auth()->user()->role, ['superadmin', 'admin']))
+                                                <a href="{{ route('cta.edit', $data->cta->id) }}"
+                                                    class="btn btn-primary btn-sm">
+                                                    <i class="fas fa-edit"></i> Edit
+                                                </a>
+                                            @endif
 
-                                                        @if (!$data->cta)
-                                                            <a href="{{ route('form-cta', $data->id) }}"
-                                                                class="btn btn-success btn-sm">
-                                                                <i class="fas fa-plus"></i> CTA
-                                                            </a>
-                                                        @else
-                                                            <button class="btn btn-outline-success btn-sm" disabled
-                                                                style="cursor: default;">
-                                                                <i class="fas fa-check"></i> Done
-                                                            </button>
-                                                        @endif
-                                                    </div>
-                                                </td>
-                                            </tr>
-                                        @endforeach
-                                    </tbody>
-                                </table>                                
-                            </div>
-                            <div class="demo mt-3 d-flex justify-content-center">
-                                {{ $prospeks->links('partials.pagination') }} 
-                            </div>
-                        </div>
-                    </div>
-                    <div class="card">
-                        <div class="card-header">
-                            <div class="card-title">Data CTA Marketing</div>
-                        </div>
-                        <div class="card-body">
-                            {{-- <div class="card-sub">
+                                            @if (!$data->cta)
+                                                <a href="{{ route('form-cta', $data->id) }}"
+                                                    class="btn btn-success btn-sm">
+                                                    <i class="fas fa-plus"></i> CTA
+                                                </a>
+                                            @else
+                                                <button class="btn btn-outline-success btn-sm" disabled
+                                                    style="cursor: default;">
+                                                    <i class="fas fa-check"></i> Done
+                                                </button>
+                                            @endif
+                                        </div>
+                                    </td>
+                                </tr>
+                            @endforeach
+                        </tbody>
+                    </table>
+                </div>
+                <div class="demo mt-3 d-flex justify-content-center">
+                    {{ $prospeks->links('partials.pagination') }}
+                </div>
+            </div>
+        </div>
+        <div class="card">
+            <div class="card-header">
+                <div class="card-title">Data CTA Marketing</div>
+            </div>
+            <div class="card-body">
+                {{-- <div class="card-sub">
                       Create responsive tables by wrapping any table with
                       <code class="highlighter-rouge">.table-responsive</code>
                       <code class="highlighter-rouge">DIV</code> to make them
                       scroll horizontally on small devices
                         </div> --}}
-                            <div class="table-responsive">
-                                <table class="table table-bordered">
-                                    <thead>
-                                        <tr>
-                                            <th>ID PROSPEK</th>
-                                            <th>MARKETING</th>
-                                            <th>DATE</th>
-                                            <th>PERUSAHAAN</th>
-                                            <th>PERMINTAAN JUDUL</th>
-                                            <th>JUMLAH PESERTA</th>
-                                            <th>SERTIFIKASI</th>
-                                            <th>SKEMA</th>
-                                            <th>HARGA PENAWARAN</th>
-                                            <th>HARGA VENDOR</th>
-                                            <th>PROPOSAL PENAWARAN</th>
-                                            <th>STATUS PENAWARAN</th>
-                                            <th>KETERANGAN</th>
-                                            <th>ACTION</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        @foreach ($prospeks as $data)
-                                            @if ($data->cta)
-                                                <tr>
-                                                    <td>{{ $data->id }}</td>
-                                                    <td>{{ $data->marketing?->name }}</td>
-                                                    <td>{{ $data->tanggal_prospek }}</td>
-                                                    <td>{{ $data->perusahaan }}</td>
-                                                    <td>{{ $data->cta->judul_permintaan }}</td>
-                                                    <td>{{ $data->cta->jumlah_peserta }}</td>
-                                                    <td><span
-                                                            class="badge badge-info">{{ strtoupper($data->cta->sertifikasi) }}</span>
-                                                    </td>
-                                                    <td>{{ $data->cta->skema }}</td>
-                                                    <td>Rp {{ number_format($data->cta->harga_penawaran, 0, ',', '.') }}
-                                                    </td>
-                                                    <td>Rp {{ number_format($data->cta->harga_vendor, 0, ',', '.') }}</td>
-                                                    <td>
-                                                        @if ($data->cta->proposal_link)
-                                                            <a href="{{ $data->cta->proposal_link }}" target="_blank"
-                                                                class="btn btn-link btn-sm">
-                                                                <i class="fas fa-external-link-alt"></i> Lihat Link
-                                                            </a>
-                                                        @else
-                                                            <span class="text-muted">Tidak Ada</span>
-                                                        @endif
-                                                    </td>
-                                                    <td>
-                                                        {{-- Tampilan Status dengan Badge Berwarna --}}
-                                                        @php
-                                                            $status_labels = [
-                                                                'under_review' => [
-                                                                    'label' => 'Under Review',
-                                                                    'class' => 'badge-info',
-                                                                ],
-                                                                'hold' => [
-                                                                    'label' => 'Hold',
-                                                                    'class' => 'badge-warning',
-                                                                ],
-                                                                'kalah_harga' => [
-                                                                    'label' => 'Kalah Harga',
-                                                                    'class' => 'badge-danger',
-                                                                ],
-                                                                'deal' => [
-                                                                    'label' => 'Deal',
-                                                                    'class' => 'badge-success',
-                                                                ],
-                                                            ];
-                                                            $current_status = $status_labels[
-                                                                $data->cta->status_penawaran
-                                                            ] ?? ['label' => 'N/A', 'class' => 'badge-secondary'];
-                                                        @endphp
-                                                        <span class="badge {{ $current_status['class'] }}">
-                                                            {{ $current_status['label'] }}
-                                                        </span>
-                                                    </td>
-                                                    <td>{{ $data->cta?->keterangan ?? 'Tidak Ada' }}</td>
-                                                    <td>
-                                                        @if (auth()->id() === $data->marketing_id)
-                                                            <a href="{{ route('cta.edit', $data->cta->id) }}"
-                                                                class="btn btn-primary btn-sm">
-                                                                <i class="fas fa-edit"></i> Edit
-                                                            </a>
-                                                        @else
-                                                            <button class="btn btn-secondary btn-sm" disabled>
-                                                                <i class="fas fa-lock"></i> Locked
-                                                            </button>
-                                                        @endif
-                                                    </td>
-                                                </tr>
+                <div class="table-responsive">
+                    <table class="table table-bordered">
+                        <thead>
+                            <tr>
+                                <th>ID PROSPEK</th>
+                                <th>MARKETING</th>
+                                <th>DATE</th>
+                                <th>PERUSAHAAN</th>
+                                <th>PERMINTAAN JUDUL</th>
+                                <th>JUMLAH PESERTA</th>
+                                <th>SERTIFIKASI</th>
+                                <th>SKEMA</th>
+                                <th>HARGA PENAWARAN</th>
+                                <th>HARGA VENDOR</th>
+                                <th>PROPOSAL PENAWARAN</th>
+                                <th>STATUS PENAWARAN</th>
+                                <th>KETERANGAN</th>
+                                <th>ACTION</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach ($prospeks as $data)
+                                @if ($data->cta)
+                                    <tr>
+                                        <td>{{ $data->id }}</td>
+                                        <td>{{ $data->marketing?->name }}</td>
+                                        <td>{{ $data->tanggal_prospek }}</td>
+                                        <td>{{ $data->perusahaan }}</td>
+                                        <td>{{ $data->cta->judul_permintaan }}</td>
+                                        <td>{{ $data->cta->jumlah_peserta }}</td>
+                                        <td><span class="badge badge-info">{{ strtoupper($data->cta->sertifikasi) }}</span>
+                                        </td>
+                                        <td>{{ $data->cta->skema }}</td>
+                                        <td>Rp {{ number_format($data->cta->harga_penawaran, 0, ',', '.') }}
+                                        </td>
+                                        <td>Rp {{ number_format($data->cta->harga_vendor, 0, ',', '.') }}</td>
+                                        <td>
+                                            @if ($data->cta->proposal_link)
+                                                <a href="{{ $data->cta->proposal_link }}" target="_blank"
+                                                    class="btn btn-link btn-sm">
+                                                    <i class="fas fa-external-link-alt"></i> Lihat Link
+                                                </a>
+                                            @else
+                                                <span class="text-muted">Tidak Ada</span>
                                             @endif
-                                        @endforeach
-                                    </tbody>
-                                </table>                                
-                            </div>
-                            <div class="demo mt-3 d-flex justify-content-center">
-                                {{ $ctaProspeks->links('partials.pagination') }}
-                            </div>
-                        </div>
-                    </div>
+                                        </td>
+                                        <td>
+                                            {{-- Tampilan Status dengan Badge Berwarna --}}
+                                            @php
+                                                $status_labels = [
+                                                    'under_review' => [
+                                                        'label' => 'Under Review',
+                                                        'class' => 'badge-info',
+                                                    ],
+                                                    'hold' => [
+                                                        'label' => 'Hold',
+                                                        'class' => 'badge-warning',
+                                                    ],
+                                                    'kalah_harga' => [
+                                                        'label' => 'Kalah Harga',
+                                                        'class' => 'badge-danger',
+                                                    ],
+                                                    'deal' => [
+                                                        'label' => 'Deal',
+                                                        'class' => 'badge-success',
+                                                    ],
+                                                ];
+                                                $current_status = $status_labels[$data->cta->status_penawaran] ?? [
+                                                    'label' => 'N/A',
+                                                    'class' => 'badge-secondary',
+                                                ];
+                                            @endphp
+                                            <span class="badge {{ $current_status['class'] }}">
+                                                {{ $current_status['label'] }}
+                                            </span>
+                                        </td>
+                                        <td>{{ $data->cta?->keterangan ?? 'Tidak Ada' }}</td>
+                                        <td>
+                                            @if (auth()->id() === $data->marketing_id)
+                                                <a href="{{ route('cta.edit', $data->cta->id) }}"
+                                                    class="btn btn-primary btn-sm">
+                                                    <i class="fas fa-edit"></i> Edit
+                                                </a>
+                                            @else
+                                                <button class="btn btn-secondary btn-sm" disabled>
+                                                    <i class="fas fa-lock"></i> Locked
+                                                </button>
+                                            @endif
+                                        </td>
+                                    </tr>
+                                @endif
+                            @endforeach
+                        </tbody>
+                    </table>
+                </div>
+                <div class="demo mt-3 d-flex justify-content-center">
+                    {{ $ctaProspeks->links('partials.pagination') }}
                 </div>
             </div>
         </div>
+    </div>
+    </div>
+    </div>
+    </div>
     </div>
 
 
