@@ -231,7 +231,6 @@
                                     $t_pelatihan = 0;
                                 @endphp
 
-<<<<<<< HEAD
                                 @foreach ($marketings as $m)
                                     <tr>
                                         <td>{{ $m->name }}</th>
@@ -276,9 +275,6 @@
             <div class="row">
                 <div class="col-md-6">
                     <div class="card border shadow-sm">
-=======
-                    {{-- <div class="card border shadow-sm mt-4">
->>>>>>> dc687de5d8b1b7c9e5eafe726c0bfd60aed1cc06
                         <div class="card-header">
                             <div class="card-title">Grafik Ach Target Marketing</div>
                         </div>
@@ -287,104 +283,15 @@
                                 <canvas id="achTargetChart"></canvas>
                             </div>
                         </div>
-<<<<<<< HEAD
                     </div>
                 </div>
                 <div class="col-md-6">
                     <div class="card border shadow-sm">
-=======
-                    </div> --}}
-                    <div class="card border shadow-sm mt-4">
->>>>>>> dc687de5d8b1b7c9e5eafe726c0bfd60aed1cc06
                         <div class="card-header">
                             <div class="card-title">Produktivitas</div>
                         </div>
                         <div class="card-body">
-<<<<<<< HEAD
                             <div class="chart-container">
-=======
-                            <div class="table-responsive">
-                                <table class="table table-bordered align-middle text-center">
-                                    <thead class="table-light">
-                                        <tr>
-                                            <th>Marketing</th>
-                                            <th>Perpanjangan Sertifikat</th>
-                                            <th>Data Tidak Valid & Tidak Terhubung</th>
-                                            <th>Dapat Email</th>
-                                            <th>Dapat No WA HRD</th>
-                                            <th>Request Compro</th>
-                                            <th>Manja</th>
-                                            <th>Manja Ulang</th>
-                                            <th>Request Permintaan Pelatihan</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        @php 
-                                            $t_perpanjangan = 0; $t_invalid = 0; $t_email = 0; $t_wa = 0;
-                                            $t_compro = 0; $t_manja = 0; $t_manja_ulang = 0; $t_pelatihan = 0;
-                                        @endphp
-
-                                        @foreach($marketings as $m)
-                                        <tr>
-                                            <td class="text-start fw-bold">{{ $m->name }}</td>
-                                            <td>{{ $m->count_perpanjangan ?? 0 }}</td>
-                                            <td>{{ $m->count_invalid ?? 0 }}</td>
-                                            <td>{{ $m->count_email ?? 0 }}</td>
-                                            <td>{{ $m->count_wa ?? 0 }}</td>
-                                            <td>{{ $m->count_compro ?? 0 }}</td>
-                                            <td>{{ $m->count_manja ?? 0 }}</td>
-                                            <td>{{ $m->count_manja_ulang ?? 0 }}</td>
-                                            <td>{{ $m->count_pelatihan ?? 0 }}</td>
-                                        </tr>
-                                        @php
-                                            $t_perpanjangan += $m->count_perpanjangan;
-                                            $t_invalid      += $m->count_invalid;
-                                            $t_email        += $m->count_email;
-                                            $t_wa           += $m->count_wa;
-                                            $t_compro       += $m->count_compro;
-                                            $t_manja        += $m->count_manja;
-                                            $t_manja_ulang  += $m->count_manja_ulang;
-                                            $t_pelatihan    += $m->count_pelatihan;
-                                        @endphp
-                                        @endforeach
-
-                                        <tr class="fw-bold table-primary">
-                                            <td>TOTAL</td>
-                                            <td>{{ $t_perpanjangan }}</td>
-                                            <td>{{ $t_invalid }}</td>
-                                            <td>{{ $t_email }}</td>
-                                            <td>{{ $t_wa }}</td>
-                                            <td>{{ $t_compro }}</td>
-                                            <td>{{ $t_manja }}</td>
-                                            <td>{{ $t_manja_ulang }}</td>
-                                            <td>{{ $t_pelatihan }}</td>
-                                        </tr>
-                                    </tbody>
-                                </table>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="row">
-                        <div class="col-md-6">
-                            <div class="card border shadow-sm">
-                                <div class="card-header">
-                                    <div class="card-title">Grafik Ach Target Marketing</div>
-                                </div>
-                                <div class="card-body">
-                                    <div style="max-width: 500px; margin: auto;">
-                                        <canvas id="achTargetChart"></canvas>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="col-md-6">
-                            <div class="card border shadow-sm">
-                            <div class="card-header">
-                                <div class="card-title">Produktivitas</div>
-                            </div>
-                            <div class="card-body">
-                                <div class="chart-container">
->>>>>>> dc687de5d8b1b7c9e5eafe726c0bfd60aed1cc06
                                 <canvas id="multipleLineChart"></canvas>
                             </div>
                         </div>
@@ -459,7 +366,6 @@
                     });
                 }
 
-<<<<<<< HEAD
                 var multipleLineChart = document.getElementById("multipleLineChart").getContext("2d");
                 myMultipleLineChart = new Chart(multipleLineChart, {
                     type: "line",
@@ -535,40 +441,6 @@
                         }
                     },
                 });
-=======
-                // 3. MULTIPLE LINE CHART - TREN PRODUKTIVITAS
-                const ctxLine = document.getElementById("multipleLineChart").getContext("2d");
-                if (ctxLine) {
-                    new Chart(ctxLine, {
-                        type: "line",
-                        data: {
-                            labels: @json($lineLabels),
-                            datasets: @json($lineDatasets)
-                        },
-                        options: {
-                            scales: {
-                                y: {
-                                    ticks: {
-                                        // Mengubah 10.000.000 menjadi 10jt agar tidak kepanjangan
-                                        callback: function(value) {
-                                            return 'Rp ' + (value / 1000000) + 'jt';
-                                        }
-                                    }
-                                }
-                            },
-                            plugins: {
-                                tooltip: {
-                                    callbacks: {
-                                        label: function(context) {
-                                            return context.dataset.label + ': Rp ' + context.raw.toLocaleString('id-ID');
-                                        }
-                                    }
-                                }
-                            }
-                        }
-                    });
-                }
->>>>>>> dc687de5d8b1b7c9e5eafe726c0bfd60aed1cc06
             });
         </script>
     @endsection
