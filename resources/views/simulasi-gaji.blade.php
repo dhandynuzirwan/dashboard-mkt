@@ -30,7 +30,7 @@
                                     <th rowspan="2">INCOME</th>
                                     <th rowspan="2">KPI</th>
                                     <th colspan="4" class="text-center">SESUAI KPI</th>
-                                    <th colspan="5" class="text-center">KEBIJAKAN KPI (Kurang dari 70%)</th>
+                                    <th colspan="5" class="text-center">KEBIJAKAN KPI</th>
                                     <th rowspan="2">ACTION</th>
                                 </tr>
                                 <tr>
@@ -87,15 +87,15 @@
                                     </tr>
                                 @endforeach
                             </tbody>
-                        </table>
-                        <div class="alert alert-info mt-3">
-                            <strong>Keterangan KPI:</strong><br>
-                            <span class="badge badge-success">≥ 70%</span>
-                            Marketing memenuhi KPI dan menggunakan skema <b>Sesuai KPI</b>.<br><br>
+                        </table>                        
+                    </div>
+                    <div class="alert alert-info mt-3">
+                        <strong>Keterangan KPI:</strong><br>
+                        <span class="badge badge-success">≥ 70%</span>
+                        Marketing memenuhi KPI dan menggunakan skema <b>Sesuai KPI</b>.<br><br>
 
-                            <span class="badge badge-danger">&lt; 70%</span>
-                            Marketing tidak memenuhi KPI dan menggunakan skema <b>Kebijakan KPI</b>.
-                        </div>
+                        <span class="badge badge-danger">&lt; 70%</span>
+                        Marketing tidak memenuhi KPI dan menggunakan skema <b>Kebijakan KPI</b>.
                     </div>
                 </div>
             </div>

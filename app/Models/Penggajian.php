@@ -12,7 +12,6 @@ class Penggajian extends Model
         'target',
         'gaji_pokok',
         'tunjangan',
-        'potongan_izin',
     ];
 
     public function user()

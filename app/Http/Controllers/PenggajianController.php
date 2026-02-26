@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\JenisIzin;
 use App\Models\Penggajian;
 use App\Models\User;
 use Illuminate\Http\Request;
@@ -11,8 +12,9 @@ class PenggajianController extends Controller
     public function index()
     {
         $penggajians = Penggajian::with('user')->get();
+        $jenis_izins = JenisIzin::all(); // Ambil data master izin
 
-        return view('penggajian', compact('penggajians'));
+        return view('penggajian', compact('penggajians', 'jenis_izins'));
     }
 
     public function create()
@@ -70,5 +72,36 @@ class PenggajianController extends Controller
 
         return redirect()->route('penggajian.index')
             ->with('success', 'Data penggajian berhasil dihapus');
+    }
+
+    public function storeJenisIzin(Request $request)
+    {
+        $request->validate([
+            'nama_izin' => 'required|string|max:255',
+            'potongan' => 'required|numeric|min:0',
+        ]);
+
+        JenisIzin::create($request->all());
+
+        return redirect()->back()->with('success', 'Aturan potongan izin berhasil ditambahkan');
+    }
+
+    public function updateJenisIzin(Request $request, $id)
+    {
+        $request->validate([
+            'nama_izin' => 'required|string|max:255',
+            'potongan' => 'required|numeric|min:0',
+        ]);
+
+        $izin = JenisIzin::findOrFail($id);
+        $izin->update($request->all());
+
+        return redirect()->back()->with('success', 'Aturan potongan izin berhasil diperbarui');
+    }
+
+    public function destroyJenisIzin($id)
+    {
+        JenisIzin::destroy($id);
+        return redirect()->back()->with('success', 'Aturan potongan izin berhasil dihapus');
     }
 }

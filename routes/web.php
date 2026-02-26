@@ -192,9 +192,29 @@ Route::middleware('auth')->group(function () {
         })->name('user.store');
 
         // Penggajian & Absensi
-        Route::get('/penggajian', [PenggajianController::class, 'index'])->name('penggajian.index');
-        Route::get('/form-penggajian', [PenggajianController::class, 'create'])->name('form-penggajian');
-        Route::post('/penggajian/store', [PenggajianController::class, 'store'])->name('penggajian.store');
+        // Grouping agar URL lebih teratur
+        Route::prefix('penggajian')->group(function () {
+            
+            // --- ROUTE LAMA KAMU ---
+            Route::get('/', [PenggajianController::class, 'index'])->name('penggajian.index');
+            Route::get('/create', [PenggajianController::class, 'create'])->name('form-penggajian');
+            Route::post('/store', [PenggajianController::class, 'store'])->name('penggajian.store');
+            
+            // Tambahan Route Edit & Update untuk Data Gaji (Jika belum ada)
+            Route::get('/edit/{id}', [PenggajianController::class, 'edit'])->name('penggajian.edit');
+            Route::post('/update/{id}', [PenggajianController::class, 'update'])->name('penggajian.update');
+            Route::delete('/destroy/{id}', [PenggajianController::class, 'destroy'])->name('penggajian.destroy');
+
+            // --- ROUTE BARU (MASTER JENIS IZIN) ---
+            // Simpan Aturan Izin Baru
+            Route::post('/jenis-izin/store', [PenggajianController::class, 'storeJenisIzin'])->name('jenis-izin.store');
+            
+            // Update Aturan Izin
+            Route::post('/jenis-izin/update/{id}', [PenggajianController::class, 'updateJenisIzin'])->name('jenis-izin.update');
+            
+            // Hapus Aturan Izin
+            Route::delete('/jenis-izin/destroy/{id}', [PenggajianController::class, 'destroyJenisIzin'])->name('jenis-izin.destroy');
+        });
 
         // Pastikan nama routenya 'absensi' (tanpa .index)
         Route::prefix('absensi')->group(function () {
