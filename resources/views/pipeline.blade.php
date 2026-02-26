@@ -109,7 +109,7 @@
                             </div>
                         </div>
                     </div>
-
+                        </div></div>
                     <style>
                         /* Efek hover agar lebih interaktif */
                         .card-animate {
@@ -292,12 +292,12 @@
                                                 <td class="text-center">
                                                     <div class="d-flex justify-content-center align-items-center"
                                                         style="gap: 5px;">
-                                                        @if ($data->cta && auth()->id() === $data->marketing_id)
-                                                            <a href="{{ route('cta.edit', $data->cta->id) }}"
-                                                                class="btn btn-primary btn-sm">
-                                                                <i class="fas fa-edit"></i> Edit
-                                                            </a>
-                                                        @endif
+                                                        @if ($data->cta && in_array(auth()->user()->role, ['superadmin', 'admin']))
+    <a href="{{ route('cta.edit', $data->cta->id) }}"
+        class="btn btn-primary btn-sm">
+        <i class="fas fa-edit"></i> Edit
+    </a>
+@endif
 
                                                         @if (!$data->cta)
                                                             <a href="{{ route('form-cta', $data->id) }}"

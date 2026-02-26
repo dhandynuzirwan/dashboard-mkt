@@ -37,41 +37,32 @@ class CtaController extends Controller
         return redirect()->route('pipeline')->with('success', 'Data CTA berhasil ditambahkan!');
     }
 
-    public function edit($id)
-    {
-        $cta = Cta::with('prospek')->findOrFail($id);
+public function edit($id)
+{
+    $cta = Cta::with('prospek')->findOrFail($id);
 
-        // Pastikan hanya marketing pemilik prospek yang bisa edit
-        if ($cta->prospek->marketing_id != auth()->id()) {
-            abort(403, 'Unauthorized');
-        }
+    return view('form-cta-edit', compact('cta'));
+}
 
-        return view('form-cta-edit', compact('cta'));
-    }
+public function update(Request $request, $id)
+{
+    $cta = Cta::findOrFail($id);
 
-    public function update(Request $request, $id)
-    {
-        $cta = Cta::with('prospek')->findOrFail($id);
+    $request->validate([
+        'judul_permintaan' => 'required',
+        'jumlah_peserta' => 'required|numeric',
+        'sertifikasi' => 'required',
+        'skema' => 'required',
+        'harga_penawaran' => 'required|numeric',
+        'harga_vendor' => 'required|numeric',
+        'proposal_link' => 'nullable|url',
+        'status_penawaran' => 'required',
+        'keterangan' => 'nullable',
+    ]);
 
-        if ($cta->prospek->marketing_id != auth()->id()) {
-            abort(403, 'Unauthorized');
-        }
+    $cta->update($request->all());
 
-        $request->validate([
-            'judul_permintaan' => 'required',
-            'jumlah_peserta' => 'required|numeric',
-            'sertifikasi' => 'required',
-            'skema' => 'required',
-            'harga_penawaran' => 'required|numeric',
-            'harga_vendor' => 'required|numeric',
-            'proposal_link' => 'nullable|url',
-            'status_penawaran' => 'required',
-            'keterangan' => 'nullable',
-        ]);
-
-        $cta->update($request->all());
-
-        return redirect()->route('pipeline')
-            ->with('success', 'CTA berhasil diupdate!');
-    }
+    return redirect()->route('pipeline')
+        ->with('success', 'CTA berhasil diupdate!');
+}
 }
