@@ -207,6 +207,10 @@
 
                                 </div>
                             </div>
+                            {{-- //pagination --}}
+                            <div class="demo mt-3 d-flex justify-content-center">
+                                {{ $absensi->links('partials.pagination') }} 
+                            </div>
                         </div>
                     </div>
                 </div>

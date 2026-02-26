@@ -244,6 +244,9 @@
                             </tbody>
                         </table>
                     </div>
+                    <div class="demo mt-3 d-flex justify-content-center">
+                        {{ $prospeks->links('partials.pagination') }} 
+                    </div>
                 </div>
             </div>
         </div>
