@@ -102,7 +102,7 @@
                                             <td><span class="badge badge-danger">{{ $m->kalah }}</span></td>
                                             <td>
                                                 <button class="btn btn-sm btn-primary btn-round btn-detail" data-id="{{ $m->id }}">
-                                                    {{ $m->total_penawaran }} Detail
+                                                    {{ $m->total_penawaran }} Nilai
                                                 </button>
                                             </td>
                                         </tr>

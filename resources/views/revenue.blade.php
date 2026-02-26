@@ -34,7 +34,6 @@
                                     <th colspan="6" class="text-center">TOTAL PENAWARAN</th>
                                     <th colspan="6" class="text-center">TOTAL DEAL</th>
                                     <th rowspan="2">TOTAL DEAL</th>
-                                    <th rowspan="2">ACTION</th>
                                 </tr>
                                 <tr>
                                     {{-- Target --}}
@@ -95,9 +94,6 @@
                                         {{-- TOTAL AKHIR --}}
                                         <td class="text-end fw-bold text-primary">
                                             {{ number_format($m->total_rp_deal, 0, ',', '.') }}</td>
-                                        <td class="text-center">
-                                            <button class="btn btn-sm btn-primary">Detail</button>
-                                        </td>
                                     </tr>
                                 @endforeach
                             </tbody>
