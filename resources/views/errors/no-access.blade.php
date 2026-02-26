@@ -1,13 +1,6 @@
 @extends('layouts.app') {{-- Ganti dengan nama file layout utama Anda, misal: layouts.main atau layouts.admin --}}
 
 @section('content')
-
-<div class="wrapper">
-    @include('layouts.sidebar') {{-- Pastikan file sidebar.blade.php ada di folder layouts --}}
-
-    <div class="main-panel">
-        @include('layouts.header') {{-- Pastikan file header.blade.php ada di folder layouts --}}
-
         <div class="container-fluid d-flex align-items-center justify-content-center" style="min-height: 80vh;">
             <div class="text-center p-5">
                 <div class="mb-4">
@@ -31,6 +24,4 @@
                 </div>
             </div>
         </div>
-    </div>
-</div>
 @endsection
