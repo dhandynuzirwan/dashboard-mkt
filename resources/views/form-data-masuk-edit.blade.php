@@ -1,11 +1,7 @@
 @extends('layouts.app')
 
 @section('content')
-@include('layouts.sidebar')
 
-<div class="wrapper">
-    <div class="main-panel">
-        @include('layouts.header')
         <div class="container">
             <div class="page-inner">
                 <div class="card">
@@ -100,6 +96,4 @@
                 </div>
             </div>
         </div>
-    </div>
-</div>
 @endsection

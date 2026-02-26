@@ -24,7 +24,7 @@ class DashboardSeeder extends Seeder
         DB::statement('SET FOREIGN_KEY_CHECKS=1;');
 
         // --- 2. AMBIL USER MARKETING ---
-        $marketingNames = ['INTAN1', 'INTAN2', 'INTAN3', 'INTAN4', 'INTAN5', 'Marketing 1'];
+        $marketingNames = ['INTAN1', 'INTAN2', 'INTAN3', 'INTAN4', 'INTAN5'];
         $users = User::whereIn('name', $marketingNames)->get();
 
         if ($users->isEmpty()) {

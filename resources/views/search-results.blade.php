@@ -2,9 +2,9 @@
 @section('content')
 
 <div class="wrapper">
-    @include('layouts.sidebar')
+
     <div class="main-panel">
-        @include('layouts.header')
+
         <div class="container">
             <div class="page-inner">
                 <h3 class="fw-bold mb-3">Hasil Pencarian: "{{ $query }}"</h3>

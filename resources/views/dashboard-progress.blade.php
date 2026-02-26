@@ -1,299 +1,305 @@
 @extends('layouts.app')
 
 @section('content')
-    <div class="wrapper">
-        @include('layouts.sidebar')
+    <div class="container">
+        <div class="page-inner">
 
-        <div class="main-panel">
-            @include('layouts.header')
-
-            <div class="container">
-                <div class="page-inner">
-
-                    {{-- FILTER SECTION --}}
-                    <div class="card mb-4">
-                        <div class="card-body">
-                            <form action="{{ route('dashboard.progress') }}" method="GET">
-                                <div class="row align-items-end">
-                                    <div class="col-md-3">
-                                        <label>Dari Tanggal</label>
-                                        <input type="date" name="start_date" value="{{ $start }}" class="form-control">
-                                    </div>
-                                    <div class="col-md-3">
-                                        <label>Sampai Tanggal</label>
-                                        <input type="date" name="end_date" value="{{ $end }}" class="form-control">
-                                    </div>
-                                    <div class="col-md-3">
-                                        <label>Marketing</label>
-                                        <select name="marketing_id" class="form-control">
-                                            <option value="">Semua Marketing</option>
-                                            @foreach($all_marketing as $m)
-                                                <option value="{{ $m->id }}" {{ request('marketing_id') == $m->id ? 'selected' : '' }}>{{ $m->name }}</option>
-                                            @endforeach
-                                        </select>
-                                    </div>
-                                    <div class="col-md-1">
-                                        <button type="submit" class="btn btn-primary w-100"><i class="fa fa-filter"></i></button>
-                                    </div>
-                                    <div class="col-md-2 text-end">
-                                        <small id="live-date" class="d-block text-muted"></small>
-                                        <small id="live-clock" class="fw-bold text-primary"></small>
-                                    </div>
-                                </div>
-                            </form>
+            {{-- FILTER SECTION --}}
+            <div class="card mb-4">
+                <div class="card-body">
+                    <form action="{{ route('dashboard.progress') }}" method="GET">
+                        <div class="row align-items-end">
+                            <div class="col-md-3">
+                                <label>Dari Tanggal</label>
+                                <input type="date" name="start_date" value="{{ $start }}" class="form-control">
+                            </div>
+                            <div class="col-md-3">
+                                <label>Sampai Tanggal</label>
+                                <input type="date" name="end_date" value="{{ $end }}" class="form-control">
+                            </div>
+                            <div class="col-md-3">
+                                <label>Marketing</label>
+                                <select name="marketing_id" class="form-control">
+                                    <option value="">Semua Marketing</option>
+                                    @foreach ($all_marketing as $m)
+                                        <option value="{{ $m->id }}"
+                                            {{ request('marketing_id') == $m->id ? 'selected' : '' }}>{{ $m->name }}
+                                        </option>
+                                    @endforeach
+                                </select>
+                            </div>
+                            <div class="col-md-1">
+                                <button type="submit" class="btn btn-primary w-100"><i class="fa fa-filter"></i></button>
+                            </div>
+                            <div class="col-md-2 text-end">
+                                <small id="live-date" class="d-block text-muted"></small>
+                                <small id="live-clock" class="fw-bold text-primary"></small>
+                            </div>
                         </div>
-                    </div>
+                    </form>
+                </div>
+            </div>
 
-                    {{-- TABEL PROGRESS MARKETING --}}
-                    <div class="card shadow-sm">
-                        <div class="card-header"><div class="card-title">Tabel Progress Marketing</div></div>
-                        <div class="card-body">
-                            <div class="table-responsive">
-                                <table class="table table-bordered align-middle text-center">
-                                    <thead class="table-light">
-                                        <tr>
-                                            <th>Marketing</th>
-                                            <th>Target</th>
-                                            <th>Pencapaian</th>
-                                            <th>Ach Target</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        @foreach($marketings as $m)
-                                        <tr>
-                                            <td class="fw-bold">{{ $m->name }}</td>
-                                            <td>{{ $m->target_total }}</td>
-                                            <td>{{ $m->pencapaian }}</td>
-                                            <td style="width: 300px;">
-                                                <div class="d-flex align-items-center">
-                                                    <div class="progress flex-1" style="height: 10px; width: 100%;">
-                                                        <div class="progress-bar {{ $m->ach_persen < 50 ? 'bg-danger' : ($m->ach_persen < 80 ? 'bg-warning' : 'bg-success') }}" 
-                                                            style="width: {{ $m->ach_persen }}%"></div>
-                                                    </div>
-                                                    <span class="ms-2 fw-bold">{{ number_format($m->ach_persen, 2) }}%</span>
+            {{-- TABEL PROGRESS MARKETING --}}
+            <div class="card shadow-sm">
+                <div class="card-header">
+                    <div class="card-title">Tabel Progress Marketing</div>
+                </div>
+                <div class="card-body">
+                    <div class="table-responsive">
+                        <table class="table table-bordered align-middle text-center">
+                            <thead class="table-light">
+                                <tr>
+                                    <th>Marketing</th>
+                                    <th>Target</th>
+                                    <th>Pencapaian</th>
+                                    <th>Ach Target</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach ($marketings as $m)
+                                    <tr>
+                                        <td class="fw-bold">{{ $m->name }}</td>
+                                        <td>{{ $m->target_total }}</td>
+                                        <td>{{ $m->pencapaian }}</td>
+                                        <td style="width: 300px;">
+                                            <div class="d-flex align-items-center">
+                                                <div class="progress flex-1" style="height: 10px; width: 100%;">
+                                                    <div class="progress-bar {{ $m->ach_persen < 50 ? 'bg-danger' : ($m->ach_persen < 80 ? 'bg-warning' : 'bg-success') }}"
+                                                        style="width: {{ $m->ach_persen }}%"></div>
                                                 </div>
-                                            </td>
-                                        </tr>
-                                        @endforeach
-                                    </tbody>
-                                </table>
-                            </div>
+                                                <span class="ms-2 fw-bold">{{ number_format($m->ach_persen, 2) }}%</span>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                @endforeach
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            {{-- TABEL UPDATE PENAWARAN --}}
+            <div class="card shadow-sm mt-4">
+                <div class="card-header">
+                    <div class="card-title">Tabel Update Penawaran</div>
+                </div>
+                <div class="card-body">
+                    <div class="table-responsive">
+                        <table class="table table-bordered text-center align-middle">
+                            <thead class="table-light">
+                                <tr>
+                                    <th>Marketing</th>
+                                    <th>Masuk Penawaran</th>
+                                    <th>Deal</th>
+                                    <th>Hold</th>
+                                    <th>Kalah Harga</th>
+                                    <th>Total FU</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach ($marketings as $m)
+                                    <tr>
+                                        <td>{{ $m->name }}</td>
+                                        <td><span class="badge badge-info">{{ $m->review }}</span></td>
+                                        <td><span class="badge badge-success">{{ $m->deal }}</span></td>
+                                        <td><span class="badge badge-warning">{{ $m->hold }}</span></td>
+                                        <td><span class="badge badge-danger">{{ $m->kalah }}</span></td>
+                                        <td>
+                                            <button class="btn btn-sm btn-primary btn-round btn-detail"
+                                                data-id="{{ $m->id }}">
+                                                {{ $m->total_penawaran }} Detail
+                                            </button>
+                                        </td>
+                                    </tr>
+                                @endforeach
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            {{-- MODAL DETAIL --}}
+            <div class="modal fade" id="modalDetail" tabindex="-1">
+                <div class="modal-dialog modal-lg">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title fw-bold">Detail Penawaran & FU</h5>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                        </div>
+                        <div class="modal-body" id="detailBody">
                         </div>
                     </div>
+                </div>
+            </div>
 
-                    {{-- TABEL UPDATE PENAWARAN --}}
-                    <div class="card shadow-sm mt-4">
-                        <div class="card-header"><div class="card-title">Tabel Update Penawaran</div></div>
-                        <div class="card-body">
-                            <div class="table-responsive">
-                                <table class="table table-bordered text-center align-middle">
-                                    <thead class="table-light">
-                                        <tr>
-                                            <th>Marketing</th>
-                                            <th>Masuk Penawaran</th>
-                                            <th>Deal</th>
-                                            <th>Hold</th>
-                                            <th>Kalah Harga</th>
-                                            <th>Total FU</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        @foreach($marketings as $m)
-                                        <tr>
-                                            <td>{{ $m->name }}</td>
-                                            <td><span class="badge badge-info">{{ $m->review }}</span></td>
-                                            <td><span class="badge badge-success">{{ $m->deal }}</span></td>
-                                            <td><span class="badge badge-warning">{{ $m->hold }}</span></td>
-                                            <td><span class="badge badge-danger">{{ $m->kalah }}</span></td>
-                                            <td>
-                                                <button class="btn btn-sm btn-primary btn-round btn-detail" data-id="{{ $m->id }}">
-                                                    {{ $m->total_penawaran }} Detail
-                                                </button>
-                                            </td>
-                                        </tr>
-                                        @endforeach
-                                    </tbody>
-                                </table>
-                            </div>
-                        </div>
-                    </div>    
-                    
-                    {{-- MODAL DETAIL --}}
-                    <div class="modal fade" id="modalDetail" tabindex="-1">
-                        <div class="modal-dialog modal-lg">
-                            <div class="modal-content">
-                                <div class="modal-header">
-                                    <h5 class="modal-title fw-bold">Detail Penawaran & FU</h5>
-                                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
-                                </div>
-                                <div class="modal-body" id="detailBody">
-                                    </div>
-                            </div>
-                        </div>
+            <div class="card border shadow-sm mt-4">
+                <div class="card-header">
+                    <div class="card-title">Tabel Update FU</div>
+                </div>
+                <div class="card-body">
+                    <div class="table-responsive">
+                        <table class="table table-bordered align-middle text-center">
+                            <thead class="table-light">
+                                <tr>
+                                    <th>No</th>
+                                    <th>Belum Ada Keterangan</th>
+                                    <th>No Respon</th>
+                                    <th>Belum Ada Kebutuhan</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+
+                                <tr>
+                                    <th scope="row">1</th>
+                                    <td>17</td>
+                                    <td>62</td>
+                                    <td>6</td>
+                                </tr>
+
+                                <tr>
+                                    <th scope="row">2</th>
+                                    <td>9</td>
+                                    <td>79</td>
+                                    <td>5</td>
+                                </tr>
+
+                                <tr>
+                                    <th scope="row">3</th>
+                                    <td>16</td>
+                                    <td>84</td>
+                                    <td>15</td>
+                                </tr>
+
+                                <tr>
+                                    <th scope="row">4</th>
+                                    <td>24</td>
+                                    <td>74</td>
+                                    <td>1</td>
+                                </tr>
+
+                                <tr>
+                                    <th scope="row">5</th>
+                                    <td>25</td>
+                                    <td>23</td>
+                                    <td>9</td>
+                                </tr>
+
+                                <!-- TOTAL -->
+                                <tr class="fw-bold table-primary">
+                                    <th>TOTAL</th>
+                                    <td>91</td>
+                                    <td>322</td>
+                                    <td>36</td>
+                                </tr>
+
+                            </tbody>
+                        </table>
                     </div>
+                </div>
+            </div>
+            <div class="card border shadow-sm mt-4">
+                <div class="card-header">
+                    <div class="card-title">Tabel Status Akhir Data</div>
+                </div>
+                <div class="card-body">
+                    <div class="table-responsive">
+                        <table class="table table-bordered align-middle text-center">
+                            <thead class="table-light">
+                                <tr>
+                                    <th>Marketing</th>
+                                    <th>Perpanjangan Sertifikat</th>
+                                    <th>Data Tidak Valid & Tidak Terhubung</th>
+                                    <th>Dapat Email</th>
+                                    <th>Dapat No WA HRD</th>
+                                    <th>Request Compro</th>
+                                    <th>Manja</th>
+                                    <th>Manja Ulang</th>
+                                    <th>Request Permintaan Pelatihan</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @php
+                                    // Inisialisasi total untuk baris bawah
+                                    $t_perpanjangan = 0;
+                                    $t_invalid = 0;
+                                    $t_email = 0;
+                                    $t_wa = 0;
+                                    $t_compro = 0;
+                                    $t_manja = 0;
+                                    $t_manja_ulang = 0;
+                                    $t_pelatihan = 0;
+                                @endphp
 
-                    <div class="card border shadow-sm mt-4">
+                                @foreach ($marketings as $m)
+                                    <tr>
+                                        <td>{{ $m->name }}</th>
+                                        <td>{{ $m->count_perpanjangan }}</td>
+                                        <td>{{ $m->count_invalid }}</td>
+                                        <td>{{ $m->count_email }}</td>
+                                        <td>{{ $m->count_wa }}</td>
+                                        <td>{{ $m->count_compro }}</td>
+                                        <td>{{ $m->count_manja }}</td>
+                                        <td>{{ $m->count_manja_ulang }}</td>
+                                        <td>{{ $m->count_pelatihan }}</td>
+                                    </tr>
+                                    @php
+                                        // Tambahkan ke total keseluruhan
+                                        $t_perpanjangan += $m->count_perpanjangan;
+                                        $t_invalid += $m->count_invalid;
+                                        $t_email += $m->count_email;
+                                        $t_wa += $m->count_wa;
+                                        $t_compro += $m->count_compro;
+                                        $t_manja += $m->count_manja;
+                                        $t_manja_ulang += $m->count_manja_ulang;
+                                        $t_pelatihan += $m->count_pelatihan;
+                                    @endphp
+                                @endforeach
+
+                                <tr class="fw-bold table-primary">
+                                    <th>TOTAL</th>
+                                    <td>{{ $t_perpanjangan }}</td>
+                                    <td>{{ $t_invalid }}</td>
+                                    <td>{{ $t_email }}</td>
+                                    <td>{{ $t_wa }}</td>
+                                    <td>{{ $t_compro }}</td>
+                                    <td>{{ $t_manja }}</td>
+                                    <td>{{ $t_manja_ulang }}</td>
+                                    <td>{{ $t_pelatihan }}</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="card border shadow-sm">
                         <div class="card-header">
-                            <div class="card-title">Tabel Update FU</div>
+                            <div class="card-title">Grafik Ach Target Marketing</div>
                         </div>
                         <div class="card-body">
-                            <div class="table-responsive">
-                                <table class="table table-bordered align-middle text-center">
-                                    <thead class="table-light">
-                                        <tr>
-                                            <th>No</th>
-                                            <th>Belum Ada Keterangan</th>
-                                            <th>No Respon</th>
-                                            <th>Belum Ada Kebutuhan</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-
-                                        <tr>
-                                            <th scope="row">1</th>
-                                            <td>17</td>
-                                            <td>62</td>
-                                            <td>6</td>
-                                        </tr>
-
-                                        <tr>
-                                            <th scope="row">2</th>
-                                            <td>9</td>
-                                            <td>79</td>
-                                            <td>5</td>
-                                        </tr>
-
-                                        <tr>
-                                            <th scope="row">3</th>
-                                            <td>16</td>
-                                            <td>84</td>
-                                            <td>15</td>
-                                        </tr>
-
-                                        <tr>
-                                            <th scope="row">4</th>
-                                            <td>24</td>
-                                            <td>74</td>
-                                            <td>1</td>
-                                        </tr>
-
-                                        <tr>
-                                            <th scope="row">5</th>
-                                            <td>25</td>
-                                            <td>23</td>
-                                            <td>9</td>
-                                        </tr>
-
-                                        <!-- TOTAL -->
-                                        <tr class="fw-bold table-primary">
-                                            <th>TOTAL</th>
-                                            <td>91</td>
-                                            <td>322</td>
-                                            <td>36</td>
-                                        </tr>
-
-                                    </tbody>
-                                </table>
+                            <div style="max-width: 500px; margin: auto;">
+                                <canvas id="achTargetChart"></canvas>
                             </div>
                         </div>
                     </div>
-                    <div class="card border shadow-sm mt-4">
+                </div>
+                <div class="col-md-6">
+                    <div class="card border shadow-sm">
                         <div class="card-header">
-                            <div class="card-title">Tabel Status Akhir Data</div>
+                            <div class="card-title">Produktivitas</div>
                         </div>
                         <div class="card-body">
-                            <div class="table-responsive">
-                                <table class="table table-bordered align-middle text-center">
-                                    <thead class="table-light">
-                                        <tr>
-                                            <th>Marketing</th>
-                                            <th>Perpanjangan Sertifikat</th>
-                                            <th>Data Tidak Valid & Tidak Terhubung</th>
-                                            <th>Dapat Email</th>
-                                            <th>Dapat No WA HRD</th>
-                                            <th>Request Compro</th>
-                                            <th>Manja</th>
-                                            <th>Manja Ulang</th>
-                                            <th>Request Permintaan Pelatihan</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        @php 
-                                            // Inisialisasi total untuk baris bawah
-                                            $t_perpanjangan = 0; $t_invalid = 0; $t_email = 0; $t_wa = 0;
-                                            $t_compro = 0; $t_manja = 0; $t_manja_ulang = 0; $t_pelatihan = 0;
-                                        @endphp
-
-                                        @foreach($marketings as $m)
-                                        <tr>
-                                            <td>{{ $m->name }}</th>
-                                            <td>{{ $m->count_perpanjangan }}</td>
-                                            <td>{{ $m->count_invalid }}</td>
-                                            <td>{{ $m->count_email }}</td>
-                                            <td>{{ $m->count_wa }}</td>
-                                            <td>{{ $m->count_compro }}</td>
-                                            <td>{{ $m->count_manja }}</td>
-                                            <td>{{ $m->count_manja_ulang }}</td>
-                                            <td>{{ $m->count_pelatihan }}</td>
-                                        </tr>
-                                        @php
-                                            // Tambahkan ke total keseluruhan
-                                            $t_perpanjangan += $m->count_perpanjangan;
-                                            $t_invalid      += $m->count_invalid;
-                                            $t_email        += $m->count_email;
-                                            $t_wa           += $m->count_wa;
-                                            $t_compro       += $m->count_compro;
-                                            $t_manja        += $m->count_manja;
-                                            $t_manja_ulang  += $m->count_manja_ulang;
-                                            $t_pelatihan    += $m->count_pelatihan;
-                                        @endphp
-                                        @endforeach
-
-                                        <tr class="fw-bold table-primary">
-                                            <th>TOTAL</th>
-                                            <td>{{ $t_perpanjangan }}</td>
-                                            <td>{{ $t_invalid }}</td>
-                                            <td>{{ $t_email }}</td>
-                                            <td>{{ $t_wa }}</td>
-                                            <td>{{ $t_compro }}</td>
-                                            <td>{{ $t_manja }}</td>
-                                            <td>{{ $t_manja_ulang }}</td>
-                                            <td>{{ $t_pelatihan }}</td>
-                                        </tr>
-                                    </tbody>
-                                </table>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="row">
-                        <div class="col-md-6">
-                            <div class="card border shadow-sm">
-                                <div class="card-header">
-                                    <div class="card-title">Grafik Ach Target Marketing</div>
-                                </div>
-                                <div class="card-body">
-                                    <div style="max-width: 500px; margin: auto;">
-                                        <canvas id="achTargetChart"></canvas>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="col-md-6">
-                            <div class="card border shadow-sm">
-                            <div class="card-header">
-                                <div class="card-title">Produktivitas</div>
-                            </div>
-                            <div class="card-body">
-                                <div class="chart-container">
+                            <div class="chart-container">
                                 <canvas id="multipleLineChart"></canvas>
-                                </div>
                             </div>
-                            </div>
-                        </div>   
-                    </div>                                     
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
+
 
         {{-- ================= SCRIPT ================= --}}
         <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
@@ -304,8 +310,9 @@
                 button.addEventListener('click', function() {
                     const mId = this.getAttribute('data-id');
                     $('#modalDetail').modal('show');
-                    document.getElementById('detailBody').innerHTML = '<p class="text-center">Memuat data...</p>';
-                    
+                    document.getElementById('detailBody').innerHTML =
+                        '<p class="text-center">Memuat data...</p>';
+
                     // Ganti URL ini sesuai route detail Anda
                     fetch(`/marketing-detail/${mId}?start={{ $start }}&end={{ $end }}`)
                         .then(response => response.text())
@@ -370,80 +377,80 @@
                 }
 
                 var multipleLineChart = document.getElementById("multipleLineChart").getContext("2d");
-                    myMultipleLineChart = new Chart(multipleLineChart, {
-                        type: "line",
-                        data: {
-                            labels: ["Marketing 1", "Marketing 2", "Marketing 3", "Marketing 4", "Marketing 5"],
-                            datasets: [{
-                                label: "A",
-                                borderColor: "#1d7af3",
-                                pointBackgroundColor: "#1d7af3",
-                                backgroundColor: "transparent",
-                                fill: false,
-                                borderWidth: 2,
-                                data: [65, 59, 80, 81, 56], // Turun di akhir
-                            }, {
-                                label: "B",
-                                borderColor: "#59d05d",
-                                pointBackgroundColor: "#59d05d",
-                                backgroundColor: "transparent",
-                                fill: false,
-                                borderWidth: 2,
-                                data: [28, 48, 40, 19, 86], // Fluktuatif tajam
-                            }, {
-                                label: "C",
-                                borderColor: "#f3545d",
-                                pointBackgroundColor: "#f3545d",
-                                backgroundColor: "transparent",
-                                fill: false,
-                                borderWidth: 2,
-                                data: [45, 25, 16, 36, 67], // Mulai rendah lalu naik
-                            }, {
-                                label: "D",
-                                borderColor: "#f3c05d",
-                                pointBackgroundColor: "#f3c05d",
-                                backgroundColor: "transparent",
-                                fill: false,
-                                borderWidth: 2,
-                                data: [30, 70, 45, 60, 40], // Naik turun di tengah
-                            }, {
-                                label: "E",
-                                borderColor: "#a052f0",
-                                pointBackgroundColor: "#a052f0",
-                                backgroundColor: "transparent",
-                                fill: false,
-                                borderWidth: 2,
-                                data: [80, 20, 50, 40, 90], // Kontras tinggi
-                            }, {
-                                label: "F",
-                                borderColor: "#00c9ff",
-                                pointBackgroundColor: "#00c9ff",
-                                backgroundColor: "transparent",
-                                fill: false,
-                                borderWidth: 2,
-                                data: [15, 30, 60, 25, 30], // Performa rendah stabil
-                            }],
+                myMultipleLineChart = new Chart(multipleLineChart, {
+                    type: "line",
+                    data: {
+                        labels: ["Marketing 1", "Marketing 2", "Marketing 3", "Marketing 4", "Marketing 5"],
+                        datasets: [{
+                            label: "A",
+                            borderColor: "#1d7af3",
+                            pointBackgroundColor: "#1d7af3",
+                            backgroundColor: "transparent",
+                            fill: false,
+                            borderWidth: 2,
+                            data: [65, 59, 80, 81, 56], // Turun di akhir
+                        }, {
+                            label: "B",
+                            borderColor: "#59d05d",
+                            pointBackgroundColor: "#59d05d",
+                            backgroundColor: "transparent",
+                            fill: false,
+                            borderWidth: 2,
+                            data: [28, 48, 40, 19, 86], // Fluktuatif tajam
+                        }, {
+                            label: "C",
+                            borderColor: "#f3545d",
+                            pointBackgroundColor: "#f3545d",
+                            backgroundColor: "transparent",
+                            fill: false,
+                            borderWidth: 2,
+                            data: [45, 25, 16, 36, 67], // Mulai rendah lalu naik
+                        }, {
+                            label: "D",
+                            borderColor: "#f3c05d",
+                            pointBackgroundColor: "#f3c05d",
+                            backgroundColor: "transparent",
+                            fill: false,
+                            borderWidth: 2,
+                            data: [30, 70, 45, 60, 40], // Naik turun di tengah
+                        }, {
+                            label: "E",
+                            borderColor: "#a052f0",
+                            pointBackgroundColor: "#a052f0",
+                            backgroundColor: "transparent",
+                            fill: false,
+                            borderWidth: 2,
+                            data: [80, 20, 50, 40, 90], // Kontras tinggi
+                        }, {
+                            label: "F",
+                            borderColor: "#00c9ff",
+                            pointBackgroundColor: "#00c9ff",
+                            backgroundColor: "transparent",
+                            fill: false,
+                            borderWidth: 2,
+                            data: [15, 30, 60, 25, 30], // Performa rendah stabil
+                        }],
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        legend: {
+                            position: "top",
                         },
-                        options: {
-                            responsive: true,
-                            maintainAspectRatio: false,
-                            legend: {
-                                position: "top",
-                            },
-                            tooltips: {
-                                mode: "index",
-                                intersect: false,
-                            },
-                            scales: {
-                                yAxes: [{
-                                    ticks: {
-                                        beginAtZero: true,
-                                        suggestedMax: 100 // Memberi ruang di atas grafik
-                                    }
-                                }]
-                            }
+                        tooltips: {
+                            mode: "index",
+                            intersect: false,
                         },
-                    });
+                        scales: {
+                            yAxes: [{
+                                ticks: {
+                                    beginAtZero: true,
+                                    suggestedMax: 100 // Memberi ruang di atas grafik
+                                }
+                            }]
+                        }
+                    },
+                });
             });
         </script>
     @endsection
