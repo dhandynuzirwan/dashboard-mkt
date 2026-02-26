@@ -9,10 +9,36 @@ use Illuminate\Http\Request;
 class DataMasukController extends Controller
 {
     // Menampilkan daftar database data
-    public function index()
+    public function index(Request $request)
     {
 
-    $allData = DataMasuk::with('marketing')->latest()->get();
+    // 1. Tangkap parameter filter & sort
+    $search = $request->input('search');
+    $marketing_id = $request->input('marketing_id');
+    $sumber = $request->input('sumber');
+    $sort_field = $request->input('sort', 'created_at'); // default sort by date
+    $sort_direction = $request->input('direction', 'desc');
+
+
+
+    // 2. Query Data dengan Filter
+    $allData = DataMasuk::with('marketing')
+        ->when($search, function ($query, $search) {
+            return $query->where('perusahaan', 'like', "%{$search}%")
+                         ->orWhere('email', 'like', "%{$search}%");
+        })
+        ->when($marketing_id, function ($query, $marketing_id) {
+            return $query->where('marketing_id', $marketing_id);
+        })
+        ->when($sumber, function ($query, $sumber) {
+            return $query->where('sumber', $sumber);
+        })
+        ->orderBy($sort_field, $sort_direction)
+        ->paginate(10)
+        ->withQueryString(); // Menjaga parameter filter saat pindah halaman
+
+    // 3. Data Pendukung Filter & Statistik
+    $marketings = User::where('role', 'marketing')->get();
 
     // Total semua data
     $totalData = DataMasuk::count();
@@ -23,11 +49,27 @@ class DataMasukController extends Controller
     // Data Manual = selain ADS
     $dataManual = DataMasuk::whereRaw("LOWER(sumber) != ?", ['ads'])->count();
 
+    // Hitung total hari ini
+    $totalToday = DataMasuk::whereDate('created_at', now())->count();
+
+    // Hitung email yang valid (berdasarkan status_email yang Anda miliki)
+    $dataValid = DataMasuk::where('status_email', 'Valid')->count();
+    $validPercentage = $totalData > 0 ? round(($dataValid / $totalData) * 100, 1) : 0;
+
+    // Hitung data yang sudah dikonversi ke tabel Prospeks
+    // (Asumsi: kita cek apakah nama perusahaan di DataMasuk sudah ada di tabel Prospeks)
+    $dataConverted = \App\Models\Prospek::count(); // Atau logika filter spesifik lainnya
+
     return view('data-masuk', compact(
         'allData',
         'totalData',
         'dataAds',
-        'dataManual'
+        'dataManual',
+        'marketings',
+        'totalToday',      // Tambahkan ini
+        'dataValid',       // Tambahkan ini
+        'validPercentage', // Tambahkan ini
+        'dataConverted',    // Tambahkan ini
     ));
     }
 
