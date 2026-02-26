@@ -88,6 +88,14 @@
                                 @endforeach
                             </tbody>
                         </table>
+                        <div class="alert alert-info mt-3">
+                            <strong>Keterangan KPI:</strong><br>
+                            <span class="badge badge-success">≥ 70%</span>
+                            Marketing memenuhi KPI dan menggunakan skema <b>Sesuai KPI</b>.<br><br>
+
+                            <span class="badge badge-danger">&lt; 70%</span>
+                            Marketing tidak memenuhi KPI dan menggunakan skema <b>Kebijakan KPI</b>.
+                        </div>
                     </div>
                 </div>
             </div>

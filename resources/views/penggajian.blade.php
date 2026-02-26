@@ -30,6 +30,7 @@
                                     <th>Target (Rp)</th>
                                     <th>Gaji Pokok</th>
                                     <th>Tunjangan</th>
+                                    <th>Potongan Izin</th>
                                     <th>Action</th>
                                 </tr>
                             </thead>
@@ -42,6 +43,9 @@
                                         <td>Rp {{ number_format($item->target, 0, ',', '.') }}</td>
                                         <td>Rp {{ number_format($item->gaji_pokok, 0, ',', '.') }}</td>
                                         <td>Rp {{ number_format($item->tunjangan, 0, ',', '.') }}</td>
+                                        <td class="text-danger fw-bold">
+                                            - Rp {{ number_format($item->potongan_izin ?? 0, 0, ',', '.') }}
+                                        </td>
                                         <td>
                                             <a href="{{ route('penggajian.edit', $item->id) }}" class="btn btn-info btn-sm">
                                                 Edit
