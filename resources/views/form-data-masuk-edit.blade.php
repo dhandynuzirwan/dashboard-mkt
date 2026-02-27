@@ -88,7 +88,7 @@
 
                             <div class="mt-4">
                                 <button class="btn btn-primary">Update Data</button>
-                                <a href="{{ route('data-masuk') }}" class="btn btn-secondary">Kembali</a>
+                                <a href="{{ route('data-masuk.index') }}" class="btn btn-secondary">Kembali</a> 
                             </div>
 
                         </form>

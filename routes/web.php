@@ -95,9 +95,10 @@ Route::middleware('auth')->group(function () {
         Route::post('/prospek/store', [ProspekController::class, 'store'])->name('prospek.store');
 
         // Pengelolaan Data Masuk
-        Route::get('/data-masuk', [DataMasukController::class, 'index'])->name('data-masuk.index'); // Tambahkan ini!
+        Route::get('/data-masuk', [DataMasukController::class, 'index'])->name('data-masuk.index'); 
         Route::get('/form-data-masuk', [DataMasukController::class, 'create'])->name('form-data-masuk');
         Route::post('/data-masuk/store', [DataMasukController::class, 'store'])->name('data-masuk.store');
+        
 
         // ================= EDIT =================
         Route::get('/data-masuk/{id}/edit', [DataMasukController::class, 'edit'])

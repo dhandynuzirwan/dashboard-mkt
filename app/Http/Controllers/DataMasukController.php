@@ -152,7 +152,7 @@ class DataMasukController extends Controller
             'sumber' => $request->sumber,
         ]);
 
-        return redirect()->route('data-masuk')
+        return redirect()->route('data-masuk.index')
             ->with('success', 'Data berhasil diupdate');
     }
 
@@ -162,7 +162,7 @@ class DataMasukController extends Controller
         $data = DataMasuk::findOrFail($id);
         $data->delete();
 
-        return redirect()->route('data-masuk')
+        return redirect()->route('data-masuk.index')
             ->with('success', 'Data berhasil dihapus');
     }
 }
