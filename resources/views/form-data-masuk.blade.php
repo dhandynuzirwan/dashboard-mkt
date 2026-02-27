@@ -72,68 +72,66 @@
         </div>
     </div>
 
-@endsection
+    @push('scripts')
+        <script>
+            $(document).ready(function() {
+                let rowIdx = 1;
 
-@push('scripts')
-    <script>
-        $(document).ready(function() {
-            let rowIdx = 1;
+                function createRow(index) {
+                    return `<tr>
+                <td><input type="text" name="rows[${index}][perusahaan]" class="form-control paste-input"></td>
+                <td><input type="text" name="rows[${index}][telp]" class="form-control"></td>
+                <td><input type="text" name="rows[${index}][unit_bisnis]" class="form-control"></td>
+                <td><input type="email" name="rows[${index}][email]" class="form-control"></td>
+                <td><input type="text" name="rows[${index}][status_email]" class="form-control"></td>
+                <td><input type="text" name="rows[${index}][wa_pic]" class="form-control"></td>
+                <td><input type="text" name="rows[${index}][wa_baru]" class="form-control"></td>
+                <td><input type="text" name="rows[${index}][lokasi]" class="form-control"></td>
+                <td><input type="text" name="rows[${index}][sumber]" class="form-control"></td>
+                <td><button type="button" class="btn btn-danger btn-sm remove-row">×</button></td>
+            </tr>`;
+                }
 
-            function createRow(index) {
-                return `<tr>
-            <td><input type="text" name="rows[${index}][perusahaan]" class="form-control paste-input"></td>
-            <td><input type="text" name="rows[${index}][telp]" class="form-control"></td>
-            <td><input type="text" name="rows[${index}][unit_bisnis]" class="form-control"></td>
-            <td><input type="email" name="rows[${index}][email]" class="form-control"></td>
-            <td><input type="text" name="rows[${index}][status_email]" class="form-control"></td>
-            <td><input type="text" name="rows[${index}][wa_pic]" class="form-control"></td>
-            <td><input type="text" name="rows[${index}][wa_baru]" class="form-control"></td>
-            <td><input type="text" name="rows[${index}][lokasi]" class="form-control"></td>
-            <td><input type="text" name="rows[${index}][sumber]" class="form-control"></td>
-            <td><button type="button" class="btn btn-danger btn-sm remove-row">×</button></td>
-        </tr>`;
-            }
+                $('#addRow').click(function() {
+                    $('#tableDataMasuk tbody').append(createRow(rowIdx++));
+                });
 
-            $('#addRow').click(function() {
-                $('#tableDataMasuk tbody').append(createRow(rowIdx++));
-            });
+                $(document).on('paste', '.paste-input', function(e) {
+                    e.preventDefault();
+                    let cbData = (e.originalEvent || e).clipboardData.getData('text');
+                    let lines = cbData.split(/\r?\n/);
+                    let currentRow = $(this).closest('tr');
 
-            $(document).on('paste', '.paste-input', function(e) {
-                e.preventDefault();
-                let cbData = (e.originalEvent || e).clipboardData.getData('text');
-                let lines = cbData.split(/\r?\n/);
-                let currentRow = $(this).closest('tr');
+                    lines.forEach((line) => {
+                        if (line.trim() === '') return;
+                        let cols = line.split('\t');
 
-                lines.forEach((line) => {
-                    if (line.trim() === '') return;
-                    let cols = line.split('\t');
-
-                    if (currentRow.length === 0) {
-                        $('#tableDataMasuk tbody').append(createRow(rowIdx++));
-                        currentRow = $('#tableDataMasuk tbody tr').last();
-                    }
-
-                    let inputs = currentRow.find('input');
-
-                    // Logika pemetaan kolom Excel (Asumsi urutan Excel: Perusahaan, Telp, Unit, Email, Status, WA, Lokasi, Sumber)
-                    // Indeks input: 0=Perus, 1=Telp, 2=Unit, 3=Email, 4=Status, 5=WA_PIC, 6=WA_BARU (kita lewati), 7=Lokasi, 8=Sumber
-                    let colMap = [0, 1, 2, 3, 4, 5, 7, 8];
-
-                    cols.forEach((val, j) => {
-                        let targetInputIdx = colMap[j];
-                        if (inputs.eq(targetInputIdx).length) {
-                            inputs.eq(targetInputIdx).val(val.trim());
+                        if (currentRow.length === 0) {
+                            $('#tableDataMasuk tbody').append(createRow(rowIdx++));
+                            currentRow = $('#tableDataMasuk tbody tr').last();
                         }
-                    });
 
-                    currentRow = currentRow.next();
+                        let inputs = currentRow.find('input');
+
+                        // Logika pemetaan kolom Excel (Asumsi urutan Excel: Perusahaan, Telp, Unit, Email, Status, WA, Lokasi, Sumber)
+                        // Indeks input: 0=Perus, 1=Telp, 2=Unit, 3=Email, 4=Status, 5=WA_PIC, 6=WA_BARU (kita lewati), 7=Lokasi, 8=Sumber
+                        let colMap = [0, 1, 2, 3, 4, 5, 7, 8];
+
+                        cols.forEach((val, j) => {
+                            let targetInputIdx = colMap[j];
+                            if (inputs.eq(targetInputIdx).length) {
+                                inputs.eq(targetInputIdx).val(val.trim());
+                            }
+                        });
+
+                        currentRow = currentRow.next();
+                    });
+                });
+
+                $(document).on('click', '.remove-row', function() {
+                    $(this).closest('tr').remove();
                 });
             });
-
-            $(document).on('click', '.remove-row', function() {
-                $(this).closest('tr').remove();
-            });
-        });
-    </script>
-@endpush
+        </script>
+    @endpush
 @endsection

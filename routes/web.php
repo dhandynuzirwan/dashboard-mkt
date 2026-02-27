@@ -10,6 +10,7 @@ use App\Http\Controllers\PenggajianController;
 use App\Http\Controllers\ProspekController;
 use App\Http\Controllers\RevenueController;
 use App\Http\Controllers\SalaryController;
+use App\Http\Controllers\UserController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
@@ -171,25 +172,15 @@ Route::middleware('auth')->group(function () {
             return view('form-tambah-pengguna');
         })->name('form-tambah-pengguna');
 
-        Route::post('/user/store', function (Request $request) {
-            $request->validate([
-                'name' => 'required|string|max:255',
-                'email' => 'required|email|unique:users,email',
-                'password' => 'required|min:6',
-                'role' => 'required|in:superadmin,admin,marketing',
-                'fingerspot_id' => 'nullable|string|unique:users,fingerspot_id',
-            ]);
+        // Route yang sudah ada
+        Route::get('/user', [UserController::class, 'index'])->name('user');
+        Route::get('/user/create', [UserController::class, 'create'])->name('user.create');
+        Route::post('/user/store', [UserController::class, 'store'])->name('user.store');
 
-            \App\Models\User::create([
-                'name' => $request->name,
-                'email' => $request->email,
-                'password' => $request->password, // Auto hash jika diatur di model
-                'role' => $request->role,
-                'fingerspot_id' => $request->fingerspot_id,
-            ]);
-
-            return redirect()->route('user')->with('success', 'User berhasil ditambahkan');
-        })->name('user.store');
+        // Tambahkan ini untuk fungsi Edit & Delete
+        Route::get('/user/edit/{id}', [UserController::class, 'edit'])->name('user.edit');
+        Route::put('/user/update/{id}', [UserController::class, 'update'])->name('user.update');
+        Route::delete('/user/delete/{id}', [UserController::class, 'destroy'])->name('user.destroy');
 
         // Penggajian & Absensi
         // Grouping agar URL lebih teratur

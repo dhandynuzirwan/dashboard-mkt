@@ -47,9 +47,25 @@
                                                 <td>-</td>
                                                 <td>******</td>
                                                 <td>{{ ucfirst($user->role) }}</td>
-                                                <td>
-                                                    <button class="btn btn-info btn-sm">Edit</button>
-                                                    <button class="btn btn-danger btn-sm">Delete</button>
+                                                <td class="text-center">
+                                                    <div class="d-flex justify-content-center align-items-center" style="gap: 5px;">
+                                                        
+                                                        {{-- Tombol Edit --}}
+                                                        <a href="{{ route('user.edit', $user->id) }}" class="btn btn-info btn-sm">
+                                                            <i class="fas fa-edit"></i> Edit
+                                                        </a>
+
+                                                        {{-- Tombol Delete --}}
+                                                        <form action="{{ route('user.destroy', $user->id) }}" method="POST" 
+                                                            onsubmit="return confirm('Yakin ingin menghapus {{ $user->name }}?')">
+                                                            @csrf
+                                                            @method('DELETE')
+                                                            <button type="submit" class="btn btn-danger btn-sm">
+                                                                <i class="fas fa-trash"></i> Delete
+                                                            </button>
+                                                        </form>
+
+                                                    </div>
                                                 </td>
                                             </tr>
                                         @endforeach
