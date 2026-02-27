@@ -10,7 +10,7 @@ class Prospek extends Model
     use HasFactory;
 
     protected $fillable = [
-        'marketing_id', 'tanggal_prospek', 'perusahaan', 'telp', 'email', 
+        'marketing_id', 'tanggal_prospek', 'perusahaan', 'telp', 'telp_baru', 'email', 
         'jabatan', 'nama_pic', 'wa_pic', 'wa_baru', 'lokasi', 
         'sumber', 'update_terakhir', 'status', 'deskripsi', 'catatan'
     ];

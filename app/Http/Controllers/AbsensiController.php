@@ -16,13 +16,26 @@ use SimpleXLSX; // Pastikan ini ada jika SimpleXLSX tidak pakai namespace
 
 class AbsensiController extends Controller
 {
-    public function index() 
-    {
-        // Gunakan 'absensi.index' jika filenya ada di folder resources/views/absensi/index.blade.php
-        $absensi = AbsensiLog::with('user')->orderBy('tanggal', 'desc')->paginate(10);
-        $users = User::all();
 
-        // Tambahkan ini
+    public function index(Request $request) 
+    {
+        $query = AbsensiLog::with('user');
+
+        // Filter Berdasarkan Rentang Tanggal
+        if ($request->filled('start_date')) {
+            $query->where('tanggal', '>=', $request->start_date);
+        }
+        if ($request->filled('end_date')) {
+            $query->where('tanggal', '<=', $request->end_date);
+        }
+
+        // Filter Berdasarkan Karyawan (Opsional, tapi berguna karena data $users sudah ada)
+        if ($request->filled('user_id')) {
+            $query->where('user_id', $request->user_id);
+        }
+
+        $absensi = $query->orderBy('tanggal', 'desc')->paginate(10);
+        $users = User::all();
         $perizinans = Perizinan::with('user')->latest()->get();
         
         return view('absensi', compact('absensi', 'users', 'perizinans'));

@@ -35,11 +35,11 @@
                                     <tr>
                                         <th style="width: 200px;">Perusahaan</th>
                                         <th style="width: 150px;">Telp</th>
+                                        <th style="width: 150px;">Telp Baru</th>
                                         <th style="width: 200px;">Email</th>
                                         <th style="width: 150px;">Jabatan</th>
                                         <th style="width: 200px;">Nama HRD/PIC</th>
                                         <th style="width: 150px;">WA HRD/PIC</th>
-                                        <th style="width: 150px;">WA Baru</th>
                                         <th style="width: 200px;">Lokasi</th>
                                         <th style="width: 150px;">Sumber</th>
                                         <th style="width: 150px;">Update Terakhir</th>
@@ -54,11 +54,11 @@
                                         <td><input type="text" name="rows[0][perusahaan]"
                                                 class="form-control paste-input" placeholder="Paste di sini"></td>
                                         <td><input type="text" name="rows[0][telp]" class="form-control"></td>
+                                        <td><input type="text" name="rows[0][telp_baru]" class="form-control"></td>
                                         <td><input type="email" name="rows[0][email]" class="form-control"></td>
                                         <td><input type="text" name="rows[0][jabatan]" class="form-control"></td>
                                         <td><input type="text" name="rows[0][nama_pic]" class="form-control"></td>
                                         <td><input type="text" name="rows[0][wa_pic]" class="form-control"></td>
-                                        <td><input type="text" name="rows[0][wa_baru]" class="form-control"></td>
                                         <td><input type="text" name="rows[0][lokasi]" class="form-control"></td>
                                         <td><input type="text" name="rows[0][sumber]" class="form-control"></td>
                                         <td><input type="text" name="rows[0][update_terakhir]" class="form-control"></td>
@@ -96,11 +96,11 @@
                 return `<tr>
             <td><input type="text" name="rows[${index}][perusahaan]" class="form-control paste-input"></td>
             <td><input type="text" name="rows[${index}][telp]" class="form-control"></td>
+            <td><input type="text" name="rows[${index}][telp_baru]" class="form-control"></td>
             <td><input type="text" name="rows[${index}][email]" class="form-control"></td>
             <td><input type="text" name="rows[${index}][jabatan]" class="form-control"></td>
             <td><input type="text" name="rows[${index}][nama_pic]" class="form-control"></td>
             <td><input type="text" name="rows[${index}][wa_pic]" class="form-control"></td>
-            <td><input type="text" name="rows[${index}][wa_baru]" class="form-control"></td>
             <td><input type="text" name="rows[${index}][lokasi]" class="form-control"></td>
             <td><input type="text" name="rows[${index}][sumber]" class="form-control"></td>
             <td><input type="text" name="rows[${index}][update_terakhir]" class="form-control"></td>

@@ -44,6 +44,10 @@
                                 <label>No Telp</label>
                                 <input type="text" name="telp" value="{{ $prospek->telp }}" class="form-control">
                             </div>
+                            <div class="col-md-4">
+                                <label>No Telp Baru</label>
+                                <input type="text" name="telp_baru" value="{{ $prospek->telp_baru }}" class="form-control">
+                            </div>
 
                             <div class="col-md-4">
                                 <label>Email</label>
@@ -63,11 +67,6 @@
                             <div class="col-md-4">
                                 <label>WA PIC</label>
                                 <input type="text" name="wa_pic" value="{{ $prospek->wa_pic }}" class="form-control">
-                            </div>
-
-                            <div class="col-md-4">
-                                <label>WA Baru</label>
-                                <input type="text" name="wa_baru" value="{{ $prospek->wa_baru }}" class="form-control">
                             </div>
 
                             <div class="col-md-6">

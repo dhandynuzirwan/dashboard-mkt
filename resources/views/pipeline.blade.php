@@ -183,11 +183,11 @@
                                 <th>DATE</th>
                                 <th>PERUSAHAAN</th>
                                 <th>NO TELP</th>
+                                <th>NO TELP BARU</th>
                                 <th>EMAIL</th>
                                 <th>JABATAN</th>
                                 <th>NAMA</th>
                                 <th>WA PIC</th>
-                                <th>WA BARU</th>
                                 <th>ALAMAT PERUSAHAAN</th>
                                 <th>SOURCE</th>
                                 <th>UPDATE FU</th>
@@ -212,11 +212,11 @@
                                     <td>{{ $data->tanggal_prospek }}</td>
                                     <td>{{ $data->perusahaan }}</td>
                                     <td>{{ $data->telp }}</td>
+                                    <td>{{ $data->telp_baru }}</td>
                                     <td>{{ $data->email }}</td>
                                     <td>{{ $data->jabatan }}</td>
                                     <td>{{ $data->nama_pic }}</td>
                                     <td>{{ $data->wa_pic }}</td>
-                                    <td>{{ $data->wa_baru }}</td>
                                     <td>{{ $data->lokasi }}</td>
                                     <td>{{ $data->sumber }}</td>
                                     <td>{{ $data->update_terakhir }}</td>

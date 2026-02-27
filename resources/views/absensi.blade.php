@@ -3,31 +3,49 @@
 @section('content')
 <div class="container">
     <div class="page-inner">
-        <div class="d-flex align-items-left align-items-md-center flex-column flex-md-row pt-2 pb-4">
+        <div class="d-flex align-items-left align-items-md-center flex-column flex-md-row mb-3">
             <div>
-                <h3 class="fw-bold mb-3">Manajemen Absensi</h3>
-                <h6 class="op-7 mb-2">Log Kehadiran & Sinkronisasi Mesin Fingerspot</h6>
-                <div class="badge badge-info shadow-sm">
+                <h3 class="fw-bold mb-1">Monitoring Absensi</h3>
+                <h6 class="op-7 mb-2">Log absensi karyawan terintegrasi Fingerspot</h6>
+                <div class="badge badge-info">
                     <i class="fas fa-clock me-2"></i> <span id="realtime-clock">Memuat waktu...</span>
                 </div>
             </div>
+        </div>
 
-            <div class="ms-md-auto py-2 py-md-0 d-flex gap-2">
-                <form action="{{ route('absensi.sync') }}" method="POST" class="d-inline">
-                    @csrf
-                    <button type="submit" class="btn btn-success btn-round btn-sm">
-                        <i class="fas fa-sync"></i> Sync Fingerspot.io
-                    </button>
-                </form>
-                
-                <button class="btn btn-info btn-round btn-sm text-white" data-bs-toggle="modal" data-bs-target="#modalImportIzin">
-                    <i class="fas fa-file-medical"></i> Import Izin (CSV)
-                </button>
+        {{-- Toolbar Filter gaya Pipeline --}}
+        <div class="card p-2 mb-3 shadow-none border" style="background: #f9fbfd;">
+            <form action="{{ route('absensi') }}" method="GET" class="d-flex flex-wrap gap-2">
+                {{-- Filter Tanggal Mulai --}}
+                <div class="form-group p-0 m-0">
+                    <input type="date" name="start_date" class="form-control form-control-sm"
+                        value="{{ request('start_date') }}" title="Tanggal Mulai">
+                </div>
 
-                <button class="btn btn-primary btn-round btn-sm" data-bs-toggle="modal" data-bs-target="#modalImport">
-                    <i class="fas fa-file-import"></i> Import Absensi (CSV)
+                {{-- Filter Tanggal Akhir --}}
+                <div class="form-group p-0 m-0">
+                    <input type="date" name="end_date" class="form-control form-control-sm"
+                        value="{{ request('end_date') }}" title="Tanggal Akhir">
+                </div>
+
+                {{-- Filter Karyawan --}}
+                <div class="form-group p-0 m-0">
+                    <select name="user_id" class="form-select form-select-sm">
+                        <option value="">Semua Karyawan</option>
+                        @foreach ($users as $u)
+                            <option value="{{ $u->id }}" {{ request('user_id') == $u->id ? 'selected' : '' }}>
+                                {{ $u->name }}
+                            </option>
+                        @endforeach
+                    </select>
+                </div>
+
+                {{-- Tombol Aksi --}}
+                <button type="submit" class="btn btn-primary btn-sm btn-round">
+                    <i class="fas fa-filter"></i> Filter
                 </button>
-            </div>
+                <a href="{{ route('absensi') }}" class="btn btn-border btn-round btn-sm">Reset</a>
+            </form>
         </div>
 
         <div class="row">
