@@ -1,15 +1,52 @@
 @extends('layouts.app') @section('content')
     <div class="container">
         <div class="page-inner">
-            <div class="d-flex align-items-left align-items-md-center flex-column flex-md-row pt-2 pb-4">
-                <div>
-                    <h3 class="fw-bold mb-3">Simulasi Gaji</h3>
-                    {{-- <h6 class="op-7 mb-2">Laporan Terintegrasi & Pipeline Prospek</h6> --}}
+            <div class="d-flex align-items-left align-items-md-center flex-column flex-md-row mb-3">
+            <div>
+                <h3 class="fw-bold mb-1">Simulasi Gaji</h3>
+                <h6 class="op-7 mb-2">Monitoring simulasi gaji karyawan berdasarkan KPI</h6>
+                <div class="badge badge-info">
+                    <i class="fas fa-clock me-2"></i> <span id="realtime-clock">Memuat waktu...</span>
                 </div>
-                {{-- <div class="ms-md-auto py-2 py-md-0">
-                        <a href="#" class="btn btn-label-info btn-round me-2">Manage</a>
-                        <a href="#" class="btn btn-primary btn-round">Add Customer</a>
-                    </div> --}}
+            </div>
+        </div>
+
+            {{-- Toolbar Filter gaya Pipeline --}}
+            <div class="card p-2 mb-3 shadow-none border" style="background: #f9fbfd;">
+                <form action="{{ route('simulasi-gaji') }}" method="GET" class="d-flex flex-wrap gap-2">
+                    {{-- Filter Tanggal Mulai --}}
+                    <div class="form-group p-0 m-0">
+                        <input type="date" name="start_date" class="form-control form-control-sm"
+                            value="{{ request('start_date') }}" title="Tanggal Mulai">
+                    </div>
+
+                    {{-- Filter Tanggal Akhir --}}
+                    <div class="form-group p-0 m-0">
+                        <input type="date" name="end_date" class="form-control form-control-sm"
+                            value="{{ request('end_date') }}" title="Tanggal Akhir">
+                    </div>
+
+                    {{-- Filter Karyawan --}}
+                    @if(auth()->user()->role !== 'marketing')
+                    <div class="col-md-3">
+                        {{-- <label class="small fw-bold">Pilih Marketing</label> --}}
+                        <select name="marketing_id" class="form-select form-select-sm">
+                            <option value="">Semua Marketing</option>
+                            @foreach($all_marketing as $m)
+                                <option value="{{ $m->id }}" {{ request('marketing_id') == $m->id ? 'selected' : '' }}>
+                                    {{ $m->name }}
+                                </option>
+                            @endforeach
+                        </select>
+                    </div>
+                    @endif
+
+                    {{-- Tombol Aksi --}}
+                    <button type="submit" class="btn btn-primary btn-sm btn-round">
+                        <i class="fas fa-filter"></i> Filter
+                    </button>
+                    <a href="{{ route('absensi') }}" class="btn btn-border btn-round btn-sm">Reset</a>
+                </form>
             </div>
             <div class="card">
                 <div class="card-header">
@@ -101,4 +138,14 @@
             </div>
         </div>
     </div>
+
+<script>
+    function updateClock() {
+        const now = new Date();
+        const options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric', hour: '2-digit', minute: '2-digit', second: '2-digit', hour12: false };
+        document.getElementById('realtime-clock').innerText = now.toLocaleDateString('id-ID', options) + ' WIB';
+    }
+    setInterval(updateClock, 1000);
+    updateClock();
+</script>
 @endsection

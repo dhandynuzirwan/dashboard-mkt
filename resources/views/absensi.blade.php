@@ -71,6 +71,16 @@
             </div>
         </div> 
 
+        {{-- tombol import --}}
+        <div class="mb-3">
+            <button class="btn btn-success btn-sm btn-round" data-bs-toggle="modal" data-bs-target="#modalImport">
+                <i class="fas fa-file-import me-1"></i> Import Absensi
+            </button>
+            <button class="btn btn-info btn-sm btn-round text-white" data-bs-toggle="modal" data-bs-target="#modalImportIzin">
+                <i class="fas fa-file-import me-1"></i> Import Perizinan
+            </button>
+        </div>
+
         <div class="row">
             <div class="col-md-12">
                 @if(session('success'))
