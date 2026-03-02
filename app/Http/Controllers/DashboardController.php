@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Cta;
 use App\Models\User;
 use Illuminate\Http\Request;
 
@@ -13,7 +14,17 @@ class DashboardController extends Controller
         $start = $request->query('start_date', now()->startOfMonth()->format('Y-m-d'));
         $end = $request->query('end_date', now()->endOfMonth()->format('Y-m-d'));
         $marketing_filter = $request->query('marketing_id');
-        $hariEfektif = 22; 
+        // --- LOGIKA HITUNG HARI EFEKTIF KERJA (Senin-Jumat) BERDASARKAN FILTER ---
+        $startDate = \Carbon\Carbon::parse($start);
+        $endDate = \Carbon\Carbon::parse($end);
+        $hariEfektif = 0;
+
+        // Looping dari tanggal start sampai end
+        for ($date = $startDate->copy(); $date->lte($endDate); $date->addDay()) {
+            if ($date->isWeekday()) { // Mengecek apakah hari kerja (Senin-Jumat)
+                $hariEfektif++;
+            }
+        } 
 
         // 2. Ambil User Marketing
         $query = \App\Models\User::where('role', 'marketing');
@@ -22,19 +33,41 @@ class DashboardController extends Controller
         }
         $users = $query->get();
 
+        // --- 3a. LOGIKA STATISTIK RINGKASAN (UNTUK CARD DI ATAS) ---
+        $statsQuery = Cta::whereBetween('created_at', [$start, $end]);
+        
+        // Jika ada filter marketing, filter juga statistik globalnya
+        if ($marketing_filter) {
+            $statsQuery->whereHas('prospek', function($q) use ($marketing_filter) {
+                $q->where('marketing_id', $marketing_filter);
+            });
+        }
+
+        // Kita gunakan clone agar query builder tidak tercampur antara count dan sum
+        $stat_total_qty   = (clone $statsQuery)->count();
+        $stat_deal_qty    = (clone $statsQuery)->where('status_penawaran', 'deal')->count();
+        $stat_total_nilai = (clone $statsQuery)->sum('harga_penawaran');
+        $stat_deal_nilai  = (clone $statsQuery)->where('status_penawaran', 'deal')->sum('harga_penawaran');
+
         // 3. MAPPING DATA UNTUK TABEL PROGRESS & TABEL STATUS AKHIR
         $marketings = $users->map(function ($user) use ($start, $end, $hariEfektif) {
             $gaji = \App\Models\Penggajian::where('user_id', $user->id)->first();
             $targetCallHarian = $gaji->target_call ?? 0;
 
             $user->target_total = $targetCallHarian * $hariEfektif;
+
+            // Kita ambil data CTA terlebih dahulu
+            $cta = \App\Models\Cta::whereHas('prospek', function ($q) use ($user) {
+                $q->where('marketing_id', $user->id);
+            })->whereBetween('created_at', [$start, $end])->get();
+
+            // Pencapaian dihitung dari jumlah penawaran (CTA) yang dibuat
+            $user->pencapaian = $cta->count();
+            $user->ach_persen = ($user->target_total > 0) ? ($user->pencapaian / $user->target_total) * 100 : 0;
             
             // Ambil semua prospek user ini dalam range tanggal
             $prospeks = \App\Models\Prospek::where('marketing_id', $user->id)
                         ->whereBetween('created_at', [$start, $end])->get();
-
-            $user->pencapaian = $prospeks->count();
-            $user->ach_persen = ($user->target_total > 0) ? ($user->pencapaian / $user->target_total) * 100 : 0;
 
             // --- LOGIKA UNTUK TABEL STATUS AKHIR DATA ---
             // Pastikan string status di bawah ini sama persis dengan yang ada di database/Faker
@@ -111,7 +144,8 @@ class DashboardController extends Controller
 
         return view('dashboard-progress', compact(
             'marketings', 'all_marketing', 'start', 'end', 
-            'pieLabels', 'pieData', 'lineLabels', 'lineDatasets'
+            'pieLabels', 'pieData', 'lineLabels', 'lineDatasets',
+            'stat_total_qty', 'stat_deal_qty', 'stat_total_nilai', 'stat_deal_nilai'
         ));
     }
 

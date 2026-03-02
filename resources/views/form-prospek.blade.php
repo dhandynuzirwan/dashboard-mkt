@@ -10,6 +10,16 @@
                         sekaligus dari Excel.</p>
                 </div>
                 <div class="card-body">
+                    {{-- Tambahkan baris kode ini --}}
+                    @if ($errors->any())
+                        <div class="alert alert-danger">
+                            <ul class="mb-0">
+                                @foreach ($errors->all() as $error)
+                                    <li>{{ $error }}</li>
+                                @endforeach
+                            </ul>
+                        </div>
+                    @endif
                     <form id="bulkForm" action="{{ route('prospek.store') }}" method="POST">
                         @csrf
                         <div class="row mb-4">

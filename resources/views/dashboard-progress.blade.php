@@ -4,9 +4,125 @@
 
             <div class="container">
                 <div class="page-inner">
+                    <div class="d-flex align-items-left align-items-md-center flex-column flex-md-row mb-3">
+                        <div>
+                            <h3 class="fw-bold mb-1">Dashboard Marketing</h3>
+                            <h6 class="op-7 mb-2">Laporan Terintegrasi & Progress Marketing</h6>
+                            <div class="badge badge-info">
+                                <i class="fas fa-clock me-2"></i> <span id="realtime-clock">Memuat waktu...</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    {{-- STATISTIC CARDS --}}
+                    <div class="row">
+                        <div class="col-sm-6 col-md-3">
+                            <div class="card card-stats card-round card-animate">
+                                <div class="card-body">
+                                    <div class="row align-items-center">
+                                        <div class="col-icon">
+                                            <div class="icon-big text-center icon-primary bubble-shadow-small">
+                                                <i class="fas fa-file-invoice-dollar"></i>
+                                            </div>
+                                        </div>
+                                        <div class="col col-stats ms-3 ms-sm-0">
+                                            <div class="numbers">
+                                                <p class="card-category">Total Penawaran</p>
+                                                <h4 class="card-title">{{ number_format($stat_total_qty) }}</h4>
+                                                <p class="text-muted small mb-0">
+                                                    <i class="fas fa-sync-alt fa-spin me-1"></i> 
+                                                    {{ $marketings->sum('under_review') }} Masih di-review
+                                                </p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-sm-6 col-md-3">
+                            <div class="card card-stats card-round card-animate">
+                                <div class="card-body">
+                                    <div class="row align-items-center">
+                                        <div class="col-icon">
+                                            <div class="icon-big text-center icon-success bubble-shadow-small">
+                                                <i class="fas fa-handshake"></i>
+                                            </div>
+                                        </div>
+                                        <div class="col col-stats ms-3 ms-sm-0">
+                                            <div class="numbers">
+                                                <p class="card-category">Total Deal</p>
+                                                <h4 class="card-title">{{ number_format($stat_deal_qty) }}</h4>
+                                                <p class="text-success small mb-0">
+                                                    <i class="fas fa-chart-line me-1"></i>
+                                                    @php
+                                                        $rate = $stat_total_qty > 0 ? ($stat_deal_qty / $stat_total_qty) * 100 : 0;
+                                                    @endphp
+                                                    {{ number_format($rate, 1) }}% Closing Rate
+                                                </p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-sm-6 col-md-3">
+                            <div class="card card-stats card-round card-animate">
+                                <div class="card-body">
+                                    <div class="row align-items-center">
+                                        <div class="col-icon">
+                                            <div class="icon-big text-center icon-info bubble-shadow-small">
+                                                <i class="fas fa-coins"></i>
+                                            </div>
+                                        </div>
+                                        <div class="col col-stats ms-3 ms-sm-0">
+                                            <div class="numbers">
+                                                <p class="card-category">Nilai Penawaran</p>
+                                                <h4 class="card-title" style="font-size: 1.1rem;">Rp {{ number_format($stat_total_nilai, 0, ',', '.') }}</h4>
+                                                <p class="text-muted small mb-0">
+                                                    @php
+                                                        $avg = $stat_total_qty > 0 ? $stat_total_nilai / $stat_total_qty : 0;
+                                                    @endphp
+                                                    Avg: Rp {{ number_format($avg/1000000, 1) }}Jt / Prospek
+                                                </p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-sm-6 col-md-3">
+                            <div class="card card-stats card-round border-success card-animate" style="border-width: 2px;">
+                                <div class="card-body">
+                                    <div class="row align-items-center">
+                                        <div class="col-icon">
+                                            <div class="icon-big text-center icon-success bubble-shadow-small">
+                                                <i class="fas fa-money-bill-wave"></i>
+                                            </div>
+                                        </div>
+                                        <div class="col col-stats ms-3 ms-sm-0">
+                                            <div class="numbers">
+                                                <p class="card-category">Nilai Deal</p>
+                                                <h4 class="card-title text-success" style="font-size: 1.1rem;">Rp {{ number_format($stat_deal_nilai, 0, ',', '.') }}</h4>
+                                                <p class="text-primary small mb-0 font-weight-bold">
+                                                    <i class="fas fa-check-double me-1"></i>
+                                                    @php
+                                                        $realization = $stat_total_nilai > 0 ? ($stat_deal_nilai / $stat_total_nilai) * 100 : 0;
+                                                    @endphp
+                                                    {{ number_format($realization, 1) }}% Nilai Terwujud
+                                                </p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
 
                     {{-- FILTER SECTION --}}
-                    <div class="card mb-4">
+                    {{-- <div class="card mb-4">
                         <div class="card-body">
                             <form action="{{ route('dashboard.progress') }}" method="GET">
                                 <div class="row align-items-end">
@@ -37,6 +153,33 @@
                                 </div>
                             </form>
                         </div>
+                    </div> --}}
+
+                    <div class="card p-2 mb-3 shadow-none border" style="background: #f9fbfd;">
+                        <form action="{{ route('dashboard.progress') }}" method="GET" class="d-flex flex-wrap gap-2">
+                            <div class="form-group p-0 m-0">
+                                 {{-- <label>Dari Tanggal</label> --}}
+                                <input type="date" name="start_date" class="form-control form-control-sm"
+                                    value="{{ $start }}" title="Tanggal Mulai">
+                            </div>
+                            <div class="form-group p-0 m-0">
+                                {{-- <label>Sampai Tanggal</label> --}}
+                                <input type="date" name="end_date" class="form-control form-control-sm"
+                                    value="{{ $end }}" title="Tanggal Akhir">
+                            </div>
+                            <div class="form-group p-0 m-0">
+                                <select name="marketing_id" class="form-select form-select-sm">
+                                    <option value="">Semua Marketing</option>
+                                    @foreach($all_marketing as $m)
+                                        <option value="{{ $m->id }}" {{ request('marketing_id') == $m->id ? 'selected' : '' }}>{{ $m->name }}</option>
+                                    @endforeach
+                                </select>
+                            </div>
+                            <button type="submit" class="btn btn-primary btn-sm btn-round">
+                                <i class="fas fa-filter"></i> Filter
+                            </button>
+                            <a href="{{ route('dashboard.progress') }}" class="btn btn-border btn-round btn-sm">Reset</a>
+                        </form>
                     </div>
 
                     {{-- TABEL PROGRESS MARKETING --}}
@@ -265,7 +408,7 @@
                                     <div class="card-title">Grafik Ach Target Marketing</div>
                                 </div>
                                 <div class="card-body">
-                                    <div style="max-width: 500px; margin: auto;">
+                                    <div style="position: relative; height: 300px;">
                                         <canvas id="achTargetChart"></canvas>
                                     </div>
                                 </div>
@@ -311,10 +454,21 @@
             document.addEventListener("DOMContentLoaded", function() {
 
                 // 1. LIVE CLOCK (Tetap sama)
+                // function updateClock() {
+                //     const now = new Date();
+                //     document.getElementById("live-date").innerHTML = now.toLocaleDateString('id-ID');
+                //     document.getElementById("live-clock").innerHTML = now.toLocaleTimeString('id-ID');
+                // }
+                // setInterval(updateClock, 1000);
+                // updateClock();
+
                 function updateClock() {
                     const now = new Date();
-                    document.getElementById("live-date").innerHTML = now.toLocaleDateString('id-ID');
-                    document.getElementById("live-clock").innerHTML = now.toLocaleTimeString('id-ID');
+                    const options = {
+                        weekday: 'long', year: 'numeric', month: 'long', day: 'numeric',
+                        hour: '2-digit', minute: '2-digit', second: '2-digit', hour12: false
+                    };
+                    document.getElementById('realtime-clock').innerText = now.toLocaleDateString('id-ID', options) + ' WIB';
                 }
                 setInterval(updateClock, 1000);
                 updateClock();
