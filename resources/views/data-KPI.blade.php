@@ -11,6 +11,42 @@
                         <a href="#" class="btn btn-primary btn-round">Add Customer</a>
                     </div> --}}
             </div>
+            <div class="card p-2 mb-3 shadow-none border" style="background: #f9fbfd;">
+                <form action="{{ route('data-kpi') }}" method="GET" class="d-flex flex-wrap gap-2">
+                    {{-- Filter Tanggal Mulai --}}
+                    <div class="form-group p-0 m-0">
+                        <input type="date" name="start_date" class="form-control form-control-sm"
+                            value="{{ request('start_date') }}" title="Tanggal Mulai">
+                    </div>
+
+                    {{-- Filter Tanggal Akhir --}}
+                    <div class="form-group p-0 m-0">
+                        <input type="date" name="end_date" class="form-control form-control-sm"
+                            value="{{ request('end_date') }}" title="Tanggal Akhir">
+                    </div>
+
+                    {{-- Filter Karyawan --}}
+                    @if(auth()->user()->role !== 'marketing')
+                    <div class="col-md-3">
+                        {{-- <label class="small fw-bold">Pilih Marketing</label> --}}
+                        <select name="marketing_id" class="form-select form-select-sm">
+                            <option value="">Semua Marketing</option>
+                            @foreach($all_marketing as $m)
+                                <option value="{{ $m->id }}" {{ request('marketing_id') == $m->id ? 'selected' : '' }}>
+                                    {{ $m->name }}
+                                </option>
+                            @endforeach
+                        </select>
+                    </div>
+                    @endif
+
+                    {{-- Tombol Aksi --}}
+                    <button type="submit" class="btn btn-primary btn-sm btn-round">
+                        <i class="fas fa-filter"></i> Filter
+                    </button>
+                    <a href="{{ route('data-kpi') }}" class="btn btn-border btn-round btn-sm">Reset</a>
+                </form>
+            </div>
             <div class="card">
                 <div class="card-header">
                     <div class="card-title">Tabel Data KPI</div>
