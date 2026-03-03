@@ -199,4 +199,28 @@ class AbsensiController extends Controller
 
         return back()->with('success', "Berhasil mengimpor $successCount data izin karyawan.");
     }
+
+    public function destroyAbsensiRange(Request $request)
+    {
+        $request->validate([
+            'start_date' => 'required|date',
+            'end_date' => 'required|date|after_or_equal:start_date',
+        ]);
+
+        $count = AbsensiLog::whereBetween('tanggal', [$request->start_date, $request->end_date])->delete();
+
+        return back()->with('success', "Berhasil menghapus $count data log absensi dari tanggal $request->start_date sampai $request->end_date.");
+    }
+
+    public function destroyIzinRange(Request $request)
+    {
+        $request->validate([
+            'start_date' => 'required|date',
+            'end_date' => 'required|date|after_or_equal:start_date',
+        ]);
+
+        $count = Perizinan::whereBetween('tanggal', [$request->start_date, $request->end_date])->delete();
+
+        return back()->with('success', "Berhasil menghapus $count data perizinan dari tanggal $request->start_date sampai $request->end_date.");
+    }
 }

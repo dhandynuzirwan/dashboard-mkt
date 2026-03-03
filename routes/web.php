@@ -237,8 +237,10 @@ Route::middleware('auth')->group(function () {
             Route::post('/mapping', [AbsensiController::class, 'storeMapping'])->name('absensi.store_mapping');
             Route::post('/sync', [AbsensiController::class, 'syncFingerspot'])->name('absensi.sync');
             Route::post('/import', [AbsensiController::class, 'importManual'])->name('absensi.import');
-            // TAMBAHKAN BARIS INI COI
             Route::post('/import-izin', [AbsensiController::class, 'importIzin'])->name('absensi.import_izin');
+
+            Route::delete('/delete-range', [AbsensiController::class, 'destroyAbsensiRange'])->name('absensi.delete_range');
+            Route::delete('/izin/delete-range', [AbsensiController::class, 'destroyIzinRange'])->name('absensi.delete_izin_range');
         });
     });
 

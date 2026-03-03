@@ -140,7 +140,7 @@
                         </ul>
                     </div>
                 </li>
-                <li class="nav-item">
+                <li class="nav-item {{ request()->routeIs('download.approval', 'download.my') ? 'active' : '' }}">
                     @if (auth()->user()->role === 'superadmin')
                         <a href="{{ route('download.approval') }}">
                             <i class="fas fa-download"></i>

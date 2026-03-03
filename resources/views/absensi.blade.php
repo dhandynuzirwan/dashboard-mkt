@@ -72,12 +72,19 @@
         </div> 
 
         {{-- tombol import --}}
-        <div class="mb-3">
+        <div class="mb-3 d-flex gap-2">
             <button class="btn btn-success btn-sm btn-round" data-bs-toggle="modal" data-bs-target="#modalImport">
                 <i class="fas fa-file-import me-1"></i> Import Absensi
             </button>
             <button class="btn btn-info btn-sm btn-round text-white" data-bs-toggle="modal" data-bs-target="#modalImportIzin">
                 <i class="fas fa-file-import me-1"></i> Import Perizinan
+            </button>
+
+            <button class="btn btn-danger btn-sm btn-round text-white ms-auto" data-bs-toggle="modal" data-bs-target="#modalDeleteAbsensi">
+                <i class="fas fa-trash-alt me-1"></i> Hapus Log Absensi
+            </button>
+            <button class="btn btn-danger btn-sm btn-round text-white" data-bs-toggle="modal" data-bs-target="#modalDeleteIzin">
+                <i class="fas fa-trash-alt me-1"></i> Hapus Data Izin
             </button>
         </div>
 
@@ -307,6 +314,68 @@
                 <div class="modal-footer border-0">
                     <button type="button" class="btn btn-border btn-round" data-bs-dismiss="modal">Batal</button>
                     <button type="submit" class="btn btn-info btn-round text-white">Mulai Import Izin</button>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+
+<div class="modal fade" id="modalDeleteAbsensi" tabindex="-1" role="dialog" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+        <form action="{{ route('absensi.delete_range') }}" method="POST">
+            @csrf @method('DELETE')
+            <div class="modal-content">
+                <div class="modal-header border-0">
+                    <h5 class="modal-title fw-bold text-danger">Hapus Log Absensi</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <p>Pilih rentang tanggal data <b>Absensi (Log Mesin)</b> yang ingin dihapus secara permanen.</p>
+                    <div class="row">
+                        <div class="col-6">
+                            <label class="small fw-bold">Dari Tanggal</label>
+                            <input type="date" name="start_date" class="form-control" required>
+                        </div>
+                        <div class="col-6">
+                            <label class="small fw-bold">Sampai Tanggal</label>
+                            <input type="date" name="end_date" class="form-control" required>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer border-0">
+                    <button type="button" class="btn btn-border" data-bs-dismiss="modal">Batal</button>
+                    <button type="submit" class="btn btn-danger" onclick="return confirm('Apakah Anda yakin ingin menghapus data absensi pada rentang tanggal tersebut?')">Hapus Permanen</button>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+
+<div class="modal fade" id="modalDeleteIzin" tabindex="-1" role="dialog" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+        <form action="{{ route('absensi.delete_izin_range') }}" method="POST">
+            @csrf @method('DELETE')
+            <div class="modal-content">
+                <div class="modal-header border-0">
+                    <h5 class="modal-title fw-bold text-danger">Hapus Data Perizinan</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <p>Pilih rentang tanggal data <b>Perizinan (CSV Laporan Izin)</b> yang ingin dihapus secara permanen.</p>
+                    <div class="row">
+                        <div class="col-6">
+                            <label class="small fw-bold">Dari Tanggal</label>
+                            <input type="date" name="start_date" class="form-control" required>
+                        </div>
+                        <div class="col-6">
+                            <label class="small fw-bold">Sampai Tanggal</label>
+                            <input type="date" name="end_date" class="form-control" required>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer border-0">
+                    <button type="button" class="btn btn-border" data-bs-dismiss="modal">Batal</button>
+                    <button type="submit" class="btn btn-danger" onclick="return confirm('Apakah Anda yakin ingin menghapus data perizinan pada rentang tanggal tersebut?')">Hapus Permanen</button>
                 </div>
             </div>
         </form>
