@@ -166,7 +166,11 @@
                 </div>
             </div>
         </div>
-
+        <div class="mb-3">
+    <button class="btn btn-success btn-sm" data-bs-toggle="modal" data-bs-target="#requestModal">
+        <i class="fas fa-file-excel"></i> Request Download Excel
+    </button>
+</div>
         {{-- Tabel 1: Tabel Pipeline (Struktur Utuh) --}}
         <div class="card mb-4">
             <div class="card-header">
@@ -340,7 +344,32 @@
         </div>
     </div> {{-- Penutup Page-inner --}}
 </div> {{-- Penutup Container --}}
+<div class="modal fade" id="requestModal">
+    <div class="modal-dialog">
+        <form action="{{ route('download.request') }}" method="POST">
+            @csrf
+            <input type="hidden" name="start_date" value="{{ request('start_date') }}">
+            <input type="hidden" name="end_date" value="{{ request('end_date') }}">
+            <input type="hidden" name="marketing_id" value="{{ request('marketing_id') }}">
 
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Request Download</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+
+                <div class="modal-body">
+                    <label>Alasan / Kepentingan</label>
+                    <textarea name="reason" class="form-control" required></textarea>
+                </div>
+
+                <div class="modal-footer">
+                    <button type="submit" class="btn btn-primary">Kirim Request</button>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
 <style>
     .card-animate {
         transition: transform 0.3s ease, box-shadow 0.3s ease;
