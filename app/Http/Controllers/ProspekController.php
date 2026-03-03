@@ -15,7 +15,12 @@ class ProspekController extends Controller
         $user = auth()->user();
         $marketings = User::where('role', 'marketing')->get();
 
-        // 1. Buat Query Dasar untuk Filter
+        // Ambil semua daftar status unik yang ada di database untuk pilihan filter
+        $all_status_akhir = Prospek::select('status')
+            ->whereNotNull('status')
+            ->distinct()
+            ->pluck('status');
+
         $query = Prospek::with(['marketing', 'cta']);
 
         if ($user->role === 'marketing') {
@@ -25,6 +30,11 @@ class ProspekController extends Controller
         // ================= APPLY FILTER =================
         if ($request->start_date && $request->end_date) {
             $query->whereBetween('tanggal_prospek', [$request->start_date, $request->end_date]);
+        }
+
+        // Filter Status Akhir (Kolom Status di Tabel Prospek)
+        if ($request->status_akhir) {
+            $query->where('status', $request->status_akhir);
         }
 
         if ($request->cta_status) {
@@ -39,16 +49,15 @@ class ProspekController extends Controller
             $query->where('marketing_id', $request->marketing_id);
         }
 
-        if ($request->status) {
+        // Filter Status Penawaran (di Tabel CTA)
+        if ($request->status_penawaran) {
             $query->whereHas('cta', function ($q) use ($request) {
-                $q->where('status_penawaran', $request->status);
+                $q->where('status_penawaran', $request->status_penawaran);
             });
         }
 
-        // 2. HITUNG STATS DARI KESELURUHAN DATA (Sebelum Paginate)
-        // Kita clone query agar tidak merusak query utama untuk tabel
+        // 2. HITUNG STATS
         $statsData = (clone $query)->get(); 
-
         $stats = [
             'total_prospek' => $statsData->count(),
             'total_cta'     => $statsData->whereNotNull('cta')->count(),
@@ -58,21 +67,11 @@ class ProspekController extends Controller
                             )->count(),
         ];
 
-        // 3. PAGINATION INDEPENDEN
-        // Tabel Pipeline (Semua data sesuai filter)
-        $prospeks = (clone $query)
-            ->orderBy('id', 'asc')
-            ->paginate(10, ['*'], 'page_pipeline') // Nama parameter URL: page_pipeline
-            ->withQueryString();
+        // 3. PAGINATION
+        $prospeks = (clone $query)->orderBy('id', 'asc')->paginate(10, ['*'], 'page_pipeline')->withQueryString();
+        $ctaProspeks = (clone $query)->whereHas('cta')->orderBy('id', 'asc')->paginate(10, ['*'], 'page_cta')->withQueryString();
 
-        // Tabel CTA (Hanya data yang memiliki CTA)
-        $ctaProspeks = (clone $query)
-            ->whereHas('cta')
-            ->orderBy('id', 'asc')
-            ->paginate(10, ['*'], 'page_cta') // Nama parameter URL: page_cta
-            ->withQueryString();
-
-        return view('pipeline', compact('prospeks', 'ctaProspeks', 'marketings', 'stats'));
+        return view('pipeline', compact('prospeks', 'ctaProspeks', 'marketings', 'stats', 'all_status_akhir'));
     }
 
     // Menampilkan Form Input Massal

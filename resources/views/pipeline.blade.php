@@ -33,6 +33,17 @@
                         @endforeach
                     </select>
                 </div>
+                {{-- NEW: Filter Status Akhir (Kolom Status Prospek) --}}
+                <div class="form-group p-0 m-0">
+                    <select name="status_akhir" class="form-select form-select-sm">
+                        <option value="">Semua Status Akhir</option>
+                        @foreach ($all_status_akhir as $status)
+                            <option value="{{ $status }}" {{ request('status_akhir') == $status ? 'selected' : '' }}>
+                                {{ $status }}
+                            </option>
+                        @endforeach
+                    </select>
+                </div>
                 <div class="form-group p-0 m-0">
                     <select name="status" class="form-select form-select-sm">
                         <option value="">Semua Status Penawaran</option>
