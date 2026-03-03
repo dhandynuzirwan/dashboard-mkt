@@ -21,6 +21,6 @@ class Prospek extends Model
     }
     // Relasi ke CTA    public function cta() {
     public function cta() {
-        return $this->hasOne(Cta::class);
+        return $this->hasOne(Cta::class, 'prospek_id');
     }
 }
