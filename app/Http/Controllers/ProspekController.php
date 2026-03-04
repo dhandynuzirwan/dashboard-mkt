@@ -64,7 +64,7 @@ class ProspekController extends Controller
         $stats = [
             'total_prospek' => $statsData->count(),
             'total_cta'     => $statsData->whereNotNull('cta')->count(),
-            'total_nilai'   => $statsData->sum(fn($item) => $item->cta->harga_penawaran ?? 0),
+            'total_nilai'   => $statsData->sum(fn($item) => $item->cta->total_penawaran ?? 0),
             'total_deal'    => $statsData->filter(fn($item) => 
                                 optional($item->cta)->status_penawaran == 'deal'
                             )->count(),

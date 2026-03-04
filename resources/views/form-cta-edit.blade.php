@@ -27,7 +27,7 @@
                                 <div class="form-group">
                                     <label>Judul Permintaan</label>
                                     <input type="text" name="judul_permintaan" class="form-control"
-                                        value="{{ $cta->judul_permintaan }}" required>
+                                        value="{{ $cta->judul_permintaan }}" >
                                 </div>
                             </div>
 
@@ -35,7 +35,7 @@
                                 <div class="form-group">
                                     <label>Jumlah Peserta</label>
                                     <input type="number" name="jumlah_peserta" class="form-control"
-                                        value="{{ $cta->jumlah_peserta }}" required>
+                                        value="{{ $cta->jumlah_peserta }}" >
                                 </div>
                             </div>
 
@@ -43,7 +43,7 @@
                                 <div class="form-group">
                                     <label>Sertifikasi</label>
                                     <input type="text" name="sertifikasi" class="form-control"
-                                        value="{{ $cta->sertifikasi }}" required>
+                                        value="{{ $cta->sertifikasi }}" >
                                 </div>
                             </div>
 
@@ -51,7 +51,7 @@
                                 <div class="form-group">
                                     <label>Skema</label>
                                     <input type="text" name="skema" class="form-control" value="{{ $cta->skema }}"
-                                        required>
+                                        >
                                 </div>
                             </div>
 
@@ -59,7 +59,7 @@
                                 <div class="form-group">
                                     <label>Harga Penawaran</label>
                                     <input type="number" name="harga_penawaran" class="form-control"
-                                        value="{{ $cta->harga_penawaran }}" required>
+                                        value="{{ $cta->harga_penawaran }}" >
                                 </div>
                             </div>
 
@@ -67,7 +67,7 @@
                                 <div class="form-group">
                                     <label>Harga Vendor</label>
                                     <input type="number" name="harga_vendor" class="form-control"
-                                        value="{{ $cta->harga_vendor }}" required>
+                                        value="{{ $cta->harga_vendor }}" >
                                 </div>
                             </div>
 
@@ -82,7 +82,7 @@
                             <div class="col-md-6">
                                 <div class="form-group">
                                     <label>Status Penawaran</label>
-                                    <select name="status_penawaran" class="form-control" required>
+                                    <select name="status_penawaran" class="form-control" >
                                         <option value="under_review"
                                             {{ $cta->status_penawaran == 'under_review' ? 'selected' : '' }}>Under Review
                                         </option>

@@ -7,9 +7,18 @@ use Illuminate\Database\Eloquent\Model;
 class Cta extends Model
 {
     protected $fillable = [
-        'prospek_id', 'judul_permintaan', 'jumlah_peserta', 'sertifikasi', 
-        'skema', 'harga_penawaran', 'harga_vendor', 'proposal_link', 
-        'status_penawaran', 'keterangan'
+        'prospek_id',
+        'judul_permintaan',
+        'jumlah_peserta',
+        'sertifikasi',
+        'skema',
+        'harga_penawaran',
+        'harga_vendor',
+        'total_penawaran',
+        'total_vendor',
+        'proposal_link',
+        'status_penawaran',
+        'keterangan',
     ];
 
     public function prospek()
