@@ -15,7 +15,11 @@ class ProspekController extends Controller
         $user = auth()->user();
         $marketings = User::where('role', 'marketing')->get();
 
-        // Ambil semua daftar status unik yang ada di database untuk pilihan filter
+        // 1. --- INISIALISASI TANGGAL (Default: Awal bulan ini - Akhir bulan ini) ---
+        $start = $request->input('start_date', now()->startOfMonth()->format('Y-m-d'));
+        $end = $request->input('end_date', now()->endOfMonth()->format('Y-m-d'));
+
+        // Ambil semua daftar status unik untuk pilihan filter
         $all_status_akhir = Prospek::select('status')
             ->whereNotNull('status')
             ->distinct()
@@ -28,11 +32,11 @@ class ProspekController extends Controller
         }
 
         // ================= APPLY FILTER =================
-        if ($request->start_date && $request->end_date) {
-            $query->whereBetween('tanggal_prospek', [$request->start_date, $request->end_date]);
-        }
+        
+        // Gunakan variabel $start dan $end yang sudah diinisialisasi
+        $query->whereBetween('tanggal_prospek', [$start, $end]);
 
-        // Filter Status Akhir (Kolom Status di Tabel Prospek)
+        // Filter Status Akhir
         if ($request->status_akhir) {
             $query->where('status', $request->status_akhir);
         }
@@ -49,7 +53,6 @@ class ProspekController extends Controller
             $query->where('marketing_id', $request->marketing_id);
         }
 
-        // Filter Status Penawaran (di Tabel CTA)
         if ($request->status_penawaran) {
             $query->whereHas('cta', function ($q) use ($request) {
                 $q->where('status_penawaran', $request->status_penawaran);
@@ -71,7 +74,8 @@ class ProspekController extends Controller
         $prospeks = (clone $query)->orderBy('id', 'asc')->paginate(10, ['*'], 'page_pipeline')->withQueryString();
         $ctaProspeks = (clone $query)->whereHas('cta')->orderBy('id', 'asc')->paginate(10, ['*'], 'page_cta')->withQueryString();
 
-        return view('pipeline', compact('prospeks', 'ctaProspeks', 'marketings', 'stats', 'all_status_akhir'));
+        // Kirim $start dan $end ke view
+        return view('pipeline', compact('prospeks', 'ctaProspeks', 'marketings', 'stats', 'all_status_akhir', 'start', 'end'));
     }
 
     // Menampilkan Form Input Massal

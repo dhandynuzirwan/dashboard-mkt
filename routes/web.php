@@ -163,7 +163,7 @@ Route::middleware('auth')->group(function () {
     |--------------------------------------------------------------------------
     | Izin untuk melanjutkan prospek ke tahap penawaran (CTA)
     */
-    Route::middleware('role:superadmin,admin')->group(function () {
+    Route::middleware('role:marketing')->group(function () {
 
         Route::get('/form-cta/{prospek_id}', [CtaController::class, 'create'])->name('form-cta');
         Route::post('/cta/store', [CtaController::class, 'store'])->name('cta.store');

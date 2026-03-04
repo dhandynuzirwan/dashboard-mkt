@@ -7,42 +7,39 @@ use App\Models\Penggajian;
 use App\Models\Prospek;
 use App\Models\User;
 use App\Models\AbsensiLog;
-use App\Models\Perizinan; // Tambahkan ini
+use App\Models\Perizinan;
 use Carbon\Carbon;
-use Illuminate\Http\Request; // Pastikan ini ada
+use Illuminate\Http\Request;
 
 class SalaryController extends Controller
 {
-    public function index(Request $request) // Tambahkan parameter Request
+    public function index(Request $request)
     {
         $authUser = auth()->user();
 
         // 1. --- INISIALISASI FILTER ---
-        // Default: Awal bulan ini sampai hari ini
         $start = $request->query('start_date', Carbon::now()->startOfMonth()->format('Y-m-d'));
         $end = $request->query('end_date', Carbon::now()->format('Y-m-d'));
         $marketing_filter = $request->query('marketing_id');
 
-        // 2. --- HITUNG HARI KERJA EFEKTIF (Senin-Jumat) BERDASARKAN RENTANG ---
+        // 2. --- HITUNG HARI KERJA (FULL 1 BULAN) ---
         $startDate = Carbon::parse($start);
-        $endDate = Carbon::parse($end);
-        $hariEfektif = 0;
-
-        for ($date = $startDate->copy(); $date->lte($endDate); $date->addDay()) {
+        $startOfMonth = $startDate->copy()->startOfMonth();
+        $endOfMonth = $startDate->copy()->endOfMonth();
+        $hariEfektif = 0; // Kita pakai nama $hariEfektif agar Blade tidak error
+        for ($date = $startOfMonth->copy(); $date->lte($endOfMonth); $date->addDay()) {
             if ($date->isWeekday()) { 
                 $hariEfektif++;
             }
         }
 
-        // 3. 🔐 FILTER USER BERDASARKAN ROLE & INPUT
+        // 3. 🔐 FILTER USER
         $query = User::where('role', 'marketing');
-
         if ($authUser->role === 'marketing') {
             $query->where('id', $authUser->id);
         } elseif ($marketing_filter) {
             $query->where('id', $marketing_filter);
         }
-        
         $users = $query->get();
 
         $marketings = $users->map(function ($user) use ($hariEfektif, $start, $end) {
@@ -54,27 +51,18 @@ class SalaryController extends Controller
             $targetCallHarian  = $gaji->target_call ?? 0;
             $targetRevenue     = $gaji->target ?? 0;
 
-            // ================= KPI ABSENSI (HADIR + IZIN APPROVED) =================
-            // 1. Hitung Hadir Real dari Mesin
+            // ================= KPI 1: ABSENSI (10%) =================
             $hadirMesin = AbsensiLog::where('user_id', $user->id)
-                ->whereBetween('tanggal', [$start, $end])
-                ->distinct()
-                ->count('tanggal');
+                ->whereBetween('tanggal', [$start, $end])->distinct()->count('tanggal');
 
-            // 2. Hitung Izin yang 'Approved'
             $izinApproved = Perizinan::where('user_id', $user->id)
-                ->whereBetween('tanggal', [$start, $end])
-                ->where('status', 'approved')
-                ->count();
+                ->whereBetween('tanggal', [$start, $end])->where('status', 'approved')->count();
 
             $totalHadirKpi = $hadirMesin + $izinApproved;
-
-            // Cap kehadiran maksimal 100% dari hari efektif agar KPI tidak jebol
             $absensiAch = ($hariEfektif > 0) ? min(100, ($totalHadirKpi / $hariEfektif) * 100) : 0;
-            $absensiKpi = $absensiAch * 0.1; // Bobot 10%
+            $absensiKpi = $absensiAch * 0.1; 
 
-            // ================= KPI PROGRESS (Closing Penawaran / CTA) =================
-            // Sesuai permintaanmu: Pencapaian dihitung dari yang sudah CTA (Penawaran)
+            // ================= KPI 2: PROGRESS (30%) =================
             $progressReal = Cta::whereHas('prospek', function ($q) use ($user) {
                     $q->where('marketing_id', $user->id);
                 })
@@ -83,9 +71,9 @@ class SalaryController extends Controller
                 
             $progressTarget = $targetCallHarian * $hariEfektif;
             $progressAch = ($progressTarget > 0) ? ($progressReal / $progressTarget) * 100 : 0;
-            $progressKpi = $progressAch * 0.3; // Bobot 30%
+            $progressKpi = $progressAch * 0.3; 
 
-            // ================= KPI REVENUE (DEAL) =================
+            // ================= KPI 3: REVENUE (60%) =================
             $incomeDeal = Cta::whereHas('prospek', function ($q) use ($user) {
                     $q->where('marketing_id', $user->id);
                 })
@@ -94,46 +82,42 @@ class SalaryController extends Controller
                 ->sum('harga_penawaran');
 
             $revenueAch = ($targetRevenue > 0) ? ($incomeDeal / $targetRevenue) * 100 : 0;
-            $revenueKpi = $revenueAch * 0.6; // Bobot 60%
+            $revenueKpi = $revenueAch * 0.6; 
 
-            // TOTAL KPI %
             $totalKpiPersen = ($absensiKpi + $progressKpi + $revenueKpi);
 
-            // ================= PERHITUNGAN GAJI FINAL =================
+            // ================= ASSIGN KE OBJECT (SESUAI 10:30:60) =================
             $user->income = $incomeDeal;
             $user->kpi_persen = $totalKpiPersen;
+            
+            // KEMBALIKAN KE NILAI KPI (Bukan Achievement Mentah)
+            $user->ach_absensi  = $absensiKpi;  // Misal: 10.0%
+            $user->ach_progress = $progressKpi; // Misal: 30.0%
+            $user->ach_revenue  = $revenueKpi;  // Misal: 60.0%
 
-            // Masukkan variabel KPI ke dalam objek user agar bisa dipanggil di Blade
-            $user->ach_absensi  = $absensiKpi;  // <--- TAMBAHKAN INI
-            $user->ach_progress = $progressKpi; // <--- TAMBAHKAN INI
-            $user->ach_revenue  = $revenueKpi;  // <--- TAMBAHKAN INI
+            // ================= PERHITUNGAN GAJI =================
+            $user->gapok_hitung = ($hariEfektif > 0) ? ($totalHadirKpi / $hariEfektif) * $gapokDasar : 0;
 
-            // Gaji Pokok Proporsional
-            $user->gapok_hitung = ($hariEfektif > 0) 
-                ? ($totalHadirKpi / $hariEfektif) * $gapokDasar 
-                : 0;
-
-            // Fee Marketing (Gunakan revenueKpi sebagai pengali sesuai logika tabel)
+            $nilai_revenueKpi = $user->income * 0.6; 
+            $user->weighted_revenue_rp = $nilai_revenueKpi;
             $multiplier = ($totalKpiPersen < 70) ? 0.025 : 0.05;
-            $user->fee_marketing = $user->income * ($revenueKpi / 100) * $multiplier;
+            $user->fee_marketing = $nilai_revenueKpi * $multiplier;
 
-            // Bonus dari kedisiplinan (Progress Value)
-            $user->progress_val = ($absensiKpi / 100) * $user->gapok_hitung;
+            $user->progress_val = $gapokDasar * ($progressKpi / 100);
             
             $user->tunj_kemahalan = $tunjangan;
             $user->total_gaji = $user->gapok_hitung + $user->fee_marketing + $user->progress_val + $user->tunj_kemahalan;
 
-            // Data pendukung lainnya
-            $user->absensi_hadir_real = $hadirMesin;
-            $user->izin_approved = $izinApproved;
-            $user->target_penawaran = $progressTarget;
-            $user->real_penawaran = $progressReal;
+            // Variabel detail untuk label di Blade
+            $user->absensi_hadir_real = $totalHadirKpi;
+            $user->target_penawaran    = $progressTarget;
+            $user->real_penawaran      = $progressReal;
 
             return $user;
         });
 
         $all_marketing = User::where('role', 'marketing')->get();
-
+        // Pakai nama $hariEfektif agar Blade tidak error "Undefined variable"
         return view('simulasi-gaji', compact('marketings', 'hariEfektif', 'start', 'end', 'all_marketing'));
     }
 }

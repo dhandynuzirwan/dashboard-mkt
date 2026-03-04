@@ -22,11 +22,11 @@ class DashboardSeeder extends Seeder
         DB::statement('SET FOREIGN_KEY_CHECKS=1;');
 
         // --- 2. AMBIL USER MARKETING ---
-        $marketingNames = ['INTAN1', 'INTAN2', 'INTAN3', 'INTAN4', 'INTAN5'];
+        $marketingNames = ['Arsa 1'];
         $users = User::whereIn('name', $marketingNames)->get();
 
-        $startOfMonth = Carbon::create(2026, 2, 1)->startOfMonth();
-        $endOfMonth = Carbon::create(2026, 2, 25);
+        $startOfMonth = Carbon::create(2026, 3, 1)->startOfMonth();
+        $endOfMonth = Carbon::create(2026, 3, 25);
 
         foreach ($users as $user) {
             // --- 3. TENTUKAN PERSONA MARKETING SECARA ACAK ---

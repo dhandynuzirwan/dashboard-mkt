@@ -20,13 +20,13 @@
                     {{-- Filter Tanggal Mulai --}}
                     <div class="form-group p-0 m-0">
                         <input type="date" name="start_date" class="form-control form-control-sm"
-                            value="{{ request('start_date') }}" title="Tanggal Mulai">
+                            value="{{ $start }}" title="Tanggal Mulai">
                     </div>
 
                     {{-- Filter Tanggal Akhir --}}
                     <div class="form-group p-0 m-0">
                         <input type="date" name="end_date" class="form-control form-control-sm"
-                            value="{{ request('end_date') }}" title="Tanggal Akhir">
+                            value="{{ $end }}" title="Tanggal Akhir">
                     </div>
 
                     {{-- Filter Karyawan --}}

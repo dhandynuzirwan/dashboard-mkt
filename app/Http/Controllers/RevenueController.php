@@ -17,6 +17,7 @@ class RevenueController extends Controller
         $authUser = auth()->user();
 
         // 1. --- INISIALISASI FILTER ---
+        // Default: Awal bulan ini sampai hari ini (atau sesuai input user)
         $start = $request->query('start_date', Carbon::now()->startOfMonth()->format('Y-m-d'));
         $end = $request->query('end_date', Carbon::now()->format('Y-m-d'));
         $marketing_filter = $request->query('marketing_id');
@@ -63,19 +64,17 @@ class RevenueController extends Controller
             $m->rp_deal_kemenaker = $deal->where('sertifikasi', 'kemnaker')->sum('harga_penawaran');
             $m->rp_deal_bnsp      = $deal->where('sertifikasi', 'bnsp')->sum('harga_penawaran');
             $m->rp_deal_internal  = $deal->where('sertifikasi', 'internal')->sum('harga_penawaran');
-            $m->rp_deal_ppsio     = $deal->where('sertifikasi', 'sio')->sum('harga_penawaker');
+            $m->rp_deal_ppsio     = $deal->where('sertifikasi', 'sio')->sum('harga_penawaran'); // Perbaikan typo harga_penawaker
             $m->rp_deal_riksa     = $deal->where('sertifikasi', 'riksa')->sum('harga_penawaran');
             $m->total_rp_deal     = $deal->sum('harga_penawaran');
 
             // ================= DATA ABSENSI & IZIN =================
-            // Hadir Real (Tap Mesin)
             $countHadir = AbsensiLog::where('user_id', $m->id)
                 ->where('tipe', 'in')
                 ->whereBetween('tanggal', [$start, $end])
                 ->distinct('tanggal')
                 ->count();
 
-            // Izin Approved (Biar Gak Dianggap Alpa)
             $countIzin = Perizinan::where('user_id', $m->id)
                 ->where('status', 'approved')
                 ->whereBetween('tanggal', [$start, $end])
@@ -85,14 +84,12 @@ class RevenueController extends Controller
             $m->count_hadir  = $countHadir;
             $m->count_izin   = $countIzin;
             
-            // Alpa = Hari Efektif - (Hadir + Izin)
             $m->count_alpa   = max(0, $hariEfektif - ($countHadir + $countIzin));
             $m->total_potongan = $m->count_alpa * 100000;
 
             // ================= TARGET & ACHIEVEMENT =================
-            // Ambil target revenue dari setting penggajian marketing terkait
             $penggajian = Penggajian::where('user_id', $m->id)->first();
-            $m->target = $penggajian->target ?? 100000000; // Default 100jt jika tidak diatur
+            $m->target = $penggajian->target ?? 100000000; 
             
             $m->achieve = $m->total_rp_deal;
             $m->avg = $m->target > 0 ? ($m->achieve / $m->target) * 100 : 0;
@@ -102,6 +99,7 @@ class RevenueController extends Controller
 
         $all_marketing = User::where('role', 'marketing')->get();
 
+        // Pastikan variabel $start dan $end dikirim ke compact
         return view('revenue', compact('marketings', 'start', 'end', 'all_marketing', 'hariEfektif'));
     }
 }

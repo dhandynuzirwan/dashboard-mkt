@@ -17,13 +17,13 @@
                     {{-- Filter Tanggal Mulai --}}
                     <div class="form-group p-0 m-0">
                         <input type="date" name="start_date" class="form-control form-control-sm"
-                            value="{{ request('start_date') }}" title="Tanggal Mulai">
+                            value="{{ $start }}" title="Tanggal Mulai">
                     </div>
 
                     {{-- Filter Tanggal Akhir --}}
                     <div class="form-group p-0 m-0">
                         <input type="date" name="end_date" class="form-control form-control-sm"
-                            value="{{ request('end_date') }}" title="Tanggal Akhir">
+                            value="{{ $end }}" title="Tanggal Akhir">
                     </div>
 
                     {{-- Filter Karyawan --}}
@@ -68,7 +68,7 @@
                                     <th rowspan="2">KPI</th>
                                     <th colspan="4" class="text-center">SESUAI KPI</th>
                                     <th colspan="5" class="text-center">KEBIJAKAN KPI</th>
-                                    <th rowspan="2">ACTION</th>
+                                    {{-- <th rowspan="2">ACTION</th> --}}
                                 </tr>
                                 <tr>
                                     {{-- Sesuai KPI --}}
@@ -98,9 +98,39 @@
                                         </td>
 
                                         {{-- SESUAI KPI --}}
-                                        <td class="text-center">{{ number_format($m->ach_absensi, 1) }}%</td>
-                                        <td class="text-center">{{ number_format($m->ach_progress, 1) }}%</td>
-                                        <td class="text-center">{{ number_format($m->ach_revenue, 1) }}%</td>
+                                        {{-- <td class="text-center">
+                                            <span class="fw-bold">{{ number_format($m->ach_absensi, 1) }}%</span>
+                                            <br>
+                                            <small class="text-muted" style="font-size: 0.75rem;">
+                                                {{ $m->absensi_hadir_real }} / {{ $hariEfektif }} Hari
+                                            </small>
+                                        </td> --}}
+
+                                        <td class="text-center">
+                                            <span class="fw-bold">{{ number_format($m->ach_absensi, 1) }}%</span>
+                                            <br>
+                                            <small class="text-muted" style="font-size: 0.75rem;">
+                                                {{ $m->absensi_hadir_real }} / {{ $hariEfektif }} Hari
+                                            </small>
+                                        </td>
+
+                                        {{-- 2. Kolom PROGRESS --}}
+                                        <td class="text-center">
+                                            <span class="fw-bold">{{ number_format($m->ach_progress, 1) }}%</span>
+                                            <br>
+                                            <small class="text-muted" style="font-size: 0.75rem;">
+                                                {{ $m->real_penawaran }} / {{ $m->target_penawaran }} CTA
+                                            </small>
+                                        </td>
+
+                                        {{-- 3. Kolom REVENUE (Yang tadi sudah kita buat) --}}
+                                        <td class="text-center">
+                                            <span class="fw-bold">{{ number_format($m->ach_revenue, 1) }}%</span>
+                                            <br>
+                                            <small class="text-muted" style="font-size: 0.75rem;">
+                                                Rp {{ number_format($m->weighted_revenue_rp, 0, ',', '.') }}
+                                            </small>
+                                        </td>
                                         <td class="text-center fw-bold">{{ number_format($m->kpi_persen, 1) }}%</td>
 
                                         {{-- KEBIJAKAN KPI --}}
@@ -118,9 +148,9 @@
                                             Rp {{ number_format($m->total_gaji, 0, ',', '.') }}
                                         </td>
 
-                                        <td class="text-center">
+                                        {{-- <td class="text-center">
                                             <button class="btn btn-sm btn-info"><i class="fa fa-print"></i> Slip</button>
-                                        </td>
+                                        </td> --}}
                                     </tr>
                                 @endforeach
                             </tbody>

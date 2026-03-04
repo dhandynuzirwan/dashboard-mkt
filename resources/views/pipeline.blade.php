@@ -17,11 +17,11 @@
             <form action="{{ route('prospek.index') }}" method="GET" class="d-flex flex-wrap gap-2">
                 <div class="form-group p-0 m-0">
                     <input type="date" name="start_date" class="form-control form-control-sm"
-                        value="{{ request('start_date') }}" title="Tanggal Mulai">
+                        value="{{ $start }}" title="Tanggal Mulai">
                 </div>
                 <div class="form-group p-0 m-0">
                     <input type="date" name="end_date" class="form-control form-control-sm"
-                        value="{{ request('end_date') }}" title="Tanggal Akhir">
+                        value="{{ $end }}" title="Tanggal Akhir">
                 </div>
                 <div class="form-group p-0 m-0">
                     <select name="marketing_id" class="form-select form-select-sm">

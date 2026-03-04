@@ -113,7 +113,7 @@ class DataMasukController extends Controller
 
             // 3. KEMBALI KE HALAMAN DATA MASUK
             // Pastikan nama route ini sesuai dengan yang ada di web.php (tadi kita pakai 'data-masuk')
-            return redirect()->route('data-masuk')->with('success', 'Data Masuk Berhasil Disimpan!');
+            return redirect()->route('data-masuk.index')->with('success', 'Data Masuk Berhasil Disimpan!');
 
         } catch (\Exception $e) {
             return back()->with('error', 'Terjadi kesalahan: '.$e->getMessage());
