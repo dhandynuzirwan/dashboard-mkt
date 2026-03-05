@@ -24,7 +24,7 @@ class DashboardController extends Controller
             if ($date->isWeekday()) { // Mengecek apakah hari kerja (Senin-Jumat)
                 $hariEfektif++;
             }
-        } 
+        }
 
         // 2. Ambil User Marketing
         $query = \App\Models\User::where('role', 'marketing');
@@ -35,20 +35,20 @@ class DashboardController extends Controller
 
         // --- 3a. LOGIKA STATISTIK RINGKASAN (UNTUK CARD DI ATAS) ---
         $statsQuery = Cta::whereBetween('created_at', [$start, $end]);
-        
+
         // Jika ada filter marketing, filter juga statistik globalnya
         if ($marketing_filter) {
-            $statsQuery->whereHas('prospek', function($q) use ($marketing_filter) {
+            $statsQuery->whereHas('prospek', function ($q) use ($marketing_filter) {
                 $q->where('marketing_id', $marketing_filter);
             });
         }
 
         // Kita gunakan clone agar query builder tidak tercampur antara count dan sum
-        $stat_total_qty   = (clone $statsQuery)->count();
-        $stat_deal_qty    = (clone $statsQuery)->where('status_penawaran', 'deal')->count();
+        $stat_total_qty = (clone $statsQuery)->count();
+        $stat_deal_qty = (clone $statsQuery)->where('status_penawaran', 'deal')->count();
         // FIX: Hitung Nilai Berdasarkan (Harga x Qty)
-        $stat_total_nilai = (clone $statsQuery)->get()->sum(fn($item) => $item->harga_penawaran * $item->jumlah_peserta);
-        $stat_deal_nilai  = (clone $statsQuery)->where('status_penawaran', 'deal')->get()->sum(fn($item) => $item->harga_penawaran * $item->jumlah_peserta);
+        $stat_total_nilai = (clone $statsQuery)->get()->sum(fn ($item) => $item->harga_penawaran * $item->jumlah_peserta);
+        $stat_deal_nilai = (clone $statsQuery)->where('status_penawaran', 'deal')->get()->sum(fn ($item) => $item->harga_penawaran * $item->jumlah_peserta);
         // 3. MAPPING DATA UNTUK TABEL PROGRESS & TABEL STATUS AKHIR
         $marketings = $users->map(function ($user) use ($start, $end, $hariEfektif) {
             $gaji = \App\Models\Penggajian::where('user_id', $user->id)->first();
@@ -64,21 +64,21 @@ class DashboardController extends Controller
             // Pencapaian dihitung dari jumlah penawaran (CTA) yang dibuat
             $user->pencapaian = $cta->count();
             $user->ach_persen = ($user->target_total > 0) ? ($user->pencapaian / $user->target_total) * 100 : 0;
-            
+
             // Ambil semua prospek user ini dalam range tanggal
             $prospeks = \App\Models\Prospek::where('marketing_id', $user->id)
-                        ->whereBetween('created_at', [$start, $end])->get();
+                ->whereBetween('created_at', [$start, $end])->get();
 
             // --- LOGIKA UNTUK TABEL STATUS AKHIR DATA ---
             // Pastikan string status di bawah ini sama persis dengan yang ada di database/Faker
             $user->count_perpanjangan = $prospeks->where('status', 'REQUES PERPANJANGAN SERTIFIKAT')->count();
-            $user->count_invalid      = $prospeks->where('status', 'DATA TIDAK VALID & TIDAK TERHUBUNG')->count();
-            $user->count_email        = $prospeks->where('status', 'DAPAT EMAIL')->count();
-            $user->count_wa           = $prospeks->where('status', 'DAPAT NO WA HRD')->count();
-            $user->count_compro       = $prospeks->where('status', 'KIRIM COMPRO')->count(); // atau 'REQUEST COMPRO'
-            $user->count_manja        = $prospeks->where('status', 'MANJA')->count();
-            $user->count_manja_ulang  = $prospeks->where('status', 'MANJA ULANG')->count();
-            $user->count_pelatihan    = $prospeks->where('status', 'REQUEST PERMINTAAN PELATIHAN')->count();
+            $user->count_invalid = $prospeks->where('status', 'DATA TIDAK VALID & TIDAK TERHUBUNG')->count();
+            $user->count_email = $prospeks->where('status', 'DAPAT EMAIL')->count();
+            $user->count_wa = $prospeks->where('status', 'DAPAT NO WA HRD')->count();
+            $user->count_compro = $prospeks->where('status', 'KIRIM COMPRO')->count(); // atau 'REQUEST COMPRO'
+            $user->count_manja = $prospeks->where('status', 'MANJA')->count();
+            $user->count_manja_ulang = $prospeks->where('status', 'MANJA ULANG')->count();
+            $user->count_pelatihan = $prospeks->where('status', 'REQUEST PERMINTAAN PELATIHAN')->count();
             // --------------------------------------------
 
             $cta = \App\Models\Cta::whereHas('prospek', function ($q) use ($user) {
@@ -99,7 +99,7 @@ class DashboardController extends Controller
         $pieData = [];
         foreach ($users as $user) {
             $pieLabels[] = $user->name;
-            $totalNominalDeal = \App\Models\Cta::whereHas('prospek', fn($q) => $q->where('marketing_id', $user->id))
+            $totalNominalDeal = \App\Models\Cta::whereHas('prospek', fn ($q) => $q->where('marketing_id', $user->id))
                 ->where('status_penawaran', 'deal') // Hanya yang Deal
                 ->whereBetween('created_at', [$start, $end])
                 ->sum('harga_penawaran'); // Jumlahkan Rupiahnya
@@ -120,12 +120,12 @@ class DashboardController extends Controller
             for ($i = 5; $i >= 0; $i--) {
                 $loopStart = now()->subMonths($i)->startOfMonth();
                 $loopEnd = now()->subMonths($i)->endOfMonth();
-                
+
                 // Menjumlahkan SUM harga_penawaran TANPA filter status (semua penawaran masuk)
-                $sumNominal = \App\Models\Cta::whereHas('prospek', fn($q) => $q->where('marketing_id', $user->id))
+                $sumNominal = \App\Models\Cta::whereHas('prospek', fn ($q) => $q->where('marketing_id', $user->id))
                     ->whereBetween('created_at', [$loopStart, $loopEnd])
-                    ->sum('harga_penawaran'); 
-                    
+                    ->sum('harga_penawaran');
+
                 $monthlyOfferNominals[] = $sumNominal;
             }
 
@@ -136,16 +136,27 @@ class DashboardController extends Controller
                 'data' => $monthlyOfferNominals,
                 'fill' => false,
                 'borderWidth' => 2,
-                'tension' => 0.3
+                'tension' => 0.3,
             ];
         }
 
-        $all_marketing = \App\Models\User::where('role', 'marketing')->get(); 
+        $all_marketing = \App\Models\User::where('role', 'marketing')->get();
+
+        // ================= REMINDER ADMIN =================
+        $dataMasukToday = \App\Models\DataMasuk::whereDate('created_at', now())->count();
+
+        $targetDataMasuk = 100;
+
+        // Reminder aktif sebelum jam 16 jika belum mencapai target
+        $showReminder = now()->hour < 16 && $dataMasukToday < $targetDataMasuk;
+
+        // Success jika target tercapai
+        $showSuccessReminder = now()->hour < 16 && $dataMasukToday >= $targetDataMasuk;
 
         return view('dashboard-progress', compact(
-            'marketings', 'all_marketing', 'start', 'end', 
+            'marketings', 'all_marketing', 'start', 'end',
             'pieLabels', 'pieData', 'lineLabels', 'lineDatasets',
-            'stat_total_qty', 'stat_deal_qty', 'stat_total_nilai', 'stat_deal_nilai'
+            'stat_total_qty', 'stat_deal_qty', 'stat_total_nilai', 'stat_deal_nilai', 'showReminder', 'showSuccessReminder', 'dataMasukToday', 'targetDataMasuk'
         ));
     }
 

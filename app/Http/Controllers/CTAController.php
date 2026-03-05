@@ -34,7 +34,7 @@ class CtaController extends Controller
             'skema' => 'nullable',
             'harga_penawaran' => 'nullable|numeric|min:0',
             'harga_vendor' => 'nullable|numeric|min:0',
-            'proposal_link' => 'nullable',
+            'proposal_link' => 'nullable|url',
             'status_penawaran' => 'nullable',
             'keterangan' => 'required|string',
         ]);
@@ -61,8 +61,8 @@ class CtaController extends Controller
     public function edit($id)
     {
         $cta = Cta::with('prospek')->findOrFail($id);
-
-        return view('form-cta-edit', compact('cta'));
+        $trainings = MasterTraining::orderBy('nama_training')->get();
+        return view('form-cta-edit', compact('cta','trainings'));
     }
 
     public function update(Request $request, $id)
