@@ -3,31 +3,24 @@
 @section('content')
     <div class="container">
         <div class="page-inner">
-            {{-- Reminder jika belum ada CTA --}}
-            @if ($showReminder)
-                <div class="alert alert-warning mb-3">
-                    ⚠ <strong>Reminder Admin!</strong><br>
-                    Data masuk hari ini baru <b>{{ $dataMasukToday }}</b> dari target <b>{{ $targetDataMasuk }}</b>.<br>
-                    Silakan upload data sebelum jam 16:00.
-                </div>
-            @endif
-
-            {{-- Jika sudah ada CTA --}}
-            @if ($showSuccessReminder)
-                <div class="alert alert-success mb-3">
-                    <strong>Target Tercapai!</strong><br>
-                    Hari ini sudah ada <b>{{ $dataMasukToday }}</b> data masuk dari target <b>{{ $targetDataMasuk }}</b>.
-                </div>
-            @endif
-            <div class="d-flex align-items-left align-items-md-center flex-column flex-md-row mb-3">
-                <div>
-                    <h3 class="fw-bold mb-1">Dashboard Marketing</h3>
-                    <h6 class="op-7 mb-2">Laporan Terintegrasi & Progress Marketing</h6>
-                    <div class="badge badge-info">
-                        <i class="fas fa-clock me-2"></i> <span id="realtime-clock">Memuat waktu...</span>
+           {{-- Reminder jika belum ada CTA --}}
+            @if (auth()->user()->role === 'admin')
+                @if ($showReminder)
+                    <div class="alert alert-warning mb-3 shadow-sm border-left-warning">
+                        <i class="fas fa-exclamation-triangle me-2"></i> <strong>Reminder Admin!</strong><br>
+                        Data masuk hari ini baru <b>{{ $dataMasukToday }}</b> dari target <b>{{ $targetDataMasuk }}</b>.<br>
+                        Silakan upload data sebelum jam 16:00.
                     </div>
-                </div>
-            </div>
+                @endif
+
+                {{-- Jika sudah ada CTA --}}
+                @if ($showSuccessReminder)
+                    <div class="alert alert-success mb-3 shadow-sm border-left-success">
+                        <i class="fas fa-check-circle me-2"></i> <strong>Target Tercapai!</strong><br>
+                        Hari ini sudah ada <b>{{ $dataMasukToday }}</b> data masuk dari target <b>{{ $targetDataMasuk }}</b>.
+                    </div>
+                @endif
+            @endif
 
             {{-- STATISTIC CARDS --}}
             <div class="row">

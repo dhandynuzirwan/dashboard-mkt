@@ -144,20 +144,29 @@ class DashboardController extends Controller
 
         // ================= REMINDER ADMIN =================
         $dataMasukToday = \App\Models\DataMasuk::whereDate('created_at', now())->count();
-
         $targetDataMasuk = 100;
 
-        // Reminder aktif sebelum jam 16 jika belum mencapai target
-        $showReminder = now()->hour < 16 && $dataMasukToday < $targetDataMasuk;
+        // Cek apakah user yang login adalah admin atau superadmin
+        $isAdmin = auth()->user()->role === 'admin' || auth()->user()->role === 'superadmin';
 
-        // Success jika target tercapai
-        $showSuccessReminder = now()->hour < 16 && $dataMasukToday >= $targetDataMasuk;
+        // Reminder aktif HANYA UNTUK ADMIN, sebelum jam 16:00, jika belum mencapai target
+        $showReminder = $isAdmin && now()->hour < 16 && $dataMasukToday < $targetDataMasuk;
+
+        // Success HANYA UNTUK ADMIN, jika target tercapai
+        $showSuccessReminder = $isAdmin && now()->hour < 16 && $dataMasukToday >= $targetDataMasuk;
 
         return view('dashboard-progress', compact(
             'marketings', 'all_marketing', 'start', 'end',
             'pieLabels', 'pieData', 'lineLabels', 'lineDatasets',
-            'stat_total_qty', 'stat_deal_qty', 'stat_total_nilai', 'stat_deal_nilai', 'showReminder', 'showSuccessReminder', 'dataMasukToday', 'targetDataMasuk'
+            'stat_total_qty', 'stat_deal_qty', 'stat_total_nilai', 'stat_deal_nilai', 
+            'showReminder', 'showSuccessReminder', 'dataMasukToday', 'targetDataMasuk'
         ));
+
+        // return view('dashboard-progress', compact(
+        //     'marketings', 'all_marketing', 'start', 'end',
+        //     'pieLabels', 'pieData', 'lineLabels', 'lineDatasets',
+        //     'stat_total_qty', 'stat_deal_qty', 'stat_total_nilai', 'stat_deal_nilai', 'showReminder', 'showSuccessReminder', 'dataMasukToday', 'targetDataMasuk'
+        // ));
     }
 
     public function getDetail(Request $request, $id)
