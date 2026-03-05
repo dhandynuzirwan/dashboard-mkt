@@ -19,13 +19,13 @@
                 {{-- Filter Tanggal Mulai --}}
                 <div class="form-group p-0 m-0">
                     <input type="date" name="start_date" class="form-control form-control-sm"
-                        value="{{ request('start_date') }}" title="Tanggal Mulai">
+                        value="{{ $start }}" title="Tanggal Mulai">
                 </div>
 
                 {{-- Filter Tanggal Akhir --}}
                 <div class="form-group p-0 m-0">
                     <input type="date" name="end_date" class="form-control form-control-sm"
-                        value="{{ request('end_date') }}" title="Tanggal Akhir">
+                        value="{{ $end }}" title="Tanggal Akhir">
                 </div>
 
                 {{-- Filter Karyawan --}}
@@ -140,6 +140,9 @@
                                 </li>
                                 <li class="nav-item">
                                     <a class="nav-link btn-sm" id="pills-mapping-tab" data-bs-toggle="pill" href="#pills-mapping" role="tab">Mapping User ID</a>
+                                </li>
+                                <li class="nav-item">
+                                    <a class="nav-link btn-sm" id="pills-libur-tab" data-bs-toggle="pill" href="#pills-libur" role="tab">Daftar Hari Libur</a>
                                 </li>
                             </ul>
                         </div>
@@ -261,6 +264,50 @@
                                     </div>
                                 </form>
                             </div>
+                            {{-- TAB DAFTAR HARI LIBUR --}}
+                            <div class="tab-pane fade" id="pills-libur" role="tabpanel">
+                                <div class="d-flex justify-content-between align-items-center mb-3">
+                                    <h5 class="fw-bold mb-0">Manajemen Hari Libur Nasional</h5>
+                                    <button class="btn btn-primary btn-sm btn-round" data-bs-toggle="modal" data-bs-target="#modalAddHoliday">
+                                        <i class="fas fa-plus me-1"></i> Tambah Hari Libur
+                                    </button>
+                                </div>
+                                
+                                <div class="table-responsive">
+                                    <table class="table table-bordered table-hover">
+                                        <thead class="bg-dark text-white">
+                                            <tr>
+                                                <th width="200">Tanggal</th>
+                                                <th>Keterangan</th>
+                                                <th width="100" class="text-center">Aksi</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            @forelse($holidays as $h)
+                                            <tr>
+                                                <td>{{ \Carbon\Carbon::parse($h->tanggal)->format('d/m/Y') }}</td>
+                                                <td>{{ $h->keterangan }}</td>
+                                                <td class="text-center">
+                                                    <form action="{{ route('absensi.destroy_holiday', $h->id) }}" method="POST">
+                                                        @csrf @method('DELETE')
+                                                        <button type="submit" class="btn btn-link btn-danger p-0" onclick="return confirm('Hapus hari libur ini?')">
+                                                            <i class="fas fa-trash-alt"></i>
+                                                        </button>
+                                                    </form>
+                                                </td>
+                                            </tr>
+                                            @empty
+                                            <tr>
+                                                <td colspan="3" class="text-center py-4">Belum ada daftar hari libur yang diinput.</td>
+                                            </tr>
+                                            @endforelse
+                                        </tbody>
+                                    </table>
+                                </div>
+                                <div class="d-flex justify-content-center mt-3">
+                                    {{ $holidays->links('partials.pagination') }}
+                                </div>
+                            </div>
 
                         </div>
                     </div>
@@ -381,6 +428,44 @@
         </form>
     </div>
 </div>
+<div class="modal fade" id="modalAddHoliday" tabindex="-1" role="dialog" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+        <form action="{{ route('absensi.store_holiday') }}" method="POST">
+            @csrf
+            <div class="modal-content card-round">
+                <div class="modal-header border-0">
+                    <h5 class="modal-title fw-bold">Tambah Hari Libur Nasional</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="row">
+                        <div class="col-6">
+                            <div class="form-group p-0 mb-3">
+                                <label class="mb-2 small fw-bold">Mulai Tanggal</label>
+                                <input type="date" name="tanggal" class="form-control" required>
+                            </div>
+                        </div>
+                        <div class="col-6">
+                            <div class="form-group p-0 mb-3">
+                                <label class="mb-2 small fw-bold">Sampai (Opsional)</label>
+                                <input type="date" name="tanggal_akhir" class="form-control">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-group p-0">
+                        <label class="mb-2 small fw-bold">Keterangan / Nama Libur</label>
+                        <input type="text" name="keterangan" class="form-control" placeholder="Contoh: Libur Hari Raya" required>
+                    </div>
+                    <small class="text-muted mt-2 d-block">* Kosongkan 'Sampai' jika hanya libur 1 hari.</small>
+                </div>
+                <div class="modal-footer border-0">
+                    <button type="button" class="btn btn-border btn-round" data-bs-dismiss="modal">Batal</button>
+                    <button type="submit" class="btn btn-primary btn-round">Simpan Libur</button>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
 
 <style>
     .card-animate { transition: transform 0.3s ease; }
@@ -396,5 +481,20 @@
     }
     setInterval(updateClock, 1000);
     updateClock();
+</script>
+
+<script>
+    document.addEventListener("DOMContentLoaded", function() {
+        // Cek apakah ada parameter 'page_libur' di URL
+        const urlParams = new URLSearchParams(window.location.search);
+        if (urlParams.has('page_libur')) {
+            // Cari tombol tab libur dan simulasikan klik agar tab terbuka
+            const liburTab = document.querySelector('#pills-libur-tab');
+            if (liburTab) {
+                const tab = new bootstrap.Tab(liburTab);
+                tab.show();
+            }
+        }
+    });
 </script>
 @endsection

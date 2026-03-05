@@ -112,7 +112,7 @@
     <!-- Left Branding -->
     <div class="left-panel">
         <div class="logo-wrapper">
-            <img src="{{ asset('images/logo.png') }}" alt="Logo Perusahaan">
+            <img src="{{ asset('assets/img/arsa/arsa_logo_white.png')}}" alt="Logo Perusahaan">
         </div>
 
         <h2>Marketing Dashboard</h2>

@@ -3,8 +3,8 @@
         <div class="page-inner">
             <div class="d-flex align-items-left align-items-md-center flex-column flex-md-row mb-3">
             <div>
-                <h3 class="fw-bold mb-1">Simulasi Gaji</h3>
-                <h6 class="op-7 mb-2">Monitoring simulasi gaji karyawan berdasarkan KPI</h6>
+                <h3 class="fw-bold mb-1">Take Home Pay</h3>
+                <h6 class="op-7 mb-2">Monitoring Gaji Bersih Karyawan</h6>
                 <div class="badge badge-info">
                     <i class="fas fa-clock me-2"></i> <span id="realtime-clock">Memuat waktu...</span>
                 </div>

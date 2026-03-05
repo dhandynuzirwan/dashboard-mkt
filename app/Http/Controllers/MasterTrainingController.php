@@ -7,26 +7,64 @@ use App\Models\MasterTraining;
 
 class MasterTrainingController extends Controller
 {
-    public function index()
-{
-    $sort = request('sort', 'created_at');
-    $order = request('order', 'desc');
+    public function index(Request $request)
+    {
+        $query = MasterTraining::query();
 
-    $trainings = MasterTraining::orderBy($sort, $order)->paginate(15);
+        // Logika Pencarian
+        if ($request->filled('search')) {
+            $query->where('nama_training', 'like', '%' . $request->search . '%');
+        }
 
-    return view('master-training.index', compact('trainings'));
-}
+        // Urutkan A-Z
+        $trainings = $query->orderBy('nama_training', 'asc')
+                        ->paginate(15)
+                        ->withQueryString();
 
-public function store(Request $request)
-{
-    $request->validate([
-        'nama_training' => 'required|unique:master_trainings'
-    ]);
+        // Hitung total judul untuk statistik
+        $totalTitles = MasterTraining::count();
 
-    MasterTraining::create([
-        'nama_training' => $request->nama_training
-    ]);
+        return view('master-training', compact('trainings', 'totalTitles'));
+    }
 
-    return back()->with('success', 'Training berhasil ditambahkan');
-}
+    public function store(Request $request)
+    {
+        $request->validate([
+            'nama_training' => 'required|unique:master_trainings'
+        ]);
+
+        MasterTraining::create([
+            'nama_training' => $request->nama_training
+        ]);
+
+        return back()->with('success', 'Training berhasil ditambahkan');
+    }
+
+    public function bulkStore(Request $request)
+    {
+        $request->validate([
+            'trainings' => 'required|array',
+            'trainings.*.nama_training' => 'required|distinct'
+        ]);
+
+        $count = 0;
+        foreach ($request->trainings as $row) {
+            if (!empty($row['nama_training'])) {
+                // updateOrCreate agar tidak error jika data sudah ada
+                MasterTraining::updateOrCreate(
+                    ['nama_training' => $row['nama_training']]
+                );
+                $count++;
+            }
+        }
+
+        return back()->with('success', "$count Judul Pelatihan berhasil disimpan.");
+    }
+
+    // Tambahkan method delete jika diperlukan
+    public function destroy($id)
+    {
+        MasterTraining::findOrFail($id)->delete();
+        return back()->with('success', 'Judul pelatihan dihapus.');
+    }
 }

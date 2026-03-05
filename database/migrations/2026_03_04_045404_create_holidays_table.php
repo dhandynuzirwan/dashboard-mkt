@@ -11,11 +11,12 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('master_trainings', function (Blueprint $table) {
-        $table->id();
-        $table->string('nama_training')->unique();
-        $table->timestamps();
-    });
+        Schema::create('holidays', function (Blueprint $table) {
+            $table->id();
+            $table->date('tanggal')->unique();
+            $table->string('keterangan'); // Contoh: Idul Fitri, Tahun Baru
+            $table->timestamps();
+        });
     }
 
     /**
@@ -23,6 +24,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('master_trainings');
+        Schema::dropIfExists('holidays');
     }
 };

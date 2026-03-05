@@ -116,15 +116,15 @@
                 {{-- @endif --}}
                 {{-- @if (in_array(auth()->user()->role, ['superadmin', 'admin'])) --}}
                 <li
-                    class="nav-item {{ request()->routeIs('form-prospek', 'pipeline', 'data-masuk') ? 'active' : '' }}">
+                    class="nav-item {{ request()->routeIs('form-prospek', 'data-masuk', 'master-training') ? 'active' : '' }}">
                     <a data-bs-toggle="collapse" href="#marketing-sales"
-                        class="{{ request()->routeIs('form-prospek', 'pipeline', 'data-masuk') ? '' : 'collapsed' }}"
-                        aria-expanded="{{ request()->routeIs('form-prospek', 'pipeline', 'data-masuk') ? 'true' : 'false' }}">
+                        class="{{ request()->routeIs('form-prospek', 'data-masuk', 'master-training') ? '' : 'collapsed' }}"
+                        aria-expanded="{{ request()->routeIs('form-prospek', 'data-masuk', 'master-training') ? 'true' : 'false' }}">
                         <i class="fas fa-layer-group"></i>
                         <p>Marketing & Sales</p>
                         <span class="caret"></span>
                     </a>
-                    <div class="collapse {{ request()->routeIs('form-prospek', 'pipeline', 'data-masuk') ? 'show' : '' }}"
+                    <div class="collapse {{ request()->routeIs('form-prospek', 'data-masuk.index', 'master-training.index') ? 'show' : '' }}"
                         id="marketing-sales">
                         <ul class="nav nav-collapse">
                             <li class="{{ request()->routeIs('form-prospek') ? 'active' : '' }}">
@@ -135,6 +135,11 @@
                             <li class="{{ request()->routeIs('data-masuk.index') ? 'active' : '' }}">
                                 <a href="{{ route('data-masuk.index') }}">
                                     <span class="sub-item">Data Masuk</span>
+                                </a>
+                            </li>
+                            <li class="{{ request()->routeIs('master-training.index') ? 'active' : '' }}">
+                                <a href="{{ route('master-training.index') }}">
+                                    <span class="sub-item">Data Pelatihan</span>
                                 </a>
                             </li>
                         </ul>

@@ -46,9 +46,9 @@ class DashboardController extends Controller
         // Kita gunakan clone agar query builder tidak tercampur antara count dan sum
         $stat_total_qty   = (clone $statsQuery)->count();
         $stat_deal_qty    = (clone $statsQuery)->where('status_penawaran', 'deal')->count();
-        $stat_total_nilai = (clone $statsQuery)->sum('harga_penawaran');
-        $stat_deal_nilai  = (clone $statsQuery)->where('status_penawaran', 'deal')->sum('harga_penawaran');
-
+        // FIX: Hitung Nilai Berdasarkan (Harga x Qty)
+        $stat_total_nilai = (clone $statsQuery)->get()->sum(fn($item) => $item->harga_penawaran * $item->jumlah_peserta);
+        $stat_deal_nilai  = (clone $statsQuery)->where('status_penawaran', 'deal')->get()->sum(fn($item) => $item->harga_penawaran * $item->jumlah_peserta);
         // 3. MAPPING DATA UNTUK TABEL PROGRESS & TABEL STATUS AKHIR
         $marketings = $users->map(function ($user) use ($start, $end, $hariEfektif) {
             $gaji = \App\Models\Penggajian::where('user_id', $user->id)->first();

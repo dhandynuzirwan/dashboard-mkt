@@ -1,4 +1,7 @@
 @extends('layouts.app')
+<link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/select2-bootstrap-5-theme@1.3.0/dist/select2-bootstrap-5-theme.min.css" />
+
 
 @section('content')
 <div class="container">
@@ -42,8 +45,9 @@
                             {{-- Judul Permintaan --}}
                             <div class="form-group">
                                 <label>Permintaan Pelatihan (Judul)</label>
-                                <select name="judul_permintaan" class="form-select">
-                                    <option value="">-- Kosong --</option>
+                                {{-- Tambahkan class 'select2-js' --}}
+                                <select name="judul_permintaan" class="form-select select2-js">
+                                    <option value="">-- Cari Judul Pelatihan --</option>
                                     @foreach ($trainings as $training)
                                         <option value="{{ $training->nama_training }}">
                                             {{ $training->nama_training }}
@@ -121,3 +125,16 @@
     </div>
 </div>
 @endsection
+
+@push('scripts')
+<script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
+<script>
+    $(document).ready(function() {
+        $('.select2-js').select2({
+            theme: "bootstrap-5", // Jika kamu pakai tema bootstrap
+            width: '100%',
+            placeholder: "-- Pilih atau Cari Judul --"
+        });
+    });
+</script>
+@endpush

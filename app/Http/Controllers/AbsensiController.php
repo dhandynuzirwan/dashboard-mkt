@@ -19,26 +19,36 @@ class AbsensiController extends Controller
 
     public function index(Request $request) 
     {
+        // 1. --- INISIALISASI FILTER (Default: Awal bulan ini - Hari ini) ---
+        $start = $request->query('start_date', \Carbon\Carbon::now()->startOfMonth()->format('Y-m-d'));
+        $end = $request->query('end_date', \Carbon\Carbon::now()->format('Y-m-d'));
+        $userId = $request->query('user_id');
+
         $query = AbsensiLog::with('user');
 
-        // Filter Berdasarkan Rentang Tanggal
-        if ($request->filled('start_date')) {
-            $query->where('tanggal', '>=', $request->start_date);
+        // 2. --- APPLY FILTER ---
+        if ($start) {
+            $query->where('tanggal', '>=', $start);
         }
-        if ($request->filled('end_date')) {
-            $query->where('tanggal', '<=', $request->end_date);
+        if ($end) {
+            $query->where('tanggal', '<=', $end);
         }
-
-        // Filter Berdasarkan Karyawan (Opsional, tapi berguna karena data $users sudah ada)
-        if ($request->filled('user_id')) {
-            $query->where('user_id', $request->user_id);
+        if ($userId) {
+            $query->where('user_id', $userId);
         }
 
-        $absensi = $query->orderBy('tanggal', 'desc')->paginate(10);
+        // 3. --- AMBIL DATA ---
+        $absensi = $query->orderBy('tanggal', 'desc')->paginate(10)->withQueryString();
         $users = User::all();
         $perizinans = Perizinan::with('user')->latest()->get();
-        
-        return view('absensi', compact('absensi', 'users', 'perizinans'));
+        // $holidays = \App\Models\Holiday::orderBy('tanggal', 'desc')->get();
+        // UPDATE INI: Gunakan paginate dengan nama parameter unik
+        $holidays = \App\Models\Holiday::orderBy('tanggal', 'desc')
+                ->paginate(10, ['*'], 'page_libur') 
+                ->withQueryString();
+
+        // Kirim $start, $end, dan $userId ke view agar filter tetap terisi
+        return view('absensi', compact('absensi', 'users', 'perizinans', 'holidays', 'start', 'end', 'userId'));
     }
 
     public function mapping()
@@ -222,5 +232,53 @@ class AbsensiController extends Controller
         $count = Perizinan::whereBetween('tanggal', [$request->start_date, $request->end_date])->delete();
 
         return back()->with('success', "Berhasil menghapus $count data perizinan dari tanggal $request->start_date sampai $request->end_date.");
+    }
+
+    // Method Simpan Hari Libur
+    public function storeHoliday(Request $request)
+    {
+        $request->validate([
+            'tanggal' => 'required|date',
+            'keterangan' => 'required|string',
+        ]);
+
+        $startDate = \Carbon\Carbon::parse($request->tanggal);
+        $keterangan = $request->keterangan;
+        $successCount = 0;
+
+        // Jika ada tanggal akhir, lakukan looping
+        if ($request->filled('tanggal_akhir')) {
+            $endDate = \Carbon\Carbon::parse($request->tanggal_akhir);
+
+            // Pastikan tanggal akhir tidak lebih kecil dari tanggal mulai
+            if ($endDate->lt($startDate)) {
+                return back()->with('error', 'Tanggal akhir tidak boleh sebelum tanggal mulai!');
+            }
+
+            // Looping dari start ke end
+            for ($date = $startDate->copy(); $date->lte($endDate); $date->addDay()) {
+                \App\Models\Holiday::updateOrCreate(
+                    ['tanggal' => $date->format('Y-m-d')],
+                    ['keterangan' => $keterangan]
+                );
+                $successCount++;
+            }
+        } else {
+            // Jika cuma 1 hari
+            \App\Models\Holiday::updateOrCreate(
+                ['tanggal' => $startDate->format('Y-m-d')],
+                ['keterangan' => $keterangan]
+            );
+            $successCount = 1;
+        }
+
+        return back()->with('success', "Berhasil menyimpan $successCount hari libur.");
+    }
+
+    // Method Hapus Hari Libur
+    public function destroyHoliday($id)
+    {
+        \App\Models\Holiday::findOrFail($id)->delete();
+        return back()->with('success', 'Hari libur berhasil dihapus!');
     }
 }

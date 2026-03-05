@@ -8,6 +8,7 @@ use App\Models\Prospek;
 use App\Models\User;
 use App\Models\AbsensiLog;
 use App\Models\Perizinan;
+use App\Models\Holiday; // 1. PASTIKAN MODEL HOLIDAY DIPANGGIL
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 
@@ -22,14 +23,21 @@ class KpiController extends Controller
         $end = $request->query('end_date', Carbon::now()->format('Y-m-d'));
         $marketing_filter = $request->query('marketing_id');
 
-        // 2. --- HITUNG HARI KERJA (FULL 1 BULAN) ---
-        // Ini agar target tetap statis sebulan penuh meskipun difilter seminggu
+        // 2. --- HITUNG HARI KERJA (FULL 1 BULAN + DETEKSI LIBUR) ---
         $startDate = Carbon::parse($start);
         $startOfMonth = $startDate->copy()->startOfMonth();
         $endOfMonth = $startDate->copy()->endOfMonth();
+
+        // Ambil daftar libur bulan ini dari database
+        $daftarLibur = Holiday::whereBetween('tanggal', [
+            $startOfMonth->format('Y-m-d'), 
+            $endOfMonth->format('Y-m-d')
+        ])->pluck('tanggal')->toArray();
+
         $hariEfektifSebulan = 0;
         for ($date = $startOfMonth->copy(); $date->lte($endOfMonth); $date->addDay()) {
-            if ($date->isWeekday()) { 
+            // Logika: Hari kerja (Senin-Jumat) DAN tidak ada di daftarLibur
+            if ($date->isWeekday() && !in_array($date->format('Y-m-d'), $daftarLibur)) { 
                 $hariEfektifSebulan++;
             }
         }
@@ -52,7 +60,7 @@ class KpiController extends Controller
             $target_revenue = $penggajian->target ?? 0;
 
             // ================= ABSENSI (HADIR + IZIN APPROVED) =================
-            // Target Jadwal: Diambil dari sebulan penuh
+            // Target Jadwal: Diambil dari sebulan penuh (dikurangi libur)
             $user->absensi_jadwal = $hariEfektifSebulan;
             
             $hadirMesin = AbsensiLog::where('user_id', $user->id)
@@ -68,7 +76,7 @@ class KpiController extends Controller
 
             $user->absensi_hadir = $hadirMesin + $izinApproved;
 
-            // Achievement dihitung terhadap JADWAL SEBULAN
+            // Achievement vs JADWAL SEBULAN
             $user->absensi_ach = ($hariEfektifSebulan > 0)
                 ? min(100, ($user->absensi_hadir / $hariEfektifSebulan) * 100)
                 : 0;
@@ -77,7 +85,7 @@ class KpiController extends Controller
             $user->absensi_kpi = ($user->absensi_ach / 100) * 0.1 * 100; 
 
             // ================= PROGRESS (CTA / PENAWARAN) =================
-            // Target dihitung dari target harian x JADWAL SEBULAN
+            // Target: target harian x JADWAL SEBULAN (dikurangi libur)
             $user->progress_target = $target_call * $hariEfektifSebulan;
 
             $user->progress_real = Cta::whereHas('prospek', function ($q) use ($user) {
@@ -96,12 +104,14 @@ class KpiController extends Controller
             // ================= REVENUE (DEAL) =================
             $user->revenue_target = $target_revenue;
 
+            // FIX: Hitung Nilai Deal = Harga Penawaran x Jumlah Peserta
             $user->revenue_actual = Cta::whereHas('prospek', function ($q) use ($user) {
                     $q->where('marketing_id', $user->id);
                 })
                 ->where('status_penawaran', 'deal')
                 ->whereBetween('created_at', [$start . " 00:00:00", $end . " 23:59:59"])
-                ->sum('harga_penawaran');
+                ->get() // Ambil collection dulu
+                ->sum(fn($item) => $item->harga_penawaran * $item->jumlah_peserta); // Lakukan perkalian
 
             $user->revenue_ach = ($user->revenue_target > 0)
                 ? ($user->revenue_actual / $user->revenue_target) * 100
@@ -118,7 +128,6 @@ class KpiController extends Controller
 
         $all_marketing = User::where('role', 'marketing')->get();
 
-        // Kirim start, end, dan hariEfektifSebulan ke view
         return view('data-kpi', compact('marketings', 'start', 'end', 'all_marketing', 'hariEfektifSebulan'));
     }
 }

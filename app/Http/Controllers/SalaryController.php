@@ -7,6 +7,7 @@ use App\Models\Penggajian;
 use App\Models\Prospek;
 use App\Models\User;
 use App\Models\AbsensiLog;
+use App\Models\Holiday;
 use App\Models\Perizinan;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
@@ -23,12 +24,23 @@ class SalaryController extends Controller
         $marketing_filter = $request->query('marketing_id');
 
         // 2. --- HITUNG HARI KERJA (FULL 1 BULAN) ---
+        // 1. Tentukan rentang awal dan akhir bulan berdasarkan filter $start
         $startDate = Carbon::parse($start);
         $startOfMonth = $startDate->copy()->startOfMonth();
         $endOfMonth = $startDate->copy()->endOfMonth();
-        $hariEfektif = 0; // Kita pakai nama $hariEfektif agar Blade tidak error
+
+        // 2. Ambil daftar tanggal merah bulan ini dari database
+        $daftarLibur = \App\Models\Holiday::whereBetween('tanggal', [
+                $startOfMonth->format('Y-m-d'), 
+                $endOfMonth->format('Y-m-d')
+            ])->pluck('tanggal')->toArray();
+
+        // 3. Hitung Hari Efektif (Hanya Senin-Jumat & Bukan Tanggal Merah)
+        $hariEfektif = 0; 
+
         for ($date = $startOfMonth->copy(); $date->lte($endOfMonth); $date->addDay()) {
-            if ($date->isWeekday()) { 
+            // Logika: Jika hari biasa (Senin-Jumat) DAN tidak terdaftar di tabel Holiday
+            if ($date->isWeekday() && !in_array($date->format('Y-m-d'), $daftarLibur)) { 
                 $hariEfektif++;
             }
         }
@@ -79,10 +91,11 @@ class SalaryController extends Controller
                 })
                 ->where('status_penawaran', 'deal')
                 ->whereBetween('created_at', [$start . " 00:00:00", $end . " 23:59:59"])
-                ->sum('harga_penawaran');
+                ->get()
+                ->sum(fn($item) => $item->harga_penawaran * $item->jumlah_peserta);
 
             $revenueAch = ($targetRevenue > 0) ? ($incomeDeal / $targetRevenue) * 100 : 0;
-            $revenueKpi = $revenueAch * 0.6; 
+            $revenueKpi = $revenueAch * 0.6;
 
             $totalKpiPersen = ($absensiKpi + $progressKpi + $revenueKpi);
 

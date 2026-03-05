@@ -66,6 +66,9 @@
                                         <li class="nav-item">
                                             <a class="nav-link btn-sm" id="pills-mapping-tab" data-toggle="pill" href="#pills-mapping" role="tab">Mapping User ID</a>
                                         </li>
+                                        <li class="nav-item">
+                                            <a class="nav-link btn-sm" id="pills-libur-tab" data-bs-toggle="pill" href="#pills-libur" role="tab">Daftar Hari Libur</a>
+                                        </li>
                                     </ul>
                                 </div>
                             </div>

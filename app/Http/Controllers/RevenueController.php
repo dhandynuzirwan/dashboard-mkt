@@ -7,6 +7,7 @@ use App\Models\User;
 use App\Models\AbsensiLog;
 use App\Models\Perizinan;
 use App\Models\Penggajian;
+use App\Models\Holiday; // 1. TAMBAHKAN INI
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 
@@ -17,23 +18,30 @@ class RevenueController extends Controller
         $authUser = auth()->user();
 
         // 1. --- INISIALISASI FILTER ---
-        // Default: Awal bulan ini sampai hari ini (atau sesuai input user)
         $start = $request->query('start_date', Carbon::now()->startOfMonth()->format('Y-m-d'));
         $end = $request->query('end_date', Carbon::now()->format('Y-m-d'));
         $marketing_filter = $request->query('marketing_id');
 
-        // 2. --- HITUNG HARI KERJA EFEKTIF (Senin-Jumat) BERDASARKAN RENTANG ---
+        // 2. --- LOGIKA HARI KERJA + TANGGAL MERAH ---
         $startDate = Carbon::parse($start);
         $endDate = Carbon::parse($end);
+        
+        // 2a. Tarik daftar libur dari database berdasarkan rentang filter
+        $daftarLibur = Holiday::whereBetween('tanggal', [$start, $end])
+                        ->pluck('tanggal')
+                        ->toArray();
+
         $hariEfektif = 0;
 
+        // 2b. Hitung hari kerja (Senin-Jumat) yang BUKAN tanggal merah
         for ($date = $startDate->copy(); $date->lte($endDate); $date->addDay()) {
-            if ($date->isWeekday()) { 
+            // Syarat: Hari kerja (Senin-Jumat) DAN tidak ada di daftarLibur
+            if ($date->isWeekday() && !in_array($date->format('Y-m-d'), $daftarLibur)) { 
                 $hariEfektif++;
             }
         }
 
-        // 3. 🔐 FILTER USER BERDASARKAN ROLE & INPUT
+        // 3. 🔐 FILTER USER
         $queryUser = User::where('role', 'marketing');
         if ($authUser->role === 'marketing') {
             $queryUser->where('id', $authUser->id);
@@ -42,33 +50,31 @@ class RevenueController extends Controller
         }
         $users = $queryUser->get();
 
-        // 4. --- MAPPING DATA (REVENUE + ABSENSI + IZIN) ---
+        // 4. --- MAPPING DATA ---
         $marketings = $users->map(function ($m) use ($start, $end, $hariEfektif) {
             
-            // Ambil data penawaran (CTA) dalam rentang waktu terpilih
             $cta = Cta::whereHas('prospek', function ($query) use ($m) {
                 $query->where('marketing_id', $m->id);
             })->whereBetween('created_at', [$start . " 00:00:00", $end . " 23:59:59"])->get();
 
-            // ================= TOTAL PENAWARAN (Berdasarkan Sertifikasi) =================
-            $m->rp_pen_kemenaker = $cta->where('sertifikasi', 'kemnaker')->sum('harga_penawaran');
-            $m->rp_pen_bnsp      = $cta->where('sertifikasi', 'bnsp')->sum('harga_penawaran');
-            $m->rp_pen_internal  = $cta->where('sertifikasi', 'internal')->sum('harga_penawaran');
-            $m->rp_pen_ppsio     = $cta->where('sertifikasi', 'sio')->sum('harga_penawaran');
-            $m->rp_pen_riksa     = $cta->where('sertifikasi', 'riksa')->sum('harga_penawaran');
-            $m->total_rp_pen     = $cta->sum('harga_penawaran');
+            // --- TOTAL PENAWARAN (Harga x Jumlah Peserta) ---
+            $m->rp_pen_kemenaker = $cta->where('sertifikasi', 'kemnaker')->sum(fn($item) => $item->harga_penawaran * $item->jumlah_peserta);
+            $m->rp_pen_bnsp      = $cta->where('sertifikasi', 'bnsp')->sum(fn($item) => $item->harga_penawaran * $item->jumlah_peserta);
+            $m->rp_pen_internal  = $cta->where('sertifikasi', 'internal')->sum(fn($item) => $item->harga_penawaran * $item->jumlah_peserta);
+            $m->rp_pen_ppsio     = $cta->where('sertifikasi', 'sio')->sum(fn($item) => $item->harga_penawaran * $item->jumlah_peserta);
+            $m->rp_pen_riksa     = $cta->where('sertifikasi', 'riksa')->sum(fn($item) => $item->harga_penawaran * $item->jumlah_peserta);
+            $m->total_rp_pen     = $cta->sum(fn($item) => $item->harga_penawaran * $item->jumlah_peserta);
 
-            // ================= TOTAL DEAL (Status Deal) =================
+            // --- TOTAL DEAL (Harga x Jumlah Peserta) ---
             $deal = $cta->where('status_penawaran', 'deal');
+            $m->rp_deal_kemenaker = $deal->where('sertifikasi', 'kemnaker')->sum(fn($item) => $item->harga_penawaran * $item->jumlah_peserta);
+            $m->rp_deal_bnsp      = $deal->where('sertifikasi', 'bnsp')->sum(fn($item) => $item->harga_penawaran * $item->jumlah_peserta);
+            $m->rp_deal_internal  = $deal->where('sertifikasi', 'internal')->sum(fn($item) => $item->harga_penawaran * $item->jumlah_peserta);
+            $m->rp_deal_ppsio     = $deal->where('sertifikasi', 'sio')->sum(fn($item) => $item->harga_penawaran * $item->jumlah_peserta);
+            $m->rp_deal_riksa     = $deal->where('sertifikasi', 'riksa')->sum(fn($item) => $item->harga_penawaran * $item->jumlah_peserta);
+            $m->total_rp_deal     = $deal->sum(fn($item) => $item->harga_penawaran * $item->jumlah_peserta);
 
-            $m->rp_deal_kemenaker = $deal->where('sertifikasi', 'kemnaker')->sum('harga_penawaran');
-            $m->rp_deal_bnsp      = $deal->where('sertifikasi', 'bnsp')->sum('harga_penawaran');
-            $m->rp_deal_internal  = $deal->where('sertifikasi', 'internal')->sum('harga_penawaran');
-            $m->rp_deal_ppsio     = $deal->where('sertifikasi', 'sio')->sum('harga_penawaran'); // Perbaikan typo harga_penawaker
-            $m->rp_deal_riksa     = $deal->where('sertifikasi', 'riksa')->sum('harga_penawaran');
-            $m->total_rp_deal     = $deal->sum('harga_penawaran');
-
-            // ================= DATA ABSENSI & IZIN =================
+            // Absensi & Izin
             $countHadir = AbsensiLog::where('user_id', $m->id)
                 ->where('tipe', 'in')
                 ->whereBetween('tanggal', [$start, $end])
@@ -84,10 +90,11 @@ class RevenueController extends Controller
             $m->count_hadir  = $countHadir;
             $m->count_izin   = $countIzin;
             
+            // Perhitungan Alpa yang lebih adil (karena hariEfektif sudah dikurangi libur)
             $m->count_alpa   = max(0, $hariEfektif - ($countHadir + $countIzin));
             $m->total_potongan = $m->count_alpa * 100000;
 
-            // ================= TARGET & ACHIEVEMENT =================
+            // Target & Achievement
             $penggajian = Penggajian::where('user_id', $m->id)->first();
             $m->target = $penggajian->target ?? 100000000; 
             
@@ -99,7 +106,6 @@ class RevenueController extends Controller
 
         $all_marketing = User::where('role', 'marketing')->get();
 
-        // Pastikan variabel $start dan $end dikirim ke compact
         return view('revenue', compact('marketings', 'start', 'end', 'all_marketing', 'hariEfektif'));
     }
 }

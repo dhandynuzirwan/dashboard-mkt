@@ -48,19 +48,11 @@
                     <div class="form-group p-0 m-0">
                         <select name="status" class="form-select form-select-sm">
                             <option value="">Semua Status Penawaran</option>
-                            <option value="cancel" {{ request('status') == 'cancel' ? 'selected' : '' }}>
-                                Cancel
-                            </option>
-                            {{-- Value harus lowercase & snake_case sesuai database --}}
-                            <option value="under_review" {{ request('status') == 'under_review' ? 'selected' : '' }}>Under
-                                Review
-                            </option>
-                            <option value="hold" {{ request('status') == 'hold' ? 'selected' : '' }}>Hold
-                            </option>
-                            <option value="kalah_harga" {{ request('status') == 'kalah_harga' ? 'selected' : '' }}>Kalah
-                                Harga</option>
-                            <option value="deal" {{ request('status') == 'deal' ? 'selected' : '' }}>Deal
-                            </option>
+                            <option value="cancel" {{ request('status') == 'cancel' ? 'selected' : '' }}>Cancel</option>
+                            <option value="under_review" {{ request('status') == 'under_review' ? 'selected' : '' }}>Under Review</option>
+                            <option value="hold" {{ request('status') == 'hold' ? 'selected' : '' }}>Hold</option>
+                            <option value="kalah_harga" {{ request('status') == 'kalah_harga' ? 'selected' : '' }}>Kalah Harga</option>
+                            <option value="deal" {{ request('status') == 'deal' ? 'selected' : '' }}>Deal</option>
                         </select>
                     </div>
                     <div class="form-group p-0 m-0">
@@ -144,7 +136,7 @@
                                 </div>
                                 <div class="col col-stats ms-3 ms-sm-0">
                                     <div class="numbers">
-                                        <p class="card-category">Nilai Pipeline</p>
+                                        <p class="card-category">Nilai Penawaran</p>
                                         <h4 class="card-title" style="font-size: 1.1rem;">Rp
                                             {{ number_format($stats['total_nilai'], 0, ',', '.') }}</h4>
                                         <p class="text-success small mb-0">Potensi Omzet</p>

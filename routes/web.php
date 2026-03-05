@@ -7,6 +7,7 @@ use App\Http\Controllers\DataMasukController;
 use App\Http\Controllers\DownloadRequestController;
 use App\Http\Controllers\GlobalSearchController;
 use App\Http\Controllers\KpiController;
+use App\Http\Controllers\MasterTrainingController;
 use App\Http\Controllers\PenggajianController;
 use App\Http\Controllers\ProspekController;
 use App\Http\Controllers\RevenueController;
@@ -155,6 +156,10 @@ Route::middleware('auth')->group(function () {
 
         Route::delete('/penggajian/{id}', [PenggajianController::class, 'destroy'])
             ->name('penggajian.destroy');
+
+        Route::get('/master-training', [MasterTrainingController::class, 'index'])->name('master-training.index');
+        Route::post('/master-training/bulk-store', [MasterTrainingController::class, 'bulkStore'])->name('master-training.bulk_store');
+        Route::delete('/master-training/{id}', [MasterTrainingController::class, 'destroy'])->name('master-training.destroy');
     });
 
     /*
@@ -241,6 +246,9 @@ Route::middleware('auth')->group(function () {
 
             Route::delete('/delete-range', [AbsensiController::class, 'destroyAbsensiRange'])->name('absensi.delete_range');
             Route::delete('/izin/delete-range', [AbsensiController::class, 'destroyIzinRange'])->name('absensi.delete_izin_range');
+
+            Route::post('/absensi/holiday', [AbsensiController::class, 'storeHoliday'])->name('absensi.store_holiday');
+            Route::delete('/absensi/holiday/{id}', [AbsensiController::class, 'destroyHoliday'])->name('absensi.destroy_holiday');
         });
     });
 

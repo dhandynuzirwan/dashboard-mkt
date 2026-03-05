@@ -36,17 +36,26 @@ class ProspekController extends Controller
         // Gunakan variabel $start dan $end yang sudah diinisialisasi
         $query->whereBetween('tanggal_prospek', [$start, $end]);
 
-        // Filter Status Akhir
+        // A. FILTER TAHAP (Ini yang tadi hilang, Lang!)
+        if ($request->filled('cta_status')) {
+            if ($request->cta_status == 'pending') {
+                $query->whereDoesntHave('cta'); // Belum input penawaran
+            } elseif ($request->cta_status == 'done') {
+                $query->whereHas('cta'); // Sudah ada penawaran
+            }
+        }
+
+        // Filter Status Akhir (Ini filter untuk kolom 'status' di tabel Prospek)
         if ($request->status_akhir) {
             $query->where('status', $request->status_akhir);
         }
 
-        if ($request->cta_status) {
-            if ($request->cta_status == 'pending') {
-                $query->whereDoesntHave('cta');
-            } elseif ($request->cta_status == 'done') {
-                $query->whereHas('cta');
-            }
+        // FIX: Filter Status Penawaran (Ini filter untuk kolom 'status_penawaran' di tabel CTA)
+        // Di Blade kamu menggunakan name="status", jadi kita tangkap $request->status
+        if ($request->status) {
+            $query->whereHas('cta', function ($q) use ($request) {
+                $q->where('status_penawaran', $request->status);
+            });
         }
 
         if ($request->marketing_id && $user->role !== 'marketing') {
@@ -64,7 +73,12 @@ class ProspekController extends Controller
         $stats = [
             'total_prospek' => $statsData->count(),
             'total_cta'     => $statsData->whereNotNull('cta')->count(),
-            'total_nilai'   => $statsData->sum(fn($item) => $item->cta->total_penawaran ?? 0),
+            
+            // FIX: Menghitung Nilai Pipeline (Harga Penawaran x Jumlah Peserta)
+            'total_nilai'   => $statsData->sum(function($item) {
+                return optional($item->cta)->harga_penawaran * optional($item->cta)->jumlah_peserta ?? 0;
+            }),
+            
             'total_deal'    => $statsData->filter(fn($item) => 
                                 optional($item->cta)->status_penawaran == 'deal'
                             )->count(),

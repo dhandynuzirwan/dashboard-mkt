@@ -1,4 +1,5 @@
 @extends('layouts.app')
+<link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
 
 @section('content')
     <div class="container">
@@ -22,12 +23,18 @@
                         @method('PUT')
 
                         <div class="row">
-
                             <div class="col-md-6">
                                 <div class="form-group">
-                                    <label>Judul Permintaan</label>
-                                    <input type="text" name="judul_permintaan" class="form-control"
-                                        value="{{ $cta->judul_permintaan }}" >
+                                    <label>Permintaan Pelatihan (Judul)</label>
+                                    <select name="judul_permintaan" class="form-select select2-js">
+                                        <option value="">-- Cari Judul Pelatihan --</option>
+                                        @foreach ($trainings as $training)
+                                            <option value="{{ $training->nama_training }}" 
+                                                {{ $cta->judul_permintaan == $training->nama_training ? 'selected' : '' }}>
+                                                {{ $training->nama_training }}
+                                            </option>
+                                        @endforeach
+                                    </select>
                                 </div>
                             </div>
 
@@ -124,3 +131,14 @@
         </div>
     </div>
 @endsection
+
+@push('scripts')
+<script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
+<script>
+    $(document).ready(function() {
+        $('.select2-js').select2({
+            width: '100%'
+        });
+    });
+</script>
+@endpush
