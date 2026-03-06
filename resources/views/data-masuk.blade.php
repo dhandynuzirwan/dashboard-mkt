@@ -166,9 +166,11 @@
                                 <th>Marketing</th>
                                 <th>Perusahaan</th>
                                 <th>Unit Bisnis</th>
+                                <th>No Telp</th>
                                 <th>Email</th>
                                 <th>Status Email</th>
                                 <th>WhatsApp</th>
+                                <th>Lokasi</th>
                                 <th>Sumber</th>
                                 @if (auth()->user()->role == 'superadmin' || auth()->user()->role == 'admin')
                                     <th>Aksi</th>
@@ -181,6 +183,7 @@
                                     <td>{{ $item->marketing->name }}</td>
                                     <td>{{ $item->perusahaan }}</td>
                                     <td>{{ $item->unit_bisnis }}</td>
+                                    <td>{{ $item->telp}}</td>
                                     <td>{{ $item->email }}</td>
                                     <td>
                                         <span class="badge {{ $item->status_email == 'Valid' ? 'badge-success' : 'badge-danger' }}">
@@ -189,7 +192,8 @@
                                     </td>
                                     <td>{{ $item->wa_baru ?? $item->wa_pic }}</td>
                                     <td>{{ $item->sumber }}</td>
-                                    @if (auth()->user()->role == 'superadmin' || auth()->user()->role == 'admin')
+                                     <td>{{ $item->lokasi }}</td>
+                                    @if ( auth()->user()->role == 'rnd' || auth()->user()->role == 'digitalmarketing')
                                         <td>
                                             <div class="d-flex align-items-center" style="gap: 5px;">
                                                 <a href="{{ route('data-masuk.edit', $item->id) }}"

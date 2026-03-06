@@ -31,10 +31,8 @@ Route::post('/login', function (Request $request) {
     $credentials = $request->only('email', 'password');
     if (Auth::attempt($credentials)) {
         $request->session()->regenerate();
-
         return redirect()->route('dashboard.progress');
     }
-
     return back()->with('error', 'Email atau password salah');
 })->name('login.process');
 
@@ -42,7 +40,6 @@ Route::post('/logout', function (Request $request) {
     Auth::logout();
     $request->session()->invalidate();
     $request->session()->regenerateToken();
-
     return redirect()->route('login');
 })->name('logout');
 
@@ -54,223 +51,120 @@ Route::post('/logout', function (Request $request) {
 
 Route::middleware('auth')->group(function () {
 
-    // --- DASHBOARD UTAMA ---
-    // Arahkan root (/) dan /dashboard-progress ke Controller yang sama
+    // --- DASHBOARD & GLOBAL (Semua yang login bisa akses) ---
     Route::get('/', [DashboardController::class, 'index'])->name('dashboard.progress');
     Route::get('/dashboard-progress', [DashboardController::class, 'index']);
     Route::get('/search', [GlobalSearchController::class, 'index'])->name('search.global');
-
-    // Route untuk AJAX Detail Popup (Modal) di Dashboard
     Route::get('/marketing-detail/{id}', [DashboardController::class, 'getDetail'])->name('marketing.detail');
 
     /*
     |--------------------------------------------------------------------------
-    | AKSES BERSAMA (SUPERADMIN, ADMIN, MARKETING)
+    | AKSES BERDASARKAN ROLE (TANPA DUPLIKASI)
     |--------------------------------------------------------------------------
-    | Route di sini bisa diakses & difilter oleh semua role
     */
-    Route::middleware('role:superadmin,admin,marketing')->group(function () {
 
-        // Halaman Pipeline Utama & Fitur Filter
+    // 1. FITUR UMUM (Semua Role: Superadmin, Admin, Marketing, RnD, Digital Marketing)
+    Route::middleware('role:superadmin,admin,marketing,rnd,digitalmarketing')->group(function () {
         Route::get('/pipeline', [ProspekController::class, 'index'])->name('prospek.index');
-        Route::get('/pipeline-alias', [ProspekController::class, 'index'])->name('pipeline'); // Tambahan ini
-        Route::post('/download-request', [DownloadRequestController::class, 'store'])
-            ->name('download.request');
+        Route::get('/pipeline-alias', [ProspekController::class, 'index'])->name('pipeline');
+        
+        Route::post('/download-request', [DownloadRequestController::class, 'store'])->name('download.request');
+        Route::get('/download-file/{id}', [DownloadRequestController::class, 'download'])->name('download.file');
+        Route::get('/my-downloads', [DownloadRequestController::class, 'myRequests'])->name('download.my');
+    });
 
-        Route::get('/download-file/{id}', [DownloadRequestController::class, 'download'])
-            ->name('download.file');
-
-        Route::get('/my-downloads', [DownloadRequestController::class, 'myRequests'])
-            ->name('download.my');
-        Route::get('/revenue', [RevenueController::class, 'index'])
-            ->name('revenue');
-
+    // 2. MONITORING BISNIS (Superadmin, Admin, Marketing)
+    Route::middleware('role:superadmin,admin,marketing')->group(function () {
+        Route::get('/revenue', [RevenueController::class, 'index'])->name('revenue');
         Route::get('/data-kpi', [KpiController::class, 'index'])->name('data-kpi');
-
         Route::get('/simulasi-gaji', [SalaryController::class, 'index'])->name('simulasi-gaji');
     });
 
-    // Khusus Superadmin
-    Route::middleware('role:superadmin')->group(function () {
-
-        Route::get('/download-approval', [DownloadRequestController::class, 'index'])
-            ->name('download.approval');
-
-        Route::post('/download-approve/{id}', [DownloadRequestController::class, 'approve'])
-            ->name('download.approve');
-
-        Route::post('/download-reject/{id}', [DownloadRequestController::class, 'reject'])
-            ->name('download.reject');
-    });
-    /*
-    |--------------------------------------------------------------------------
-    | KHUSUS SUPERADMIN & ADMIN
-    |--------------------------------------------------------------------------
-    | Izin untuk melakukan input data awal (Prospek & Data Masuk)
-    */
-    Route::middleware('role:superadmin,admin')->group(function () {
-
-        // Pengelolaan Prospek
-        Route::get('/form-prospek', [ProspekController::class, 'create'])->name('form-prospek');
-        Route::post('/prospek/store', [ProspekController::class, 'store'])->name('prospek.store');
-
-        // Pengelolaan Data Masuk
+    // 3. PENGELOLAAN DATA & TRAINING (Superadmin, Admin, RnD, Digital Marketing)
+    // Digabung agar Data Masuk & Master Training tidak didefinisikan 2x
+    Route::middleware('role:superadmin,admin,rnd,digitalmarketing')->group(function () {
         Route::get('/data-masuk', [DataMasukController::class, 'index'])->name('data-masuk.index');
         Route::get('/form-data-masuk', [DataMasukController::class, 'create'])->name('form-data-masuk');
         Route::post('/data-masuk/store', [DataMasukController::class, 'store'])->name('data-masuk.store');
-
-        // ================= EDIT =================
-        Route::get('/data-masuk/{id}/edit', [DataMasukController::class, 'edit'])
-            ->name('data-masuk.edit');
-
-        Route::put('/data-masuk/{id}', [DataMasukController::class, 'update'])
-            ->name('data-masuk.update');
-
-        // ================= DELETE =================
-        Route::delete('/data-masuk/{id}', [DataMasukController::class, 'destroy'])
-            ->name('data-masuk.destroy');
-
-        // ================= EDIT PROSPEK =================
-        Route::get('/prospek/{id}/edit', [ProspekController::class, 'edit'])
-            ->name('prospek.edit');
-
-        Route::put('/prospek/{id}', [ProspekController::class, 'update'])
-            ->name('prospek.update');
-
-        Route::get('/penggajian', [PenggajianController::class, 'index'])
-            ->name('penggajian.index');
-
-        Route::get('/form-penggajian', [PenggajianController::class, 'create'])
-            ->name('form-penggajian');
-
-        Route::post('/penggajian/store', [PenggajianController::class, 'store'])
-            ->name('penggajian.store');
-
-        //  TAMBAHAN CRUD
-        Route::get('/penggajian/{id}/edit', [PenggajianController::class, 'edit'])
-            ->name('penggajian.edit');
-
-        Route::put('/penggajian/{id}', [PenggajianController::class, 'update'])
-            ->name('penggajian.update');
-
-        Route::delete('/penggajian/{id}', [PenggajianController::class, 'destroy'])
-            ->name('penggajian.destroy');
+        Route::get('/data-masuk/{id}/edit', [DataMasukController::class, 'edit'])->name('data-masuk.edit');
+        Route::put('/data-masuk/{id}', [DataMasukController::class, 'update'])->name('data-masuk.update');
+        Route::delete('/data-masuk/{id}', [DataMasukController::class, 'destroy'])->name('data-masuk.destroy');
 
         Route::get('/master-training', [MasterTrainingController::class, 'index'])->name('master-training.index');
         Route::post('/master-training/bulk-store', [MasterTrainingController::class, 'bulkStore'])->name('master-training.bulk_store');
         Route::delete('/master-training/{id}', [MasterTrainingController::class, 'destroy'])->name('master-training.destroy');
     });
 
-    /*
-    |--------------------------------------------------------------------------
-    | KHUSUS MARKETING
-    |--------------------------------------------------------------------------
-    | Izin untuk melanjutkan prospek ke tahap penawaran (CTA)
-    */
-    Route::middleware('role:marketing')->group(function () {
+    // 4. KHUSUS ADMIN & SUPERADMIN (Prospek & Penggajian Dasar)
+    Route::middleware('role:superadmin,admin')->group(function () {
+        Route::get('/form-prospek', [ProspekController::class, 'create'])->name('form-prospek');
+        Route::post('/prospek/store', [ProspekController::class, 'store'])->name('prospek.store');
+        Route::get('/prospek/{id}/edit', [ProspekController::class, 'edit'])->name('prospek.edit');
+        Route::put('/prospek/{id}', [ProspekController::class, 'update'])->name('prospek.update');
 
-        Route::get('/form-cta/{prospek_id}', [CtaController::class, 'create'])->name('form-cta');
-        Route::post('/cta/store', [CtaController::class, 'store'])->name('cta.store');
-
-        // ================= EDIT CTA =================
-        Route::get('/cta/{id}/edit', [CtaController::class, 'edit'])->name('cta.edit');
-        Route::put('/cta/{id}', [CtaController::class, 'update'])->name('cta.update');
-
+        Route::get('/penggajian', [PenggajianController::class, 'index'])->name('penggajian.index');
+        Route::get('/form-penggajian', [PenggajianController::class, 'create'])->name('form-penggajian');
+        Route::post('/penggajian/store', [PenggajianController::class, 'store'])->name('penggajian.store');
+        Route::get('/penggajian/{id}/edit', [PenggajianController::class, 'edit'])->name('penggajian.edit');
+        Route::put('/penggajian/{id}', [PenggajianController::class, 'update'])->name('penggajian.update');
+        Route::delete('/penggajian/{id}', [PenggajianController::class, 'destroy'])->name('penggajian.destroy');
     });
 
-    /*
-    |--------------------------------------------------------------------------
-    | KHUSUS SUPERADMIN (Human Resources & User Management)
-    |--------------------------------------------------------------------------
-    */
+    // 5. KHUSUS MARKETING (CTA)
+    Route::middleware('role:marketing')->group(function () {
+        Route::get('/form-cta/{prospek_id}', [CtaController::class, 'create'])->name('form-cta');
+        Route::post('/cta/store', [CtaController::class, 'store'])->name('cta.store');
+        Route::get('/cta/{id}/edit', [CtaController::class, 'edit'])->name('cta.edit');
+        Route::put('/cta/{id}', [CtaController::class, 'update'])->name('cta.update');
+    });
+
+    // 6. KHUSUS SUPERADMIN (User Management, Approval, Absensi, Advanced Payroll)
     Route::middleware('role:superadmin')->group(function () {
+        // Approval Download
+        Route::get('/download-approval', [DownloadRequestController::class, 'index'])->name('download.approval');
+        Route::post('/download-approve/{id}', [DownloadRequestController::class, 'approve'])->name('download.approve');
+        Route::post('/download-reject/{id}', [DownloadRequestController::class, 'reject'])->name('download.reject');
 
         // User Management
-        Route::get('/user', function () {
-            $users = \App\Models\User::all();
-
-            return view('user', compact('users'));
-        })->name('user');
-
+        Route::get('/user', [UserController::class, 'index'])->name('user');
+        Route::get('/user-list-manual', function () { 
+             $users = \App\Models\User::all();
+             return view('user', compact('users'));
+        });
         Route::get('/form-tambah-pengguna', function () {
             return view('form-tambah-pengguna');
         })->name('form-tambah-pengguna');
-
-        // Route yang sudah ada
-        Route::get('/user', [UserController::class, 'index'])->name('user');
+        
         Route::get('/user/create', [UserController::class, 'create'])->name('user.create');
         Route::post('/user/store', [UserController::class, 'store'])->name('user.store');
-
-        // Tambahkan ini untuk fungsi Edit & Delete
         Route::get('/user/edit/{id}', [UserController::class, 'edit'])->name('user.edit');
         Route::put('/user/update/{id}', [UserController::class, 'update'])->name('user.update');
         Route::delete('/user/delete/{id}', [UserController::class, 'destroy'])->name('user.destroy');
 
-        // Penggajian & Absensi
-        // Grouping agar URL lebih teratur
+        // Advanced Payroll (Prefix Penggajian)
         Route::prefix('penggajian')->group(function () {
-
-            // --- ROUTE LAMA KAMU ---
-            Route::get('/', [PenggajianController::class, 'index'])->name('penggajian.index');
-            Route::get('/create', [PenggajianController::class, 'create'])->name('form-penggajian');
-            Route::post('/store', [PenggajianController::class, 'store'])->name('penggajian.store');
-
-            // Tambahan Route Edit & Update untuk Data Gaji (Jika belum ada)
-            Route::get('/edit/{id}', [PenggajianController::class, 'edit'])->name('penggajian.edit');
-            Route::post('/update/{id}', [PenggajianController::class, 'update'])->name('penggajian.update');
-            Route::delete('/destroy/{id}', [PenggajianController::class, 'destroy'])->name('penggajian.destroy');
-
-            // --- ROUTE BARU (MASTER JENIS IZIN) ---
-            // Simpan Aturan Izin Baru
             Route::post('/jenis-izin/store', [PenggajianController::class, 'storeJenisIzin'])->name('jenis-izin.store');
-
-            // Update Aturan Izin
             Route::post('/jenis-izin/update/{id}', [PenggajianController::class, 'updateJenisIzin'])->name('jenis-izin.update');
-
-            // Hapus Aturan Izin
             Route::delete('/jenis-izin/destroy/{id}', [PenggajianController::class, 'destroyJenisIzin'])->name('jenis-izin.destroy');
+            
+            // Route update/destroy versi v2 (untuk di dalam prefix)
+            Route::get('/edit-v2/{id}', [PenggajianController::class, 'edit'])->name('penggajian.edit_v2');
+            Route::post('/update-v2/{id}', [PenggajianController::class, 'update'])->name('penggajian.update_v2');
+            Route::delete('/destroy-v2/{id}', [PenggajianController::class, 'destroy'])->name('penggajian.destroy_v2');
         });
 
-        // Pastikan nama routenya 'absensi' (tanpa .index)
+        // Absensi Management
         Route::prefix('absensi')->group(function () {
-            // Gunakan '/' agar URL-nya cukup http://127.0.0.1:8000/absensi
-            // Dan ganti .name('absensi.index') menjadi .name('absensi')
             Route::get('/', [AbsensiController::class, 'index'])->name('absensi');
-
             Route::get('/mapping', [AbsensiController::class, 'mapping'])->name('absensi.mapping');
             Route::post('/mapping', [AbsensiController::class, 'storeMapping'])->name('absensi.store_mapping');
             Route::post('/sync', [AbsensiController::class, 'syncFingerspot'])->name('absensi.sync');
             Route::post('/import', [AbsensiController::class, 'importManual'])->name('absensi.import');
             Route::post('/import-izin', [AbsensiController::class, 'importIzin'])->name('absensi.import_izin');
-
             Route::delete('/delete-range', [AbsensiController::class, 'destroyAbsensiRange'])->name('absensi.delete_range');
             Route::delete('/izin/delete-range', [AbsensiController::class, 'destroyIzinRange'])->name('absensi.delete_izin_range');
-
-            Route::post('/absensi/holiday', [AbsensiController::class, 'storeHoliday'])->name('absensi.store_holiday');
-            Route::delete('/absensi/holiday/{id}', [AbsensiController::class, 'destroyHoliday'])->name('absensi.destroy_holiday');
+            Route::post('/holiday', [AbsensiController::class, 'storeHoliday'])->name('absensi.store_holiday');
+            Route::delete('/holiday/{id}', [AbsensiController::class, 'destroyHoliday'])->name('absensi.destroy_holiday');
         });
     });
-    Route::middleware('role:rnd,digitalmarketing')->group(function () {
-        // **Data Masuk saja, tanpa Prospek**
-        Route::get('/data-masuk', [DataMasukController::class, 'index'])->name('data-masuk.index');
-        Route::get('/form-data-masuk', [DataMasukController::class, 'create'])->name('form-data-masuk');
-        Route::post('/data-masuk/store', [DataMasukController::class, 'store'])->name('data-masuk.store');
-        // Judul Pelatihan
-        Route::get('/master-training', [MasterTrainingController::class, 'index'])->name('master-training.index');
-        Route::post('/master-training/bulk-store', [MasterTrainingController::class, 'bulkStore'])->name('master-training.bulk_store');
-        Route::delete('/master-training/{id}', [MasterTrainingController::class, 'destroy'])->name('master-training.destroy');
-
-        Route::post('/download-request', [DownloadRequestController::class, 'store'])
-            ->name('download.request');
-
-        Route::get('/download-file/{id}', [DownloadRequestController::class, 'download'])
-            ->name('download.file');
-
-        Route::get('/my-downloads', [DownloadRequestController::class, 'myRequests'])
-            ->name('download.my');
-        Route::get('/pipeline', [ProspekController::class, 'index'])->name('prospek.index');
-        Route::get('/pipeline-alias', [ProspekController::class, 'index'])->name('pipeline');
-
-    });
-
 });
