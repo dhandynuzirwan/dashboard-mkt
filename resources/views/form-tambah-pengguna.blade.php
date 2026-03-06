@@ -72,6 +72,9 @@
                                             <option value="marketing" {{ old('role') == 'marketing' ? 'selected' : '' }}>
                                                 Marketing
                                             </option>
+                                            <option value="rnd" {{ old('role') == 'rnd' ? 'selected' : '' }}>
+                                                RnD
+                                            </option>
                                         </select>
                                     </div>
 

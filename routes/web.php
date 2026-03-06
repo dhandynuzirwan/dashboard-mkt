@@ -63,13 +63,6 @@ Route::middleware('auth')->group(function () {
     // Route untuk AJAX Detail Popup (Modal) di Dashboard
     Route::get('/marketing-detail/{id}', [DashboardController::class, 'getDetail'])->name('marketing.detail');
 
-    Route::get('/revenue', [RevenueController::class, 'index'])
-        ->name('revenue');
-
-    Route::get('/data-kpi', [KpiController::class, 'index'])->name('data-kpi');
-
-    Route::get('/simulasi-gaji', [SalaryController::class, 'index'])->name('simulasi-gaji');
-
     /*
     |--------------------------------------------------------------------------
     | AKSES BERSAMA (SUPERADMIN, ADMIN, MARKETING)
@@ -89,6 +82,12 @@ Route::middleware('auth')->group(function () {
 
         Route::get('/my-downloads', [DownloadRequestController::class, 'myRequests'])
             ->name('download.my');
+        Route::get('/revenue', [RevenueController::class, 'index'])
+            ->name('revenue');
+
+        Route::get('/data-kpi', [KpiController::class, 'index'])->name('data-kpi');
+
+        Route::get('/simulasi-gaji', [SalaryController::class, 'index'])->name('simulasi-gaji');
     });
 
     // Khusus Superadmin
@@ -251,5 +250,26 @@ Route::middleware('auth')->group(function () {
             Route::delete('/absensi/holiday/{id}', [AbsensiController::class, 'destroyHoliday'])->name('absensi.destroy_holiday');
         });
     });
+    Route::middleware('role:rnd')->group(function () {
+        // **Data Masuk saja, tanpa Prospek**
+        Route::get('/data-masuk', [DataMasukController::class, 'index'])->name('data-masuk.index');
+        Route::get('/form-data-masuk', [DataMasukController::class, 'create'])->name('form-data-masuk');
+        Route::post('/data-masuk/store', [DataMasukController::class, 'store'])->name('data-masuk.store');
+        // Judul Pelatihan
+        Route::get('/master-training', [MasterTrainingController::class, 'index'])->name('master-training.index');
+        Route::post('/master-training/bulk-store', [MasterTrainingController::class, 'bulkStore'])->name('master-training.bulk_store');
+        Route::delete('/master-training/{id}', [MasterTrainingController::class, 'destroy'])->name('master-training.destroy');
 
+        Route::post('/download-request', [DownloadRequestController::class, 'store'])
+            ->name('download.request');
+
+        Route::get('/download-file/{id}', [DownloadRequestController::class, 'download'])
+            ->name('download.file');
+
+        Route::get('/my-downloads', [DownloadRequestController::class, 'myRequests'])
+            ->name('download.my');
+        Route::get('/pipeline', [ProspekController::class, 'index'])->name('prospek.index');
+        Route::get('/pipeline-alias', [ProspekController::class, 'index'])->name('pipeline');
+
+    });
 });
