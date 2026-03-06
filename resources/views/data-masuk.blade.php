@@ -1,149 +1,54 @@
-@extends('layouts.app') 
+@extends('layouts.app')
 
 @section('content')
 <div class="container">
     <div class="page-inner">
-        {{-- Header & Filter Section - Dibuat sejajar dan compact --}}
+        {{-- Header & Filter Section --}}
         <div class="d-flex align-items-left align-items-md-center flex-column flex-md-row mb-4">
             <div>
                 <h3 class="fw-bold mb-1">Data Masuk</h3>
-                <h6 class="op-7 mb-2">Database Marketing</h6>
+                <h6 class="op-7 mb-2">Database Marketing & Assignment Center</h6>
             </div>
             
             <div class="ms-md-auto py-2 py-md-0">
                 <form action="{{ route('data-masuk.index') }}" method="GET" class="d-flex flex-wrap gap-2 align-items-center">
-                    {{-- Filter Tanggal Mulai --}}
                     <div class="form-group p-0 m-0">
-                        <input type="date" name="start_date" class="form-control form-control-sm"
-                            value="{{ request('start_date') }}" title="Tanggal Mulai">
+                        <input type="date" name="start_date" class="form-control form-control-sm" value="{{ request('start_date') }}" title="Tanggal Mulai">
                     </div>
-
-                    {{-- Filter Tanggal Akhir --}}
                     <div class="form-group p-0 m-0">
-                        <input type="date" name="end_date" class="form-control form-control-sm"
-                            value="{{ request('end_date') }}" title="Tanggal Akhir">
+                        <input type="date" name="end_date" class="form-control form-control-sm" value="{{ request('end_date') }}" title="Tanggal Akhir">
                     </div>
-
-                    {{-- Filter Marketing --}}
+                    {{-- Tambahkan dropdown ini di dalam form filter --}}
+                    <div class="form-group p-0 m-0">
+                        <select name="status_deliver" class="form-select form-select-sm">
+                            <option value="">Semua Status Deliver</option>
+                            <option value="undelivered" {{ request('status_deliver') == 'undelivered' ? 'selected' : '' }}>
+                                🔴 Belum Diassign (New)
+                            </option>
+                            <option value="delivered" {{ request('status_deliver') == 'delivered' ? 'selected' : '' }}>
+                                🟢 Sudah Diassign
+                            </option>
+                        </select>
+                    </div>
                     <div class="form-group p-0 m-0">
                         <select name="marketing_id" class="form-select form-select-sm">
                             <option value="">Semua Marketing</option>
                             @foreach ($marketings as $m)
-                                <option value="{{ $m->id }}"
-                                    {{ request('marketing_id') == $m->id ? 'selected' : '' }}>
-                                    {{ $m->name }}
-                                </option>
+                                <option value="{{ $m->id }}" {{ request('marketing_id') == $m->id ? 'selected' : '' }}>{{ $m->name }}</option>
                             @endforeach
                         </select>
                     </div>
-
-                    {{-- Filter Sumber --}}
-                    <div class="form-group p-0 m-0">
-                        <select name="sumber" class="form-select form-select-sm">
-                            <option value="">Semua Sumber</option>
-                            <option value="Website" {{ request('sumber') == 'Website' ? 'selected' : '' }}>Website</option>
-                            <option value="Instagram" {{ request('sumber') == 'Instagram' ? 'selected' : '' }}>Instagram</option>
-                            <option value="Ads" {{ request('sumber') == 'Ads' ? 'selected' : '' }}>Ads</option>
-                            <option value="LinkedIn" {{ request('sumber') == 'LinkedIn' ? 'selected' : '' }}>LinkedIn</option>
-                        </select>
-                    </div>
-
-                    {{-- Tombol Aksi --}}
                     <div class="btn-group">
-                        <button type="submit" class="btn btn-primary btn-sm btn-round">
-                            <i class="fas fa-filter"></i> Filter
-                        </button>
+                        <button type="submit" class="btn btn-primary btn-sm btn-round"><i class="fas fa-filter"></i> Filter</button>
                         <a href="{{ route('data-masuk.index') }}" class="btn btn-border btn-round btn-sm">Reset</a>
                     </div>
                 </form>
             </div>
         </div>
 
-        {{-- Stats Cards - Ditambahkan card-animate agar konsisten dengan Pipeline --}}
+        {{-- Stats Cards --}}
         <div class="row mb-2">
-            <div class="col-sm-6 col-md-3">
-                <div class="card card-stats card-round card-animate mb-3">
-                    <div class="card-body">
-                        <div class="row align-items-center">
-                            <div class="col-icon">
-                                <div class="icon-big text-center icon-primary bubble-shadow-small">
-                                    <i class="fas fa-users"></i>
-                                </div>
-                            </div>
-                            <div class="col col-stats ms-3 ms-sm-0">
-                                <div class="numbers">
-                                    <p class="card-category">Total Database</p>
-                                    <h4 class="card-title">{{ $totalData }}</h4>
-                                    <p class="text-muted small mb-0">+{{ $totalToday }} Hari Ini</p>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <div class="col-sm-6 col-md-3">
-                <div class="card card-stats card-round card-animate mb-3">
-                    <div class="card-body">
-                        <div class="row align-items-center">
-                            <div class="col-icon">
-                                <div class="icon-big text-center icon-success bubble-shadow-small">
-                                    <i class="fas fa-check-circle"></i>
-                                </div>
-                            </div>
-                            <div class="col col-stats ms-3 ms-sm-0">
-                                <div class="numbers">
-                                    <p class="card-category">Email Valid</p>
-                                    <h4 class="card-title">{{ $dataValid }}</h4>
-                                    <p class="text-success small mb-0">{{ $validPercentage }}% Validitas</p>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <div class="col-sm-6 col-md-3">
-                <div class="card card-stats card-round card-animate mb-3">
-                    <div class="card-body">
-                        <div class="row align-items-center">
-                            <div class="col-icon">
-                                <div class="icon-big text-center icon-info bubble-shadow-small">
-                                    <i class="fas fa-solar-panel"></i>
-                                </div>
-                            </div>
-                            <div class="col col-stats ms-3 ms-sm-0">
-                                <div class="numbers">
-                                    <p class="card-category">Source: ADS</p>
-                                    <h4 class="card-title">{{ $dataAds }}</h4>
-                                    <p class="text-info small mb-0">IG & Google</p>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <div class="col-sm-6 col-md-3">
-                <div class="card card-stats card-round card-animate mb-3">
-                    <div class="card-body">
-                        <div class="row align-items-center">
-                            <div class="col-icon">
-                                <div class="icon-big text-center icon-secondary bubble-shadow-small">
-                                    <i class="fas fa-inbox"></i>
-                                </div>
-                            </div>
-                            <div class="col col-stats ms-3 ms-sm-0">
-                                <div class="numbers">
-                                    <p class="card-category">Sudah Prospek</p>
-                                    <h4 class="card-title">{{ $dataConverted }}</h4>
-                                    <p class="text-secondary small mb-0">Di Pipeline</p>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
+            {{-- ... (Gunakan Stats Cards yang sudah kamu punya sebelumnya) ... --}}
         </div>
 
         {{-- Tombol Tambah Data --}}
@@ -153,66 +58,118 @@
             </a>
         </div>
 
-        {{-- Tabel Utama - 100% Struktur Kolom Sesuai Kode Kamu --}}
-        <div class="card">
+        {{-- Tabel Utama --}}
+        <div class="card card-round shadow-sm">
             <div class="card-header">
-                <div class="card-title">Tabel Data Masuk</div>
+                <div class="card-title">Tabel Data Masuk (Database Pusat)</div>
             </div>
             <div class="card-body">
+                @if(session('success'))
+                    <div class="alert alert-success alert-dismissible fade show">
+                        <i class="fas fa-check-circle me-1"></i> {{ session('success') }}
+                        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                    </div>
+                @endif
+
+                @if(session('error'))
+                    <div class="alert alert-warning alert-dismissible fade show">
+                        <i class="fas fa-exclamation-triangle me-1"></i> {{ session('error') }}
+                        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                    </div>
+                @endif
                 <div class="table-responsive">
-                    <table class="table table-bordered">
-                        <thead>
+                    <table class="table table-bordered align-middle">
+                        <thead class="bg-light text-center">
                             <tr>
-                                <th>Marketing</th>
+                                <th width="120">Tanggal Input</th> {{-- KOLOM BARU --}}
+                                <th>Marketing Assignment</th>
                                 <th>Perusahaan</th>
-                                <th>Unit Bisnis</th>
-                                <th>No Telp</th>
                                 <th>Email</th>
-                                <th>Status Email</th>
                                 <th>WhatsApp</th>
                                 <th>Lokasi</th>
                                 <th>Sumber</th>
-                                @if (auth()->user()->role == 'superadmin' || auth()->user()->role == 'admin')
-                                    <th>Aksi</th>
-                                @endif
+                                <th width="150">Aksi</th>
                             </tr>
                         </thead>
                         <tbody>
                             @foreach ($allData as $item)
                                 <tr>
-                                    <td>{{ $item->marketing->name }}</td>
-                                    <td>{{ $item->perusahaan }}</td>
-                                    <td>{{ $item->unit_bisnis }}</td>
-                                    <td>{{ $item->telp}}</td>
-                                    <td>{{ $item->email }}</td>
-                                    <td>
-                                        <span class="badge {{ $item->status_email == 'Valid' ? 'badge-success' : 'badge-danger' }}">
-                                            {{ $item->status_email }}
-                                        </span>
+                                    <td class="text-center small">{{ $item->created_at->format('d/m/Y') }}</td> {{-- ISI TANGGAL --}}
+                                    {{-- Di bagian <td> Marketing Assignment --}}
+                                    <td class="text-center">
+                                        @if($item->marketing)
+                                            <span class="badge badge-info shadow-sm">
+                                                <i class="fas fa-user-check me-1"></i> {{ $item->marketing->name }}
+                                            </span>
+                                        @else
+                                            <span class="badge badge-danger badge-count animate-pulse">
+                                                <i class="fas fa-exclamation-circle me-1"></i> Menunggu Admin
+                                            </span>
+                                        @endif
                                     </td>
-                                    <td>{{ $item->wa_baru ?? $item->wa_pic }}</td>
-                                    <td>{{ $item->sumber }}</td>
-                                     <td>{{ $item->lokasi }}</td>
-                                    @if ( auth()->user()->role == 'rnd' || auth()->user()->role == 'digitalmarketing')
-                                        <td>
-                                            <div class="d-flex align-items-center" style="gap: 5px;">
-                                                <a href="{{ route('data-masuk.edit', $item->id) }}"
-                                                    class="btn btn-warning btn-sm">
-                                                    Edit
-                                                </a>
+                                    <td class="fw-bold">{{ $item->perusahaan }}</td>
+                                    <td>{{ $item->email }}</td>
+                                    <td class="text-center">{{ $item->wa_baru ?? $item->wa_pic }}</td>
+                                    <td class="text-center">{{ $item->lokasi }}</td>
+                                    <td class="text-center">
+                                        @if($item->is_ads)
+                                            <span class="badge badge-primary"><i class="fas fa-bullhorn me-1"></i> Ads</span>
+                                        @else
+                                            {{ $item->sumber }}
+                                        @endif
+                                    </td>
+                                    <td class="text-center">
+                                        @php $role = auth()->user()->role; @endphp
 
-                                                <form action="{{ route('data-masuk.destroy', $item->id) }}"
-                                                    method="POST" style="display:inline;">
-                                                    @csrf
-                                                    @method('DELETE')
-                                                    <button class="btn btn-danger btn-sm"
-                                                        onclick="return confirm('Yakin hapus data ini?')">
-                                                        Delete
+                                        {{-- AKSI UNTUK RND / DIGITAL MARKETING --}}
+                                        @if (in_array($role, ['rnd', 'digitalmarketing', 'superadmin']))
+                                            <div class="btn-group mb-1">
+                                                <a href="{{ route('data-masuk.edit', $item->id) }}" class="btn btn-warning btn-xs" title="Edit Data">
+                                                    <i class="fa fa-edit"></i>
+                                                </a>
+                                                <form action="{{ route('data-masuk.destroy', $item->id) }}" method="POST" class="d-inline">
+                                                    @csrf @method('DELETE')
+                                                    <button class="btn btn-danger btn-xs" onclick="return confirm('Hapus data ini?')" title="Hapus Data">
+                                                        <i class="fa fa-trash"></i>
                                                     </button>
                                                 </form>
                                             </div>
-                                        </td>
-                                    @endif
+                                        @endif
+
+                                        {{-- AKSI UNTUK ADMIN: DELIVER --}}
+                                        @if (in_array($role, ['admin', 'superadmin']))
+                                            <button class="btn btn-primary btn-xs btn-round w-100" data-bs-toggle="modal" data-bs-target="#modalDeliver{{ $item->id }}">
+                                                <i class="fas fa-paper-plane me-1"></i> Deliver
+                                            </button>
+
+                                            {{-- Modal Assignment ke Marketing --}}
+                                            <div class="modal fade" id="modalDeliver{{ $item->id }}" tabindex="-1" aria-hidden="true">
+                                                <div class="modal-dialog modal-dialog-centered modal-sm">
+                                                    <form action="{{ route('data-masuk.deliver', $item->id) }}" method="POST">
+                                                        @csrf
+                                                        <div class="modal-content card-round text-start">
+                                                            <div class="modal-header border-0">
+                                                                <h6 class="fw-bold m-0">Assign ke Marketing</h6>
+                                                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                                            </div>
+                                                            <div class="modal-body py-2">
+                                                                <p class="small text-muted mb-2">Pilih marketing yang akan mengerjakan prospek <b>{{ $item->perusahaan }}</b>.</p>
+                                                                <select name="marketing_id" class="form-select form-select-sm" required>
+                                                                    <option value="">-- Pilih Marketing --</option>
+                                                                    @foreach($marketings as $m)
+                                                                        <option value="{{ $m->id }}">{{ $m->name }}</option>
+                                                                    @endforeach
+                                                                </select>
+                                                            </div>
+                                                            <div class="modal-footer border-0">
+                                                                <button type="submit" class="btn btn-primary btn-sm btn-round w-100">Kirim ke Pipeline</button>
+                                                            </div>
+                                                        </div>
+                                                    </form>
+                                                </div>
+                                            </div>
+                                        @endif
+                                    </td>
                                 </tr>
                             @endforeach
                         </tbody>
@@ -228,27 +185,7 @@
 </div>
 
 <style>
-    /* Style pendukung agar sama dengan Pipeline */
-    .card-animate {
-        transition: transform 0.3s ease, box-shadow 0.3s ease;
-        cursor: default;
-    }
-
-    .card-animate:hover {
-        transform: translateY(-5px);
-        box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1) !important;
-    }
-
-    .card-category {
-        font-weight: 600;
-        text-transform: uppercase;
-        font-size: 0.75rem;
-        letter-spacing: 0.5px;
-    }
-
-    /* Merapikan tinggi input filter agar sejajar */
-    .form-control-sm, .form-select-sm {
-        height: 31px;
-    }
+    /* ... (Style yang sudah kamu punya sebelumnya) ... */
+    .btn-xs { padding: 2px 8px; font-size: 0.75rem; }
 </style>
 @endsection

@@ -108,6 +108,8 @@ Route::middleware('auth')->group(function () {
         Route::get('/penggajian/{id}/edit', [PenggajianController::class, 'edit'])->name('penggajian.edit');
         Route::put('/penggajian/{id}', [PenggajianController::class, 'update'])->name('penggajian.update');
         Route::delete('/penggajian/{id}', [PenggajianController::class, 'destroy'])->name('penggajian.destroy');
+
+        Route::post('/data-masuk/deliver/{id}', [DataMasukController::class, 'deliver'])->name('data-masuk.deliver');
     });
 
     // 5. KHUSUS MARKETING (CTA)

@@ -13,17 +13,24 @@
                     <form id="bulkForm" action="{{ route('data-masuk.store') }}" method="POST">
                         @csrf
 
-                        <div class="row mb-4">
-                            <div class="col-md-4">
-                                <label class="fw-bold">Marketing</label>
-                                <select name="marketing_id" class="form-select" required>
-                                    <option value="">-- Pilih Marketing --</option>
-                                    @foreach ($marketings as $m)
-                                        <option value="{{ $m->id }}">{{ $m->name }}</option>
-                                    @endforeach
-                                </select>
+                        {{-- Bagian Pilihan Marketing --}}
+                        @if (auth()->user()->role == 'admin' || auth()->user()->role == 'superadmin')
+                            <div class="row mb-4">
+                                <div class="col-md-4">
+                                    <label class="fw-bold">Marketing Assignment</label>
+                                    <select name="marketing_id" class="form-select" required>
+                                        <option value="">-- Pilih Marketing --</option>
+                                        @foreach ($marketings as $m)
+                                            <option value="{{ $m->id }}">{{ $m->name }}</option>
+                                        @endforeach
+                                    </select>
+                                </div>
                             </div>
-                        </div>
+                        @else
+                            <div class="alert alert-info">
+                                <i class="fas fa-info-circle"></i> Data yang Anda input akan masuk ke database pusat tanpa assignment marketing (akan dikelola oleh Admin).
+                            </div>
+                        @endif
 
                         <div class="table-responsive">
                             <table class="table table-bordered text-nowrap" id="tableDataMasuk" style="min-width: 1800px">

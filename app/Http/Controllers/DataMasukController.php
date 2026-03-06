@@ -11,66 +11,58 @@ class DataMasukController extends Controller
     // Menampilkan daftar database data
     public function index(Request $request)
     {
+        // 1. Tangkap parameter filter
+        $search = $request->input('search');
+        $marketing_id = $request->input('marketing_id');
+        $sumber = $request->input('sumber');
+        $status_deliver = $request->input('status_deliver'); // Parameter baru
 
-    // 1. Tangkap parameter filter & sort
-    $search = $request->input('search');
-    $marketing_id = $request->input('marketing_id');
-    $sumber = $request->input('sumber');
-    $sort_field = $request->input('sort', 'created_at'); // default sort by date
-    $sort_direction = $request->input('direction', 'desc');
+        // 2. Query Data dengan Filter
+        $query = DataMasuk::with('marketing');
 
+        // Filter Pencarian
+        if ($search) {
+            $query->where(function($q) use ($search) {
+                $q->where('perusahaan', 'like', "%{$search}%")
+                ->orWhere('email', 'like', "%{$search}%");
+            });
+        }
 
+        // Filter Marketing Assignment
+        if ($marketing_id) {
+            $query->where('marketing_id', $marketing_id);
+        }
 
-    // 2. Query Data dengan Filter
-    $allData = DataMasuk::with('marketing')
-        ->when($search, function ($query, $search) {
-            return $query->where('perusahaan', 'like', "%{$search}%")
-                         ->orWhere('email', 'like', "%{$search}%");
-        })
-        ->when($marketing_id, function ($query, $marketing_id) {
-            return $query->where('marketing_id', $marketing_id);
-        })
-        ->when($sumber, function ($query, $sumber) {
-            return $query->where('sumber', $sumber);
-        })
-        ->orderBy($sort_field, $sort_direction)
-        ->paginate(10)
-        ->withQueryString(); // Menjaga parameter filter saat pindah halaman
+        // Filter Sumber
+        if ($sumber) {
+            $query->where('sumber', $sumber);
+        }
 
-    // 3. Data Pendukung Filter & Statistik
-    $marketings = User::where('role', 'marketing')->get();
+        // LOGIKA FILTER DELIVER (PENTING)
+        if ($status_deliver) {
+            if ($status_deliver == 'undelivered') {
+                $query->whereNull('marketing_id'); // Data mentah dari RnD
+            } elseif ($status_deliver == 'delivered') {
+                $query->whereNotNull('marketing_id'); // Sudah ada marketingnya
+            }
+        }
 
-    // Total semua data
-    $totalData = DataMasuk::count();
+        $allData = $query->orderBy('created_at', 'desc')
+                        ->paginate(10)
+                        ->withQueryString();
 
-    // Data ADS (case insensitive)
-    $dataAds = DataMasuk::whereRaw("LOWER(sumber) = ?", ['ads'])->count();
+        // Data Pendukung (Tetap sama seperti sebelumnya)
+        $marketings = User::where('role', 'marketing')->get();
+        $totalData = DataMasuk::count();
+        $totalToday = DataMasuk::whereDate('created_at', now())->count();
+        $dataValid = DataMasuk::where('status_email', 'Valid')->count();
+        $validPercentage = $totalData > 0 ? round(($dataValid / $totalData) * 100, 1) : 0;
+        $dataConverted = \App\Models\Prospek::count();
 
-    // Data Manual = selain ADS
-    $dataManual = DataMasuk::whereRaw("LOWER(sumber) != ?", ['ads'])->count();
-
-    // Hitung total hari ini
-    $totalToday = DataMasuk::whereDate('created_at', now())->count();
-
-    // Hitung email yang valid (berdasarkan status_email yang Anda miliki)
-    $dataValid = DataMasuk::where('status_email', 'Valid')->count();
-    $validPercentage = $totalData > 0 ? round(($dataValid / $totalData) * 100, 1) : 0;
-
-    // Hitung data yang sudah dikonversi ke tabel Prospeks
-    // (Asumsi: kita cek apakah nama perusahaan di DataMasuk sudah ada di tabel Prospeks)
-    $dataConverted = \App\Models\Prospek::count(); // Atau logika filter spesifik lainnya
-
-    return view('data-masuk', compact(
-        'allData',
-        'totalData',
-        'dataAds',
-        'dataManual',
-        'marketings',
-        'totalToday',      // Tambahkan ini
-        'dataValid',       // Tambahkan ini
-        'validPercentage', // Tambahkan ini
-        'dataConverted',    // Tambahkan ini
-    ));
+        return view('data-masuk', compact(
+            'allData', 'totalData','marketings', 
+            'totalToday', 'dataValid', 'validPercentage', 'dataConverted'
+        ));
     }
 
     // Menampilkan form input data baru
@@ -82,42 +74,96 @@ class DataMasukController extends Controller
     }
 
     // Menyimpan data
+
+    // --- PROSES SIMPAN (DENGAN NULLABLE VALIDATION) ---
     public function store(Request $request)
     {
-        // 1. Validasi
+        $user = auth()->user();
+        $isRnD = in_array($user->role, ['rnd', 'digitalmarketing']);
+
         $request->validate([
-            'marketing_id' => 'required',
+            'marketing_id' => $isRnD ? 'nullable' : 'required',
             'rows' => 'required|array',
+            'rows.*.perusahaan' => 'required',
         ]);
 
+        $successCount = 0;
+        $duplicates = [];
+
         try {
-            // 2. Proses Simpan Massal
             foreach ($request->rows as $row) {
-                if (empty($row['perusahaan'])) {
+                if (empty($row['perusahaan'])) continue;
+
+                $nama = trim($row['perusahaan']);
+                $lokasi = isset($row['lokasi']) ? trim($row['lokasi']) : null;
+
+                // Cek kombinasi Perusahaan + Lokasi
+                $isDuplicate = DataMasuk::where('perusahaan', $nama)
+                    ->where('lokasi', $lokasi)
+                    ->exists();
+
+                if ($isDuplicate) {
+                    // Kumpulkan nama perusahaan yang duplikat
+                    $duplicates[] = $nama . ($lokasi ? " ($lokasi)" : "");
                     continue;
                 }
 
-                \App\Models\DataMasuk::create([
-                    'marketing_id' => $request->marketing_id,
-                    'perusahaan' => $row['perusahaan'],
-                    'telp' => $row['telp'],
-                    'unit_bisnis' => $row['unit_bisnis'],
-                    'email' => $row['email'],
-                    'status_email' => $row['status_email'],
-                    'wa_pic' => $row['wa_pic'],
-                    'wa_baru' => $row['wa_baru'],
-                    'lokasi' => $row['alamat_perusahaan'] ?? $row['lokasi'], // Sesuaikan dengan key di blade
-                    'sumber' => $row['source'] ?? $row['sumber'], // Sesuaikan dengan key di blade
+                // Simpan data yang valid
+                DataMasuk::create([
+                    'marketing_id' => $isRnD ? null : $request->marketing_id,
+                    'perusahaan'   => $nama,
+                    'lokasi'       => $lokasi,
+                    'telp'         => $row['telp'] ?? null,
+                    'unit_bisnis'  => $row['unit_bisnis'] ?? null,
+                    'email'        => $row['email'] ?? null,
+                    'status_email' => $row['status_email'] ?? null,
+                    'wa_pic'       => $row['wa_pic'] ?? null,
+                    'sumber'       => $row['sumber'] ?? null,
+                    'is_ads'       => $row['is_ads'] ?? false,
                 ]);
+
+                $successCount++;
             }
 
-            // 3. KEMBALI KE HALAMAN DATA MASUK
-            // Pastikan nama route ini sesuai dengan yang ada di web.php (tadi kita pakai 'data-masuk')
-            return redirect()->route('data-masuk.index')->with('success', 'Data Masuk Berhasil Disimpan!');
+            // Siapkan pesan sukses
+            $message = "Berhasil menginput {$successCount} data baru.";
+            
+            // Jika ada duplikat, buat pesan error terpisah
+            if (!empty($duplicates)) {
+                $errorMsg = "Gagal input " . count($duplicates) . " data karena duplikat: " . implode(', ', $duplicates);
+                return redirect()->route('data-masuk.index')
+                    ->with('success', $message)
+                    ->with('error', $errorMsg);
+            }
+
+            return redirect()->route('data-masuk.index')->with('success', $message);
 
         } catch (\Exception $e) {
-            return back()->with('error', 'Terjadi kesalahan: '.$e->getMessage());
+            return redirect()->route('data-masuk.index')->with('error', 'Terjadi kesalahan: ' . $e->getMessage());
         }
+    }
+
+    // Fungsi Baru: Deliver ke Prospek (Khusus Admin)
+    public function deliver(Request $request, $id)
+    {
+        $request->validate(['marketing_id' => 'required']);
+        $data = DataMasuk::findOrFail($id);
+
+        // Salin ke Tabel Prospek
+        \App\Models\Prospek::create([
+            'marketing_id'    => $request->marketing_id,
+            'tanggal_prospek' => now(),
+            'perusahaan'      => $data->perusahaan,
+            'lokasi'          => $data->lokasi,
+            'email'           => $data->email,
+            'wa_pic'          => $data->wa_pic,
+            'sumber'          => $data->sumber,
+        ]);
+
+        // Tandai data ini sudah terkirim (bisa dihapus atau diberi status)
+        $data->delete(); 
+
+        return back()->with('success', 'Data berhasil di-deliver ke Marketing!');
     }
 
     // ================= EDIT =================
