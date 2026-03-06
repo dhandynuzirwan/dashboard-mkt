@@ -36,7 +36,7 @@ class UserController extends Controller
             'name' => 'required|string|max:255',
             'email' => 'required|email|unique:users,email',
             'password' => 'required|min:6',
-            'role' => 'required|in:superadmin,admin,marketing,rnd',
+            'role' => 'required|in:superadmin,admin,marketing,rnd,digitalmarketing',
             'fingerspot_id' => 'nullable|string|unique:users,fingerspot_id',
         ]);
 

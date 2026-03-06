@@ -250,7 +250,7 @@ Route::middleware('auth')->group(function () {
             Route::delete('/absensi/holiday/{id}', [AbsensiController::class, 'destroyHoliday'])->name('absensi.destroy_holiday');
         });
     });
-    Route::middleware('role:rnd')->group(function () {
+    Route::middleware('role:rnd,digitalmarketing')->group(function () {
         // **Data Masuk saja, tanpa Prospek**
         Route::get('/data-masuk', [DataMasukController::class, 'index'])->name('data-masuk.index');
         Route::get('/form-data-masuk', [DataMasukController::class, 'create'])->name('form-data-masuk');
@@ -272,4 +272,5 @@ Route::middleware('auth')->group(function () {
         Route::get('/pipeline-alias', [ProspekController::class, 'index'])->name('pipeline');
 
     });
+
 });
