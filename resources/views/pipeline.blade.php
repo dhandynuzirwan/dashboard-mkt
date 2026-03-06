@@ -241,7 +241,7 @@
                                             <div class="d-flex justify-content-center align-items-center"
                                                 style="gap: 5px;">
                                                 @if ($data->cta && in_array(auth()->user()->role, ['superadmin', 'admin']))
-                                                    <a href="{{ route('cta.edit', $data->cta->id) }}"
+                                                    <a href="{{ route('prospek.edit', $data->cta->id) }}"
                                                         class="btn btn-primary btn-sm">
                                                         <i class="fas fa-edit"></i> Edit
                                                     </a>
