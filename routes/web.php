@@ -89,6 +89,11 @@ Route::middleware('auth')->group(function () {
         Route::get('/data-masuk/{id}/edit', [DataMasukController::class, 'edit'])->name('data-masuk.edit');
         Route::put('/data-masuk/{id}', [DataMasukController::class, 'update'])->name('data-masuk.update');
         Route::delete('/data-masuk/{id}', [DataMasukController::class, 'destroy'])->name('data-masuk.destroy');
+        Route::prefix('ads')->group(function () {
+            Route::post('/deliver/{id}', [DataMasukController::class, 'deliverAds'])->name('ads.deliver');
+            Route::get('/edit/{id}', [DataMasukController::class, 'editAds'])->name('ads.edit');
+            Route::delete('/destroy/{id}', [DataMasukController::class, 'destroyAds'])->name('ads.destroy');
+        });
 
         Route::get('/master-training', [MasterTrainingController::class, 'index'])->name('master-training.index');
         Route::post('/master-training/bulk-store', [MasterTrainingController::class, 'bulkStore'])->name('master-training.bulk_store');

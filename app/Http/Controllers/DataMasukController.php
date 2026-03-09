@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\AdsLead;
 use App\Models\DataMasuk;
 use App\Models\User;
 use Illuminate\Http\Request;
@@ -46,6 +47,8 @@ class DataMasukController extends Controller
                 $query->whereNotNull('marketing_id'); // Sudah ada marketingnya
             }
         }
+        // Ambil data Ads
+        $adsData = AdsLead::orderBy('created_at', 'desc')->paginate(10, ['*'], 'ads_page');
 
         $allData = $query->orderBy('created_at', 'desc')
                         ->paginate(10)
@@ -60,7 +63,7 @@ class DataMasukController extends Controller
         $dataConverted = \App\Models\Prospek::count();
 
         return view('data-masuk', compact(
-            'allData', 'totalData','marketings', 
+            'allData', 'totalData','marketings', 'adsData',
             'totalToday', 'dataValid', 'validPercentage', 'dataConverted'
         ));
     }
@@ -170,6 +173,30 @@ class DataMasukController extends Controller
 
         return back()->with('success', "Data {$data->perusahaan} berhasil di-deliver!");
     }
+    
+    // Fungsi Deliver Khusus Ads
+    public function deliverAds(Request $request, $id)
+    {
+        $request->validate(['marketing_id' => 'required']);
+        $ad = AdsLead::findOrFail($id);
+
+        \App\Models\Prospek::create([
+            'marketing_id'    => $request->marketing_id,
+            'tanggal_prospek' => now(),
+            'perusahaan'      => $ad->nama_perusahaan ?? 'Pribadi/No Name',
+            'lokasi'          => $ad->lokasi,
+            'email'           => $ad->email,
+            'wa_pic'          => $ad->wa_hrd,
+            'sumber'          => 'Ads - ' . $ad->channel_akuisisi,
+        ]);
+
+        // Update status atau hapus data ads setelah deliver (opsional)
+        // Untuk saat ini kita simpan siapa yang menghandle
+        $ad->update(['marketing_id' => $request->marketing_id]); 
+
+        return back()->with('success', "Data Ads {$ad->nama_perusahaan} berhasil di-deliver!");
+    }
+        
 
     // ================= EDIT =================
     public function edit($id)
