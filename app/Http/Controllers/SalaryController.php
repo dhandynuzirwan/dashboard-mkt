@@ -118,7 +118,7 @@ class SalaryController extends Controller
 
             $user->progress_val = $gapokDasar * ($progressKpi / 100);
             
-            $user->tunj_kemahalan = $tunjangan;
+            $user->tunj_kemahalan = ($tunjangan / $hariEfektif) * $totalHadirKpi;
             $user->total_gaji = $user->gapok_hitung + $user->fee_marketing + $user->progress_val + $user->tunj_kemahalan;
 
             // Variabel detail untuk label di Blade

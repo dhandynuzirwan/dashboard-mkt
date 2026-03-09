@@ -190,9 +190,7 @@
                                                         </div>
                                                     @else
                                                         {{-- Tampilan jika data sudah ter-assign --}}
-                                                        <button class="btn btn-outline-success btn-xs btn-round w-100" disabled>
-                                                            <i class="fas fa-check-double me-1"></i> Terdistribusi
-                                                        </button>
+                                                        <span class="badge badge-success mb-1"><i class="fa fa-check"></i> Sent</span>
                                                     @endif
                                                 @endif
                                             </td>
@@ -214,7 +212,7 @@
                 <div class="card card-round shadow-sm">
                     <div class="card-body">
                         <div class="table-responsive">
-                            <table class="table table-bordered align-middle">
+                            <table class="table table-bordered align-middle" style="min-width: 1500px">
                                 <thead class="bg-light text-center">
                                     <tr>
                                         <th>Tanggal</th>

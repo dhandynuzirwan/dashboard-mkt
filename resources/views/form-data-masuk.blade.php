@@ -3,22 +3,41 @@
 @section('content')
     <div class="container">
         <div class="page-inner">
-            <div class="card">
-                <div class="card-header">
-                    <h4 class="card-title">Input Massal Data Masuk</h4>
-                    <p class="text-muted">Klik pada kolom <b>Perusahaan</b>, lalu tekan <b>Ctrl + V</b> untuk copas kolom
-                        dari Excel (Urutan: Perusahaan, Telp, Unit Bisnis, Email, Status Email, WA PIC, Lokasi, Sumber).</p>
+            {{-- Bagian Notifikasi (Pesan Duplikasi & Sukses) --}}
+            @if(session('success'))
+                <div class="alert alert-success alert-dismissible fade show border-0 shadow-sm mb-4">
+                    <i class="fas fa-check-circle me-1"></i> {{ session('success') }}
+                    <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                </div>
+            @endif
+
+            @if(session('error'))
+                <div class="alert alert-danger alert-dismissible fade show border-0 shadow-sm mb-4">
+                    <i class="fas fa-exclamation-triangle me-1"></i> {!! session('error') !!}
+                    <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                </div>
+            @endif
+
+            <div class="card card-round border-0 shadow-sm">
+                <div class="card-header border-0 pb-0">
+                    <h4 class="card-title fw-bold">Input Massal Data Masuk</h4>
+                    <p class="text-muted small">
+                        Klik pada kolom <b>Perusahaan</b>, lalu tekan <b>Ctrl + V</b> untuk copas dari Excel. <br>
+                        <span class="text-primary fw-bold">Urutan Kolom Excel:</span> Perusahaan, Telp, Unit Bisnis, Email, Status Email, WA PIC, Lokasi, Sumber.
+                    </p>
                 </div>
                 <div class="card-body">
                     <form id="bulkForm" action="{{ route('data-masuk.store') }}" method="POST">
                         @csrf
 
-                        {{-- Bagian Pilihan Marketing --}}
-                        @if (auth()->user()->role == 'admin' || auth()->user()->role == 'superadmin')
+                        {{-- Logika Hak Akses Marketing Assignment --}}
+                        @php $role = auth()->user()->role; @endphp
+
+                        @if ($role == 'admin' || $role == 'superadmin')
                             <div class="row mb-4">
                                 <div class="col-md-4">
-                                    <label class="fw-bold">Marketing Assignment</label>
-                                    <select name="marketing_id" class="form-select" required>
+                                    <label class="fw-bold mb-2">Assign ke Marketing (Wajib bagi Admin)</label>
+                                    <select name="marketing_id" class="form-select shadow-sm" required>
                                         <option value="">-- Pilih Marketing --</option>
                                         @foreach ($marketings as $m)
                                             <option value="{{ $m->id }}">{{ $m->name }}</option>
@@ -27,14 +46,23 @@
                                 </div>
                             </div>
                         @else
-                            <div class="alert alert-info">
-                                <i class="fas fa-info-circle"></i> Data yang Anda input akan masuk ke database pusat tanpa assignment marketing (akan dikelola oleh Admin).
+                            {{-- Tampilan untuk RnD / Digital Marketing --}}
+                            <div class="alert alert-light border-left-info shadow-sm mb-4 py-3">
+                                <div class="d-flex align-items-center">
+                                    <i class="fas fa-info-circle text-info fa-lg me-3"></i>
+                                    <div>
+                                        <span class="fw-bold d-block text-dark">Mode Input RnD</span>
+                                        <span class="small text-muted">Data akan disimpan sebagai "Data Mentah". Admin akan melakukan pembagian (Deliver) ke Marketing secara manual.</span>
+                                    </div>
+                                </div>
                             </div>
+                            {{-- Input Hidden agar Controller tidak error --}}
+                            <input type="hidden" name="marketing_id" value="">
                         @endif
 
                         <div class="table-responsive">
-                            <table class="table table-bordered text-nowrap" id="tableDataMasuk" style="min-width: 1800px">
-                                <thead class="bg-light text-center">
+                            <table class="table table-bordered align-middle" id="tableDataMasuk" style="min-width: 1800px">
+                                <thead class="bg-light text-center small text-uppercase fw-bold">
                                     <tr>
                                         <th style="width: 250px;">Perusahaan</th>
                                         <th style="width: 150px;">Nomor Telp</th>
@@ -49,29 +77,28 @@
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    <tr>
-                                        <td><input type="text" name="rows[0][perusahaan]"
-                                                class="form-control paste-input" placeholder="Paste Perusahaan di sini">
-                                        </td>
+                                    <tr class="table-row-input">
+                                        <td><input type="text" name="rows[0][perusahaan]" class="form-control paste-input" placeholder="Paste di sini..." required></td>
                                         <td><input type="text" name="rows[0][telp]" class="form-control"></td>
                                         <td><input type="text" name="rows[0][unit_bisnis]" class="form-control"></td>
                                         <td><input type="email" name="rows[0][email]" class="form-control"></td>
                                         <td><input type="text" name="rows[0][status_email]" class="form-control"></td>
                                         <td><input type="text" name="rows[0][wa_pic]" class="form-control"></td>
-                                        <td><input type="text" name="rows[0][wa_baru]" class="form-control"
-                                                placeholder="Isi manual"></td>
+                                        <td><input type="text" name="rows[0][wa_baru]" class="form-control" placeholder="Opsional"></td>
                                         <td><input type="text" name="rows[0][lokasi]" class="form-control"></td>
                                         <td><input type="text" name="rows[0][sumber]" class="form-control"></td>
-                                        <td><button type="button" class="btn btn-danger btn-sm remove-row">×</button></td>
+                                        <td class="text-center"><button type="button" class="btn btn-link text-danger p-0 remove-row"><i class="fas fa-times"></i></button></td>
                                     </tr>
                                 </tbody>
                             </table>
                         </div>
-                        <div class="mt-3">
-                            <button type="button" id="addRow" class="btn btn-secondary btn-sm">Tambah Baris
-                                Manual</button>
-                            <button type="submit" class="btn btn-primary btn-sm float-end">Simpan Semua Data ke
-                                Database</button>
+                        <div class="mt-4 pb-3">
+                            <button type="button" id="addRow" class="btn btn-border btn-round btn-sm">
+                                <i class="fas fa-plus me-1"></i> Tambah Baris Manual
+                            </button>
+                            <button type="submit" class="btn btn-primary btn-round btn-sm float-end px-4">
+                                <i class="fas fa-save me-1"></i> Simpan ke Database Pusat
+                            </button>
                         </div>
                     </form>
                 </div>
@@ -86,17 +113,17 @@
 
                 function createRow(index) {
                     return `<tr>
-                <td><input type="text" name="rows[${index}][perusahaan]" class="form-control paste-input"></td>
-                <td><input type="text" name="rows[${index}][telp]" class="form-control"></td>
-                <td><input type="text" name="rows[${index}][unit_bisnis]" class="form-control"></td>
-                <td><input type="email" name="rows[${index}][email]" class="form-control"></td>
-                <td><input type="text" name="rows[${index}][status_email]" class="form-control"></td>
-                <td><input type="text" name="rows[${index}][wa_pic]" class="form-control"></td>
-                <td><input type="text" name="rows[${index}][wa_baru]" class="form-control"></td>
-                <td><input type="text" name="rows[${index}][lokasi]" class="form-control"></td>
-                <td><input type="text" name="rows[${index}][sumber]" class="form-control"></td>
-                <td><button type="button" class="btn btn-danger btn-sm remove-row">×</button></td>
-            </tr>`;
+                        <td><input type="text" name="rows[${index}][perusahaan]" class="form-control paste-input"></td>
+                        <td><input type="text" name="rows[${index}][telp]" class="form-control"></td>
+                        <td><input type="text" name="rows[${index}][unit_bisnis]" class="form-control"></td>
+                        <td><input type="email" name="rows[${index}][email]" class="form-control"></td>
+                        <td><input type="text" name="rows[${index}][status_email]" class="form-control"></td>
+                        <td><input type="text" name="rows[${index}][wa_pic]" class="form-control"></td>
+                        <td><input type="text" name="rows[${index}][wa_baru]" class="form-control"></td>
+                        <td><input type="text" name="rows[${index}][lokasi]" class="form-control"></td>
+                        <td><input type="text" name="rows[${index}][sumber]" class="form-control"></td>
+                        <td class="text-center"><button type="button" class="btn btn-link text-danger p-0 remove-row"><i class="fas fa-times"></i></button></td>
+                    </tr>`;
                 }
 
                 $('#addRow').click(function() {
@@ -119,9 +146,7 @@
                         }
 
                         let inputs = currentRow.find('input');
-
-                        // Logika pemetaan kolom Excel (Asumsi urutan Excel: Perusahaan, Telp, Unit, Email, Status, WA, Lokasi, Sumber)
-                        // Indeks input: 0=Perus, 1=Telp, 2=Unit, 3=Email, 4=Status, 5=WA_PIC, 6=WA_BARU (kita lewati), 7=Lokasi, 8=Sumber
+                        // Mapping Excel ke Input (Melewati index 6: WA Baru)
                         let colMap = [0, 1, 2, 3, 4, 5, 7, 8];
 
                         cols.forEach((val, j) => {
