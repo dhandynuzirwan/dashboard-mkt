@@ -149,6 +149,11 @@ class DataMasukController extends Controller
         $request->validate(['marketing_id' => 'required']);
         $data = DataMasuk::findOrFail($id);
 
+        // CEK: Jika data sudah punya marketing_id, batalkan proses
+        if ($data->marketing_id) {
+            return back()->with('error', 'Gagal! Data ini sudah di-assign ke Marketing lain.');
+        }
+
         // Salin ke Tabel Prospek
         \App\Models\Prospek::create([
             'marketing_id'    => $request->marketing_id,
@@ -160,10 +165,10 @@ class DataMasukController extends Controller
             'sumber'          => $data->sumber,
         ]);
 
-        // Tandai data ini sudah terkirim (bisa dihapus atau diberi status)
-        $data->delete(); 
+        // Tandai data ini sudah terkirim (Update marketing_id agar tombol hilang di UI)
+        $data->update(['marketing_id' => $request->marketing_id]); 
 
-        return back()->with('success', 'Data berhasil di-deliver ke Marketing!');
+        return back()->with('success', "Data {$data->perusahaan} berhasil di-deliver!");
     }
 
     // ================= EDIT =================

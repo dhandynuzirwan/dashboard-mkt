@@ -138,36 +138,43 @@
 
                                         {{-- AKSI UNTUK ADMIN: DELIVER --}}
                                         @if (in_array($role, ['admin', 'superadmin']))
-                                            <button class="btn btn-primary btn-xs btn-round w-100" data-bs-toggle="modal" data-bs-target="#modalDeliver{{ $item->id }}">
-                                                <i class="fas fa-paper-plane me-1"></i> Deliver
-                                            </button>
+                                            @if(!$item->marketing) {{-- Hanya muncul jika marketing_id NULL --}}
+                                                <button class="btn btn-primary btn-xs btn-round w-100" data-bs-toggle="modal" data-bs-target="#modalDeliver{{ $item->id }}">
+                                                    <i class="fas fa-paper-plane me-1"></i> Deliver
+                                                </button>
 
-                                            {{-- Modal Assignment ke Marketing --}}
-                                            <div class="modal fade" id="modalDeliver{{ $item->id }}" tabindex="-1" aria-hidden="true">
-                                                <div class="modal-dialog modal-dialog-centered modal-sm">
-                                                    <form action="{{ route('data-masuk.deliver', $item->id) }}" method="POST">
-                                                        @csrf
-                                                        <div class="modal-content card-round text-start">
-                                                            <div class="modal-header border-0">
-                                                                <h6 class="fw-bold m-0">Assign ke Marketing</h6>
-                                                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                                {{-- Modal Assignment ke Marketing --}}
+                                                <div class="modal fade" id="modalDeliver{{ $item->id }}" tabindex="-1" aria-hidden="true">
+                                                    <div class="modal-dialog modal-dialog-centered modal-sm">
+                                                        <form action="{{ route('data-masuk.deliver', $item->id) }}" method="POST">
+                                                            @csrf
+                                                            <div class="modal-content card-round text-start">
+                                                                <div class="modal-header border-0">
+                                                                    <h6 class="fw-bold m-0">Assign ke Marketing</h6>
+                                                                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                                                </div>
+                                                                <div class="modal-body py-2">
+                                                                    <p class="small text-muted mb-2">Pilih marketing untuk prospek <b>{{ $item->perusahaan }}</b>.</p>
+                                                                    <select name="marketing_id" class="form-select form-select-sm" required>
+                                                                        <option value="">-- Pilih Marketing --</option>
+                                                                        @foreach($marketings as $m)
+                                                                            <option value="{{ $m->id }}">{{ $m->name }}</option>
+                                                                        @endforeach
+                                                                    </select>
+                                                                </div>
+                                                                <div class="modal-footer border-0">
+                                                                    <button type="submit" class="btn btn-primary btn-sm btn-round w-100">Kirim ke Pipeline</button>
+                                                                </div>
                                                             </div>
-                                                            <div class="modal-body py-2">
-                                                                <p class="small text-muted mb-2">Pilih marketing yang akan mengerjakan prospek <b>{{ $item->perusahaan }}</b>.</p>
-                                                                <select name="marketing_id" class="form-select form-select-sm" required>
-                                                                    <option value="">-- Pilih Marketing --</option>
-                                                                    @foreach($marketings as $m)
-                                                                        <option value="{{ $m->id }}">{{ $m->name }}</option>
-                                                                    @endforeach
-                                                                </select>
-                                                            </div>
-                                                            <div class="modal-footer border-0">
-                                                                <button type="submit" class="btn btn-primary btn-sm btn-round w-100">Kirim ke Pipeline</button>
-                                                            </div>
-                                                        </div>
-                                                    </form>
+                                                        </form>
+                                                    </div>
                                                 </div>
-                                            </div>
+                                            @else
+                                                {{-- Tampilan jika data sudah ter-assign --}}
+                                                <button class="btn btn-outline-success btn-xs btn-round w-100" disabled>
+                                                    <i class="fas fa-check-double me-1"></i> Terdistribusi
+                                                </button>
+                                            @endif
                                         @endif
                                     </td>
                                 </tr>
