@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\AbsensiController;
+use App\Http\Controllers\Api\AdsLeadController;
 use App\Http\Controllers\CtaController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\DataMasukController;
@@ -98,6 +99,8 @@ Route::middleware('auth')->group(function () {
         Route::get('/master-training', [MasterTrainingController::class, 'index'])->name('master-training.index');
         Route::post('/master-training/bulk-store', [MasterTrainingController::class, 'bulkStore'])->name('master-training.bulk_store');
         Route::delete('/master-training/{id}', [MasterTrainingController::class, 'destroy'])->name('master-training.destroy');
+
+        Route::post('/v1/sync-ads', [AdsLeadController::class, 'store']);
     });
 
     // 4. KHUSUS ADMIN & SUPERADMIN (Prospek & Penggajian Dasar)
