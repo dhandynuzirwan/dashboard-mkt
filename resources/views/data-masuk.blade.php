@@ -68,9 +68,9 @@
             <li class="nav-item">
                 <a class="nav-link" id="pills-ads-tab" data-bs-toggle="pill" href="#pills-ads" role="tab">
                     <i class="fas fa-bullhorn me-1"></i> Data Ads Lead 
-                    @if($adsData->count() > 0)
+                    {{-- @if($adsData->count() > 0)
                         <span class="badge badge-notification bg-danger">{{ $adsData->total() }}</span>
-                    @endif
+                    @endif --}}
                 </a>
             </li>
         </ul>
@@ -260,13 +260,15 @@
                                             @endif
 
                                             {{-- Edit & Hapus (RnD / Admin) --}}
-                                            <div class="btn-group">
-                                                <a href="{{ route('ads.edit', $ad->id) }}" class="btn btn-warning btn-xs"><i class="fa fa-edit"></i></a>
-                                                <form action="{{ route('ads.destroy', $ad->id) }}" method="POST" class="d-inline">
-                                                    @csrf @method('DELETE')
-                                                    <button class="btn btn-danger btn-xs" onclick="return confirm('Hapus data ads ini?')"><i class="fa fa-trash"></i></button>
-                                                </form>
-                                            </div>
+                                            @if (in_array($role, ['rnd', 'digitalmarketing']))
+                                                <div class="btn-group">
+                                                    <a href="{{ route('ads.edit', $ad->id) }}" class="btn btn-warning btn-xs"><i class="fa fa-edit"></i></a>
+                                                    <form action="{{ route('ads.destroy', $ad->id) }}" method="POST" class="d-inline">
+                                                        @csrf @method('DELETE')
+                                                        <button class="btn btn-danger btn-xs" onclick="return confirm('Hapus data ads ini?')"><i class="fa fa-trash"></i></button>
+                                                    </form>
+                                                </div>
+                                            @endif
                                         </td>
                                     </tr>
 
