@@ -4,24 +4,38 @@ namespace App\Http\Controllers;
 
 use App\Models\Cta;
 use App\Models\User;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 
 class DashboardController extends Controller
 {
     public function index(Request $request)
     {
-        // 1. Inisialisasi Filter Tanggal & Marketing
-        $start = $request->query('start_date', now()->startOfMonth()->format('Y-m-d'));
-        $end = $request->query('end_date', now()->endOfMonth()->format('Y-m-d'));
-        $marketing_filter = $request->query('marketing_id');
-        // --- LOGIKA HITUNG HARI EFEKTIF KERJA (Senin-Jumat) BERDASARKAN FILTER ---
-        $startDate = \Carbon\Carbon::parse($start);
-        $endDate = \Carbon\Carbon::parse($end);
-        $hariEfektif = 0;
+        $authUser = auth()->user();
 
-        // Looping dari tanggal start sampai end
-        for ($date = $startDate->copy(); $date->lte($endDate); $date->addDay()) {
-            if ($date->isWeekday()) { // Mengecek apakah hari kerja (Senin-Jumat)
+        // 1. --- INISIALISASI FILTER ---
+        $start = $request->query('start_date', Carbon::now()->startOfMonth()->format('Y-m-d'));
+        $end = $request->query('end_date', Carbon::now()->format('Y-m-d'));
+        $marketing_filter = $request->query('marketing_id');
+
+        // 2. --- HITUNG HARI KERJA (FULL 1 BULAN) ---
+        // 1. Tentukan rentang awal dan akhir bulan berdasarkan filter $start
+        $startDate = Carbon::parse($start);
+        $startOfMonth = $startDate->copy()->startOfMonth();
+        $endOfMonth = $startDate->copy()->endOfMonth();
+
+        // 2. Ambil daftar tanggal merah bulan ini dari database
+        $daftarLibur = \App\Models\Holiday::whereBetween('tanggal', [
+                $startOfMonth->format('Y-m-d'), 
+                $endOfMonth->format('Y-m-d')
+            ])->pluck('tanggal')->toArray();
+
+        // 3. Hitung Hari Efektif (Hanya Senin-Jumat & Bukan Tanggal Merah)
+        $hariEfektif = 0; 
+
+        for ($date = $startOfMonth->copy(); $date->lte($endOfMonth); $date->addDay()) {
+            // Logika: Jika hari biasa (Senin-Jumat) DAN tidak terdaftar di tabel Holiday
+            if ($date->isWeekday() && !in_array($date->format('Y-m-d'), $daftarLibur)) { 
                 $hariEfektif++;
             }
         }

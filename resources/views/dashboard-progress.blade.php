@@ -2,6 +2,7 @@
 
 @section('content')
     <div class="container">
+
         <div class="page-inner">
            {{-- Reminder jika belum ada CTA --}}
             @if (auth()->user()->role === 'admin')
@@ -21,6 +22,16 @@
                     </div>
                 @endif
             @endif
+
+            <div class="d-flex align-items-left align-items-md-center flex-column flex-md-row mb-3">
+                <div>
+                    <h3 class="fw-bold mb-1">Dashboard Marketing</h3>
+                    <h6 class="op-7 mb-2">Laporan Terintegrasi & Progress Marketing</h6>
+                    <div class="badge badge-info">
+                        <i class="fas fa-clock me-2"></i> <span id="realtime-clock">Memuat waktu...</span>
+                    </div>
+                </div>
+            </div>
 
             {{-- STATISTIC CARDS --}}
             <div class="row">
