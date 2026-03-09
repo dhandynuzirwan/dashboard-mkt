@@ -11,10 +11,13 @@ class DownloadRequest extends Model
         'start_date',
         'end_date',
         'marketing_id',
+        'status_akhir',
+        'status_penawaran',
+        'cta_status',
         'reason',
         'status',
         'approved_by',
-        'approved_at'
+        'approved_at',
     ];
 
     public function user()

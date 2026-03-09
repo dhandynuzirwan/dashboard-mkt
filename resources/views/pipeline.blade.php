@@ -49,9 +49,11 @@
                         <select name="status" class="form-select form-select-sm">
                             <option value="">Semua Status Penawaran</option>
                             <option value="cancel" {{ request('status') == 'cancel' ? 'selected' : '' }}>Cancel</option>
-                            <option value="under_review" {{ request('status') == 'under_review' ? 'selected' : '' }}>Under Review</option>
+                            <option value="under_review" {{ request('status') == 'under_review' ? 'selected' : '' }}>Under
+                                Review</option>
                             <option value="hold" {{ request('status') == 'hold' ? 'selected' : '' }}>Hold</option>
-                            <option value="kalah_harga" {{ request('status') == 'kalah_harga' ? 'selected' : '' }}>Kalah Harga</option>
+                            <option value="kalah_harga" {{ request('status') == 'kalah_harga' ? 'selected' : '' }}>Kalah
+                                Harga</option>
                             <option value="deal" {{ request('status') == 'deal' ? 'selected' : '' }}>Deal</option>
                         </select>
                     </div>
@@ -379,6 +381,9 @@
                 <input type="hidden" name="start_date" value="{{ request('start_date') }}">
                 <input type="hidden" name="end_date" value="{{ request('end_date') }}">
                 <input type="hidden" name="marketing_id" value="{{ request('marketing_id') }}">
+                <input type="hidden" name="status_akhir" value="{{ request('status_akhir') }}">
+                <input type="hidden" name="status" value="{{ request('status') }}">
+                <input type="hidden" name="cta_status" value="{{ request('cta_status') }}">
 
                 <div class="modal-content">
                     <div class="modal-header">

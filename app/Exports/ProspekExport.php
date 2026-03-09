@@ -18,22 +18,46 @@ class ProspekExport implements FromCollection, ShouldAutoSize, WithColumnFormatt
         $this->requestData = $requestData;
     }
 
-    public function collection()
-    {
-        return Prospek::with(['marketing', 'cta'])
-            ->whereHas('cta') // 🔥 HANYA YANG PUNYA CTA
-            ->when($this->requestData->start_date, function ($query) {
-                $query->whereDate('tanggal_prospek', '>=', $this->requestData->start_date);
-            })
-            ->when($this->requestData->end_date, function ($query) {
-                $query->whereDate('tanggal_prospek', '<=', $this->requestData->end_date);
-            })
-            ->when($this->requestData->marketing_id, function ($query) {
-                $query->where('marketing_id', $this->requestData->marketing_id);
-            })
-            ->orderBy('tanggal_prospek', 'desc')
-            ->get();
+public function collection()
+{
+    $query = Prospek::with(['marketing','cta']);
+
+    // FILTER TANGGAL
+    if ($this->requestData->start_date && $this->requestData->end_date) {
+        $query->whereBetween('tanggal_prospek', [
+            $this->requestData->start_date,
+            $this->requestData->end_date
+        ]);
     }
+
+    // FILTER MARKETING
+    if ($this->requestData->marketing_id) {
+        $query->where('marketing_id', $this->requestData->marketing_id);
+    }
+
+    // FILTER STATUS AKHIR
+    if ($this->requestData->status_akhir) {
+        $query->where('status', $this->requestData->status_akhir);
+    }
+
+    // FILTER STATUS PENAWARAN
+    if ($this->requestData->status_penawaran) {
+        $query->whereHas('cta', function ($q) {
+            $q->where('status_penawaran', $this->requestData->status_penawaran);
+        });
+    }
+
+    // FILTER CTA STATUS
+    if ($this->requestData->cta_status == 'pending') {
+        $query->whereDoesntHave('cta');
+    }
+
+    if ($this->requestData->cta_status == 'done') {
+        $query->whereHas('cta');
+    }
+
+    return $query->orderBy('id','asc')->get();
+}
 
     public function headings(): array
     {

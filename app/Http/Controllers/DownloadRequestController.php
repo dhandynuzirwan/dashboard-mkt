@@ -5,26 +5,26 @@ namespace App\Http\Controllers;
 use App\Exports\ProspekExport;
 use App\Models\DownloadRequest;
 use App\Models\User;
+use App\Notifications\DownloadApprovedNotification;
 use App\Notifications\NewDownloadRequestNotification;
 use Illuminate\Http\Request;
 use Maatwebsite\Excel\Facades\Excel;
-use App\Notifications\DownloadApprovedNotification;
 
 class DownloadRequestController extends Controller
 {
     // Submit Request
     public function store(Request $request)
     {
-        DownloadRequest::create([
+        $requestData = DownloadRequest::create([
             'user_id' => auth()->id(),
             'start_date' => $request->start_date,
             'end_date' => $request->end_date,
             'marketing_id' => $request->marketing_id,
+            'status_akhir' => $request->status_akhir,
+            'status_penawaran' => $request->status,
+            'cta_status' => $request->cta_status,
             'reason' => $request->reason,
-
         ]);
-
-        $requestData = DownloadRequest::latest()->first();
 
         $superadmins = User::where('role', 'superadmin')->get();
 
@@ -86,6 +86,7 @@ class DownloadRequestController extends Controller
             ->latest()
             ->get();
         auth()->user()->unreadNotifications->markAsRead();
+
         return view('download-my-requests', compact('requests'));
     }
 }
