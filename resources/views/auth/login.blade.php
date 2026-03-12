@@ -14,7 +14,7 @@
     <style>
         body {
             font-family: 'Inter', sans-serif;
-            background-color: #f1f5f9;
+            background-color: #E9ECEF;
             height: 100vh;
             display: flex;
             margin: 0;
@@ -22,8 +22,8 @@
 
         .left-panel {
             width: 40%;
-            background: linear-gradient(180deg, #111827, #1f2937);
-            color: white;
+            background: #DEE2E6;
+            color: #343a40;
             display: flex;
             flex-direction: column;
             justify-content: center;
@@ -36,8 +36,8 @@
             position: absolute;
             width: 300px;
             height: 300px;
-            background: #2563eb;
-            opacity: 0.08;
+            background: #adb5bd;
+            opacity: 0.15;
             border-radius: 50%;
             top: -80px;
             right: -80px;
@@ -46,7 +46,7 @@
         .logo-circle {
             width: 50px;
             height: 50px;
-            background: #2563eb;
+            background: #adb5bd;
             border-radius: 12px;
             display: flex;
             align-items: center;
@@ -56,7 +56,7 @@
         }
 
         .left-panel p {
-            color: #9ca3af;
+            color: #6c757d;
         }
 
         .right-panel {
@@ -71,7 +71,7 @@
             background: white;
             padding: 45px;
             border-radius: 16px;
-            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.06);
+            box-shadow: 0 10px 25px rgba(0,0,0,0.05);
         }
 
         .form-control {
@@ -81,12 +81,12 @@
         }
 
         .form-control:focus {
-            border-color: #2563eb;
-            box-shadow: 0 0 0 2px rgba(37, 99, 235, 0.15);
+            border-color: #6c757d;
+            box-shadow: 0 0 0 2px rgba(108,117,125,0.15);
         }
 
         .btn-login {
-            background-color: #2563eb;
+            background-color: #6c757d;
             border: none;
             border-radius: 10px;
             padding: 10px;
@@ -95,7 +95,7 @@
         }
 
         .btn-login:hover {
-            background-color: #1e40af;
+            background-color: #495057;
             transform: translateY(-1px);
         }
 
@@ -112,7 +112,7 @@
     <!-- Left Branding -->
     <div class="left-panel">
         <div class="logo-wrapper">
-            <img src="{{ asset('assets/img/arsa/arsa_logo_white.png')}}" alt="Logo Perusahaan">
+            <img src="{{ asset('assets/img/intan/logo_icm.png')}}" alt="Logo Perusahaan">
         </div>
 
         <h2>Marketing Dashboard</h2>

@@ -1,11 +1,11 @@
 <!-- Sidebar -->
-<div class="sidebar" data-background-color="dark">
+<div class="sidebar" style="background: #E9ECEF;">
     <div class="sidebar-logo">
         <!-- Logo Header -->
-        <div class="logo-header" data-background-color="dark">
+        <div class="logo-header" style="background: #E9ECEF;">
             <a href="{{ route('dashboard.progress') }}" class="logo">
-                <img src="{{ asset('assets/img/arsa/arsa_logo_white.png') }}" alt="navbar brand" class="navbar-brand"
-                    height="20" />
+                <img src="{{ asset('assets/img/intan/logo_icm.png') }}" alt="navbar brand" class="navbar-brand"
+                    height="45" />
             </a>
             <div class="nav-toggle">
                 <button class="btn btn-toggle toggle-sidebar">
