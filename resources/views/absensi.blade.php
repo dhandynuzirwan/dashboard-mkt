@@ -328,7 +328,7 @@
                 </div>
                 <div class="modal-body">
                     <div class="form-group p-0">
-                        <label class="mb-2">Pilih File Laporan Detail (CSV)</label>
+                        <label class="mb-2">Pilih File Laporan Detail (CSV/EXCEL)</label>
                         <input type="file" name="file_absensi" class="form-control" required>
                         <small class="form-text text-muted">Gunakan file <b>Laporan Detail Kehadiran</b> dari mesin.</small>
                     </div>
@@ -348,12 +348,12 @@
             @csrf
             <div class="modal-content card-round">
                 <div class="modal-header border-0">
-                    <h5 class="modal-title fw-bold text-info">Import Laporan Izin (CSV)</h5>
+                    <h5 class="modal-title fw-bold text-info">Import Laporan Izin (CSV/EXCEL)</h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body">
                     <div class="form-group p-0">
-                        <label class="mb-2">Pilih File Laporan Izin (CSV)</label>
+                        <label class="mb-2">Pilih File Laporan Izin (CSV/EXCEL)</label>
                         <input type="file" name="file_izin" class="form-control" required>
                         <small class="form-text text-muted">Gunakan file <b>Laporan Izin Karyawan</b> dari Fingerspot.io</small>
                     </div>
@@ -408,7 +408,7 @@
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body">
-                    <p>Pilih rentang tanggal data <b>Perizinan (CSV Laporan Izin)</b> yang ingin dihapus secara permanen.</p>
+                    <p>Pilih rentang tanggal data <b>Perizinan</b> yang ingin dihapus secara permanen.</p>
                     <div class="row">
                         <div class="col-6">
                             <label class="small fw-bold">Dari Tanggal</label>

@@ -28,47 +28,7 @@ class CtaController extends Controller
     {
         $validated = $request->validate([
             'prospek_id' => 'required|exists:prospeks,id',
-            'catatan_prospek' => 'required|string', // 🚨 WAJIB DIISI sebagai Keterangan Akhir Data
-            'judul_permintaan' => 'nullable',
-            'jumlah_peserta' => 'nullable|numeric|min:1',
-            'sertifikasi' => 'nullable',
-            'skema' => 'nullable',
-            'harga_penawaran' => 'nullable|numeric|min:0',
-            'harga_vendor' => 'nullable|numeric|min:0',
-            'proposal_link' => 'nullable|url',
-            'status_penawaran' => 'nullable',
-            'keterangan' => 'nullable|string', // Sekarang bisa diatur nullable jika catatan sudah mewakili
-        ]);
-    
-        // Update Catatan di Tabel Prospek
-        $prospek = Prospek::findOrFail($validated['prospek_id']);
-        $prospek->update(['catatan' => $validated['catatan_prospek']]);
-    
-        // Hapus dari array sebelum simpan ke tabel CTA
-        unset($validated['catatan_prospek']);
-    
-        // Logika Auto Multiply
-        $jumlah = $validated['jumlah_peserta'] ?? null;
-        $hargaPenawaran = $validated['harga_penawaran'] ?? null;
-        $hargaVendor = $validated['harga_vendor'] ?? null;
-    
-        $validated['total_penawaran'] = ($jumlah && $hargaPenawaran) ? $jumlah * $hargaPenawaran : null;
-        $validated['total_vendor'] = ($jumlah && $hargaVendor) ? $jumlah * $hargaVendor : null;
-    
-        Cta::create($validated);
-        
-        // AMBIL URL DARI SESSION (Jika kosong, kembali ke route default)
-        $url_kembali = session('url_pipeline_terakhir', route('prospek.index'));
-    
-        return redirect($url_kembali)->with('success', 'Data CTA berhasil disimpan!');
-    }
-    
-    public function update(Request $request, $id)
-    {
-        $cta = Cta::findOrFail($id);
-    
-        $validated = $request->validate([
-            'catatan_prospek' => 'required|string', // 🚨 WAJIB saat edit
+            'catatan_prospek' => 'required|string',
             'judul_permintaan' => 'nullable',
             'jumlah_peserta' => 'nullable|numeric|min:1',
             'sertifikasi' => 'nullable',
@@ -80,17 +40,72 @@ class CtaController extends Controller
             'keterangan' => 'nullable|string',
         ]);
     
-        // Update Catatan di Tabel Prospek lewat relasi
-        $cta->prospek->update(['catatan' => $validated['catatan_prospek']]);
+        $prospek = Prospek::findOrFail($validated['prospek_id']);
+        $prospek->update(['catatan' => $validated['catatan_prospek']]);
         unset($validated['catatan_prospek']);
     
-        // Recalculate
-        $validated['total_penawaran'] = $validated['jumlah_peserta'] * $validated['harga_penawaran'];
-        $validated['total_vendor'] = $validated['jumlah_peserta'] * $validated['harga_vendor'];
+        $jumlah = $validated['jumlah_peserta'] ?? null;
+        $hargaPenawaran = $validated['harga_penawaran'] ?? null;
+        $hargaVendor = $validated['harga_vendor'] ?? null;
     
-        $cta->update($validated);
+        $validated['total_penawaran'] = ($jumlah && $hargaPenawaran) ? $jumlah * $hargaPenawaran : null;
+        $validated['total_vendor'] = ($jumlah && $hargaVendor) ? $jumlah * $hargaVendor : null;
     
-        return redirect()->route('pipeline')->with('success', 'Data berhasil diperbarui!');
+        Cta::create($validated);
+        
+        $url_kembali = session('url_pipeline_terakhir', route('prospek.index'));
+    
+        // 3. Cek Logika: Jika input baru langsung Deal
+        if ($request->status_penawaran == 'deal') {
+            return redirect($url_kembali)->with('deal_congrats', 'Closing Mantap! Selamat atas Project barunya!');
+        }
+    
+        return redirect($url_kembali)->with('success', 'Data CTA berhasil disimpan!');
+    }
+    
+    public function update(Request $request, $id)
+    {
+        // 1. Cari data CTA dan simpan status lamanya
+        $cta = Cta::findOrFail($id);
+        $statusLama = $cta->status_penawaran;
+    
+        // 2. Validasi (Pastikan semua field yang ingin diupdate ada di sini)
+        $validated = $request->validate([
+            'catatan_prospek' => 'required|string', 
+            'judul_permintaan' => 'nullable',
+            'jumlah_peserta' => 'nullable|numeric|min:1',
+            'sertifikasi' => 'nullable',
+            'skema' => 'nullable',
+            'harga_penawaran' => 'nullable|numeric|min:0',
+            'harga_vendor' => 'nullable|numeric|min:0',
+            'proposal_link' => 'nullable|url',
+            'status_penawaran' => 'nullable|string', // Pastikan ini terkirim dari form
+            'keterangan' => 'nullable|string',
+        ]);
+    
+        // 3. Update Catatan di tabel Prospek (pake id_prospek dari data cta)
+        \App\Models\Prospek::where('id', $cta->prospek_id)->update([
+            'catatan' => $request->catatan_prospek
+        ]);
+    
+        // 4. Hitung ulang total (Pakai logika null-safe biar nggak error kalau kosong)
+        $jumlah = $request->jumlah_peserta ?? 0;
+        $hargaP = $request->harga_penawaran ?? 0;
+        $hargaV = $request->harga_vendor ?? 0;
+    
+        $dataUpdate = $request->except(['_token', '_method', 'catatan_prospek']);
+        $dataUpdate['total_penawaran'] = $jumlah * $hargaP;
+        $dataUpdate['total_vendor'] = $jumlah * $hargaV;
+    
+        // 5. Eksekusi Update ke Database
+        $cta->update($dataUpdate);
+    
+        // 6. LOGIKA NOTIFIKASI DEAL (Fitur Congrats)
+        if ($request->status_penawaran == 'deal' && $statusLama != 'deal') {
+            return redirect()->route('prospek.index')->with('deal_congrats', 'Gokil! Project Deal baru berhasil diamankan!');
+        }
+    
+        return redirect()->route('prospek.index')->with('success', 'Perubahan data penawaran berhasil disimpan!');
     }
 
     public function edit($id)

@@ -13,6 +13,7 @@ use App\Http\Controllers\PenggajianController;
 use App\Http\Controllers\ProspekController;
 use App\Http\Controllers\RevenueController;
 use App\Http\Controllers\SalaryController;
+use App\Http\Controllers\SearchController; // Atau DashboardController
 use App\Http\Controllers\UserController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -55,8 +56,9 @@ Route::middleware('auth')->group(function () {
     // --- DASHBOARD & GLOBAL (Semua yang login bisa akses) ---
     Route::get('/', [DashboardController::class, 'index'])->name('dashboard.progress');
     Route::get('/dashboard-progress', [DashboardController::class, 'index']);
-    Route::get('/search', [GlobalSearchController::class, 'index'])->name('search.global');
+    // Route::get('/search', [GlobalSearchController::class, 'index'])->name('search.global');
     Route::get('/marketing-detail/{id}', [DashboardController::class, 'getDetail'])->name('marketing.detail');
+    Route::get('/search-global', [SearchController::class, 'globalSearch'])->name('search.global');
 
     /*
     |--------------------------------------------------------------------------

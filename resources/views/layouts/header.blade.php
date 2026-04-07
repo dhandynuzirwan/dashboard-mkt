@@ -1,10 +1,13 @@
 @php
-    // Hitung jumlah penawaran (CTA) yang masuk HARI INI saja
-    $notifCount = \App\Models\Cta::whereDate('created_at', \Carbon\Carbon::today())->count();
+    // 1. Hitung jumlah penawaran (CTA) yang SUDAH memiliki status penawaran hari ini
+    $notifCount = \App\Models\Cta::whereDate('created_at', \Carbon\Carbon::today())
+                    ->whereNotNull('status_penawaran') // Pastikan ada statusnya
+                    ->count();
     
-    // Ambil 5 penawaran terbaru hari ini untuk ditampilkan di dropdown list
+    // 2. Ambil 5 penawaran terbaru yang memiliki status hari ini
     $recentCtas = \App\Models\Cta::with('prospek')
                     ->whereDate('created_at', \Carbon\Carbon::today())
+                    ->whereNotNull('status_penawaran')
                     ->latest()
                     ->take(5)
                     ->get();
@@ -32,6 +35,8 @@
 
     <nav class="navbar navbar-header navbar-header-transparent navbar-expand-lg border-bottom">
         <div class="container-fluid">
+
+            {{-- 1. SEARCH BAR UNTUK DESKTOP (Layar Besar) --}}
             <nav class="navbar navbar-header-left navbar-expand-lg navbar-form nav-search p-0 d-none d-lg-flex">
                 <form action="{{ route('search.global') }}" method="GET" class="input-group">
                     <div class="input-group-prepend">
@@ -39,19 +44,23 @@
                             <i class="fa fa-search search-icon"></i>
                         </button>
                     </div>
-                    <input type="text" name="q" value="{{ request('q') }}" placeholder="Cari prospek, penawaran, atau marketing..." class="form-control" />
+                    <input type="text" name="q" value="{{ request('q') }}" placeholder="Cari prospek, penawaran..." class="form-control" autocomplete="off" />
                 </form>
             </nav>
 
             <ul class="navbar-nav topbar-nav ms-md-auto align-items-center">
+                
+                {{-- 2. SEARCH BAR UNTUK MOBILE (Layar Kecil / HP) --}}
                 <li class="nav-item topbar-icon dropdown hidden-caret d-flex d-lg-none">
                     <a class="nav-link dropdown-toggle" data-bs-toggle="dropdown" href="#" role="button" aria-expanded="false" aria-haspopup="true">
                         <i class="fa fa-search"></i>
                     </a>
                     <ul class="dropdown-menu dropdown-search animated fadeIn">
-                        <form class="navbar-left navbar-form nav-search">
+                        {{-- UPDATE: Form mobile juga diarahkan ke route yang sama dengan name="q" --}}
+                        <form action="{{ route('search.global') }}" method="GET" class="navbar-left navbar-form nav-search">
                             <div class="input-group">
-                                <input type="text" placeholder="Search ..." class="form-control" />
+                                <input type="text" name="q" value="{{ request('q') }}" placeholder="Ketik pencarian..." class="form-control" autocomplete="off" />
+                                <button type="submit" class="btn btn-primary btn-sm">Cari</button>
                             </div>
                         </form>
                     </ul>
@@ -74,23 +83,28 @@
                             <div class="notif-scroll scrollbar-outer">
                                 <div class="notif-center">
                                     @forelse($recentCtas as $cta)
-                                        <a href="{{ route('dashboard.progress') }}"> {{-- Arahkan ke dashboard untuk cek detail --}}
-                                            <div class="notif-icon notif-primary">
-                                                <i class="fa fa-file-invoice-dollar"></i>
+                                        <a href="{{ route('dashboard.progress') }}"> 
+                                            <div class="notif-icon 
+                                                {{ $cta->status_penawaran == 'deal' ? 'notif-success' : ($cta->status_penawaran == 'cancel' ? 'notif-danger' : 'notif-primary') }}">
+                                                <i class="fa {{ $cta->status_penawaran == 'deal' ? 'fa-check' : 'fa-file-invoice-dollar' }}"></i>
                                             </div>
                                             <div class="notif-content">
                                                 <span class="block fw-bold">
-                                                    {{ $cta->prospek->nama_perusahaan ?? 'Penawaran Baru' }}
+                                                    {{ $cta->prospek->perusahaan ?? 'Penawaran Baru' }}
                                                 </span>
                                                 <span class="block small text-muted">
-                                                    {{ $cta->judul_permintaan }} ({{ $cta->sertifikasi }})
+                                                    {{-- Menampilkan Status Penawaran dengan format yang rapi --}}
+                                                    Status: <strong>{{ str_replace('_', ' ', ucwords($cta->status_penawaran)) }}</strong>
                                                 </span>
-                                                <span class="time">{{ $cta->created_at->format('H:i') }}</span>
+                                                <span class="block small text-muted">
+                                                    {{ $cta->judul_permintaan }}
+                                                </span>
+                                                <span class="time">{{ $cta->created_at->diffForHumans() }}</span> {{-- Biar lebih user friendly --}}
                                             </div>
                                         </a>
                                     @empty
                                         <div class="text-center p-3 text-muted">
-                                            <small>Belum ada penawaran masuk hari ini.</small>
+                                            <small>Belum ada update penawaran hari ini.</small>
                                         </div>
                                     @endforelse
                                 </div>

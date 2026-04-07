@@ -90,6 +90,62 @@
         </div>
 
     </div>
+    
+    {{-- ================= FITUR CONGRATS DEAL ================= --}}
+    @if (session('deal_congrats'))
+        {{-- Load Library Confetti (Animasi Kertas) & SweetAlert (Pop-up) --}}
+        <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+        <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+        
+        {{-- Load File Audio Suara Tepuk Tangan --}}
+        <audio id="applauseAudio" src="{{ asset('assets/audio/applause2.mp3') }}" preload="auto"></audio>
+    
+        <script>
+            document.addEventListener("DOMContentLoaded", function() {
+                // 1. Mainkan Suara Tepuk Tangan
+                let audio = document.getElementById('applauseAudio');
+                audio.volume = 0.7; // Atur volume (0.0 sampai 1.0)
+                audio.play().catch(error => console.log("Audio diblokir browser, interaksi user diperlukan."));
+    
+                // 2. Tampilkan Pop-up SweetAlert
+                Swal.fire({
+                    title: '🎉 CONGRATS! 🎉',
+                    text: '{{ session('deal_congrats') }}',
+                    icon: 'success',
+                    confirmButtonText: 'Sikat Terus!',
+                    confirmButtonColor: '#28a745',
+                    backdrop: `rgba(0,0,0,0.4)` // Latar belakang sedikit gelap
+                });
+    
+                // 3. Tembakkan Hujan Confetti dari kiri dan kanan layar
+                var duration = 4 * 1000; // Durasi 4 detik
+                var end = Date.now() + duration;
+    
+                (function frame() {
+                    // Tembakan Kiri
+                    confetti({
+                        particleCount: 5,
+                        angle: 60,
+                        spread: 55,
+                        origin: { x: 0 },
+                        colors: ['#FFC107', '#28a745', '#007bff', '#dc3545']
+                    });
+                    // Tembakan Kanan
+                    confetti({
+                        particleCount: 5,
+                        angle: 120,
+                        spread: 55,
+                        origin: { x: 1 },
+                        colors: ['#FFC107', '#28a745', '#007bff', '#dc3545']
+                    });
+    
+                    if (Date.now() < end) {
+                        requestAnimationFrame(frame);
+                    }
+                }());
+            });
+        </script>
+    @endif
 
     <!-- JS CORE (URUTAN WAJIB BENAR) -->
     <!-- 1. JQUERY DULU -->

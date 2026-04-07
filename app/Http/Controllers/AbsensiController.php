@@ -75,99 +75,186 @@ class AbsensiController extends Controller
 
     public function importManual(Request $request)
     {
-        $request->validate(['file_absensi' => 'required']);
+        // Validasi ekstensi file (Boleh CSV atau Excel)
+        $request->validate([
+            'file_absensi' => 'required|mimes:csv,txt,xlsx,xls,vnd.openxmlformats-officedocument.spreadsheetml.sheet,vnd.ms-excel'
+        ]);
 
         $file = $request->file('file_absensi');
-        $handle = fopen($file->getRealPath(), "r");
-        
-        $currentUserId = null;
+        $extension = strtolower($file->getClientOriginalExtension());
+        $filePath = $file->getRealPath();
+
+        $allRows = [];
+
+        // 1. EKSTRAKSI DATA BERDASARKAN FORMAT FILE
+        if ($extension === 'csv' || $extension === 'txt') {
+            // Jika CSV, baca pakai fungsi bawaan PHP
+            $handle = fopen($filePath, "r");
+            while (($row = fgetcsv($handle, 1000, ",")) !== FALSE) {
+                $allRows[] = $row;
+            }
+            fclose($handle);
+        } elseif ($extension === 'xlsx' || $extension === 'xls') {
+            
+            // 1. Paksa load file helper secara langsung di sini
+            if (file_exists(app_path('Helpers/SimpleXLSX.php'))) {
+                require_once app_path('Helpers/SimpleXLSX.php');
+            } else {
+                return back()->with('error', 'File Helper SimpleXLSX tidak ditemukan di app/Helpers/');
+            }
+
+            // 2. Cek apakah menggunakan namespace Shuchkin atau tidak
+            if (class_exists('\Shuchkin\SimpleXLSX')) {
+                $xlsx = \Shuchkin\SimpleXLSX::parse($filePath);
+                $parseError = \Shuchkin\SimpleXLSX::parseError();
+            } else {
+                $xlsx = \SimpleXLSX::parse($filePath);
+                $parseError = \SimpleXLSX::parseError();
+            }
+
+            // 3. Ekstrak barisnya
+            if ($xlsx) {
+                $allRows = $xlsx->rows();
+            } else {
+                return back()->with('error', 'Gagal membaca file Excel: ' . $parseError);
+            }
+            
+        } else {
+            return back()->with('error', 'Format file tidak didukung! Gunakan CSV atau Excel.');
+        }
+
+
         $successCount = 0;
         $auditLogs = []; 
+        $scansData = [];
 
-        $rowNum = 0;
-        while (($row = fgetcsv($handle, 1000, ",")) !== FALSE) {
-            $rowNum++;
+        // 2. MEMBACA BARIS DATA (Berlaku untuk CSV maupun Excel)
+        foreach ($allRows as $index => $row) {
+            // Lewati baris pertama (Header)
+            if ($index == 0) continue;
+
+            // Pastikan baris memiliki data yang cukup
+            if (count($row) < 5) continue;
+
+            // Membersihkan spasi berlebih dari setiap kolom
+            $row = array_map('trim', $row);
+
+            $idFingerspot = $row[1]; // Contoh: WD.002
+            $tanggal = $row[3];      // Contoh: 2026-04-07
+            $jam = $row[4];          // Contoh: 07:34
+
+            if (empty($idFingerspot) || empty($tanggal) || empty($jam)) continue;
+
+            $user = \App\Models\User::where('fingerspot_id', $idFingerspot)->first();
             
-            // Membersihkan karakter aneh/spasi
-            $row = array_map(function($val) {
-                return trim($val, " \t\n\r\0\x0B\"");
-            }, $row);
-
-            // LOG DEBUG: Kita rekam apa yang ada di baris 5 dan 6 (tempat ID berada)
-            if ($rowNum == 5 || $rowNum == 6) {
-                $col0 = $row[0] ?? 'KOSONG';
-                $col1 = $row[1] ?? 'KOSONG';
-                $auditLogs[] = "🔍 Info Baris $rowNum: Kolom[0] isinya '$col0', Kolom[1] isinya '$col1'";
-            }
-
-            // 1. Deteksi Baris ID/NIK
-            if (isset($row[0]) && (str_contains($row[0], 'ID/NIK') || str_contains($row[0], 'ID'))) {
-                if (isset($row[1])) {
-                    $idRaw = explode('/', $row[1]); 
-                    $idDariFile = trim($idRaw[0]); // Ini yang diambil: ADM.001
-
-                    $user = \App\Models\User::where('fingerspot_id', $idDariFile)->first();
-                    
-                    if ($user) {
-                        $currentUserId = $user->id;
-                        $auditLogs[] = "✅ KETEMU! ID '$idDariFile' cocok dengan user: $user->name";
-                    } else {
-                        $currentUserId = null;
-                        $auditLogs[] = "❌ GAGAL! ID '$idDariFile' ada di file, tapi GAK ADA di database kamu.";
-                    }
-                }
-                continue;
-            }
-
-            // 2. Proses Tanggal
-            if ($currentUserId && isset($row[0]) && preg_match('/\d{4}-\d{2}-\d{2}/', $row[0], $matches)) {
-                $tanggal = $matches[0];
-                $jamMasuk = $row[4] ?? '-';
-                $jamPulang = $row[5] ?? '-';
-
-                if ($jamMasuk !== '-' && !empty($jamMasuk)) {
-                    \App\Models\AbsensiLog::updateOrCreate(
-                        ['user_id' => $currentUserId, 'tanggal' => $tanggal, 'tipe' => 'in'],
-                        ['jam' => $jamMasuk, 'source' => 'manual']
-                    );
-                    $successCount++;
-                }
-                
-                if ($jamPulang !== '-' && !empty($jamPulang)) {
-                    \App\Models\AbsensiLog::updateOrCreate(
-                        ['user_id' => $currentUserId, 'tanggal' => $tanggal, 'tipe' => 'out'],
-                        ['jam' => $jamPulang, 'source' => 'manual']
-                    );
-                    $successCount++;
-                }
+            if ($user) {
+                // Simpan jam ke array sementara
+                $scansData[$user->id][$tanggal][] = $jam;
+            } else {
+                $auditLogs[] = "❌ ID Mesin '$idFingerspot' tidak ditemukan di database.";
             }
         }
-        fclose($handle);
 
-        return back()->with('success', "Proses selesai. $successCount data masuk.")
-                    ->with('audit_ids', $auditLogs);
+        // 3. MENYIMPAN DATA (Logika Anti-Duplikat & Auto In/Out)
+        foreach ($scansData as $userId => $dates) {
+            foreach ($dates as $tanggal => $times) {
+                $times = array_unique($times);
+                sort($times);
+
+                $jamMasuk = $times[0]; // Jam paling pagi
+                $jamPulang = count($times) > 1 ? end($times) : null; // Jam paling sore
+
+                // Simpan Masuk
+                \App\Models\AbsensiLog::updateOrCreate(
+                    ['user_id' => $userId, 'tanggal' => $tanggal, 'tipe' => 'in'],
+                    ['jam' => $jamMasuk, 'source' => 'import']
+                );
+                $successCount++;
+
+                // Simpan Pulang
+                if ($jamPulang) {
+                    \App\Models\AbsensiLog::updateOrCreate(
+                        ['user_id' => $userId, 'tanggal' => $tanggal, 'tipe' => 'out'],
+                        ['jam' => $jamPulang, 'source' => 'import']
+                    );
+                    $successCount++;
+                }
+
+                $auditLogs[] = "✅ Terproses: ID User $userId pada $tanggal (Masuk: $jamMasuk" . ($jamPulang ? " | Pulang: $jamPulang" : "") . ")";
+            }
+        }
+
+        $auditLogs = array_slice(array_unique($auditLogs), 0, 20);
+
+        return back()->with('success', "Proses selesai. $successCount log absensi berhasil dimasukkan ke database.")
+                     ->with('audit_ids', $auditLogs);
     }
 
     public function importIzin(Request $request)
     {
-        $request->validate(['file_izin' => 'required']);
+        // 1. Validasi ekstensi file (Boleh CSV atau Excel)
+        $request->validate([
+            'file_izin' => 'required|mimes:csv,txt,xlsx,xls,vnd.openxmlformats-officedocument.spreadsheetml.sheet,vnd.ms-excel'
+        ]);
 
         $file = $request->file('file_izin');
-        $handle = fopen($file->getRealPath(), "r");
-        
+        $extension = strtolower($file->getClientOriginalExtension());
+        $filePath = $file->getRealPath();
+
+        $allRows = [];
+
+        // 2. EKSTRAKSI DATA BERDASARKAN FORMAT FILE
+        if ($extension === 'csv' || $extension === 'txt') {
+            // Jika CSV
+            $handle = fopen($filePath, "r");
+            while (($row = fgetcsv($handle, 1000, ",")) !== FALSE) {
+                $allRows[] = $row;
+            }
+            fclose($handle);
+        } elseif ($extension === 'xlsx' || $extension === 'xls') {
+            
+            // Jika Excel, Paksa load helper
+            if (file_exists(app_path('Helpers/SimpleXLSX.php'))) {
+                require_once app_path('Helpers/SimpleXLSX.php');
+            } else {
+                return back()->with('error', 'File Helper SimpleXLSX tidak ditemukan!');
+            }
+
+            // Cek Namespace Shuchkin
+            if (class_exists('\Shuchkin\SimpleXLSX')) {
+                $xlsx = \Shuchkin\SimpleXLSX::parse($filePath);
+                $parseError = \Shuchkin\SimpleXLSX::parseError();
+            } else {
+                $xlsx = \SimpleXLSX::parse($filePath);
+                $parseError = \SimpleXLSX::parseError();
+            }
+
+            if ($xlsx) {
+                $allRows = $xlsx->rows();
+            } else {
+                return back()->with('error', 'Gagal membaca file Excel Izin: ' . $parseError);
+            }
+            
+        } else {
+            return back()->with('error', 'Format file tidak didukung! Gunakan CSV atau Excel.');
+        }
+
         $successCount = 0;
-        $rowNum = 0;
 
-        while (($row = fgetcsv($handle, 1000, ",")) !== FALSE) {
-            $rowNum++;
-            if ($rowNum == 1) continue; // Lewati baris header
+        // 3. PROSES DATA IZIN
+        foreach ($allRows as $index => $row) {
+            // Lewati baris header (baris pertama)
+            if ($index == 0) continue; 
 
-            // Mapping kolom berdasarkan file CSV Fingerspot kamu
+            // Pastikan baris memiliki jumlah kolom yang cukup agar tidak error "Undefined offset"
+            if (count($row) < 10) continue;
+
+            // Mapping kolom berdasarkan file Fingerspot kamu
             $idFingerspot = trim($row[2]); // Kolom ID (ADM.001, dsb)
-            $namaIzin     = $row[5];       // Kolom Nama Izin
-            $tanggalRaw   = $row[6];       // Kolom Tanggal Izin (19 Feb 2026)
-            $statusRaw    = $row[8];       // Kolom Status Persetujuan (Diterima)
-            $catatan      = $row[9];       // Kolom Catatan
+            $namaIzin     = trim($row[5]); // Kolom Nama Izin
+            $tanggalRaw   = trim($row[6]); // Kolom Tanggal Izin (19 Feb 2026)
+            $statusRaw    = trim($row[8]); // Kolom Status Persetujuan (Diterima)
+            $catatan      = trim($row[9]); // Kolom Catatan
 
             // Cari User berdasarkan ID Fingerspot
             $user = \App\Models\User::where('fingerspot_id', $idFingerspot)->first();
@@ -201,11 +288,10 @@ class AbsensiController extends Controller
                     );
                     $successCount++;
                 } catch (\Exception $e) {
-                    continue; // Lewati jika ada format tanggal yang rusak
+                    continue; // Lewati baris ini jika ada format tanggal yang tidak lazim
                 }
             }
         }
-        fclose($handle);
 
         return back()->with('success', "Berhasil mengimpor $successCount data izin karyawan.");
     }
