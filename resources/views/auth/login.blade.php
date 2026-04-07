@@ -5,19 +5,17 @@
     <title>Login - Marketing Dashboard</title>
     <meta name="viewport" content="width=device-width, initial-scale=1">
 
-    <!-- Bootstrap -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-
-    <!-- Font -->
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
 
     <style>
         body {
             font-family: 'Inter', sans-serif;
             background-color: #f1f5f9;
-            height: 100vh;
+            min-height: 100vh;
             display: flex;
             margin: 0;
+            flex-direction: row; /* Desktop default */
         }
 
         .left-panel {
@@ -29,6 +27,7 @@
             justify-content: center;
             padding: 60px;
             position: relative;
+            overflow: hidden;
         }
 
         .left-panel::after {
@@ -43,20 +42,10 @@
             right: -80px;
         }
 
-        .logo-circle {
-            width: 50px;
-            height: 50px;
-            background: #2563eb;
-            border-radius: 12px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-weight: 600;
-            margin-bottom: 20px;
-        }
-
-        .left-panel p {
-            color: #9ca3af;
+        .logo-wrapper img {
+            max-width: 160px;
+            height: auto;
+            margin-bottom: 25px;
         }
 
         .right-panel {
@@ -64,10 +53,12 @@
             display: flex;
             align-items: center;
             justify-content: center;
+            padding: 20px;
         }
 
         .login-card {
-            width: 480px;
+            width: 100%;
+            max-width: 480px; /* Limit agar tidak terlalu lebar di desktop */
             background: white;
             padding: 45px;
             border-radius: 16px;
@@ -76,79 +67,105 @@
 
         .form-control {
             border-radius: 10px;
-            padding: 10px;
+            padding: 12px;
             transition: 0.2s;
-        }
-
-        .form-control:focus {
-            border-color: #2563eb;
-            box-shadow: 0 0 0 2px rgba(37, 99, 235, 0.15);
         }
 
         .btn-login {
             background-color: #2563eb;
+            color: #ffffff !important; /* Paksa teks tetap putih */
             border: none;
             border-radius: 10px;
-            padding: 10px;
-            font-weight: 500;
-            transition: 0.2s;
+            padding: 12px;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            display: block;
+            width: 100%;
         }
 
         .btn-login:hover {
-            background-color: #1e40af;
-            transform: translateY(-1px);
+            background-color: #1e40af; /* Biru yang lebih gelap */
+            color: #ffffff !important; /* Pastikan teks TIDAK berubah warna */
+            transform: translateY(-2px); /* Efek angkat sedikit */
+            box-shadow: 0 4px 12px rgba(37, 99, 235, 0.2);
         }
 
-        .logo-wrapper img {
-            max-width: 160px;
-            height: auto;
-            margin-bottom: 25px;
+        .btn-login:active {
+            transform: translateY(0);
+        }
+
+        /* --- RESPONSIVE BREAKPOINT --- */
+        @media (max-width: 991.98px) {
+            body {
+                flex-direction: column; /* Stack vertikal di HP/Tablet */
+            }
+
+            .left-panel {
+                width: 100%;
+                padding: 40px 20px;
+                text-align: center;
+                align-items: center;
+                min-height: auto;
+            }
+
+            .right-panel {
+                width: 100%;
+                padding: 40px 15px;
+            }
+
+            .login-card {
+                padding: 30px 20px;
+                box-shadow: none; /* Opsional: hilangkan shadow agar lebih flat di mobile */
+                border: 1px solid #e2e8f0;
+            }
+            
+            .left-panel p {
+                font-size: 0.9rem;
+            }
         }
     </style>
 </head>
 
 <body>
 
-    <!-- Left Branding -->
     <div class="left-panel">
         <div class="logo-wrapper">
-            <img src="{{ asset('assets/img/arsa/arsa_logo_white.png')}}" alt="Logo Perusahaan">
+            <img src="{{ asset('assets/img/arsa/arsa_logo_white.png')}}" alt="Logo Arsa">
         </div>
-
-        <h2>Marketing Dashboard</h2>
-        <p>Kelola prospek, pipeline, dan revenue dalam satu sistem terintegrasi.</p>
+        <h2 class="fw-bold">Marketing Dashboard</h2>
+        <p class="text-secondary">Kelola prospek, pipeline, dan revenue dalam satu sistem terintegrasi.</p>
     </div>
 
-    <!-- Right Login -->
     <div class="right-panel">
         <div class="login-card">
-
-            <h5 class="mb-4 fw-semibold">Login Akun</h5>
+            <h5 class="mb-4 fw-bold text-dark">Login Akun</h5>
 
             @if (session('error'))
-                <div class="alert alert-danger">
+                <div class="alert alert-danger py-2 small">
                     {{ session('error') }}
                 </div>
             @endif
 
             <form method="POST" action="{{ route('login.process') }}">
                 @csrf
-
                 <div class="mb-3">
-                    <label class="form-label">Email</label>
-                    <input type="email" name="email" class="form-control" required>
+                    <label class="form-label small fw-medium">Email</label>
+                    <input type="email" name="email" class="form-control" placeholder="nama@email.com" required autofocus>
                 </div>
 
                 <div class="mb-4">
-                    <label class="form-label">Password</label>
-                    <input type="password" name="password" class="form-control" required>
+                    <label class="form-label small fw-medium">Password</label>
+                    <input type="password" name="password" class="form-control" placeholder="" required>
                 </div>
 
-                <button class="btn btn-login w-100 text-white">
-                    Masuk
+                <button class="btn btn-login w-100 text-white shadow-sm">
+                    Masuk ke Dashboard
                 </button>
+                
+                <p class="text-center mt-4 small text-muted">
+                    &copy; 2026 PT Arsa Jaya Prima
+                </p>
             </form>
-
         </div>
     </div>
 

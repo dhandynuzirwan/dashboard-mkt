@@ -117,8 +117,21 @@
                                 </div>
 
                                 <div class="form-group">
-                                    <label>Keterangan Akhir <span class="text-danger">*</span></label>
-                                    <textarea class="form-control" name="keterangan" rows="3" required></textarea>
+                                    <label>Catatan CTA</label>
+                                    <textarea class="form-control" name="keterangan" rows="1"></textarea>
+                                </div>
+                                
+                                <div class="form-group">
+                                    <label>Keterangan Akhir Data <span class="text-danger">*</span></label>
+                                    <textarea 
+                                        name="catatan_prospek" 
+                                        class="form-control @error('catatan_prospek') is-invalid @enderror" 
+                                        rows="3" 
+                                        placeholder="Isi keterangan akhir prospek di sini..."
+                                        required>{{ old('catatan_prospek', $prospek->catatan) }}</textarea>
+                                    @error('catatan_prospek')
+                                        <div class="invalid-feedback">{{ $message }}</div>
+                                    @enderror
                                 </div>
 
                                 <button type="submit" class="btn btn-primary mt-3">

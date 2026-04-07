@@ -178,10 +178,37 @@
                     </div>
                 </div>
             </div>
-            <div class="mb-3">
-                <button class="btn btn-success btn-sm" data-bs-toggle="modal" data-bs-target="#requestModal">
-                    <i class="fas fa-file-excel"></i> Request Download Excel
-                </button>
+            {{-- Bagian Button & Search --}}
+            <div class="d-flex flex-wrap justify-content-between align-items-center mb-3 gap-2">
+                <div>
+                    <button class="btn btn-success btn-sm" data-bs-toggle="modal" data-bs-target="#requestModal">
+                        <i class="fas fa-file-excel"></i> Request Download Excel
+                    </button>
+                </div>
+                
+                {{-- Fitur Search Perusahaan --}}
+                <div class="col-md-4 col-12">
+                    <form action="{{ route('prospek.index') }}" method="GET" class="input-group">
+                        {{-- Pertahankan filter yang sudah ada agar tidak hilang saat search --}}
+                        <input type="hidden" name="start_date" value="{{ request('start_date') }}">
+                        <input type="hidden" name="end_date" value="{{ request('end_date') }}">
+                        <input type="hidden" name="marketing_id" value="{{ request('marketing_id') }}">
+                        <input type="hidden" name="status_akhir" value="{{ request('status_akhir') }}">
+                        <input type="hidden" name="status" value="{{ request('status') }}">
+                        <input type="hidden" name="cta_status" value="{{ request('cta_status') }}">
+            
+                        <input type="text" name="search_perusahaan" class="form-control form-control-sm" 
+                               placeholder="Cari Nama Perusahaan..." value="{{ request('search_perusahaan') }}">
+                        <button class="btn btn-primary btn-sm" type="submit">
+                            <i class="fas fa-search"></i>
+                        </button>
+                        @if(request('search_perusahaan'))
+                            <a href="{{ route('prospek.index', request()->except('search_perusahaan')) }}" class="btn btn-outline-danger btn-sm">
+                                <i class="fas fa-times"></i>
+                            </a>
+                        @endif
+                    </form>
+                </div>
             </div>
             {{-- Tabel 1: Tabel Pipeline (Struktur Utuh) --}}
             <div class="card mb-4">
@@ -209,7 +236,7 @@
                                     <th>UPDATE FU</th>
                                     <th>STATUS AKHIR DATA</th>
                                     <th>CATATAN</th>
-                                    <th>KETERANGAN CTA</th>
+                                    <th>KETERANGAN AKHIR DATA</th>
                                     <th>ACTION</th>
                                 </tr>
                             </thead>
@@ -222,7 +249,7 @@
                                             @if (!$data->cta)
                                                 <span class="badge badge-warning">Waiting CTA</span>
                                             @else
-                                                <span class="badge badge-success">On Progress</span>
+                                                <span class="badge badge-success">Done</span>
                                             @endif
                                         </td>
                                         <td>{{ $data->tanggal_prospek }}</td>
@@ -242,33 +269,27 @@
                                         <td class="text-center">
                                             <div class="d-flex justify-content-center align-items-center" style="gap: 5px;">
                                                 
-                                                {{-- 1. LOGIKA UNTUK ADMIN & SUPERADMIN --}}
+                                                {{-- 1. ADMIN & SUPERADMIN: SELALU BISA EDIT --}}
                                                 @if (in_array(auth()->user()->role, ['superadmin', 'admin']))
-                                                    @if ($data->cta)
-                                                        {{-- Muncul Edit jika data CTA sudah ada --}}
-                                                        <a href="{{ route('prospek.edit', $data->cta->id) }}" class="btn btn-primary btn-sm">
-                                                            <i class="fas fa-edit"></i> Edit
-                                                        </a>
-                                                    @else
-                                                        {{-- Muncul badge pemberitahuan jika data CTA belum dibuat oleh marketing --}}
-                                                        <span class="badge badge-count">No CTA Data</span>
-                                                    @endif
-
-                                                {{-- 2. LOGIKA UNTUK MARKETING --}}
+                                                    <a href="{{ route('prospek.edit', $data->id) }}" class="btn btn-primary btn-sm">
+                                                        <i class="fas fa-edit"></i> Edit
+                                                    </a>
+                                        
+                                                {{-- 2. MARKETING --}}
                                                 @else
                                                     @if (!$data->cta)
-                                                        {{-- Muncul Tombol CTA jika belum isi --}}
+                                                        {{-- Jika belum ada CTA --}}
                                                         <a href="{{ route('form-cta', $data->id) }}" class="btn btn-success btn-sm">
                                                             <i class="fas fa-plus"></i> CTA
                                                         </a>
                                                     @else
-                                                        {{-- Muncul Tombol Done jika sudah isi --}}
+                                                        {{-- Jika sudah ada CTA --}}
                                                         <button class="btn btn-outline-success btn-sm" disabled style="cursor: default;">
                                                             <i class="fas fa-check"></i> Done
                                                         </button>
                                                     @endif
                                                 @endif
-
+                                        
                                             </div>
                                         </td>
                                     </tr>
@@ -309,7 +330,7 @@
                                 </tr>
                             </thead>
                             <tbody>
-                                @foreach ($prospeks as $data)
+                                @foreach ($ctaProspeks as $data)
                                     @if ($data->cta)
                                         <tr>
                                             <td>{{ $data->id }}</td>
@@ -360,7 +381,7 @@
                                             </td>
                                             <td>{{ $data->cta?->keterangan ?? 'Tidak Ada' }}</td>
                                             <td>
-                                                @if (auth()->id() === $data->marketing_id)
+                                                @if (auth()->id() == $data->marketing_id)
                                                     <a href="{{ route('cta.edit', $data->cta->id) }}"
                                                         class="btn btn-primary btn-sm">
                                                         <i class="fas fa-edit"></i> Edit

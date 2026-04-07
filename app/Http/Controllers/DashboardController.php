@@ -15,7 +15,7 @@ class DashboardController extends Controller
 
         // 1. --- INISIALISASI FILTER ---
         $start = $request->query('start_date', Carbon::now()->startOfMonth()->format('Y-m-d'));
-        $end = $request->query('end_date', Carbon::now()->format('Y-m-d'));
+        $end = $request->query('end_date', Carbon::now()->endOfMonth()->format('Y-m-d'));
         $marketing_filter = $request->query('marketing_id');
 
         // 2. --- HITUNG HARI KERJA (FULL 1 BULAN) ---
@@ -99,7 +99,7 @@ class DashboardController extends Controller
                 $q->where('marketing_id', $user->id);
             })->whereBetween('created_at', [$start, $end])->get();
 
-            $user->total_penawaran = $cta->count();
+            $user->total_penawaran = $cta->whereNotNull('status_penawaran')->where('status_penawaran', '!=', '')->count();
             $user->deal = $cta->where('status_penawaran', 'deal')->count();
             $user->hold = $cta->where('status_penawaran', 'hold')->count();
             $user->kalah = $cta->where('status_penawaran', 'kalah_harga')->count();

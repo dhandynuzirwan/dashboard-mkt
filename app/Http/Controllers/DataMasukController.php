@@ -12,34 +12,25 @@ class DataMasukController extends Controller
     // Menampilkan daftar database data
     public function index(Request $request)
     {
-        // 1. Tangkap parameter filter
+        // 1. Tangkap parameter filter & pencarian
         $search = $request->input('search');
         $marketing_id = $request->input('marketing_id');
         $sumber = $request->input('sumber');
-        $status_deliver = $request->input('status_deliver'); // Parameter baru
+        $status_deliver = $request->input('status_deliver');
 
-        // 2. Query Data dengan Filter
-        $query = DataMasuk::with('marketing');
+        // 2. Inisialisasi Query Dasar
+        $query = DataMasuk::with('marketing'); // Query untuk Tab Data Umum
+        $queryAds = AdsLead::query();          // FIX: Query untuk Tab Data Ads
 
-        // Filter Pencarian
-        if ($search) {
-            $query->where(function($q) use ($search) {
-                $q->where('perusahaan', 'like', "%{$search}%")
-                ->orWhere('email', 'like', "%{$search}%");
-            });
-        }
-
-        // Filter Marketing Assignment
+        // 3. --- TERAPKAN FILTER KE DATA UMUM ---
         if ($marketing_id) {
             $query->where('marketing_id', $marketing_id);
         }
 
-        // Filter Sumber
         if ($sumber) {
             $query->where('sumber', $sumber);
         }
 
-        // LOGIKA FILTER DELIVER (PENTING)
         if ($status_deliver) {
             if ($status_deliver == 'undelivered') {
                 $query->whereNull('marketing_id'); // Data mentah dari RnD
@@ -47,24 +38,48 @@ class DataMasukController extends Controller
                 $query->whereNotNull('marketing_id'); // Sudah ada marketingnya
             }
         }
-        // Ambil data Ads
-        $adsData = AdsLead::orderBy('created_at', 'desc')->paginate(10, ['*'], 'ads_page');
 
+        // 4. --- TERAPKAN SEARCH KE KEDUA DATA (UMUM & ADS) ---
+        if ($search) {
+            // Pencarian di Data Umum
+            $query->where(function($q) use ($search) {
+                $q->where('perusahaan', 'LIKE', "%{$search}%")
+                  ->orWhere('email', 'LIKE', "%{$search}%")
+                  ->orWhere('wa_pic', 'LIKE', "%{$search}%"); 
+            });
+
+            // Pencarian di Data Ads
+            $queryAds->where(function($q) use ($search) {
+                $q->where('nama_perusahaan', 'LIKE', "%{$search}%")
+                  ->orWhere('nama_hrd', 'LIKE', "%{$search}%")
+                  ->orWhere('email', 'LIKE', "%{$search}%");
+            });
+        }
+
+        // 5. --- EKSEKUSI PAGINATION ---
+        // (withQueryString berfungsi agar filter/search tidak hilang saat pindah halaman paginasi)
         $allData = $query->orderBy('created_at', 'desc')
-                        ->paginate(10)
-                        ->withQueryString();
+                         ->paginate(10, ['*'], 'page_umum')
+                         ->withQueryString();
 
-        // Data Pendukung (Tetap sama seperti sebelumnya)
+        $adsData = $queryAds->orderBy('created_at', 'desc')
+                            ->paginate(10, ['*'], 'page_ads')
+                            ->withQueryString();
+
+        // 6. --- DATA PENDUKUNG UNTUK STATS CARD ---
         $marketings = User::where('role', 'marketing')->get();
         $totalData = DataMasuk::count();
         $totalToday = DataMasuk::whereDate('created_at', now())->count();
-        $dataValid = DataMasuk::where('status_email', 'Valid')->count();
+        $dataValid = DataMasuk::whereNotNull('status_email')->count();
         $validPercentage = $totalData > 0 ? round(($dataValid / $totalData) * 100, 1) : 0;
-        $dataConverted = \App\Models\Prospek::count();
+        $dataConverted = DataMasuk::whereNotNull('marketing_id')->count();
+
+        $prospekList = \App\Models\Prospek::pluck('perusahaan')->toArray();
 
         return view('data-masuk', compact(
             'allData', 'totalData','marketings', 'adsData',
-            'totalToday', 'dataValid', 'validPercentage', 'dataConverted'
+            'totalToday', 'dataValid', 'validPercentage', 'dataConverted',
+            'prospekList' // <-- Jangan lupa tambahkan variabel ini ke compact
         ));
     }
 
@@ -196,6 +211,40 @@ class DataMasukController extends Controller
 
         return back()->with('success', "Data Ads {$ad->nama_perusahaan} berhasil di-deliver!");
     }
+    
+    // ================= DELIVER MASSAL =================
+    public function deliverMassal(Request $request)
+    {
+        $request->validate([
+            'marketing_id' => 'required',
+            'ids' => 'required|array', // Harus berupa array dari checkbox
+            'ids.*' => 'exists:data_masuks,id' // ID harus valid di tabel
+        ]);
+
+        try {
+            // Ambil data berdasarkan ID yang dicentang, TAPI HANYA yang belum punya marketing_id (mencegah double assign)
+            $dataToDeliver = DataMasuk::whereIn('id', $request->ids)
+                                      ->whereNull('marketing_id')
+                                      ->get();
+            
+            $count = 0;
+            foreach ($dataToDeliver as $data) {
+                // Update marketing_id. 
+                // Otomatisasi di Model (booted) akan langsung memasukkannya ke tabel Prospek!
+                $data->update(['marketing_id' => $request->marketing_id]);
+                $count++;
+            }
+
+            if ($count > 0) {
+                return redirect()->back()->with('success', "Berhasil me-deliver {$count} data ke Pipeline Prospek!");
+            } else {
+                return redirect()->back()->with('error', 'Gagal: Data yang dipilih mungkin sudah di-assign sebelumnya.');
+            }
+
+        } catch (\Exception $e) {
+            return redirect()->back()->with('error', 'Terjadi kesalahan: ' . $e->getMessage());
+        }
+    }
         
 
     // ================= EDIT =================
@@ -242,5 +291,35 @@ class DataMasukController extends Controller
 
         return redirect()->route('data-masuk.index')
             ->with('success', 'Data berhasil dihapus');
+    }
+    
+    // ================= DELETE BY DATE =================
+    public function destroyByDate(Request $request)
+    {
+        // Validasi input tanggal
+        $request->validate([
+            'start_date' => 'required|date',
+            'end_date' => 'required|date|after_or_equal:start_date',
+        ]);
+
+        // Sesuaikan format waktu agar mencakup dari jam 00:00:00 hingga 23:59:59
+        $startDate = $request->start_date . ' 00:00:00';
+        $endDate = $request->end_date . ' 23:59:59';
+
+        try {
+            // Hitung jumlah data yang dihapus (sebagai feedback pesan)
+            $deletedCount = DataMasuk::whereBetween('created_at', [$startDate, $endDate])->delete();
+
+            if ($deletedCount > 0) {
+                return redirect()->route('data-masuk.index')
+                    ->with('success', "Berhasil menghapus {$deletedCount} data dari tanggal {$request->start_date} s/d {$request->end_date}.");
+            } else {
+                return redirect()->route('data-masuk.index')
+                    ->with('error', 'Tidak ada data yang ditemukan pada rentang tanggal tersebut.');
+            }
+        } catch (\Exception $e) {
+            return redirect()->route('data-masuk.index')
+                ->with('error', 'Terjadi kesalahan saat menghapus data: ' . $e->getMessage());
+        }
     }
 }

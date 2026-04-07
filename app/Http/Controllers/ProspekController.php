@@ -12,6 +12,10 @@ class ProspekController extends Controller
     // Menampilkan Pipeline (Hasil Data)
     public function index(Request $request)
     {
+        // 1. SIMPAN URL SAAT INI KE SESSION
+        // Ini akan mengingat filter apa saja yang sedang aktif
+        session(['url_pipeline_terakhir' => request()->fullUrl()]);
+        
         $user = auth()->user();
         $marketings = User::where('role', 'marketing')->get();
 
@@ -19,6 +23,13 @@ class ProspekController extends Controller
         $start = $request->input('start_date', now()->startOfMonth()->format('Y-m-d'));
         $end = $request->input('end_date', now()->endOfMonth()->format('Y-m-d'));
 
+        $start = $request->filled('start_date') 
+                    ? $request->start_date 
+                    : now()->startOfMonth()->format('Y-m-d');
+        
+        $end   = $request->filled('end_date') 
+                    ? $request->end_date 
+                    : now()->endOfMonth()->format('Y-m-d');
         // Ambil semua daftar status unik untuk pilihan filter
         $all_status_akhir = Prospek::select('status')
             ->whereNotNull('status')
@@ -29,6 +40,11 @@ class ProspekController extends Controller
 
         if ($user->role === 'marketing') {
             $query->where('marketing_id', $user->id);
+        }
+        
+        if ($request->filled('search_perusahaan')) {
+            $search = $request->search_perusahaan;
+            $query->where('perusahaan', 'LIKE', "%{$search}%");
         }
 
         // ================= APPLY FILTER =================
@@ -85,8 +101,8 @@ class ProspekController extends Controller
         ];
 
         // 3. PAGINATION
-        $prospeks = (clone $query)->orderBy('id', 'asc')->paginate(10, ['*'], 'page_pipeline')->withQueryString();
-        $ctaProspeks = (clone $query)->whereHas('cta')->orderBy('id', 'asc')->paginate(10, ['*'], 'page_cta')->withQueryString();
+        $prospeks = (clone $query)->orderBy('id', 'desc')->paginate(10, ['*'], 'page_pipeline')->withQueryString();
+        $ctaProspeks = (clone $query)->whereHas('cta')->orderBy('id', 'desc')->paginate(10, ['*'], 'page_cta')->withQueryString();
 
         // Kirim $start dan $end ke view
         return view('pipeline', compact('prospeks', 'ctaProspeks', 'marketings', 'stats', 'all_status_akhir', 'start', 'end'));
@@ -154,8 +170,14 @@ class ProspekController extends Controller
     {
         $prospek = \App\Models\Prospek::findOrFail($id);
         $marketings = \App\Models\User::where('role', 'marketing')->get();
+        
+        // Cari ID sebelumnya (lebih kecil dari ID saat ini)
+        $previous = Prospek::where('id', '<', $prospek->id)->orderBy('id', 'desc')->first();
+    
+        // Cari ID selanjutnya (lebih besar dari ID saat ini)
+        $next = Prospek::where('id', '>', $prospek->id)->orderBy('id', 'asc')->first();
 
-        return view('form-prospek-edit', compact('prospek', 'marketings'));
+        return view('form-prospek-edit', compact('prospek', 'marketings', 'previous', 'next'));
     }
 
     // ================= UPDATE =================
@@ -187,7 +209,6 @@ class ProspekController extends Controller
             'catatan' => $request->catatan,
         ]);
 
-        return redirect()->route('prospek.index')
-            ->with('success', 'Data Prospek berhasil diupdate');
+        return redirect()->back()->with('success', 'Data prospek berhasil disimpan!');
     }
 }

@@ -72,6 +72,9 @@ Route::middleware('auth')->group(function () {
         Route::post('/download-request', [DownloadRequestController::class, 'store'])->name('download.request');
         Route::get('/download-file/{id}', [DownloadRequestController::class, 'download'])->name('download.file');
         Route::get('/my-downloads', [DownloadRequestController::class, 'myRequests'])->name('download.my');
+        
+        // Route::get('/panduan', [PanduanController::class, 'index'])->name('panduan.index');
+        Route::get('/panduan', [App\Http\Controllers\PanduanController::class, 'index'])->name('panduan.index');
     });
 
     // 2. MONITORING BISNIS (Superadmin, Admin, Marketing)
@@ -87,9 +90,17 @@ Route::middleware('auth')->group(function () {
         Route::get('/data-masuk', [DataMasukController::class, 'index'])->name('data-masuk.index');
         Route::get('/form-data-masuk', [DataMasukController::class, 'create'])->name('form-data-masuk');
         Route::post('/data-masuk/store', [DataMasukController::class, 'store'])->name('data-masuk.store');
+        
+        Route::post('/cta/store-massal', [App\Http\Controllers\CtaController::class, 'storeMassal'])->name('cta.store_massal');
+        Route::get('/cta/form-massal', function () {
+            return view('form-cta-massal'); // Sesuaikan dengan nama file blade kamu
+        })->name('form-cta-massal');
+        
+        Route::post('/data-masuk/delete-by-date', [DataMasukController::class, 'destroyByDate'])->name('data-masuk.destroy-by-date');
         Route::get('/data-masuk/{id}/edit', [DataMasukController::class, 'edit'])->name('data-masuk.edit');
         Route::put('/data-masuk/{id}', [DataMasukController::class, 'update'])->name('data-masuk.update');
         Route::delete('/data-masuk/{id}', [DataMasukController::class, 'destroy'])->name('data-masuk.destroy');
+        
         Route::prefix('ads')->group(function () {
             Route::post('/deliver/{id}', [DataMasukController::class, 'deliverAds'])->name('ads.deliver');
             Route::get('/edit/{id}', [DataMasukController::class, 'editAds'])->name('ads.edit');
@@ -110,14 +121,8 @@ Route::middleware('auth')->group(function () {
         Route::get('/prospek/{id}/edit', [ProspekController::class, 'edit'])->name('prospek.edit');
         Route::put('/prospek/{id}', [ProspekController::class, 'update'])->name('prospek.update');
 
-        Route::get('/penggajian', [PenggajianController::class, 'index'])->name('penggajian.index');
-        Route::get('/form-penggajian', [PenggajianController::class, 'create'])->name('form-penggajian');
-        Route::post('/penggajian/store', [PenggajianController::class, 'store'])->name('penggajian.store');
-        Route::get('/penggajian/{id}/edit', [PenggajianController::class, 'edit'])->name('penggajian.edit');
-        Route::put('/penggajian/{id}', [PenggajianController::class, 'update'])->name('penggajian.update');
-        Route::delete('/penggajian/{id}', [PenggajianController::class, 'destroy'])->name('penggajian.destroy');
-
         Route::post('/data-masuk/deliver/{id}', [DataMasukController::class, 'deliver'])->name('data-masuk.deliver');
+        Route::post('/data-masuk/deliver-massal', [App\Http\Controllers\DataMasukController::class, 'deliverMassal'])->name('data-masuk.deliver-massal');
     });
 
     // 5. KHUSUS MARKETING (CTA)
@@ -162,6 +167,13 @@ Route::middleware('auth')->group(function () {
             Route::post('/update-v2/{id}', [PenggajianController::class, 'update'])->name('penggajian.update_v2');
             Route::delete('/destroy-v2/{id}', [PenggajianController::class, 'destroy'])->name('penggajian.destroy_v2');
         });
+        
+        Route::get('/penggajian', [PenggajianController::class, 'index'])->name('penggajian.index');
+        Route::get('/form-penggajian', [PenggajianController::class, 'create'])->name('form-penggajian');
+        Route::post('/penggajian/store', [PenggajianController::class, 'store'])->name('penggajian.store');
+        Route::get('/penggajian/{id}/edit', [PenggajianController::class, 'edit'])->name('penggajian.edit');
+        Route::put('/penggajian/{id}', [PenggajianController::class, 'update'])->name('penggajian.update');
+        Route::delete('/penggajian/{id}', [PenggajianController::class, 'destroy'])->name('penggajian.destroy');
 
         // Absensi Management
         Route::prefix('absensi')->group(function () {
@@ -176,5 +188,7 @@ Route::middleware('auth')->group(function () {
             Route::post('/holiday', [AbsensiController::class, 'storeHoliday'])->name('absensi.store_holiday');
             Route::delete('/holiday/{id}', [AbsensiController::class, 'destroyHoliday'])->name('absensi.destroy_holiday');
         });
+        
+        Route::post('/panduan/update', [App\Http\Controllers\PanduanController::class, 'update'])->name('panduan.update');
     });
 });

@@ -70,11 +70,13 @@ class DownloadRequestController extends Controller
         $req = DownloadRequest::findOrFail($id);
 
         if ($req->status !== 'approved') {
-            abort(403);
+            abort(403, 'File belum di-approve.');
         }
 
-        if ($req->user_id !== auth()->id() && auth()->user()->role !== 'superadmin') {
-            abort(403);
+        // PERBAIKAN DI SINI: Pakai != (bukan !==) agar tidak sensitif tipe data.
+        // Jika Admin boleh mendownload semua file layaknya superadmin, gunakan in_array
+        if ($req->user_id != auth()->id() && !in_array(auth()->user()->role, ['superadmin', 'admin'])) {
+            abort(403, 'Anda tidak memiliki akses untuk mendownload file ini.');
         }
 
         return Excel::download(new ProspekExport($req), 'pipeline.xlsx');

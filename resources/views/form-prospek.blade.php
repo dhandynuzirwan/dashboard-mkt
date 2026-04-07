@@ -52,9 +52,9 @@
                                         <th style="width: 150px;">WA HRD/PIC</th>
                                         <th style="width: 200px;">Lokasi</th>
                                         <th style="width: 150px;">Sumber</th>
-                                        <th style="width: 150px;">Update Terakhir</th>
-                                        <th style="width: 150px;">Status</th>
-                                        <th style="width: 250px;">Deskripsi</th>
+                                        <th style="width: 150px;">Update FU</th>
+                                        <th style="width: 150px;">Status Akhir Data</th>
+                                        <!--<th style="width: 250px;">Deskripsi</th>-->
                                         <th style="width: 250px;">Catatan</th>
                                         <th style="width: 50px;">Aksi</th>
                                     </tr>
@@ -73,9 +73,9 @@
                                         <td><input type="text" name="rows[0][sumber]" class="form-control"></td>
                                         <td><input type="text" name="rows[0][update_terakhir]" class="form-control"></td>
                                         <td><input type="text" name="rows[0][status]" class="form-control"></td>
-                                        <td>
-                                            <textarea name="rows[0][deskripsi]" class="form-control" rows="1"></textarea>
-                                        </td>
+                                        <!--<td>-->
+                                        <!--    <textarea name="rows[0][deskripsi]" class="form-control" rows="1"></textarea>-->
+                                        <!--</td>-->
                                         <td>
                                             <textarea name="rows[0][catatan]" class="form-control" rows="1"></textarea>
                                         </td>
@@ -115,7 +115,6 @@
             <td><input type="text" name="rows[${index}][sumber]" class="form-control"></td>
             <td><input type="text" name="rows[${index}][update_terakhir]" class="form-control"></td>
             <td><input type="text" name="rows[${index}][status]" class="form-control"></td>
-            <td><textarea name="rows[${index}][deskripsi]" class="form-control" rows="1"></textarea></td>
             <td><textarea name="rows[${index}][catatan]" class="form-control" rows="1"></textarea></td>
             <td><button type="button" class="btn btn-danger btn-sm remove-row">×</button></td>
         </tr>`;

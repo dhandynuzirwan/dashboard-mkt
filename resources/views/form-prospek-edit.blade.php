@@ -10,6 +10,11 @@
                 </div>
 
                 <div class="card-body">
+                    @if(session('success'))
+                        <div class="alert alert-success">
+                            {{ session('success') }}
+                        </div>
+                    @endif
                     <form action="{{ route('prospek.update', $prospek->id) }}" method="POST">
                         @csrf
                         @method('PUT')
@@ -56,7 +61,26 @@
 
                             <div class="col-md-4">
                                 <label>Jabatan</label>
-                                <input type="text" name="jabatan" value="{{ $prospek->jabatan }}" class="form-control">
+                                <select name="jabatan" class="form-select">
+                                    <option value="">-- Pilih Jabatan --</option>
+                                    <option value="Perusahaan" {{ $prospek->jabatan == 'Perusahaan' ? 'selected' : '' }}>Perusahaan</option>
+                                    <option value="HRD" {{ $prospek->jabatan == 'HRD' ? 'selected' : '' }}>HRD</option>
+                                    <option value="Divisi Training/Diklat" {{ $prospek->jabatan == 'Divisi Training/Diklat' ? 'selected' : '' }}>Divisi Training/Diklat</option>
+                                    <option value="Divisi Purchasing" {{ $prospek->jabatan == 'Divisi Purchasing' ? 'selected' : '' }}>Divisi Purchasing</option>
+                                    <option value="Divisi Procurement" {{ $prospek->jabatan == 'Divisi Procurement' ? 'selected' : '' }}>Divisi Procurement</option>
+                                    <option value="Humas" {{ $prospek->jabatan == 'Humas' ? 'selected' : '' }}>Humas</option>
+                                    <option value="HSE" {{ $prospek->jabatan == 'HSE' ? 'selected' : '' }}>HSE</option>
+                                    <option value="Divisi Lingkungan" {{ $prospek->jabatan == 'Divisi Lingkungan' ? 'selected' : '' }}>Divisi Lingkungan</option>
+                                    <option value="Pimpinan/Direktur" {{ $prospek->jabatan == 'Pimpinan/Direktur' ? 'selected' : '' }}>Pimpinan/Direktur</option>
+                                    <option value="Admin" {{ $prospek->jabatan == 'Admin' ? 'selected' : '' }}>Admin</option>
+                                    <option value="Human Capital" {{ $prospek->jabatan == 'Human Capital' ? 'selected' : '' }}>Human Capital</option>
+                                    <option value="Bagian Recruitment" {{ $prospek->jabatan == 'Bagian Recruitment' ? 'selected' : '' }}>Bagian Recruitment</option>
+                                    <option value="Sekretariat" {{ $prospek->jabatan == 'Sekretariat' ? 'selected' : '' }}>Sekretariat</option>
+                                    <option value="Follow Up" {{ $prospek->jabatan == 'Follow Up' ? 'selected' : '' }}>Follow Up</option>
+                                    <option value="Bagian Pengadaan" {{ $prospek->jabatan == 'Bagian Pengadaan' ? 'selected' : '' }}>Bagian Pengadaan</option>
+                                    <option value="SDM" {{ $prospek->jabatan == 'SDM' ? 'selected' : '' }}>SDM</option>
+                                    <option value="HRGA" {{ $prospek->jabatan == 'HRGA' ? 'selected' : '' }}>HRGA</option>
+                                </select>
                             </div>
 
                             <div class="col-md-4">
@@ -76,24 +100,60 @@
 
                             <div class="col-md-6">
                                 <label>Sumber</label>
-                                <input type="text" name="sumber" value="{{ $prospek->sumber }}" class="form-control">
+                                <select name="sumber" class="form-select">
+                                    <option value="">-- Pilih Sumber --</option>
+                                    <option value="DATA BASE MARKETING" {{ $prospek->sumber == 'DATA BASE MARKETING' ? 'selected' : '' }}>DATA BASE MARKETING</option>
+                                    <option value="SEARCHING GOOGLE" {{ $prospek->sumber == 'SEARCHING GOOGLE' ? 'selected' : '' }}>SEARCHING GOOGLE</option>
+                                    <option value="GOOGLE MAPS" {{ $prospek->sumber == 'GOOGLE MAPS' ? 'selected' : '' }}>GOOGLE MAPS</option>
+                                    <option value="ADS" {{ $prospek->sumber == 'ADS' ? 'selected' : '' }}>ADS</option>
+                                    <option value="DATA RECALL DARI DATA BASE" {{ $prospek->sumber == 'DATA RECALL DARI DATA BASE' ? 'selected' : '' }}>DATA RECALL DARI DATA BASE</option>
+                                    <option value="WEBSITE" {{ $prospek->sumber == 'WEBSITE' ? 'selected' : '' }}>WEBSITE</option>
+                                    <option value="LINKED IN" {{ $prospek->sumber == 'LINKED IN' ? 'selected' : '' }}>LINKED IN</option>
+                                    <option value="WEBSITE PERUSAHAAN" {{ $prospek->sumber == 'WEBSITE PERUSAHAAN' ? 'selected' : '' }}>WEBSITE PERUSAHAAN</option>
+                                </select>
                             </div>
 
                             <div class="col-md-6">
-                                <label>Status</label>
-                                <input type="text" name="status" value="{{ $prospek->status }}" class="form-control">
+                                <label>Status Akhir Data</label>
+                                <select name="status" class="form-select">
+                                    <option value="">-- Pilih Status --</option>
+                                    <option value="MANJA ULANG" {{ $prospek->status == 'MANJA ULANG' ? 'selected' : '' }}>MANJA ULANG</option>
+                                    <option value="KIRIM COMPRO" {{ $prospek->status == 'KIRIM COMPRO' ? 'selected' : '' }}>KIRIM COMPRO</option>
+                                    <option value="TIDAK RESPON" {{ $prospek->status == 'TIDAK RESPON' ? 'selected' : '' }}>TIDAK RESPON</option>
+                                    <option value="TIDAK MENERIMA PENAWARAN" {{ $prospek->status == 'TIDAK MENERIMA PENAWARAN' ? 'selected' : '' }}>TIDAK MENERIMA PENAWARAN</option>
+                                    <option value="DAPAT NO WA HRD" {{ $prospek->status == 'DAPAT NO WA HRD' ? 'selected' : '' }}>DAPAT NO WA HRD</option>
+                                    <option value="DATA TIDAK VALID & TIDAK TERHUBUNG" {{ $prospek->status == 'DATA TIDAK VALID & TIDAK TERHUBUNG' ? 'selected' : '' }}>DATA TIDAK VALID & TIDAK TERHUBUNG</option>
+                                    <option value="MASUK PENAWARAN" {{ $prospek->status == 'MASUK PENAWARAN' ? 'selected' : '' }}>MASUK PENAWARAN</option>
+                                    <option value="SUDAH ADA REKANAN VENDOR" {{ $prospek->status == 'SUDAH ADA REKANAN VENDOR' ? 'selected' : '' }}>SUDAH ADA REKANAN VENDOR</option>
+                                    <option value="BELUM ADA KEBUTUHAN" {{ $prospek->status == 'BELUM ADA KEBUTUHAN' ? 'selected' : '' }}>BELUM ADA KEBUTUHAN</option>
+                                    <option value="SUDAH ADA VENDOR KERJASAMA" {{ $prospek->status == 'SUDAH ADA VENDOR KERJASAMA' ? 'selected' : '' }}>SUDAH ADA VENDOR KERJASAMA</option>
+                                    <option value="HOLD" {{ $prospek->status == 'HOLD' ? 'selected' : '' }}>HOLD</option>
+                                    <option value="SUDAH ADA VENDOR REKANAN" {{ $prospek->status == 'SUDAH ADA VENDOR REKANAN' ? 'selected' : '' }}>SUDAH ADA VENDOR REKANAN</option>
+                                </select>
                             </div>
 
                             <div class="col-md-6">
-                                <label>Update Terakhir</label>
-                                <input type="text" name="update_terakhir" value="{{ $prospek->update_terakhir }}"
-                                    class="form-control">
+                                <label>Update FU</label>
+                                <select name="update_terakhir" class="form-select">
+                                    <option value="">-- Pilih Update FU --</option>
+                                    <option value="NO TELP PERUSAHAAN TIDAK VALID" {{ $prospek->update_terakhir == 'NO TELP PERUSAHAAN TIDAK VALID' ? 'selected' : '' }}>NO TELP PERUSAHAAN TIDAK VALID</option>
+                                    <option value="TERHUBUNG OPERATOR FRONT OFFICE" {{ $prospek->update_terakhir == 'TERHUBUNG OPERATOR FRONT OFFICE' ? 'selected' : '' }}>TERHUBUNG OPERATOR FRONT OFFICE</option>
+                                    <option value="TERHUBUNG HRD/HSE/DIVISITRAINING" {{ $prospek->update_terakhir == 'TERHUBUNG HRD/HSE/DIVISITRAINING' ? 'selected' : '' }}>TERHUBUNG HRD/HSE/DIVISITRAINING</option>
+                                    <option value="TIDAK RESPON" {{ $prospek->update_terakhir == 'TIDAK RESPON' ? 'selected' : '' }}>TIDAK RESPON</option>
+                                    <option value="PJ K3" {{ $prospek->update_terakhir == 'PJ K3' ? 'selected' : '' }}>PJ K3</option>
+                                    <option value="PERUSAHAAN NON AKTIF" {{ $prospek->update_terakhir == 'PERUSAHAAN NON AKTIF' ? 'selected' : '' }}>PERUSAHAAN NON AKTIF</option>
+                                    <option value="TERHUBUNG SECURITY" {{ $prospek->update_terakhir == 'TERHUBUNG SECURITY' ? 'selected' : '' }}>TERHUBUNG SECURITY</option>
+                                    <option value="BELUM ADA KEBUTUHAN" {{ $prospek->update_terakhir == 'BELUM ADA KEBUTUHAN' ? 'selected' : '' }}>BELUM ADA KEBUTUHAN</option>
+                                    <option value="TERHUBUNG PURCHASING" {{ $prospek->update_terakhir == 'TERHUBUNG PURCHASING' ? 'selected' : '' }}>TERHUBUNG PURCHASING</option>
+                                    <option value="TERHUBUNG SDM" {{ $prospek->update_terakhir == 'TERHUBUNG SDM' ? 'selected' : '' }}>TERHUBUNG SDM</option>
+                                    <option value="TERHUBUNG PRIBADI" {{ $prospek->update_terakhir == 'TERHUBUNG PRIBADI' ? 'selected' : '' }}>TERHUBUNG PRIBADI</option>
+                                </select>
                             </div>
 
-                            <div class="col-md-12">
-                                <label>Deskripsi</label>
-                                <textarea name="deskripsi" class="form-control">{{ $prospek->deskripsi }}</textarea>
-                            </div>
+                            <!--<div class="col-md-12">-->
+                            <!--    <label>Deskripsi</label>-->
+                            <!--    <textarea name="deskripsi" class="form-control">{{ $prospek->deskripsi }}</textarea>-->
+                            <!--</div>-->
 
                             <div class="col-md-12">
                                 <label>Catatan</label>
@@ -102,9 +162,31 @@
 
                         </div>
 
-                        <div class="mt-4">
-                            <button class="btn btn-primary">Update Prospek</button>
-                            <a href="{{ route('prospek.index') }}" class="btn btn-secondary">Kembali</a>
+                        <div class="mt-4 d-flex justify-content-between align-items-center">
+    
+                            <div class="btn-group" role="group" aria-label="Navigasi Prospek">
+                                @if($previous)
+                                    <a href="{{ route('prospek.edit', $previous->id) }}" class="btn btn-outline-info">
+                                        &laquo; Previous
+                                    </a>
+                                @else
+                                    <button class="btn btn-outline-info" disabled>&laquo; Previous</button>
+                                @endif
+                        
+                                @if($next)
+                                    <a href="{{ route('prospek.edit', $next->id) }}" class="btn btn-outline-info">
+                                        Next &raquo;
+                                    </a>
+                                @else
+                                    <button class="btn btn-outline-info" disabled>Next &raquo;</button>
+                                @endif
+                            </div>
+                        
+                            <div class="d-flex gap-2">
+                                <a href="{{ route('prospek.index') }}" class="btn btn-outline-secondary">Kembali</a>
+                                <button type="submit" class="btn btn-primary">Update Prospek</button>
+                            </div>
+                        
                         </div>
 
                     </form>
