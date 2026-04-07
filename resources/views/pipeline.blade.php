@@ -243,31 +243,33 @@
                                             <div class="d-flex justify-content-center align-items-center" style="gap: 5px;">
                                                 
                                                 {{-- 1. LOGIKA UNTUK ADMIN & SUPERADMIN --}}
-                                                @if (in_array(auth()->user()->role, ['superadmin', 'admin']))
-                                                    @if ($data->cta)
-                                                        {{-- Muncul Edit jika data CTA sudah ada --}}
-                                                        <a href="{{ route('prospek.edit', $data->cta->id) }}" class="btn btn-primary btn-sm">
-                                                            <i class="fas fa-edit"></i> Edit
-                                                        </a>
-                                                    @else
-                                                        {{-- Muncul badge pemberitahuan jika data CTA belum dibuat oleh marketing --}}
-                                                        <span class="badge badge-count">No CTA Data</span>
-                                                    @endif
+@if (in_array(auth()->user()->role, ['superadmin', 'admin']))
+    @if ($data->cta)
+        {{-- Jika sudah ada CTA, Admin mengedit CTA yang ada --}}
+        <a href="{{ route('prospek.edit', $data->cta->id) }}" class="btn btn-primary btn-sm">
+            <i class="fas fa-edit"></i> Edit
+        </a>
+    @else
+        {{-- Jika BELUM ada CTA, Admin diarahkan ke form buat CTA baru --}}
+        <a href="{{ route('form-cta', $data->id) }}" class="btn btn-primary btn-sm">
+            <i class="fas fa-edit"></i> Edit
+        </a>
+    @endif
 
-                                                {{-- 2. LOGIKA UNTUK MARKETING --}}
-                                                @else
-                                                    @if (!$data->cta)
-                                                        {{-- Muncul Tombol CTA jika belum isi --}}
-                                                        <a href="{{ route('form-cta', $data->id) }}" class="btn btn-success btn-sm">
-                                                            <i class="fas fa-plus"></i> CTA
-                                                        </a>
-                                                    @else
-                                                        {{-- Muncul Tombol Done jika sudah isi --}}
-                                                        <button class="btn btn-outline-success btn-sm" disabled style="cursor: default;">
-                                                            <i class="fas fa-check"></i> Done
-                                                        </button>
-                                                    @endif
-                                                @endif
+{{-- 2. LOGIKA UNTUK MARKETING --}}
+@else
+    @if (!$data->cta)
+        {{-- Muncul Tombol CTA jika belum isi --}}
+        <a href="{{ route('form-cta', $data->id) }}" class="btn btn-success btn-sm">
+            <i class="fas fa-plus"></i> CTA
+        </a>
+    @else
+        {{-- Muncul Tombol Done jika sudah isi --}}
+        <button class="btn btn-outline-success btn-sm" disabled style="cursor: default;">
+            <i class="fas fa-check"></i> Done
+        </button>
+    @endif
+@endif
 
                                             </div>
                                         </td>
