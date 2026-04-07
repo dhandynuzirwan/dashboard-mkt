@@ -38,7 +38,12 @@ class DownloadRequestController extends Controller
     // Halaman Pending (Superadmin)
     public function index()
     {
-        $requests = DownloadRequest::where('status', 'pending')->latest()->get();
+        // $requests = DownloadRequest::where('status', 'pending')->latest()->get();
+        // Ganti ini (yang kemungkinan menyembunyikan data approved):
+        $requests = DownloadRequest::where('status', 'pending')->get();
+
+        // Menjadi ini (agar semua data tampil dengan yang terbaru di atas):
+        $requests = DownloadRequest::orderBy('created_at', 'desc')->paginate(10); // Atau gunakan ->paginate(10)
 
         return view('download-approval', compact('requests'));
     }

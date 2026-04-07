@@ -223,7 +223,7 @@
                                     <th>ID PROSPEK</th>
                                     <th>Marketing</th>
                                     <th>STATUS CTA</th>
-                                    <th>DATE</th>
+                                    <th style="min-width: 100px;">DATE</th>
                                     <th>PERUSAHAAN</th>
                                     <th>NO TELP</th>
                                     <th>NO TELP BARU</th>
@@ -235,7 +235,7 @@
                                     <th>SOURCE</th>
                                     <th>UPDATE FU</th>
                                     <th>STATUS AKHIR DATA</th>
-                                    <th>CATATAN</th>
+                                    <!--<th>CATATAN</th>-->
                                     <th>KETERANGAN AKHIR DATA</th>
                                     <th>ACTION</th>
                                 </tr>
@@ -252,20 +252,22 @@
                                                 <span class="badge badge-success">Done</span>
                                             @endif
                                         </td>
-                                        <td>{{ $data->tanggal_prospek }}</td>
+                                        <td>{{ $data->tanggal_prospek ? \Carbon\Carbon::parse($data->tanggal_prospek)->format('d M Y') : '-' }}</td>
                                         <td>{{ $data->perusahaan }}</td>
-                                        <td>{{ $data->telp }}</td>
-                                        <td>{{ $data->telp_baru }}</td>
-                                        <td>{{ $data->email }}</td>
+                                        {{-- MODIFIKASI: Kolom Kontak dibuat AutoLink semua --}}
+                                        <td>{!! \Illuminate\Support\Str::autoLink($data->telp) !!}</td>
+                                        <td>{!! \Illuminate\Support\Str::autoLink($data->telp_baru) !!}</td>
+                                        <td>{!! \Illuminate\Support\Str::autoLink($data->email) !!}</td>
                                         <td>{{ $data->jabatan }}</td>
                                         <td>{{ $data->nama_pic }}</td>
-                                        <td>{{ $data->wa_pic }}</td>
+                                        {{-- MODIFIKASI: WA PIC dibuat AutoLink --}}
+                                        <td>{!! \Illuminate\Support\Str::autoLink($data->wa_pic) !!}</td>
                                         <td>{{ $data->lokasi }}</td>
                                         <td>{{ $data->sumber }}</td>
                                         <td>{{ $data->update_terakhir }}</td>
                                         <td>{{ $data->status }}</td>
-                                        <td>{{ $data->deskripsi }}</td>
-                                        <td>{{ $data->catatan }}</td>
+                                        <!--<td>{{ $data->deskripsi }}</td>-->
+                                        <td>{!! \Illuminate\Support\Str::autoLink($data->catatan) !!}</td>
                                         <td class="text-center">
                                             <div class="d-flex justify-content-center align-items-center" style="gap: 5px;">
                                                 
@@ -379,7 +381,7 @@
                                                     {{ $current_status['label'] }}
                                                 </span>
                                             </td>
-                                            <td>{{ $data->cta?->keterangan ?? 'Tidak Ada' }}</td>
+                                            <td>{!! \Illuminate\Support\Str::autoLink($data->cta?->keterangan ?? 'Tidak Ada') !!}</td>
                                             <td>
                                                 @if (auth()->id() == $data->marketing_id)
                                                     <a href="{{ route('cta.edit', $data->cta->id) }}"
