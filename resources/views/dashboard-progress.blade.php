@@ -258,7 +258,7 @@
                             <thead class="table-light">
                                 <tr>
                                     <th>Marketing</th>
-                                    <th>Masuk Penawaran</th>
+                                    <th>Under Review</th>
                                     <th>Deal</th>
                                     <th>Hold</th>
                                     <th>Kalah Harga</th>
@@ -384,6 +384,7 @@
                                     <th>Manja</th>
                                     <th>Manja Ulang</th>
                                     <th>Request Permintaan Pelatihan</th>
+                                    <th>Masuk Penawaran</th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -396,6 +397,7 @@
                                     $t_manja = 0;
                                     $t_manja_ulang = 0;
                                     $t_pelatihan = 0;
+                                    $t_penawaran = 0;
                                 @endphp
 
                                 @foreach ($marketings as $m)
@@ -409,6 +411,7 @@
                                         <td>{{ $m->count_manja ?? 0 }}</td>
                                         <td>{{ $m->count_manja_ulang ?? 0 }}</td>
                                         <td>{{ $m->count_pelatihan ?? 0 }}</td>
+                                        <td>{{ $m->count_penawaran ?? 0 }}</td>
                                     </tr>
                                     @php
                                         $t_perpanjangan += $m->count_perpanjangan;
@@ -419,6 +422,7 @@
                                         $t_manja += $m->count_manja;
                                         $t_manja_ulang += $m->count_manja_ulang;
                                         $t_pelatihan += $m->count_pelatihan;
+                                        $t_penawaran += $m->count_penawaran;
                                     @endphp
                                 @endforeach
 
@@ -432,6 +436,7 @@
                                     <td>{{ $t_manja }}</td>
                                     <td>{{ $t_manja_ulang }}</td>
                                     <td>{{ $t_pelatihan }}</td>
+                                    <td>{{ $t_penawaran }}</td>
                                 </tr>
                             </tbody>
                         </table>
@@ -439,7 +444,7 @@
                 </div>
             </div>
             <div class="row">
-                <div class="col-md-6">
+                <div class="col-md-4">
                     <div class="card border shadow-sm">
                         <div class="card-header">
                             <div class="card-title">Grafik Ach Target Marketing</div>
@@ -451,7 +456,7 @@
                         </div>
                     </div>
                 </div>
-                <div class="col-md-6">
+                <div class="col-md-8">
                     <div class="card border shadow-sm">
                         <div class="card-header">
                             <div class="card-title">Produktivitas</div>

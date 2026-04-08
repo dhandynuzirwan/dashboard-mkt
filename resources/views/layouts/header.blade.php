@@ -76,35 +76,52 @@
                     <ul class="dropdown-menu notif-box animated fadeIn" aria-labelledby="notifDropdown">
                         <li>
                             <div class="dropdown-title">
-                                Ada {{ $notifCount }} Penawaran Baru Hari Ini
+                                {{ $notifCount }} Update Penawaran Hari Ini
                             </div>
                         </li>
                         <li>
                             <div class="notif-scroll scrollbar-outer">
                                 <div class="notif-center">
                                     @forelse($recentCtas as $cta)
+                                        @php
+                                            // Logika penentuan warna & ikon yang lebih singkat
+                                            $status = strtolower($cta->status_penawaran ?? 'pending');
+                                            $theme = match($status) {
+                                                'deal' => ['color' => 'success', 'icon' => 'fa-check'],
+                                                'cancel', 'kalah_harga' => ['color' => 'danger', 'icon' => 'fa-times'],
+                                                'hold' => ['color' => 'warning', 'icon' => 'fa-pause'],
+                                                'under_review' => ['color' => 'info', 'icon' => 'fa-search'],
+                                                default => ['color' => 'primary', 'icon' => 'fa-bell'],
+                                            };
+                                        @endphp
+
                                         <a href="{{ route('dashboard.progress') }}"> 
-                                            <div class="notif-icon 
-                                                {{ $cta->status_penawaran == 'deal' ? 'notif-success' : ($cta->status_penawaran == 'cancel' ? 'notif-danger' : 'notif-primary') }}">
-                                                <i class="fa {{ $cta->status_penawaran == 'deal' ? 'fa-check' : 'fa-file-invoice-dollar' }}"></i>
+                                            {{-- Ikon Lingkaran Kiri --}}
+                                            <div class="notif-icon notif-{{ $theme['color'] }}">
+                                                <i class="fa {{ $theme['icon'] }}"></i>
                                             </div>
+                                            
+                                            {{-- Konten Kanan --}}
                                             <div class="notif-content">
-                                                <span class="block fw-bold">
-                                                    {{ $cta->prospek->perusahaan ?? 'Penawaran Baru' }}
+                                                {{-- Baris 1: Nama Perusahaan (Bold) --}}
+                                                <span class="block fw-bold text-dark text-truncate" style="max-width: 210px;">
+                                                    {{ $cta->prospek->perusahaan ?? 'Perusahaan Baru' }}
                                                 </span>
-                                                <span class="block small text-muted">
-                                                    {{-- Menampilkan Status Penawaran dengan format yang rapi --}}
-                                                    Status: <strong>{{ str_replace('_', ' ', ucwords($cta->status_penawaran)) }}</strong>
+                                                
+                                                {{-- Baris 2: Judul Pelatihan (Abu-abu) --}}
+                                                <span class="text-muted d-block text-truncate mb-1" style="max-width: 210px; font-size: 0.8rem;">
+                                                    {{ $cta->judul_permintaan ?: 'Menunggu Judul' }}
                                                 </span>
-                                                <span class="block small text-muted">
-                                                    {{ $cta->judul_permintaan }}
+                                                
+                                                {{-- Baris 3: Status & Waktu Gabung 1 Baris --}}
+                                                <span class="time text-{{ $theme['color'] }} fw-bold m-0 p-0">
+                                                    {{ str_replace('_', ' ', ucwords($status)) }} &bull; <span class="text-muted fw-normal">{{ $cta->created_at->diffForHumans() }}</span>
                                                 </span>
-                                                <span class="time">{{ $cta->created_at->diffForHumans() }}</span> {{-- Biar lebih user friendly --}}
                                             </div>
                                         </a>
                                     @empty
-                                        <div class="text-center p-3 text-muted">
-                                            <small>Belum ada update penawaran hari ini.</small>
+                                        <div class="text-center p-4 text-muted">
+                                            <small>Belum ada update penawaran.</small>
                                         </div>
                                     @endforelse
                                 </div>

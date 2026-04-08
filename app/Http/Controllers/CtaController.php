@@ -6,10 +6,11 @@ use App\Models\Cta;
 use App\Models\MasterTraining;
 use App\Models\Prospek;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Storage;
 
 class CtaController extends Controller
 {
-    // Membuka form CTA berdasarkan ID Prospek
+    // 1. UPDATE METHOD CREATE (Untuk Form Tambah CTA)
     public function create($prospek_id)
     {
         $prospek = Prospek::with('marketing')->findOrFail($prospek_id);
@@ -21,7 +22,17 @@ class CtaController extends Controller
             abort(403, 'Unauthorized');
         }
 
-        return view('form-cta', compact('prospek', 'trainings'));
+        // --- LOGIKA NEXT & PREVIOUS PROSPEK ---
+        $query = Prospek::query();
+        if ($authUser->role === 'marketing') {
+            $query->where('marketing_id', $authUser->id);
+        }
+        
+        $prevProspek = (clone $query)->where('id', '<', $prospek_id)->orderBy('id', 'desc')->first();
+        $nextProspek = (clone $query)->where('id', '>', $prospek_id)->orderBy('id', 'asc')->first();
+        // --------------------------------------
+
+        return view('form-cta', compact('prospek', 'trainings', 'prevProspek', 'nextProspek'));
     }
 
     public function store(Request $request)
@@ -36,6 +47,7 @@ class CtaController extends Controller
             'harga_penawaran' => 'nullable|numeric|min:0',
             'harga_vendor' => 'nullable|numeric|min:0',
             'proposal_link' => 'nullable|url',
+            'file_proposal' => 'nullable|mimes:pdf|max:5120',
             'status_penawaran' => 'nullable',
             'keterangan' => 'nullable|string',
         ]);
@@ -50,17 +62,24 @@ class CtaController extends Controller
     
         $validated['total_penawaran'] = ($jumlah && $hargaPenawaran) ? $jumlah * $hargaPenawaran : null;
         $validated['total_vendor'] = ($jumlah && $hargaVendor) ? $jumlah * $hargaVendor : null;
-    
+        
+        // 🔥 TAMBAHAN: LOGIKA UPLOAD FILE BARU
+        if ($request->hasFile('file_proposal')) {
+            $path = $request->file('file_proposal')->store('proposals', 'public');
+            $validated['file_proposal'] = $path;
+        }
+        
+        // 1. Eksekusi Simpan
         Cta::create($validated);
         
-        $url_kembali = session('url_pipeline_terakhir', route('prospek.index'));
-    
-        // 3. Cek Logika: Jika input baru langsung Deal
+        // 2. Jika status langsung deal
         if ($request->status_penawaran == 'deal') {
-            return redirect($url_kembali)->with('deal_congrats', 'Closing Mantap! Selamat atas Project barunya!');
+            // Gunakan back() agar tetap di Form Tambah (Bisa langsung tambah judul ke-2)
+            return back()->with('deal_congrats', 'Closing Mantap! Selamat atas Project barunya!');
         }
-    
-        return redirect($url_kembali)->with('success', 'Data CTA berhasil disimpan!');
+
+        // Gunakan back() agar tetap di Form Tambah
+        return back()->with('success', 'Data CTA berhasil disimpan! Silakan input judul lain jika ada.');
     }
     
     public function update(Request $request, $id)
@@ -79,6 +98,7 @@ class CtaController extends Controller
             'harga_penawaran' => 'nullable|numeric|min:0',
             'harga_vendor' => 'nullable|numeric|min:0',
             'proposal_link' => 'nullable|url',
+            'file_proposal' => 'nullable|mimes:pdf|max:5120',
             'status_penawaran' => 'nullable|string', // Pastikan ini terkirim dari form
             'keterangan' => 'nullable|string',
         ]);
@@ -96,23 +116,78 @@ class CtaController extends Controller
         $dataUpdate = $request->except(['_token', '_method', 'catatan_prospek']);
         $dataUpdate['total_penawaran'] = $jumlah * $hargaP;
         $dataUpdate['total_vendor'] = $jumlah * $hargaV;
-    
-        // 5. Eksekusi Update ke Database
-        $cta->update($dataUpdate);
-    
-        // 6. LOGIKA NOTIFIKASI DEAL (Fitur Congrats)
-        if ($request->status_penawaran == 'deal' && $statusLama != 'deal') {
-            return redirect()->route('prospek.index')->with('deal_congrats', 'Gokil! Project Deal baru berhasil diamankan!');
+        
+        // 🔥 TAMBAHAN: LOGIKA UPDATE FILE
+        if ($request->hasFile('file_proposal')) {
+            // Hapus file lama dari storage jika sebelumnya sudah ada
+            if ($cta->file_proposal && Storage::disk('public')->exists($cta->file_proposal)) {
+                Storage::disk('public')->delete($cta->file_proposal);
+            }
+            // Simpan file baru
+            $path = $request->file('file_proposal')->store('proposals', 'public');
+            $dataUpdate['file_proposal'] = $path;
         }
-    
-        return redirect()->route('prospek.index')->with('success', 'Perubahan data penawaran berhasil disimpan!');
+        
+        // 1. Eksekusi Update
+        $cta->update($dataUpdate);
+
+        // 2. Jika status berubah jadi deal
+        if ($request->status_penawaran == 'deal' && $statusLama != 'deal') {
+            // Gunakan back() agar tetap di Form Edit
+            return back()->with('deal_congrats', 'Gokil! Project Deal baru berhasil diamankan!');
+        }
+
+        // Gunakan back() agar tetap di Form Edit
+        return back()->with('success', 'Perubahan data penawaran berhasil disimpan!');
     }
 
+    // 2. UPDATE METHOD EDIT (Untuk Form Edit CTA)
     public function edit($id)
     {
         $cta = Cta::with('prospek')->findOrFail($id);
         $trainings = MasterTraining::orderBy('nama_training')->get();
-        return view('form-cta-edit', compact('cta','trainings'));
+        $authUser = auth()->user();
+        
+        // Ambil penawaran LAINNYA dari perusahaan yang sama
+        $penawaranLainnya = Cta::where('prospek_id', $cta->prospek_id)
+                                ->where('id', '!=', $id)
+                                ->latest()
+                                ->get();
+
+        // --- LOGIKA NEXT & PREVIOUS CTA ---
+        $query = Cta::with('prospek');
+        if ($authUser->role === 'marketing') {
+            $query->whereHas('prospek', function($q) use ($authUser) {
+                $q->where('marketing_id', $authUser->id);
+            });
+        }
+
+        $prevCta = (clone $query)->where('id', '<', $id)->orderBy('id', 'desc')->first();
+        $nextCta = (clone $query)->where('id', '>', $id)->orderBy('id', 'asc')->first();
+        // ----------------------------------
+
+        return view('form-cta-edit', compact('cta', 'trainings', 'penawaranLainnya', 'prevCta', 'nextCta'));
+    }
+    
+    public function destroy($id)
+    {
+        // ==========================================
+        // TRAP DEBUGGING (Hapus tanda // di bawah ini jika masih gagal)
+        // dd("TOMBOL HAPUS BERHASIL DITEKAN! ID DATA: " . $id);
+        // ==========================================
+
+        $cta = Cta::with('prospek')->findOrFail($id);
+
+        // 🔐 KEAMANAN EKSTRA: Pastikan marketing hanya bisa hapus data miliknya
+        if (auth()->user()->role === 'marketing' && $cta->prospek->marketing_id != auth()->id()) {
+            abort(403, 'Anda tidak berhak menghapus data ini.');
+        }
+
+        // 🔥 EKSEKUSI HAPUS PERMANEN (Bypass SoftDeletes)
+        $cta->forceDelete();
+
+        // Redirect ke Pipeline karena datanya sudah tidak ada
+        return redirect()->route('prospek.index')->with('success', 'Data Penawaran (CTA) berhasil dihapus permanen!');
     }
 
     // public function update(Request $request, $id)

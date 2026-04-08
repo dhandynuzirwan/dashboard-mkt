@@ -333,59 +333,67 @@
                             </thead>
                             <tbody>
                                 @foreach ($ctaProspeks as $data)
-                                    @if ($data->cta)
+                                    
+                                    {{-- AMBIL SEMUA CTA MILIK PROSPEK INI --}}
+                                    @php
+                                        $semuaCta = \App\Models\Cta::where('prospek_id', $data->id)->latest()->get();
+                                    @endphp
+
+                                    {{-- LOOPING SETIAP JUDUL PENAWARAN --}}
+                                    @foreach ($semuaCta as $itemCta)
                                         <tr>
                                             <td>{{ $data->id }}</td>
                                             <td>{{ $data->marketing?->name }}</td>
                                             <td>{{ $data->tanggal_prospek }}</td>
-                                            <td>{{ $data->perusahaan }}</td>
-                                            <td>{{ $data->cta->judul_permintaan }}</td>
-                                            <td>{{ $data->cta->jumlah_peserta }}</td>
-                                            <td><span
-                                                    class="badge badge-info">{{ strtoupper($data->cta->sertifikasi) }}</span>
-                                            </td>
-                                            <td>{{ $data->cta->skema }}</td>
-                                            <td>Rp {{ number_format($data->cta->harga_penawaran, 0, ',', '.') }}</td>
-                                            <td>Rp {{ number_format($data->cta->harga_vendor, 0, ',', '.') }}</td>
+                                            <td class="fw-bold">{{ $data->perusahaan }}</td>
+                                            
+                                            {{-- Gunakan $itemCta untuk menampilkan data spesifik per judul --}}
+                                            <td>{{ $itemCta->judul_permintaan }}</td>
+                                            <td>{{ $itemCta->jumlah_peserta }}</td>
                                             <td>
-                                                @if ($data->cta->proposal_link)
-                                                    <a href="{{ $data->cta->proposal_link }}" target="_blank"
-                                                        class="btn btn-link btn-sm">
-                                                        <i class="fas fa-external-link-alt"></i> Lihat Link
+                                                <span class="badge badge-info">{{ strtoupper($itemCta->sertifikasi) }}</span>
+                                            </td>
+                                            <td>{{ $itemCta->skema }}</td>
+                                            <td class="text-success fw-bold">Rp {{ number_format($itemCta->harga_penawaran, 0, ',', '.') }}</td>
+                                            <td class="text-danger">Rp {{ number_format($itemCta->harga_vendor, 0, ',', '.') }}</td>
+                                            <td>
+                                                @if($itemCta->file_proposal)
+                                                    {{-- Jika ada File PDF Upload --}}
+                                                    <a href="{{ asset('storage/' . $itemCta->file_proposal) }}" target="_blank" class="btn btn-sm btn-info shadow-sm" title="Lihat PDF Proposal">
+                                                        <i class="fas fa-file-pdf me-1"></i> PDF
+                                                    </a>
+                                                @elseif($itemCta->proposal_link)
+                                                    {{-- Jika tidak ada file, tapi ada Link G-Drive --}}
+                                                    <a href="{{ $itemCta->proposal_link }}" target="_blank" class="btn btn-sm btn-primary shadow-sm" title="Buka Link Drive">
+                                                        <i class="fas fa-link me-1"></i> Link
                                                     </a>
                                                 @else
-                                                    <span class="text-muted">Tidak Ada</span>
+                                                    {{-- Jika kosong dua-duanya --}}
+                                                    <span class="text-muted small">-</span>
                                                 @endif
                                             </td>
                                             <td>
                                                 @php
                                                     $status_labels = [
                                                         'cancel' => ['label' => 'Cancel', 'class' => 'badge-dark'],
-                                                        'under_review' => [
-                                                            'label' => 'Under Review',
-                                                            'class' => 'badge-info',
-                                                        ],
+                                                        'under_review' => ['label' => 'Under Review', 'class' => 'badge-info'],
                                                         'hold' => ['label' => 'Hold', 'class' => 'badge-warning'],
-                                                        'kalah_harga' => [
-                                                            'label' => 'Kalah Harga',
-                                                            'class' => 'badge-danger',
-                                                        ],
+                                                        'kalah_harga' => ['label' => 'Kalah Harga', 'class' => 'badge-danger'],
                                                         'deal' => ['label' => 'Deal', 'class' => 'badge-success'],
                                                     ];
-                                                    $current_status = $status_labels[$data->cta->status_penawaran] ?? [
-                                                        'label' => 'N/A',
-                                                        'class' => 'badge-secondary',
+                                                    $current_status = $status_labels[$itemCta->status_penawaran] ?? [
+                                                        'label' => 'N/A', 'class' => 'badge-secondary'
                                                     ];
                                                 @endphp
                                                 <span class="badge {{ $current_status['class'] }}">
                                                     {{ $current_status['label'] }}
                                                 </span>
                                             </td>
-                                            <td>{!! \Illuminate\Support\Str::autoLink($data->cta?->keterangan ?? 'Tidak Ada') !!}</td>
+                                            <td>{!! \Illuminate\Support\Str::autoLink($itemCta->keterangan ?? 'Tidak Ada') !!}</td>
                                             <td>
+                                                {{-- Tombol Edit diarahkan ke ID itemCta yang spesifik --}}
                                                 @if (auth()->id() == $data->marketing_id)
-                                                    <a href="{{ route('cta.edit', $data->cta->id) }}"
-                                                        class="btn btn-primary btn-sm">
+                                                    <a href="{{ route('cta.edit', $itemCta->id) }}" class="btn btn-primary btn-sm">
                                                         <i class="fas fa-edit"></i> Edit
                                                     </a>
                                                 @else
@@ -395,7 +403,8 @@
                                                 @endif
                                             </td>
                                         </tr>
-                                    @endif
+                                    @endforeach
+                                    
                                 @endforeach
                             </tbody>
                         </table>

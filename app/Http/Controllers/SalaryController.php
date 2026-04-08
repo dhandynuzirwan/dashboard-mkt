@@ -75,15 +75,28 @@ class SalaryController extends Controller
             $absensiKpi = $absensiAch * 0.1; 
 
             // ================= KPI 2: PROGRESS (30%) =================
-            $progressReal = Cta::whereHas('prospek', function ($q) use ($user) {
+            // Buat Base Query agar rapi dan tidak query berulang-ulang
+            $baseCtaQuery = Cta::whereHas('prospek', function ($q) use ($user) {
                     $q->where('marketing_id', $user->id);
                 })
-                ->whereBetween('created_at', [$start . " 00:00:00", $end . " 23:59:59"])
+                ->whereBetween('created_at', [$start . " 00:00:00", $end . " 23:59:59"]);
+
+            // 1. Hitung JUMLAH SEMUA CTA
+            $jumlahCtaBase = (clone $baseCtaQuery)->count();
+
+            // 2. Hitung JUMLAH CTA YANG MEMILIKI STATUS (Update / Follow Up)
+            $jumlahCtaBerstatus = (clone $baseCtaQuery)
+                ->whereNotNull('status_penawaran')
+                ->where('status_penawaran', '!=', '')
                 ->count();
+
+            // 3. RUMUS BARU: Total CTA + Total CTA Berstatus
+            $progressReal = $jumlahCtaBase + $jumlahCtaBerstatus;
                 
             $progressTarget = $targetCallHarian * $hariEfektif;
             $progressAch = ($progressTarget > 0) ? ($progressReal / $progressTarget) * 100 : 0;
-            $progressKpi = $progressAch * 0.3; 
+            $progressKpi = $progressAch * 0.3;
+            
 
             // ================= KPI 3: REVENUE (60%) =================
             $incomeDeal = Cta::whereHas('prospek', function ($q) use ($user) {
@@ -118,7 +131,8 @@ class SalaryController extends Controller
 
             $user->progress_val = $gapokDasar * ($progressKpi / 100);
             
-            $user->tunj_kemahalan = ($tunjangan / $hariEfektif) * $totalHadirKpi;
+            // $user->tunj_kemahalan = ($tunjangan / $hariEfektif) * $totalHadirKpi;
+            $user->tunj_kemahalan = $tunjangan;
             $user->total_gaji = $user->gapok_hitung + $user->fee_marketing + $user->progress_val + $user->tunj_kemahalan;
 
             // Variabel detail untuk label di Blade

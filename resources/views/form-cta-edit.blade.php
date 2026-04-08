@@ -22,7 +22,7 @@
                         </div>
                         <div class="card-body">
                             {{-- Gunakan method PUT untuk Update --}}
-                            <form action="{{ route('cta.update', $cta->id) }}" method="POST">
+                            <form action="{{ route('cta.update', $cta->id) }}" method="POST" enctype="multipart/form-data">
                                 @csrf
                                 @method('PUT')
 
@@ -80,6 +80,7 @@
                                         <option value="Online Training" {{ $cta->skema == 'Online Training' ? 'selected' : '' }}>Online Training</option>
                                         <option value="Offline Training" {{ $cta->skema == 'Offline Training' ? 'selected' : '' }}>Offline Training</option>
                                         <option value="Inhouse Training" {{ $cta->skema == 'Inhouse Training' ? 'selected' : '' }}>Inhouse Training</option>
+                                        <option value="Inhouse Training" {{ $cta->skema == 'Blended Training' ? 'selected' : '' }}>Blended Training</option>
                                     </select>
                                 </div>
 
@@ -93,11 +94,35 @@
                                     <input type="number" class="form-control" name="harga_vendor" value="{{ $cta->harga_vendor }}">
                                 </div>
 
-                                <div class="form-group">
-                                    <label>Link Proposal Google Drive</label>
-                                    <input type="url" class="form-control" name="proposal_link" 
-                                        placeholder="https://drive.google.com/..." value="{{ $cta->proposal_link }}">
-                                    <small class="text-muted">Pastikan akses link sudah "Anyone with the link"</small>
+                                <div class="row mx-0">
+                                    <div class="col-md-6 form-group ps-md-0">
+                                        <label>Upload File Proposal Baru (PDF)</label>
+                                        {{-- Tambahkan ID dan class error --}}
+                                        <input type="file" id="file_proposal" class="form-control @error('file_proposal') is-invalid @enderror" name="file_proposal" accept=".pdf">
+                                        
+                                        {{-- Tampilkan Error Laravel jika ada --}}
+                                        @error('file_proposal')
+                                            <div class="invalid-feedback fw-bold">{{ $message }}</div>
+                                        @else
+                                            <small class="text-muted">Maksimal 5MB. Biarkan kosong jika tidak mengubah file.</small>
+                                        @enderror
+                                        
+                                        {{-- Munculkan tombol lihat file jika sebelumnya sudah pernah upload --}}
+                                        @if($cta->file_proposal)
+                                            <div class="mt-2">
+                                                <a href="{{ asset('storage/' . $cta->file_proposal) }}" target="_blank" class="btn btn-sm btn-info shadow-sm">
+                                                    <i class="fas fa-file-pdf"></i> Lihat File Saat Ini
+                                                </a>
+                                            </div>
+                                        @endif
+                                    </div>
+                                    <div class="col-md-6 form-group pe-md-0">
+                                        <label>Atau Link Google Drive</label>
+                                        <input type="url" class="form-control @error('proposal_link') is-invalid @enderror" name="proposal_link" placeholder="https://drive..." value="{{ old('proposal_link', $cta->proposal_link) }}">
+                                        @error('proposal_link')
+                                            <div class="invalid-feedback fw-bold">{{ $message }}</div>
+                                        @enderror
+                                    </div>
                                 </div>
 
                                 <div class="form-group">
@@ -130,32 +155,199 @@
                                     @enderror
                                 </div>
 
-                                <div class="mt-3">
-                                    <button type="submit" class="btn btn-primary">
-                                        <i class="fas fa-save"></i> Update CTA
-                                    </button>
-                                    <a href="{{ route('pipeline') }}" class="btn btn-secondary">
-                                        Kembali
-                                    </a>
+                                {{-- BUTTON GROUP DENGAN NEXT PREVIOUS --}}
+                                <div class="d-flex justify-content-between align-items-center mt-4 mx-0">
+                                    {{-- Tombol Previous --}}
+                                    <div>
+                                        @if($prevCta)
+                                            <a href="{{ route('cta.edit', $prevCta->id) }}" class="btn btn-outline-secondary btn-sm">
+                                                <i class="fas fa-chevron-left"></i> Prev CTA
+                                            </a>
+                                        @else
+                                            <button class="btn btn-outline-secondary btn-sm" disabled><i class="fas fa-chevron-left"></i> Prev</button>
+                                        @endif
+                                    </div>
+
+                                    {{-- Tombol Utama --}}
+                                    <div class="d-flex" style="gap: 8px;">
+                                        <button type="submit" id="btn-simpan" class="btn btn-success shadow-sm">
+                                            <i class="fas fa-save"></i> Update
+                                        </button>
+                                        
+                                        {{-- Tombol Hapus memanggil fungsi JS confirmDelete() --}}
+                                        <button type="button" class="btn btn-danger shadow-sm" onclick="confirmDelete()">
+                                            <i class="fas fa-trash"></i> Hapus
+                                        </button>
+
+                                        <a href="{{ route('pipeline') }}" class="btn btn-secondary">Kembali</a>
+                                    </div>
+
+                                    {{-- Tombol Next --}}
+                                    <div>
+                                        @if($nextCta)
+                                            <a href="{{ route('cta.edit', $nextCta->id) }}" class="btn btn-outline-secondary btn-sm">
+                                                Next CTA <i class="fas fa-chevron-right"></i>
+                                            </a>
+                                        @else
+                                            <button class="btn btn-outline-secondary btn-sm" disabled>Next <i class="fas fa-chevron-right"></i></button>
+                                        @endif
+                                    </div>
                                 </div>
+                            </form> {{-- <--- INI ADALAH PENUTUP FORM UPDATE UTAMA --}}
+
+                            {{-- 🔥 TARUH FORM HAPUS DI SINI, DI LUAR FORM UTAMA 🔥 --}}
+                            <form id="form-delete-cta" action="{{ route('cta.destroy', $cta->id) }}" method="POST" class="d-none">
+                                @csrf
+                                @method('DELETE')
                             </form>
+
                         </div>
                     </div>
                 </div>
+
+                {{-- ==================================================== --}}
+                {{-- TAMBAHAN: INFO PENAWARAN LAIN & TOMBOL TAMBAH BARU --}}
+                {{-- ==================================================== --}}
+                <div class="col-md-12 mt-3">
+                    <div class="alert alert-info d-flex justify-content-between align-items-start">
+                        <div>
+                            <h6 class="fw-bold mb-2"><i class="fas fa-info-circle"></i> Info Penawaran Perusahaan Ini</h6>
+                            
+                            @if($penawaranLainnya->count() > 0)
+                                <p class="mb-2 small">Perusahaan <strong>{{ $cta->prospek->perusahaan }}</strong> juga memiliki {{ $penawaranLainnya->count() }} penawaran lain:</p>
+                                <ul class="mb-0 small">
+                                    @foreach($penawaranLainnya as $lain)
+                                        <li>
+                                            <strong>{{ $lain->judul_permintaan }}</strong> 
+                                            - Status: 
+                                            <span class="text-uppercase fw-bold text-{{ $lain->status_penawaran == 'deal' ? 'success' : 'primary' }}">
+                                                {{ str_replace('_', ' ', $lain->status_penawaran ?? 'Review') }}
+                                            </span>
+                                            <a href="{{ route('cta.edit', $lain->id) }}" class="ms-2 text-decoration-underline">Edit Data Ini</a>
+                                        </li>
+                                    @endforeach
+                                </ul>
+                            @else
+                                <p class="mb-0 small">Belum ada penawaran judul pelatihan lain untuk perusahaan ini.</p>
+                            @endif
+                        </div>
+
+                        {{-- TOMBOL TAMBAH CTA BARU --}}
+                        <div class="ms-3">
+                            <a href="{{ route('form-cta', $cta->prospek_id) }}" class="btn btn-sm btn-primary shadow-sm">
+                                <i class="fas fa-plus me-1"></i> Tambah Penawaran Baru
+                            </a>
+                        </div>
+                    </div>
+                </div>
+                {{-- ==================================================== --}}
+
             </div>
         </div>
     </div>
 @endsection
 
 @push('scripts')
+    {{-- 1. Panggil Library Select2 --}}
     <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
+    
+    {{-- 2. WAJIB: Panggil Library SweetAlert2 --}}
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
     <script>
+        // FUNGSI KONFIRMASI HAPUS DATA
+        function confirmDelete() {
+            Swal.fire({
+                title: 'Yakin ingin menghapus?',
+                text: "Data penawaran ini akan hilang permanen!",
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#d33',
+                cancelButtonColor: '#6c757d',
+                confirmButtonText: '<i class="fas fa-trash"></i> Ya, Hapus!',
+                cancelButtonText: 'Batal',
+                reverseButtons: true // Biar tombol Batal ada di kiri
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    // Jika di-klik Ya, maka submit form yang tersembunyi
+                    document.getElementById('form-delete-cta').submit();
+                }
+            });
+        }
+
         $(document).ready(function() {
+            // VALIDASI UKURAN FILE LANGSUNG (MAKSIMAL 5MB)
+            $('#file_proposal').on('change', function() {
+                if (this.files && this.files[0]) {
+                    let fileSize = this.files[0].size; // Ambil ukuran file dalam satuan bytes
+                    let maxSize = 5 * 1024 * 1024; // Hitungan 5 MB
+
+                    if (fileSize > maxSize) {
+                        // Munculkan peringatan SweetAlert
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'Oops! File Kebesaran',
+                            text: 'Ukuran file PDF kamu lebih dari 5MB. Silakan compress dulu atau gunakan Link Google Drive ya!',
+                            confirmButtonColor: '#d33'
+                        });
+                        
+                        // Kosongkan kembali input file-nya biar nggak bisa disubmit
+                        $(this).val('');
+                    }
+                }
+            });
+            
+            // Inisialisasi Select2
             $('.select2-js').select2({
                 theme: "bootstrap-5",
                 width: '100%',
                 placeholder: "-- Pilih atau Cari Judul --"
             });
+
+            // Cegah Double Click Saat Proses Submit Form Update
+            $('form:not(#form-delete-cta)').on('submit', function() {
+                let btn = $('#btn-simpan');
+                btn.prop('disabled', true);
+                btn.html('<i class="fas fa-spinner fa-spin me-1"></i> Menyimpan...');
+            });
+
+            // Logika Setelah Berhasil Disimpan / Update
+            @if(session('success'))
+                Swal.fire({
+                    icon: 'success',
+                    title: 'Berhasil!',
+                    text: '{!! session('success') !!}',
+                    showConfirmButton: false,
+                    timer: 3000,
+                    toast: true,
+                    position: 'top-end'
+                });
+
+                // MATIKAN TOMBOL SEMENTARA
+                let btnSimpan = $('#btn-simpan');
+                btnSimpan.prop('disabled', true);
+                btnSimpan.removeClass('btn-success').addClass('btn-secondary');
+                btnSimpan.html('<i class="fas fa-check"></i> Sudah Terupdate');
+
+                // HIDUPKAN LAGI JIKA ADA PERUBAHAN
+                $('input, select, textarea').on('input change', function() {
+                    btnSimpan.prop('disabled', false);
+                    btnSimpan.removeClass('btn-secondary').addClass('btn-success');
+                    btnSimpan.html('<i class="fas fa-save"></i> Update CTA');
+                });
+            @endif
+
+            // Pop-up khusus kalau langsung Deal
+            @if(session('deal_congrats'))
+                Swal.fire({
+                    icon: 'success',
+                    title: '🎉 PROJECT DEAL! 🎉',
+                    text: '{!! session('deal_congrats') !!}',
+                    confirmButtonText: 'Sikat Terus!',
+                    confirmButtonColor: '#28a745',
+                    backdrop: `rgba(0,0,0,0.4)`
+                });
+            @endif
         });
     </script>
 @endpush

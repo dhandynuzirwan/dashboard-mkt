@@ -21,7 +21,7 @@
                             <div class="card-title">Form Tambah CTA</div>
                         </div>
                         <div class="card-body">
-                            <form action="{{ route('cta.store') }}" method="POST">
+                            <form action="{{ route('cta.store') }}" method="POST" id="form-cta" enctype="multipart/form-data">
                                 @csrf
                                 <input type="hidden" name="prospek_id" value="{{ $prospek->id }}">
 
@@ -93,16 +93,17 @@
                                     <input type="number" class="form-control" name="harga_vendor">
                                 </div>
 
-                                <div class="form-group">
-                                    <label>Link Proposal Google Drive</label>
-
-                                    <input type="url" class="form-control" name="proposal_link"
-                                        placeholder="https://drive.google.com/...">
-
-                                    <small class="text-muted">
-                                        Upload PDF ke Google Drive lalu paste link disini
-                                    </small>
-
+                                <div class="row">
+                                    <div class="col-md-6 form-group">
+                                        <label>Upload File Proposal (PDF)</label>
+                                        <input type="file" class="form-control" name="file_proposal" accept=".pdf">
+                                        <small class="text-muted">Maksimal ukuran file: 5MB</small>
+                                    </div>
+                                    <div class="col-md-6 form-group">
+                                        <label>Atau Link Google Drive</label>
+                                        <input type="url" class="form-control" name="proposal_link" placeholder="https://drive.google.com/...">
+                                        <small class="text-muted">Gunakan ini jika file lebih dari 5MB</small>
+                                    </div>
                                 </div>
 
                                 <div class="form-group">
@@ -134,9 +135,38 @@
                                     @enderror
                                 </div>
 
-                                <button type="submit" class="btn btn-primary mt-3">
-                                    Simpan CTA
-                                </button>
+                                {{-- BUTTON GROUP DENGAN NEXT PREVIOUS --}}
+                                <div class="d-flex justify-content-between align-items-center mt-4">
+                                    {{-- Tombol Previous --}}
+                                    <div>
+                                        @if($prevProspek)
+                                            <a href="{{ route('form-cta', $prevProspek->id) }}" class="btn btn-outline-secondary btn-sm">
+                                                <i class="fas fa-chevron-left"></i> Prev Prospek
+                                            </a>
+                                        @else
+                                            <button class="btn btn-outline-secondary btn-sm" disabled><i class="fas fa-chevron-left"></i> Prev</button>
+                                        @endif
+                                    </div>
+
+                                    {{-- Tombol Utama --}}
+                                    <div>
+                                        <button type="submit" id="btn-simpan" class="btn btn-primary shadow-sm">
+                                            <i class="fas fa-save"></i> Simpan CTA
+                                        </button>
+                                        <a href="{{ route('pipeline') }}" class="btn btn-secondary">Batal</a>
+                                    </div>
+
+                                    {{-- Tombol Next --}}
+                                    <div>
+                                        @if($nextProspek)
+                                            <a href="{{ route('form-cta', $nextProspek->id) }}" class="btn btn-outline-secondary btn-sm">
+                                                Next Prospek <i class="fas fa-chevron-right"></i>
+                                            </a>
+                                        @else
+                                            <button class="btn btn-outline-secondary btn-sm" disabled>Next <i class="fas fa-chevron-right"></i></button>
+                                        @endif
+                                    </div>
+                                </div>
                             </form>
                         </div>
                     </div>
@@ -148,13 +178,62 @@
 
 @push('scripts')
     <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
     <script>
         $(document).ready(function() {
+            // 1. Inisialisasi Select2
             $('.select2-js').select2({
-                theme: "bootstrap-5", // Jika kamu pakai tema bootstrap
+                theme: "bootstrap-5",
                 width: '100%',
                 placeholder: "-- Pilih atau Cari Judul --"
             });
+
+            // 2. Cegah Double Click Saat Proses Submit
+            $('#form-cta').on('submit', function() {
+                let btn = $('#btn-simpan');
+                btn.prop('disabled', true);
+                btn.html('<i class="fas fa-spinner fa-spin me-1"></i> Menyimpan...');
+            });
+
+            // 3. LOGIKA SETELAH BERHASIL DISIMPAN (HALAMAN RELOAD)
+            @if(session('success'))
+                // Munculkan Pop-up
+                Swal.fire({
+                    icon: 'success',
+                    title: 'Berhasil!',
+                    text: '{!! session('success') !!}',
+                    showConfirmButton: false,
+                    timer: 3000,
+                    toast: true,
+                    position: 'top-end'
+                });
+
+                // MATIKAN TOMBOL SIMPAN SEMENTARA
+                let btnSimpan = $('#btn-simpan');
+                btnSimpan.prop('disabled', true);
+                btnSimpan.removeClass('btn-primary').addClass('btn-secondary');
+                btnSimpan.html('<i class="fas fa-check"></i> Sudah Tersimpan');
+
+                // HIDUPKAN LAGI JIKA USER MENGUBAH INPUTAN (Milih judul baru)
+                $('input, select, textarea').on('input change', function() {
+                    btnSimpan.prop('disabled', false);
+                    btnSimpan.removeClass('btn-secondary').addClass('btn-primary');
+                    btnSimpan.html('<i class="fas fa-save"></i> Simpan CTA Lainnya');
+                });
+            @endif
+
+            // 4. Pop-up khusus kalau langsung Deal
+            @if(session('deal_congrats'))
+                Swal.fire({
+                    icon: 'success',
+                    title: '🎉 PROJECT DEAL! 🎉',
+                    text: '{!! session('deal_congrats') !!}',
+                    confirmButtonText: 'Sikat Terus!',
+                    confirmButtonColor: '#28a745',
+                    backdrop: `rgba(0,0,0,0.4)`
+                });
+            @endif
         });
     </script>
 @endpush

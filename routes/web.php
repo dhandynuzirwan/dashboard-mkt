@@ -45,6 +45,29 @@ Route::post('/logout', function (Request $request) {
     return redirect()->route('login');
 })->name('logout');
 
+// Route untuk Mockup Portal Peserta
+Route::prefix('portal')->group(function () {
+    Route::get('/', function () {
+        return view('portal.index');
+    });
+    
+    Route::get('/pendaftaran', function () {
+        return view('portal.pendaftaran');
+    });
+    
+    Route::get('/pendaftaran-perusahaan', function () {
+        return view('portal.pendaftaran-perusahaan');
+    });
+    
+    Route::get('/cek-status', function () {
+        return view('portal.cek-status');
+    });
+    
+    Route::get('/cek-status-perusahaan', function () {
+        return view('portal.cek-status-perusahaan');
+    });
+});
+
 /*
 |--------------------------------------------------------------------------
 | AUTHENTICATED ROUTES
@@ -133,6 +156,7 @@ Route::middleware('auth')->group(function () {
         Route::post('/cta/store', [CtaController::class, 'store'])->name('cta.store');
         Route::get('/cta/{id}/edit', [CtaController::class, 'edit'])->name('cta.edit');
         Route::put('/cta/{id}', [CtaController::class, 'update'])->name('cta.update');
+        Route::delete('/cta/{id}', [CtaController::class, 'destroy'])->name('cta.destroy');
     });
 
     // 6. KHUSUS SUPERADMIN (User Management, Approval, Absensi, Advanced Payroll)

@@ -70,30 +70,57 @@ class DashboardController extends Controller
 
             $user->target_total = $targetCallHarian * $hariEfektif;
 
-            // Kita ambil data CTA terlebih dahulu
-            $cta = \App\Models\Cta::whereHas('prospek', function ($q) use ($user) {
+            // ================= PERHITUNGAN PROGRESS / PENCAPAIAN =================
+            // Kita ambil data CTA sebagai Base Query (menggunakan query, BUKAN get())
+            $baseCtaQuery = \App\Models\Cta::whereHas('prospek', function ($q) use ($user) {
                 $q->where('marketing_id', $user->id);
-            })->whereBetween('created_at', [$start, $end])->get();
+            })->whereBetween('created_at', [$start . " 00:00:00", $end . " 23:59:59"]);
 
-            // Pencapaian dihitung dari jumlah penawaran (CTA) yang dibuat
-            $user->pencapaian = $cta->count();
+            // 1. Hitung JUMLAH SEMUA CTA yang dibuat
+            $jumlahCtaBase = (clone $baseCtaQuery)->count();
+
+            // 2. Hitung JUMLAH CTA YANG MEMILIKI STATUS (Update / Follow Up)
+            $jumlahCtaBerstatus = (clone $baseCtaQuery)
+                ->whereNotNull('status_penawaran')
+                ->where('status_penawaran', '!=', '')
+                ->count();
+
+            // 3. RUMUS PROGRESS: Total Form Dibuat + Total Form Diupdate Statusnya
+            $user->pencapaian = $jumlahCtaBase + $jumlahCtaBerstatus;
+            
+            // Hitung persentase pencapaian
             $user->ach_persen = ($user->target_total > 0) ? ($user->pencapaian / $user->target_total) * 100 : 0;
+            // =====================================================================
 
             // Ambil semua prospek user ini dalam range tanggal
             $prospeks = \App\Models\Prospek::where('marketing_id', $user->id)
                 ->whereBetween('created_at', [$start, $end])->get();
 
+            // ================== LOGIKA BARU: MENGHITUNG CTA PER PROSPEK ==================
+            // Kita cari tahu setiap prospek itu punya berapa CTA
+            $ctasCount = \App\Models\Cta::whereIn('prospek_id', $prospeks->pluck('id'))
+                ->selectRaw('prospek_id, count(*) as total')
+                ->groupBy('prospek_id')
+                ->pluck('total', 'prospek_id');
+
+            // Fungsi cerdas: Kalau ada CTA hitung CTA-nya, kalau belum ada hitung 1 prospek
+            $hitungStatus = function($statusName) use ($prospeks, $ctasCount) {
+                return $prospeks->where('status', $statusName)->sum(function ($p) use ($ctasCount) {
+                    $jmlCta = $ctasCount[$p->id] ?? 0;
+                    return $jmlCta > 0 ? $jmlCta : 1; 
+                });
+            };
+
             // --- LOGIKA UNTUK TABEL STATUS AKHIR DATA ---
-            // Pastikan string status di bawah ini sama persis dengan yang ada di database/Faker
-            $user->count_perpanjangan = $prospeks->where('status', 'REQUES PERPANJANGAN SERTIFIKAT')->count();
-            $user->count_invalid = $prospeks->where('status', 'DATA TIDAK VALID & TIDAK TERHUBUNG')->count();
-            $user->count_email = $prospeks->where('status', 'DAPAT EMAIL')->count();
-            $user->count_wa = $prospeks->where('status', 'DAPAT NO WA HRD')->count();
-            $user->count_compro = $prospeks->where('status', 'KIRIM COMPRO')->count(); // atau 'REQUEST COMPRO'
-            $user->count_manja = $prospeks->where('status', 'MANJA')->count();
-            $user->count_manja_ulang = $prospeks->where('status', 'MANJA ULANG')->count();
-            $user->count_pelatihan = $prospeks->where('status', 'REQUEST PERMINTAAN PELATIHAN')->count();
-            // --------------------------------------------
+            $user->count_perpanjangan = $hitungStatus('REQUES PERPANJANGAN SERTIFIKAT');
+            $user->count_invalid      = $hitungStatus('DATA TIDAK VALID & TIDAK TERHUBUNG');
+            $user->count_email        = $hitungStatus('DAPAT EMAIL');
+            $user->count_wa           = $hitungStatus('DAPAT NO WA HRD');
+            $user->count_compro       = $hitungStatus('KIRIM COMPRO');
+            $user->count_manja        = $hitungStatus('MANJA');
+            $user->count_manja_ulang  = $hitungStatus('MANJA ULANG');
+            $user->count_pelatihan    = $hitungStatus('REQUEST PERMINTAAN PELATIHAN');
+            $user->count_penawaran    = $hitungStatus('MASUK PENAWARAN');
 
             $cta = \App\Models\Cta::whereHas('prospek', function ($q) use ($user) {
                 $q->where('marketing_id', $user->id);

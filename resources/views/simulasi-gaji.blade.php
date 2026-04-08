@@ -164,6 +164,76 @@
                         <span class="badge badge-danger">&lt; 70%</span>
                         Marketing tidak memenuhi KPI dan menggunakan skema <b>Kebijakan KPI</b>.
                     </div>
+                    {{-- ACCORDION RUMUS GAJI --}}
+                    <div class="accordion mt-4" id="accordionRumusGaji">
+                        <div class="accordion-item border">
+                            <h2 class="accordion-header" id="headingRumus">
+                                <button class="accordion-button collapsed fw-bold bg-light" type="button" data-bs-toggle="collapse" data-bs-toggle="collapse" data-bs-target="#collapseRumus" aria-expanded="false" aria-controls="collapseRumus">
+                                    <i class="fas fa-calculator me-2 text-primary"></i> Klik di sini untuk melihat Panduan Rumus Perhitungan Gaji
+                                </button>
+                            </h2>
+                            <div id="collapseRumus" class="accordion-collapse collapse" aria-labelledby="headingRumus" data-bs-parent="#accordionRumusGaji">
+                                <div class="accordion-body text-muted small" style="line-height: 1.8;">
+                                    
+                                    <div class="row">
+                                        {{-- Kolom Kiri: Perhitungan KPI --}}
+                                        <div class="col-md-6 mb-3">
+                                            <h6 class="fw-bold text-dark border-bottom pb-2"><i class="fas fa-chart-pie me-1"></i> 1. Rumus Skor KPI (Maksimal 100%)</h6>
+                                            <ul class="list-unstyled">
+                                                <li class="mb-2">
+                                                    <b>KPI Absensi (Bobot 10%)</b><br>
+                                                    <code>(Total Kehadiran & Izin / Hari Kerja Efektif) x 10%</code>
+                                                </li>
+                                                <li class="mb-2">
+                                                    <b>KPI Progress (Bobot 30%)</b><br>
+                                                    <code>(Total Pembuatan & Follow Up CTA / Target CTA Sebulan) x 30%</code>
+                                                </li>
+                                                <li class="mb-2">
+                                                    <b>KPI Revenue (Bobot 60%)</b><br>
+                                                    <code>(Total Rupiah Project Deal / Target Revenue Sebulan) x 60%</code>
+                                                </li>
+                                            </ul>
+                                            <div class="p-2 bg-light border rounded">
+                                                <b>Total KPI</b> = Skor Absensi + Skor Progress + Skor Revenue.
+                                            </div>
+                                        </div>
+
+                                        {{-- Kolom Kanan: Perhitungan Rupiah --}}
+                                        <div class="col-md-6 mb-3">
+                                            <h6 class="fw-bold text-dark border-bottom pb-2"><i class="fas fa-money-bill-wave me-1"></i> 2. Rumus Komponen Gaji (Rupiah)</h6>
+                                            <ul class="list-unstyled">
+                                                <li class="mb-2">
+                                                    <b>Gaji Pokok (Proporsional Kehadiran)</b><br>
+                                                    <code>(Total Kehadiran / Hari Kerja Efektif) x Gaji Pokok Dasar</code>
+                                                </li>
+                                                <li class="mb-2">
+                                                    <b>Tunjangan Kemahalan</b><br>
+                                                    <code>(Total Kehadiran / Hari Kerja Efektif) x Tunjangan Dasar</code>
+                                                </li>
+                                                <li class="mb-2">
+                                                    <b>Nilai Progress</b><br>
+                                                    <code>Gaji Pokok Dasar x (Skor KPI Progress / 100)</code><br>
+                                                    <i>*Maksimal senilai 30% dari Gaji Pokok jika progress mencapai target.</i>
+                                                </li>
+                                                <li class="mb-2">
+                                                    <b>Fee Marketing (Komisi)</b><br>
+                                                    <code>(Total Rupiah Project Deal x 60%) x Persentase Fee</code><br>
+                                                    <i>*Jika Total KPI ≥ 70%, maka Persentase Fee = <b>5%</b>.<br>
+                                                    *Jika Total KPI < 70%, maka Persentase Fee turun menjadi <b>2.5%</b>.</i>
+                                                </li>
+                                            </ul>
+                                        </div>
+                                    </div>
+
+                                    <div class="alert alert-warning p-2 m-0 mt-2 text-dark">
+                                        <i class="fas fa-info-circle me-1"></i> <b>Total Take Home Pay (Gaji Bersih)</b> = Gaji Pokok + Nilai Progress + Fee Marketing + Tunjangan Kemahalan.
+                                    </div>
+
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    {{-- END ACCORDION --}}
                 </div>
             </div>
         </div>

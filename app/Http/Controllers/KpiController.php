@@ -88,11 +88,23 @@ class KpiController extends Controller
             // Target: target harian x JADWAL SEBULAN (dikurangi libur)
             $user->progress_target = $target_call * $hariEfektifSebulan;
 
-            $user->progress_real = Cta::whereHas('prospek', function ($q) use ($user) {
+            // Buat Base Query agar tidak perlu menulis ulang whereHas berulang kali
+            $baseCtaQuery = Cta::whereHas('prospek', function ($q) use ($user) {
                     $q->where('marketing_id', $user->id);
                 })
-                ->whereBetween('created_at', [$start . " 00:00:00", $end . " 23:59:59"])
+                ->whereBetween('created_at', [$start . " 00:00:00", $end . " 23:59:59"]);
+
+            // 1. Hitung JUMLAH SEMUA CTA
+            $jumlahCtaBase = (clone $baseCtaQuery)->count();
+
+            // 2. Hitung JUMLAH CTA YANG MEMILIKI STATUS
+            $jumlahCtaBerstatus = (clone $baseCtaQuery)
+                ->whereNotNull('status_penawaran')
+                ->where('status_penawaran', '!=', '')
                 ->count();
+
+            // 3. RUMUS BARU: Total CTA + Total CTA Berstatus
+            $user->progress_real = $jumlahCtaBase + $jumlahCtaBerstatus;
 
             $user->progress_ach = ($user->progress_target > 0)
                 ? ($user->progress_real / $user->progress_target) * 100

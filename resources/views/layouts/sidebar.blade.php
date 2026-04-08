@@ -84,14 +84,14 @@
                         <p>Human Resources</p>
                         <span class="caret"></span>
                     </a>
-                    <div class="collapse {{ request()->routeIs('user', 'penggajian', 'absensi') ? 'show' : '' }}" id="human-resources">
+                    <div class="collapse {{ request()->routeIs('user', 'penggajian.index', 'absensi') ? 'show' : '' }}" id="human-resources">
                         <ul class="nav nav-collapse">
                             <li class="{{ request()->routeIs('user') ? 'active' : '' }}">
                                 <a href="{{ route('user') }}">
                                     <span class="sub-item">Data Pengguna</span>
                                 </a>
                             </li>
-                            <li class="{{ request()->routeIs('penggajian') ? 'active' : '' }}">
+                            <li class="{{ request()->routeIs('penggajian.index') ? 'active' : '' }}">
                                 <a href="{{ route('penggajian.index') }}">
                                     <span class="sub-item">Penggajian</span>
                                 </a>

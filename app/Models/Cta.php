@@ -17,6 +17,7 @@ class Cta extends Model
         'total_penawaran',
         'total_vendor',
         'proposal_link',
+        'file_proposal',
         'status_penawaran',
         'keterangan',
     ];
