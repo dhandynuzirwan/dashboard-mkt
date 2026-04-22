@@ -7,13 +7,8 @@ use Illuminate\Database\Eloquent\Model;
 class Penggajian extends Model
 {
     protected $fillable = [
-        'user_id',
-        'target_call',
-        'target',
-        'gaji_pokok',
-        'tunjangan',
+        'user_id', 'gaji_pokok', 'tunjangan', 'tunjangan_bpjs', 'iuran_bpjs', 'target_call', 'target',
     ];
-
     public function user()
     {
         return $this->belongsTo(User::class);

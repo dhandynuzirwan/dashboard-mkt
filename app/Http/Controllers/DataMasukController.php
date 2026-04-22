@@ -4,25 +4,37 @@ namespace App\Http\Controllers;
 
 use App\Models\AdsLead;
 use App\Models\DataMasuk;
+use App\Models\Prospek; // Pastikan model Prospek di-import
 use App\Models\User;
 use Illuminate\Http\Request;
+use Carbon\Carbon;
 
 class DataMasukController extends Controller
 {
-    // Menampilkan daftar database data
+    // ================= INDEX =================
     public function index(Request $request)
     {
-        // 1. Tangkap parameter filter & pencarian
         $search = $request->input('search');
         $marketing_id = $request->input('marketing_id');
         $sumber = $request->input('sumber');
         $status_deliver = $request->input('status_deliver');
+        
+        $start_date = $request->input('start_date');
+        $end_date = $request->input('end_date');
 
-        // 2. Inisialisasi Query Dasar
-        $query = DataMasuk::with('marketing'); // Query untuk Tab Data Umum
-        $queryAds = AdsLead::query();          // FIX: Query untuk Tab Data Ads
+        $query = DataMasuk::with('marketing'); 
+        $queryAds = AdsLead::query();          
 
-        // 3. --- TERAPKAN FILTER KE DATA UMUM ---
+        if ($start_date) {
+            $query->whereDate('created_at', '>=', $start_date);
+            $queryAds->whereDate('created_at', '>=', $start_date);
+        }
+
+        if ($end_date) {
+            $query->whereDate('created_at', '<=', $end_date);
+            $queryAds->whereDate('created_at', '<=', $end_date);
+        }
+
         if ($marketing_id) {
             $query->where('marketing_id', $marketing_id);
         }
@@ -33,22 +45,19 @@ class DataMasukController extends Controller
 
         if ($status_deliver) {
             if ($status_deliver == 'undelivered') {
-                $query->whereNull('marketing_id'); // Data mentah dari RnD
+                $query->whereNull('marketing_id'); 
             } elseif ($status_deliver == 'delivered') {
-                $query->whereNotNull('marketing_id'); // Sudah ada marketingnya
+                $query->whereNotNull('marketing_id'); 
             }
         }
 
-        // 4. --- TERAPKAN SEARCH KE KEDUA DATA (UMUM & ADS) ---
         if ($search) {
-            // Pencarian di Data Umum
             $query->where(function($q) use ($search) {
                 $q->where('perusahaan', 'LIKE', "%{$search}%")
                   ->orWhere('email', 'LIKE', "%{$search}%")
                   ->orWhere('wa_pic', 'LIKE', "%{$search}%"); 
             });
 
-            // Pencarian di Data Ads
             $queryAds->where(function($q) use ($search) {
                 $q->where('nama_perusahaan', 'LIKE', "%{$search}%")
                   ->orWhere('nama_hrd', 'LIKE', "%{$search}%")
@@ -56,8 +65,6 @@ class DataMasukController extends Controller
             });
         }
 
-        // 5. --- EKSEKUSI PAGINATION ---
-        // (withQueryString berfungsi agar filter/search tidak hilang saat pindah halaman paginasi)
         $allData = $query->orderBy('created_at', 'desc')
                          ->paginate(10, ['*'], 'page_umum')
                          ->withQueryString();
@@ -66,7 +73,6 @@ class DataMasukController extends Controller
                             ->paginate(10, ['*'], 'page_ads')
                             ->withQueryString();
 
-        // 6. --- DATA PENDUKUNG UNTUK STATS CARD ---
         $marketings = User::where('role', 'marketing')->get();
         $totalData = DataMasuk::count();
         $totalToday = DataMasuk::whereDate('created_at', now())->count();
@@ -74,26 +80,28 @@ class DataMasukController extends Controller
         $validPercentage = $totalData > 0 ? round(($dataValid / $totalData) * 100, 1) : 0;
         $dataConverted = DataMasuk::whereNotNull('marketing_id')->count();
 
-        $prospekList = \App\Models\Prospek::pluck('perusahaan')->toArray();
+        $prospekList = Prospek::pluck('perusahaan')->toArray();
+        
+        $unsyncedCompanies = DataMasuk::whereNull('marketing_id')
+                                ->whereIn('perusahaan', $prospekList)
+                                ->pluck('perusahaan')
+                                ->unique() 
+                                ->toArray();
 
         return view('data-masuk', compact(
             'allData', 'totalData','marketings', 'adsData',
             'totalToday', 'dataValid', 'validPercentage', 'dataConverted',
-            'prospekList' // <-- Jangan lupa tambahkan variabel ini ke compact
+            'prospekList',  'unsyncedCompanies' 
         ));
     }
 
-    // Menampilkan form input data baru
     public function create()
     {
         $marketings = User::where('role', 'marketing')->get();
-
         return view('form-data-masuk', compact('marketings'));
     }
 
-    // Menyimpan data
-
-    // --- PROSES SIMPAN (DENGAN NULLABLE VALIDATION) ---
+    // ================= STORE =================
     public function store(Request $request)
     {
         $user = auth()->user();
@@ -115,18 +123,15 @@ class DataMasukController extends Controller
                 $nama = trim($row['perusahaan']);
                 $lokasi = isset($row['lokasi']) ? trim($row['lokasi']) : null;
 
-                // Cek kombinasi Perusahaan + Lokasi
                 $isDuplicate = DataMasuk::where('perusahaan', $nama)
                     ->where('lokasi', $lokasi)
                     ->exists();
 
                 if ($isDuplicate) {
-                    // Kumpulkan nama perusahaan yang duplikat
                     $duplicates[] = $nama . ($lokasi ? " ($lokasi)" : "");
                     continue;
                 }
 
-                // Simpan data yang valid
                 DataMasuk::create([
                     'marketing_id' => $isRnD ? null : $request->marketing_id,
                     'perusahaan'   => $nama,
@@ -143,10 +148,8 @@ class DataMasukController extends Controller
                 $successCount++;
             }
 
-            // Siapkan pesan sukses
             $message = "Berhasil menginput {$successCount} data baru.";
             
-            // Jika ada duplikat, buat pesan error terpisah
             if (!empty($duplicates)) {
                 $errorMsg = "Gagal input " . count($duplicates) . " data karena duplikat: " . implode(', ', $duplicates);
                 return redirect()->route('data-masuk.index')
@@ -161,92 +164,122 @@ class DataMasukController extends Controller
         }
     }
 
-    // Fungsi Baru: Deliver ke Prospek (Khusus Admin)
+    // ================= DELIVER SATUAN (DATA UMUM) =================
     public function deliver(Request $request, $id)
     {
-        $request->validate(['marketing_id' => 'required']);
+        $request->validate([
+            'marketing_id'   => 'required',
+            'tanggal_assign' => 'required|date', // Validasi tanggal
+        ]);
+
         $data = DataMasuk::findOrFail($id);
 
-        // CEK: Jika data sudah punya marketing_id, batalkan proses
         if ($data->marketing_id) {
             return back()->with('error', 'Gagal! Data ini sudah di-assign ke Marketing lain.');
         }
 
-        // Salin ke Tabel Prospek
-        \App\Models\Prospek::create([
+        // Salin ke Tabel Prospek dengan Tanggal Custom
+        Prospek::create([
             'marketing_id'    => $request->marketing_id,
-            'tanggal_prospek' => now(),
+            'tanggal_prospek' => $request->tanggal_assign,
             'perusahaan'      => $data->perusahaan,
             'lokasi'          => $data->lokasi,
             'email'           => $data->email,
             'wa_pic'          => $data->wa_pic,
             'sumber'          => $data->sumber,
+            'created_at'      => $request->tanggal_assign . ' ' . now()->format('H:i:s'),
+            'updated_at'      => $request->tanggal_assign . ' ' . now()->format('H:i:s'),
         ]);
 
-        // Tandai data ini sudah terkirim (Update marketing_id agar tombol hilang di UI)
-        $data->update(['marketing_id' => $request->marketing_id]); 
+        // Simpan jejak tanggal assign di tabel data masuk
+        $data->update([
+            'marketing_id'   => $request->marketing_id,
+            'tanggal_assign' => $request->tanggal_assign 
+        ]); 
 
-        return back()->with('success', "Data {$data->perusahaan} berhasil di-deliver!");
+        $tglFormat = Carbon::parse($request->tanggal_assign)->format('d M Y');
+        return back()->with('success', "Data {$data->perusahaan} berhasil di-deliver untuk tanggal {$tglFormat}!");
     }
     
-    // Fungsi Deliver Khusus Ads
+    // ================= DELIVER SATUAN (DATA ADS) =================
     public function deliverAds(Request $request, $id)
     {
-        $request->validate(['marketing_id' => 'required']);
+        $request->validate([
+            'marketing_id'   => 'required',
+            'tanggal_assign' => 'required|date', // Validasi tanggal
+        ]);
+
         $ad = AdsLead::findOrFail($id);
 
-        \App\Models\Prospek::create([
+        Prospek::create([
             'marketing_id'    => $request->marketing_id,
-            'tanggal_prospek' => now(),
+            'tanggal_prospek' => $request->tanggal_assign,
             'perusahaan'      => $ad->nama_perusahaan ?? 'Pribadi/No Name',
             'lokasi'          => $ad->lokasi,
             'email'           => $ad->email,
             'wa_pic'          => $ad->wa_hrd,
             'sumber'          => 'Ads - ' . $ad->channel_akuisisi,
+            'created_at'      => $request->tanggal_assign . ' ' . now()->format('H:i:s'),
+            'updated_at'      => $request->tanggal_assign . ' ' . now()->format('H:i:s'),
         ]);
 
-        // Update status atau hapus data ads setelah deliver (opsional)
-        // Untuk saat ini kita simpan siapa yang menghandle
         $ad->update(['marketing_id' => $request->marketing_id]); 
 
-        return back()->with('success', "Data Ads {$ad->nama_perusahaan} berhasil di-deliver!");
+        $tglFormat = Carbon::parse($request->tanggal_assign)->format('d M Y');
+        return back()->with('success', "Data Ads {$ad->nama_perusahaan} berhasil di-deliver untuk tanggal {$tglFormat}!");
     }
     
     // ================= DELIVER MASSAL =================
     public function deliverMassal(Request $request)
     {
         $request->validate([
-            'marketing_id' => 'required',
-            'ids' => 'required|array', // Harus berupa array dari checkbox
-            'ids.*' => 'exists:data_masuks,id' // ID harus valid di tabel
+            'marketing_id'   => 'required',
+            'tanggal_assign' => 'required|date', 
+            'ids'            => 'required|array', 
+            'ids.*'          => 'exists:data_masuks,id' 
         ]);
-
+    
         try {
-            // Ambil data berdasarkan ID yang dicentang, TAPI HANYA yang belum punya marketing_id (mencegah double assign)
             $dataToDeliver = DataMasuk::whereIn('id', $request->ids)
                                       ->whereNull('marketing_id')
                                       ->get();
             
             $count = 0;
             foreach ($dataToDeliver as $data) {
-                // Update marketing_id. 
-                // Otomatisasi di Model (booted) akan langsung memasukkannya ke tabel Prospek!
-                $data->update(['marketing_id' => $request->marketing_id]);
+                // Salin eksplisit ke Prospek agar tanggalnya ter-mapping dengan benar
+                Prospek::create([
+                    'marketing_id'    => $request->marketing_id,
+                    'tanggal_prospek' => $request->tanggal_assign,
+                    'perusahaan'      => $data->perusahaan,
+                    'lokasi'          => $data->lokasi,
+                    'email'           => $data->email,
+                    'wa_pic'          => $data->wa_pic,
+                    'sumber'          => $data->sumber,
+                    'created_at'      => $request->tanggal_assign . ' ' . now()->format('H:i:s'),
+                    'updated_at'      => $request->tanggal_assign . ' ' . now()->format('H:i:s'),
+                ]);
+
+                // Update data masuknya
+                $data->update([
+                    'marketing_id'   => $request->marketing_id,
+                    'tanggal_assign' => $request->tanggal_assign
+                ]);
+                
                 $count++;
             }
-
+    
             if ($count > 0) {
-                return redirect()->back()->with('success', "Berhasil me-deliver {$count} data ke Pipeline Prospek!");
+                $tglFormat = Carbon::parse($request->tanggal_assign)->format('d M Y');
+                return redirect()->back()->with('success', "Berhasil me-deliver {$count} data ke Pipeline Prospek untuk tanggal {$tglFormat}!");
             } else {
                 return redirect()->back()->with('error', 'Gagal: Data yang dipilih mungkin sudah di-assign sebelumnya.');
             }
-
+    
         } catch (\Exception $e) {
             return redirect()->back()->with('error', 'Terjadi kesalahan: ' . $e->getMessage());
         }
     }
         
-
     // ================= EDIT =================
     public function edit($id)
     {
@@ -296,18 +329,15 @@ class DataMasukController extends Controller
     // ================= DELETE BY DATE =================
     public function destroyByDate(Request $request)
     {
-        // Validasi input tanggal
         $request->validate([
             'start_date' => 'required|date',
             'end_date' => 'required|date|after_or_equal:start_date',
         ]);
 
-        // Sesuaikan format waktu agar mencakup dari jam 00:00:00 hingga 23:59:59
         $startDate = $request->start_date . ' 00:00:00';
         $endDate = $request->end_date . ' 23:59:59';
 
         try {
-            // Hitung jumlah data yang dihapus (sebagai feedback pesan)
             $deletedCount = DataMasuk::whereBetween('created_at', [$startDate, $endDate])->delete();
 
             if ($deletedCount > 0) {
@@ -320,6 +350,35 @@ class DataMasukController extends Controller
         } catch (\Exception $e) {
             return redirect()->route('data-masuk.index')
                 ->with('error', 'Terjadi kesalahan saat menghapus data: ' . $e->getMessage());
+        }
+    }
+    
+    // ================= AUTO-SYNC DATA NYANGKUT =================
+    public function autoSyncProspek()
+    {
+        try {
+            $prospekList = Prospek::whereNotNull('marketing_id')
+                            ->get()
+                            ->unique('perusahaan');
+            
+            $count = 0;
+
+            foreach ($prospekList as $prospek) {
+                $updated = DataMasuk::whereNull('marketing_id')
+                            ->where('perusahaan', $prospek->perusahaan)
+                            ->update(['marketing_id' => $prospek->marketing_id]);
+                
+                $count += $updated; 
+            }
+
+            if ($count > 0) {
+                return redirect()->back()->with('success', "Auto-Sync Sukses! Sebanyak {$count} data berhasil disinkronkan dengan database Prospek.");
+            } else {
+                return redirect()->back()->with('info', 'Tidak ada data yang perlu disinkronkan.');
+            }
+
+        } catch (\Exception $e) {
+            return redirect()->back()->with('error', 'Terjadi kesalahan saat Auto-Sync: ' . $e->getMessage());
         }
     }
 }

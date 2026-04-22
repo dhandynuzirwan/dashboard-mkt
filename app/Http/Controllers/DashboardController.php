@@ -3,6 +3,8 @@
 namespace App\Http\Controllers;
 
 use App\Models\Cta;
+use App\Models\Prospek;
+use Illuminate\Support\Facades\DB;
 use App\Models\User;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
@@ -19,22 +21,18 @@ class DashboardController extends Controller
         $marketing_filter = $request->query('marketing_id');
 
         // 2. --- HITUNG HARI KERJA (FULL 1 BULAN) ---
-        // 1. Tentukan rentang awal dan akhir bulan berdasarkan filter $start
         $startDate = Carbon::parse($start);
         $startOfMonth = $startDate->copy()->startOfMonth();
         $endOfMonth = $startDate->copy()->endOfMonth();
 
-        // 2. Ambil daftar tanggal merah bulan ini dari database
         $daftarLibur = \App\Models\Holiday::whereBetween('tanggal', [
                 $startOfMonth->format('Y-m-d'), 
                 $endOfMonth->format('Y-m-d')
             ])->pluck('tanggal')->toArray();
 
-        // 3. Hitung Hari Efektif (Hanya Senin-Jumat & Bukan Tanggal Merah)
         $hariEfektif = 0; 
 
         for ($date = $startOfMonth->copy(); $date->lte($endOfMonth); $date->addDay()) {
-            // Logika: Jika hari biasa (Senin-Jumat) DAN tidak terdaftar di tabel Holiday
             if ($date->isWeekday() && !in_array($date->format('Y-m-d'), $daftarLibur)) { 
                 $hariEfektif++;
             }
@@ -48,21 +46,19 @@ class DashboardController extends Controller
         $users = $query->get();
 
         // --- 3a. LOGIKA STATISTIK RINGKASAN (UNTUK CARD DI ATAS) ---
-        $statsQuery = Cta::whereBetween('created_at', [$start, $end]);
-
-        // Jika ada filter marketing, filter juga statistik globalnya
-        if ($marketing_filter) {
-            $statsQuery->whereHas('prospek', function ($q) use ($marketing_filter) {
+        // FIX: Pindahkan filter tanggal ke dalam relasi prospek dan gunakan tanggal_prospek
+        $statsQuery = Cta::whereHas('prospek', function ($q) use ($start, $end, $marketing_filter) {
+            $q->whereBetween('tanggal_prospek', [$start . " 00:00:00", $end . " 23:59:59"]);
+            if ($marketing_filter) {
                 $q->where('marketing_id', $marketing_filter);
-            });
-        }
+            }
+        });
 
-        // Kita gunakan clone agar query builder tidak tercampur antara count dan sum
         $stat_total_qty = (clone $statsQuery)->count();
         $stat_deal_qty = (clone $statsQuery)->where('status_penawaran', 'deal')->count();
-        // FIX: Hitung Nilai Berdasarkan (Harga x Qty)
         $stat_total_nilai = (clone $statsQuery)->get()->sum(fn ($item) => $item->harga_penawaran * $item->jumlah_peserta);
         $stat_deal_nilai = (clone $statsQuery)->where('status_penawaran', 'deal')->get()->sum(fn ($item) => $item->harga_penawaran * $item->jumlah_peserta);
+        
         // 3. MAPPING DATA UNTUK TABEL PROGRESS & TABEL STATUS AKHIR
         $marketings = $users->map(function ($user) use ($start, $end, $hariEfektif) {
             $gaji = \App\Models\Penggajian::where('user_id', $user->id)->first();
@@ -70,40 +66,32 @@ class DashboardController extends Controller
 
             $user->target_total = $targetCallHarian * $hariEfektif;
 
-            // ================= PERHITUNGAN PROGRESS / PENCAPAIAN =================
-            // Kita ambil data CTA sebagai Base Query (menggunakan query, BUKAN get())
-            $baseCtaQuery = \App\Models\Cta::whereHas('prospek', function ($q) use ($user) {
-                $q->where('marketing_id', $user->id);
-            })->whereBetween('created_at', [$start . " 00:00:00", $end . " 23:59:59"]);
+            // ================= PERHITUNGAN PROGRESS / PENCAPAIAN (VERSI LAMA) =================
+            $baseCtaQuery = \App\Models\Cta::whereHas('prospek', function ($q) use ($user, $start, $end) {
+                $q->where('marketing_id', $user->id)
+                  ->whereBetween('tanggal_prospek', [$start . " 00:00:00", $end . " 23:59:59"]); 
+            });
 
-            // 1. Hitung JUMLAH SEMUA CTA yang dibuat
             $jumlahCtaBase = (clone $baseCtaQuery)->count();
 
-            // 2. Hitung JUMLAH CTA YANG MEMILIKI STATUS (Update / Follow Up)
             $jumlahCtaBerstatus = (clone $baseCtaQuery)
                 ->whereNotNull('status_penawaran')
                 ->where('status_penawaran', '!=', '')
                 ->count();
 
-            // 3. RUMUS PROGRESS: Total Form Dibuat + Total Form Diupdate Statusnya
+            // 🔥 Rumus Lama: Menghitung total base CTA + CTA yang ada statusnya
             $user->pencapaian = $jumlahCtaBase + $jumlahCtaBerstatus;
-            
-            // Hitung persentase pencapaian
             $user->ach_persen = ($user->target_total > 0) ? ($user->pencapaian / $user->target_total) * 100 : 0;
-            // =====================================================================
 
-            // Ambil semua prospek user ini dalam range tanggal
+            // ================== 1. AMBIL DATA PROSPEK & CTA (UNTUK TABEL BAWAH) ==================
             $prospeks = \App\Models\Prospek::where('marketing_id', $user->id)
-                ->whereBetween('created_at', [$start, $end])->get();
+                ->whereBetween('tanggal_prospek', [$start . " 00:00:00", $end . " 23:59:59"])->get();
 
-            // ================== LOGIKA BARU: MENGHITUNG CTA PER PROSPEK ==================
-            // Kita cari tahu setiap prospek itu punya berapa CTA
             $ctasCount = \App\Models\Cta::whereIn('prospek_id', $prospeks->pluck('id'))
                 ->selectRaw('prospek_id, count(*) as total')
                 ->groupBy('prospek_id')
                 ->pluck('total', 'prospek_id');
 
-            // Fungsi cerdas: Kalau ada CTA hitung CTA-nya, kalau belum ada hitung 1 prospek
             $hitungStatus = function($statusName) use ($prospeks, $ctasCount) {
                 return $prospeks->where('status', $statusName)->sum(function ($p) use ($ctasCount) {
                     $jmlCta = $ctasCount[$p->id] ?? 0;
@@ -111,20 +99,63 @@ class DashboardController extends Controller
                 });
             };
 
-            // --- LOGIKA UNTUK TABEL STATUS AKHIR DATA ---
-            $user->count_perpanjangan = $hitungStatus('REQUES PERPANJANGAN SERTIFIKAT');
-            $user->count_invalid      = $hitungStatus('DATA TIDAK VALID & TIDAK TERHUBUNG');
-            $user->count_email        = $hitungStatus('DAPAT EMAIL');
-            $user->count_wa           = $hitungStatus('DAPAT NO WA HRD');
-            $user->count_compro       = $hitungStatus('KIRIM COMPRO');
-            $user->count_manja        = $hitungStatus('MANJA');
-            $user->count_manja_ulang  = $hitungStatus('MANJA ULANG');
-            $user->count_pelatihan    = $hitungStatus('REQUEST PERMINTAAN PELATIHAN');
-            $user->count_penawaran    = $hitungStatus('MASUK PENAWARAN');
+            // ================== 2. HITUNG STATUS AKHIR DATA ==================
+            // Urutan variabel disesuaikan dengan urutan visual di foto (atas ke bawah)
+            
+            $user->count_invalid            = $hitungStatus('DATA TIDAK VALID & TIDAK TERHUBUNG');
+            $user->count_tidak_respon       = $hitungStatus('TIDAK RESPON');
+            $user->count_wa                 = $hitungStatus('DAPAT NO WA HRD');
+            $user->count_compro             = $hitungStatus('KIRIM COMPRO');
+            $user->count_manja              = $hitungStatus('MANJA');
+            $user->count_manja_ulang        = $hitungStatus('MANJA ULANG');
+            $user->count_pelatihan          = $hitungStatus('REQUEST PERMINTAAN PELATIHAN');
+            $user->count_penawaran          = $hitungStatus('MASUK PENAWARAN');
+            $user->count_belum_ada_kebutuhan = $hitungStatus('BELUM ADA KEBUTUHAN');
+            $user->count_perpanjangan       = $hitungStatus('REQUES PERPANJANGAN SERTIFIKAT');
+            $user->count_penawaran_hardfile  = $hitungStatus('PENAWARAN HARDFILE');
+            $user->count_tidak_menerima_penawaran = $hitungStatus('TIDAK MENERIMA PENAWARAN');
+            $user->count_dapat_telp         = $hitungStatus('DAPAT NO TELP'); // baru sesuai foto
+            $user->count_sudah_ada_vendor_kerjasama = $hitungStatus('SUDAH ADA VENDOR KERJASAMA');
+            
+            // Status tambahan (untuk jaga-jaga jika ada data lama di database)
+            $user->count_hold               = $hitungStatus('HOLD');
+            $user->count_email              = $hitungStatus('DAPAT EMAIL');
+            
+            // ================== 🔥 LOGIKA SAPU JAGAT (Data Kosong / Typo) 🔥 ==================
+            // Pastikan semua string status di atas masuk ke sini agar tidak terhitung sebagai "Tanpa Status"
+            
+            $statusResmi = [
+                'DATA TIDAK VALID & TIDAK TERHUBUNG',
+                'TIDAK RESPON',
+                'DAPAT NO WA HRD',
+                'KIRIM COMPRO',
+                'MANJA',
+                'MANJA ULANG',
+                'REQUEST PERMINTAAN PELATIHAN',
+                'MASUK PENAWARAN',
+                'BELUM ADA KEBUTUHAN',
+                'REQUES PERPANJANGAN SERTIFIKAT',
+                'PENAWARAN HARDFILE',
+                'TIDAK MENERIMA PENAWARAN',
+                'DAPAT NO TELP',
+                'SUDAH ADA VENDOR KERJASAMA',
+                'HOLD',
+                'DAPAT EMAIL'
+            ];
+            
+            $user->count_tanpa_status = $prospeks->filter(function($p) use ($statusResmi) {
+                // Jika status NULL, Kosong, atau Isinya tidak ada di daftar $statusResmi
+                return empty($p->status) || !in_array($p->status, $statusResmi);
+            })->sum(function ($p) use ($ctasCount) {
+                $jmlCta = $ctasCount[$p->id] ?? 0;
+                return $jmlCta > 0 ? $jmlCta : 1; 
+            });
 
-            $cta = \App\Models\Cta::whereHas('prospek', function ($q) use ($user) {
-                $q->where('marketing_id', $user->id);
-            })->whereBetween('created_at', [$start, $end])->get();
+            // ================== 3. HITUNG STATUS PENAWARAN (DEAL, HOLD, DLL) ==================
+            $cta = \App\Models\Cta::whereHas('prospek', function ($q) use ($user, $start, $end) {
+                $q->where('marketing_id', $user->id)
+                  ->whereBetween('tanggal_prospek', [$start . " 00:00:00", $end . " 23:59:59"]); 
+            })->get();
 
             $user->total_penawaran = $cta->whereNotNull('status_penawaran')->where('status_penawaran', '!=', '')->count();
             $user->deal = $cta->where('status_penawaran', 'deal')->count();
@@ -140,81 +171,147 @@ class DashboardController extends Controller
         $pieData = [];
         foreach ($users as $user) {
             $pieLabels[] = $user->name;
-            $totalNominalDeal = \App\Models\Cta::whereHas('prospek', fn ($q) => $q->where('marketing_id', $user->id))
-                ->where('status_penawaran', 'deal') // Hanya yang Deal
-                ->whereBetween('created_at', [$start, $end])
-                ->sum('harga_penawaran'); // Jumlahkan Rupiahnya
+            // FIX: Tambahkan jam agar akurat
+            $totalNominalDeal = \App\Models\Cta::whereHas('prospek', function ($q) use ($user, $start, $end) {
+                $q->where('marketing_id', $user->id)
+                  ->whereBetween('tanggal_prospek', [$start . " 00:00:00", $end . " 23:59:59"]); 
+            })
+            ->where('status_penawaran', 'deal')
+            ->sum(\Illuminate\Support\Facades\DB::raw('harga_penawaran * jumlah_peserta'));
+            
             $pieData[] = $totalNominalDeal;
         }
 
-        // 5. LOGIKA LINE CHART (Total NOMINAL PENAWARAN - Walau Gagal/Hold)
-        $lineLabels = [];
-        for ($i = 5; $i >= 0; $i--) {
-            $lineLabels[] = now()->subMonths($i)->format('M Y');
-        }
-
-        $lineDatasets = [];
+        // ================= 5. LOGIKA LINE CHART (DIBAGI 2 PAKET: 6 BULAN & BULAN INI) =================
         $colors = ['#0d6efd', '#0dcaf0', '#ffc107', '#198754', '#dc3545', '#6610f2'];
 
+        // --- PAKET A: DATA 6 BULAN TERAKHIR ---
+        $lineLabels6Months = [];
+        for ($i = 5; $i >= 0; $i--) {
+            $lineLabels6Months[] = now()->subMonths($i)->format('M Y');
+        }
+        $lineDatasets6Months = [];
+
+        // --- PAKET B: DATA HARIAN (BULAN INI) ---
+        $lineLabelsThisMonth = [];
+        $daysInMonth = now()->daysInMonth;
+        for ($i = 1; $i <= $daysInMonth; $i++) {
+            $lineLabelsThisMonth[] = $i . ' ' . now()->format('M');
+        }
+        $lineDatasetsThisMonth = [];
+
+        // Eksekusi Query untuk kedua paket
         foreach ($users as $index => $user) {
-            $monthlyOfferNominals = [];
+            
+            // Query 6 Bulan
+            $data6Months = [];
             for ($i = 5; $i >= 0; $i--) {
-                $loopStart = now()->subMonths($i)->startOfMonth();
-                $loopEnd = now()->subMonths($i)->endOfMonth();
-
-                // Menjumlahkan SUM harga_penawaran TANPA filter status (semua penawaran masuk)
-                $sumNominal = \App\Models\Cta::whereHas('prospek', fn ($q) => $q->where('marketing_id', $user->id))
-                    ->whereBetween('created_at', [$loopStart, $loopEnd])
-                    ->sum('harga_penawaran');
-
-                $monthlyOfferNominals[] = $sumNominal;
+                $startStr = now()->subMonths($i)->startOfMonth()->format('Y-m-d 00:00:00');
+                $endStr = now()->subMonths($i)->endOfMonth()->format('Y-m-d 23:59:59');
+                $data6Months[] = \App\Models\Cta::whereHas('prospek', function ($q) use ($user, $startStr, $endStr) {
+                    $q->where('marketing_id', $user->id)->whereBetween('tanggal_prospek', [$startStr, $endStr]);
+                })->sum(\Illuminate\Support\Facades\DB::raw('harga_penawaran * jumlah_peserta'));
             }
+            $lineDatasets6Months[] = [
+                'label' => $user->name, 'borderColor' => $colors[$index] ?? '#000', 'backgroundColor' => 'transparent',
+                'data' => $data6Months, 'fill' => false, 'borderWidth' => 2, 'tension' => 0.3,
+            ];
 
-            $lineDatasets[] = [
-                'label' => $user->name,
-                'borderColor' => $colors[$index] ?? '#000',
-                'backgroundColor' => 'transparent',
-                'data' => $monthlyOfferNominals,
-                'fill' => false,
-                'borderWidth' => 2,
-                'tension' => 0.3,
+            // Query Harian (Bulan Ini)
+            $dataThisMonth = [];
+            for ($i = 1; $i <= $daysInMonth; $i++) {
+                $dateStr = now()->format('Y-m-') . str_pad($i, 2, '0', STR_PAD_LEFT);
+                $dataThisMonth[] = \App\Models\Cta::whereHas('prospek', function ($q) use ($user, $dateStr) {
+                    $q->where('marketing_id', $user->id)->whereBetween('tanggal_prospek', [$dateStr . " 00:00:00", $dateStr . " 23:59:59"]);
+                })->sum(\Illuminate\Support\Facades\DB::raw('harga_penawaran * jumlah_peserta'));
+            }
+            $lineDatasetsThisMonth[] = [
+                'label' => $user->name, 'borderColor' => $colors[$index] ?? '#000', 'backgroundColor' => 'transparent',
+                'data' => $dataThisMonth, 'fill' => false, 'borderWidth' => 2, 'tension' => 0.3,
             ];
         }
+        // ==============================================================================================
 
         $all_marketing = \App\Models\User::where('role', 'marketing')->get();
-
-        // ================= REMINDER ADMIN =================
         $dataMasukToday = \App\Models\DataMasuk::whereDate('created_at', now())->count();
         $targetDataMasuk = 100;
-
-        // Cek apakah user yang login adalah admin atau superadmin
         $isAdmin = auth()->user()->role === 'admin' || auth()->user()->role === 'superadmin';
-
-        // Reminder aktif HANYA UNTUK ADMIN, sebelum jam 16:00, jika belum mencapai target
         $showReminder = $isAdmin && now()->hour < 16 && $dataMasukToday < $targetDataMasuk;
-
-        // Success HANYA UNTUK ADMIN, jika target tercapai
         $showSuccessReminder = $isAdmin && now()->hour < 16 && $dataMasukToday >= $targetDataMasuk;
+        
+        // ================= 🔥 DATA UNTUK PETA (JVECTOR MAP) 🔥 =================
+        // 1. Ambil data jumlah penawaran (CTA) yang di-group berdasarkan teks 'lokasi'
+        $mapDataRaw = Prospek::whereHas('cta')
+            ->whereBetween('tanggal_prospek', [$start, $end])
+            ->whereNotNull('lokasi')
+            ->select('lokasi', DB::raw('COUNT(*) as total'))
+            ->groupBy('lokasi')
+            ->pluck('total', 'lokasi');
 
+        // 2. Mapping teks lokasi ke kode wilayah jVectorMap (ISO 3166-2:ID)
+        $mapData = [];
+        foreach ($mapDataRaw as $lokasi => $total) {
+            $lokasiUpper = strtoupper(trim($lokasi));
+            $code = '';
+
+            // Cocokkan kata kunci untuk mendapat kode provinsi
+            if (str_contains($lokasiUpper, 'JAKARTA') || $lokasiUpper == 'DKI') $code = 'ID-JK';
+            elseif (str_contains($lokasiUpper, 'JAWA BARAT') || $lokasiUpper == 'JABAR') $code = 'ID-JB';
+            elseif (str_contains($lokasiUpper, 'JAWA TENGAH') || $lokasiUpper == 'JATENG') $code = 'ID-JT';
+            elseif (str_contains($lokasiUpper, 'JAWA TIMUR') || $lokasiUpper == 'JATIM') $code = 'ID-JI';
+            elseif (str_contains($lokasiUpper, 'YOGYAKARTA') || $lokasiUpper == 'JOGJA' || $lokasiUpper == 'DIY') $code = 'ID-YO';
+            elseif (str_contains($lokasiUpper, 'BANTEN')) $code = 'ID-BT';
+            elseif (str_contains($lokasiUpper, 'BALI')) $code = 'ID-BA';
+            elseif (str_contains($lokasiUpper, 'SUMATERA UTARA') || $lokasiUpper == 'SUMUT') $code = 'ID-SU';
+            elseif (str_contains($lokasiUpper, 'SUMATERA BARAT') || $lokasiUpper == 'SUMBAR') $code = 'ID-SB';
+            elseif (str_contains($lokasiUpper, 'SUMATERA SELATAN') || $lokasiUpper == 'SUMSEL') $code = 'ID-SS';
+            elseif (str_contains($lokasiUpper, 'RIAU')) $code = 'ID-RI';
+            elseif (str_contains($lokasiUpper, 'KEPULAUAN RIAU') || $lokasiUpper == 'KEPRI') $code = 'ID-KR';
+            elseif (str_contains($lokasiUpper, 'JAMBI')) $code = 'ID-JA';
+            elseif (str_contains($lokasiUpper, 'BENGKULU')) $code = 'ID-BE';
+            elseif (str_contains($lokasiUpper, 'LAMPUNG')) $code = 'ID-LA';
+            elseif (str_contains($lokasiUpper, 'BANGKA BELITUNG') || $lokasiUpper == 'BABEL') $code = 'ID-BB';
+            elseif (str_contains($lokasiUpper, 'ACEH')) $code = 'ID-AC';
+            elseif (str_contains($lokasiUpper, 'KALIMANTAN BARAT') || $lokasiUpper == 'KALBAR') $code = 'ID-KB';
+            elseif (str_contains($lokasiUpper, 'KALIMANTAN TENGAH') || $lokasiUpper == 'KALTENG') $code = 'ID-KT';
+            elseif (str_contains($lokasiUpper, 'KALIMANTAN SELATAN') || $lokasiUpper == 'KALSEL') $code = 'ID-KS';
+            elseif (str_contains($lokasiUpper, 'KALIMANTAN TIMUR') || $lokasiUpper == 'KALTIM') $code = 'ID-KI';
+            elseif (str_contains($lokasiUpper, 'KALIMANTAN UTARA') || $lokasiUpper == 'KALTARA') $code = 'ID-KU';
+            elseif (str_contains($lokasiUpper, 'SULAWESI UTARA') || $lokasiUpper == 'SULUT') $code = 'ID-SA';
+            elseif (str_contains($lokasiUpper, 'SULAWESI TENGAH') || $lokasiUpper == 'SULTENG') $code = 'ID-ST';
+            elseif (str_contains($lokasiUpper, 'SULAWESI SELATAN') || $lokasiUpper == 'SULSEL') $code = 'ID-SN';
+            elseif (str_contains($lokasiUpper, 'SULAWESI TENGGARA') || $lokasiUpper == 'SULTRA') $code = 'ID-SG';
+            elseif (str_contains($lokasiUpper, 'SULAWESI BARAT') || $lokasiUpper == 'SULBAR') $code = 'ID-SR';
+            elseif (str_contains($lokasiUpper, 'GORONTALO')) $code = 'ID-GO';
+            elseif (str_contains($lokasiUpper, 'MALUKU UTARA') || $lokasiUpper == 'MALUT') $code = 'ID-MU';
+            elseif (str_contains($lokasiUpper, 'MALUKU')) $code = 'ID-MA';
+            elseif (str_contains($lokasiUpper, 'PAPUA BARAT')) $code = 'ID-PB';
+            elseif (str_contains($lokasiUpper, 'PAPUA')) $code = 'ID-PA';
+            elseif (str_contains($lokasiUpper, 'NUSA TENGGARA BARAT') || $lokasiUpper == 'NTB') $code = 'ID-NB';
+            elseif (str_contains($lokasiUpper, 'NUSA TENGGARA TIMUR') || $lokasiUpper == 'NTT') $code = 'ID-NT';
+
+            // Jika dikenali, tambahkan ke total map
+            if ($code != '') {
+                if(!isset($mapData[$code])) $mapData[$code] = 0;
+                $mapData[$code] += $total;
+            }
+        }
+        // ================= 🔥 END DATA PETA 🔥 =================
+
+        // 🔥 PASTIKAN BAGIAN RETURN VIEW DIUBAH MENJADI SEPERTI INI 🔥
         return view('dashboard-progress', compact(
             'marketings', 'all_marketing', 'start', 'end',
-            'pieLabels', 'pieData', 'lineLabels', 'lineDatasets',
+            'pieLabels', 'pieData', 
+            'lineLabels6Months', 'lineDatasets6Months', 'lineLabelsThisMonth', 'lineDatasetsThisMonth',
             'stat_total_qty', 'stat_deal_qty', 'stat_total_nilai', 'stat_deal_nilai', 
-            'showReminder', 'showSuccessReminder', 'dataMasukToday', 'targetDataMasuk'
+            'showReminder', 'showSuccessReminder', 'dataMasukToday', 'targetDataMasuk', 'mapData'
         ));
-
-        // return view('dashboard-progress', compact(
-        //     'marketings', 'all_marketing', 'start', 'end',
-        //     'pieLabels', 'pieData', 'lineLabels', 'lineDatasets',
-        //     'stat_total_qty', 'stat_deal_qty', 'stat_total_nilai', 'stat_deal_nilai', 'showReminder', 'showSuccessReminder', 'dataMasukToday', 'targetDataMasuk'
-        // ));
     }
 
     public function getDetail(Request $request, $id)
     {
         $authUser = auth()->user();
 
-        // 🔐 Kalau marketing, hanya boleh akses detail miliknya sendiri
         if ($authUser->role === 'marketing' && $authUser->id != $id) {
             abort(403, 'Unauthorized access');
         }
@@ -222,11 +319,12 @@ class DashboardController extends Controller
         $start = $request->query('start');
         $end = $request->query('end');
 
-        $details = \App\Models\Cta::whereHas('prospek', function ($q) use ($id) {
-            $q->where('marketing_id', $id);
+        // FIX: Tambahkan jam agar akurat saat di-klik detailnya
+        $details = \App\Models\Cta::whereHas('prospek', function ($q) use ($id, $start, $end) {
+            $q->where('marketing_id', $id)
+              ->whereBetween('tanggal_prospek', [$start . " 00:00:00", $end . " 23:59:59"]);
         })
             ->with('prospek')
-            ->whereBetween('created_at', [$start, $end])
             ->get();
 
         return view('partials.modal-detail-penawaran', compact('details'));

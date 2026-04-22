@@ -22,6 +22,9 @@ class User extends Authenticatable
         'email',
         'password',
         'role',
+        'foto_profil',
+        'nama_lengkap', // 🔥 TAMBAHAN BARU
+        'no_hp',        // 🔥 TAMBAHAN BARU
     ];
 
     /**
@@ -50,5 +53,11 @@ class User extends Authenticatable
     public function penggajian()
     {
         return $this->hasOne(Penggajian::class);
+    }
+    
+    // Relasi: 1 User bisa melakukan banyak Mutasi Barang
+    public function itemLogs()
+    {
+        return $this->hasMany(ItemLog::class, 'user_id');
     }
 }

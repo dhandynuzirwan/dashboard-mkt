@@ -95,26 +95,26 @@
                                             };
                                         @endphp
 
-                                        <a href="{{ route('dashboard.progress') }}"> 
-                                            {{-- Ikon Lingkaran Kiri --}}
-                                            <div class="notif-icon notif-{{ $theme['color'] }}">
-                                                <i class="fa {{ $theme['icon'] }}"></i>
-                                            </div>
-                                            
-                                            {{-- Konten Kanan --}}
-                                            <div class="notif-content">
+                                        <a href="{{ route('pipeline', ['search_perusahaan' => $cta->prospek->perusahaan]) }}" class="d-flex align-items-center py-2 px-3"> 
+                                            {{-- Konten Kanan (Sekarang jadi full/satu-satunya konten) --}}
+                                            <div class="notif-content w-100">
                                                 {{-- Baris 1: Nama Perusahaan (Bold) --}}
-                                                <span class="block fw-bold text-dark text-truncate" style="max-width: 210px;">
+                                                <span class="block fw-bold text-dark text-truncate d-block" style="max-width: 100%;">
                                                     {{ $cta->prospek->perusahaan ?? 'Perusahaan Baru' }}
                                                 </span>
                                                 
-                                                {{-- Baris 2: Judul Pelatihan (Abu-abu) --}}
-                                                <span class="text-muted d-block text-truncate mb-1" style="max-width: 210px; font-size: 0.8rem;">
+                                                {{-- Baris 2: Judul Pelatihan & Nama Marketing (Abu-abu & Primary) --}}
+                                                <span class="text-muted d-block text-truncate mb-1" style="max-width: 100%; font-size: 0.8rem;">
                                                     {{ $cta->judul_permintaan ?: 'Menunggu Judul' }}
+                                                    
+                                                    {{-- 🔥 NAMA MARKETING DITAMBAHKAN DI SINI 🔥 --}}
+                                                    <span class="d-block text-primary mt-1" style="font-size: 0.75rem;">
+                                                        <i class="fas fa-user-tie me-1"></i> {{ $cta->prospek->marketing->name ?? 'Belum ada PIC' }}
+                                                    </span>
                                                 </span>
                                                 
                                                 {{-- Baris 3: Status & Waktu Gabung 1 Baris --}}
-                                                <span class="time text-{{ $theme['color'] }} fw-bold m-0 p-0">
+                                                <span class="time text-{{ $theme['color'] }} fw-bold m-0 p-0 d-block" style="font-size: 0.75rem;">
                                                     {{ str_replace('_', ' ', ucwords($status)) }} &bull; <span class="text-muted fw-normal">{{ $cta->created_at->diffForHumans() }}</span>
                                                 </span>
                                             </div>
@@ -128,8 +128,13 @@
                             </div>
                         </li>
                         <li>
-                            <a class="see-all" href="{{ route('dashboard.progress') }}">
-                                Lihat Semua Progress <i class="fa fa-angle-right"></i>
+                            {{-- Mengarahkan ke route pipeline dengan filter tanggal HARI INI otomatis --}}
+                            <a class="see-all" href="{{ route('pipeline', [
+                                'start_date' => now()->format('Y-m-d'), 
+                                'end_date' => now()->format('Y-m-d'),
+                                'cta_status' => 'done' 
+                            ]) }}">
+                                Lihat Semua Progress Hari Ini <i class="fa fa-angle-right"></i>
                             </a>
                         </li>
                     </ul>
@@ -138,21 +143,25 @@
                 @php
                     $userRole = Auth::user()->role;
                     if ($userRole == 'superadmin') {
-                        $avatarUrl = 'https://cdn-icons-png.flaticon.com/512/430/430876.png';
                         $badgeClass = 'badge-danger';
                     } elseif ($userRole == 'admin') {
-                        $avatarUrl = 'https://cdn-icons-png.flaticon.com/512/999/999104.png';
                         $badgeClass = 'badge-primary';
                     } else {
-                        $avatarUrl = 'https://cdn-icons-png.flaticon.com/512/14379/14379379.png';
                         $badgeClass = 'badge-success';
                     }
                 @endphp
 
                 <li class="nav-item topbar-user dropdown hidden-caret">
                     <a class="dropdown-toggle profile-pic" data-bs-toggle="dropdown" href="#" aria-expanded="false">
+                        {{-- 1. FOTO DI TOPBAR KECIL --}}
                         <div class="avatar-sm">
-                            <img src="{{ $avatarUrl }}" alt="profile" class="avatar-img rounded-circle" />
+                            @if(Auth::user()->foto_profil)
+                                <img src="{{ asset('storage/' . Auth::user()->foto_profil) }}" alt="profile" class="avatar-img rounded-circle object-fit-cover" />
+                            @else
+                                <span class="avatar-title rounded-circle bg-primary-gradient fw-bold text-white">
+                                    {{ strtoupper(substr(Auth::user()->name, 0, 1)) }}
+                                </span>
+                            @endif
                         </div>
                         <span class="profile-username">
                             <span class="op-7">Hi,</span>
@@ -163,8 +172,15 @@
                         <div class="dropdown-user-scroll scrollbar-outer">
                             <li>
                                 <div class="user-box">
+                                    {{-- 2. FOTO DI DALAM DROPDOWN --}}
                                     <div class="avatar-lg">
-                                        <img src="{{ $avatarUrl }}" alt="profile image" class="avatar-img rounded" />
+                                        @if(Auth::user()->foto_profil)
+                                            <img src="{{ asset('storage/' . Auth::user()->foto_profil) }}" alt="profile image" class="avatar-img rounded object-fit-cover" />
+                                        @else
+                                            <span class="avatar-title rounded bg-primary-gradient fw-bold text-white fs-3">
+                                                {{ strtoupper(substr(Auth::user()->name, 0, 1)) }}
+                                            </span>
+                                        @endif
                                     </div>
                                     <div class="u-text">
                                         <h4>{{ Auth::user()->name }}</h4>

@@ -7,6 +7,7 @@
             <h3 class="fw-bold mb-1">Data Masuk</h3>
             <h6 class="op-7 mb-2">Database Marketing & Assignment Center</h6>
         </div>
+        
         {{-- Header & Filter Section --}}
         <div class="d-flex align-items-left align-items-md-center flex-column flex-md-row mb-4">
             <div class="ms-md-auto py-2 py-md-0">
@@ -57,7 +58,6 @@
                     </div>
                 </form>
             </div>
-            
         </div>
 
         {{-- Stats Cards --}}
@@ -69,7 +69,7 @@
                         <div class="row align-items-center">
                             <div class="col-icon">
                                 <div class="icon-big text-center icon-primary bubble-shadow-small">
-                                    <i class="icon-layers"></i> {{-- Menggunakan icon-layers bawaan Kaiadmin --}}
+                                    <i class="icon-layers"></i>
                                 </div>
                             </div>
                             <div class="col col-stats ms-3 ms-sm-0">
@@ -91,7 +91,7 @@
                         <div class="row align-items-center">
                             <div class="col-icon">
                                 <div class="icon-big text-center icon-info bubble-shadow-small">
-                                    <i class="icon-calendar"></i> {{-- Menggunakan icon-calendar bawaan Kaiadmin --}}
+                                    <i class="icon-calendar"></i>
                                 </div>
                             </div>
                             <div class="col col-stats ms-3 ms-sm-0">
@@ -113,7 +113,7 @@
                         <div class="row align-items-center">
                             <div class="col-icon">
                                 <div class="icon-big text-center icon-success bubble-shadow-small">
-                                    <i class="icon-envelope-letter"></i> {{-- Menggunakan icon-envelope-letter bawaan Kaiadmin --}}
+                                    <i class="icon-envelope-letter"></i>
                                 </div>
                             </div>
                             <div class="col col-stats ms-3 ms-sm-0">
@@ -130,14 +130,14 @@
                 </div>
             </div>
 
-            {{-- 4. Total Ter-Deliver (Prospek) --}}
+            {{-- 4. Total Ter-Deliver --}}
             <div class="col-sm-6 col-md-3">
                 <div class="card card-stats card-round card-animate h-100 mb-0">
                     <div class="card-body">
                         <div class="row align-items-center">
                             <div class="col-icon">
                                 <div class="icon-big text-center icon-secondary bubble-shadow-small">
-                                    <i class="icon-paper-plane"></i> {{-- Menggunakan icon-paper-plane bawaan Kaiadmin --}}
+                                    <i class="icon-paper-plane"></i>
                                 </div>
                             </div>
                             <div class="col col-stats ms-3 ms-sm-0">
@@ -159,7 +159,6 @@
                 <i class="fa fa-plus me-1"></i> Tambah Data Masuk
             </a>
             
-            {{-- Tombol Hapus By Tanggal (Hanya untuk Role Tertentu jika diperlukan, misal Admin) --}}
             @if(auth()->user()->role == 'admin' || auth()->user()->role == 'rnd')
                 <button class="btn btn-danger btn-sm btn-round" data-bs-toggle="modal" data-bs-target="#modalDeleteByDate">
                     <i class="fa fa-trash me-1"></i> Hapus By Tanggal
@@ -203,26 +202,69 @@
             </div>
         </div>
 
-        <ul class="nav nav-pills nav-secondary bg-white p-1 rounded d-inline-flex mb-3" id="pills-tab" role="tablist">
-            <li class="nav-item">
-                <a class="nav-link active" id="pills-umum-tab" data-bs-toggle="pill" href="#pills-umum" role="tab">
-                    <i class="fas fa-database me-1"></i> Data Umum
-                </a>
-            </li>
-            <li class="nav-item">
-                <a class="nav-link" id="pills-ads-tab" data-bs-toggle="pill" href="#pills-ads" role="tab">
-                    <i class="fas fa-bullhorn me-1"></i> Data Ads Lead 
-                </a>
-            </li>
-        </ul>
+        {{-- ================= TABS NAVIGASI ================= --}}
+            <ul class="nav nav-pills nav-secondary bg-white p-1 rounded border d-inline-flex mb-3" id="pills-tab" role="tablist">
+                <li class="nav-item">
+                    <a class="nav-link active" id="pills-umum-tab" data-bs-toggle="pill" href="#pills-umum" role="tab" aria-selected="true">
+                        <i class="fas fa-database me-1"></i> Data Umum
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" id="pills-ads-tab" data-bs-toggle="pill" href="#pills-ads" role="tab" aria-selected="false">
+                        <i class="fas fa-bullhorn me-1"></i> Data Ads
+                    </a>
+                </li>
+            </ul>
 
         <div class="tab-content mt-2 mb-3" id="pills-tabContent">
-            {{-- TAB 1: DATA UMUM --}}
-            <div class="tab-pane fade show active" id="pills-umum" role="tabpanel">
-                <div class="card card-round shadow-sm">
+            <div class="tab-pane fade show active" id="pills-umum" role="tabpanel" aria-labelledby="pills-umum-tab">
+            
+            {{-- 🔥 CARD STATUS SINKRONISASI (LANGSUNG TAMPIL NAMA) 🔥 --}}
+                @if (in_array(auth()->user()->role, ['admin', 'superadmin']))
+                    @if(count($unsyncedCompanies) > 0)
+                        <div class="alert alert-warning shadow-sm border-0 rounded-4 p-3 mb-3">
+                            <div class="d-flex align-items-start">
+                                <i class="fas fa-exclamation-triangle fs-2 text-warning me-3 animate-pulse mt-1"></i>
+                                <div class="flex-grow-1">
+                                    <h6 class="fw-bold mb-1 text-dark">Butuh Sinkronisasi Assignment!</h6>
+                                    <p class="mb-2 small text-dark">
+                                        Terdapat total <b class="text-danger fs-6">{{ count($unsyncedCompanies) }}</b> data perusahaan di seluruh database yang statusnya <b>Menunggu Admin</b>, namun <b>sudah ada di data Prospek</b>.
+                                    </p>
+                                    
+                                    {{-- Box Daftar Nama Perusahaan --}}
+                                    <div class="bg-white p-2 rounded border border-warning shadow-sm mb-2" style="max-height: 120px; overflow-y: auto;">
+                                        <strong class="small text-danger d-block mb-2">
+                                            <i class="fas fa-list-ul me-1"></i> Daftar Perusahaan Nyangkut:
+                                        </strong>
+                                        <div class="d-flex flex-wrap gap-1">
+                                            @foreach($unsyncedCompanies as $companyName)
+                                                <span class="badge bg-warning text-dark border border-warning-subtle py-1 px-2">
+                                                    {{ $companyName }}
+                                                </span>
+                                            @endforeach
+                                        </div>
+                                    </div>
+                                    
+                                    {{-- 🔥 TOMBOL AUTO-SYNC 🔥 --}}
+                                    <form action="{{ route('data-masuk.auto-sync') }}" method="POST" class="d-inline-block">
+                                        @csrf
+                                        <button type="submit" class="btn btn-dark btn-sm btn-round shadow-sm" onclick="return confirm('Sistem akan otomatis menyesuaikan nama Marketing di Data Masuk mengikuti tabel Prospek. Lanjutkan?')">
+                                            <i class="fas fa-sync-alt me-1"></i> Sinkronkan Semua Otomatis
+                                        </button>
+                                    </form>
+                                    
+                                </div>
+                            </div>
+                        </div>
+                    @endif
+                @endif
+                {{-- 🔥 END TAMBAHAN CARD 🔥 --}}
+
+                <div class="card card-round shadow-sm border-0">
                     <div class="card-header">
                         <div class="card-title">Tabel Data Masuk (Database Pusat)</div>
                     </div>
+                    
                     <div class="card-body">
                         @if(session('success'))
                             <div class="alert alert-success alert-dismissible fade show">
@@ -238,11 +280,9 @@
                             </div>
                         @endif
 
-                        {{-- FORM BUNGKUSAN UNTUK DELIVER MASSAL --}}
                         <form action="{{ route('data-masuk.deliver-massal') }}" method="POST" id="formDeliverMassal">
                             @csrf
                             
-                            {{-- Tombol Deliver Massal (Hanya muncul untuk Admin) --}}
                             @if (in_array(auth()->user()->role, ['admin', 'superadmin']))
                                 <div class="mb-3">
                                     <button type="button" class="btn btn-primary btn-sm btn-round" data-bs-toggle="modal" data-bs-target="#modalDeliverMassal" id="btnBulkDeliver" disabled>
@@ -252,20 +292,33 @@
 
                                 {{-- Modal Deliver Massal --}}
                                 <div class="modal fade" id="modalDeliverMassal" tabindex="-1" aria-hidden="true">
-                                    <div class="modal-dialog modal-dialog-centered modal-sm">
+                                    <div class="modal-dialog modal-dialog-centered">
                                         <div class="modal-content card-round text-start">
                                             <div class="modal-header border-0">
                                                 <h6 class="fw-bold m-0">Assign Massal ke Marketing</h6>
                                                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                                             </div>
-                                            <div class="modal-body py-2">
-                                                <p class="small text-muted mb-2">Pilih marketing untuk <b id="textCountModal">0</b> data prospek terpilih.</p>
-                                                <select name="marketing_id" class="form-select form-select-sm" required>
-                                                    <option value="">-- Pilih Marketing --</option>
-                                                    @foreach($marketings as $m)
-                                                        <option value="{{ $m->id }}">{{ $m->name }}</option>
-                                                    @endforeach
-                                                </select>
+                                            <div class="modal-body py-3">
+                                                <div class="alert alert-info py-2 px-3 small mb-3">
+                                                    Anda akan mengirim <b id="textCountModal">0</b> data terpilih ke Pipeline.
+                                                </div>
+                                                
+                                                <div class="mb-3">
+                                                    <label class="fw-bold mb-1 small">Pilih Marketing <span class="text-danger">*</span></label>
+                                                    <select name="marketing_id" class="form-select form-select-sm" required>
+                                                        <option value="">-- Pilih Marketing --</option>
+                                                        @foreach($marketings as $m)
+                                                            <option value="{{ $m->id }}">{{ $m->name }}</option>
+                                                        @endforeach
+                                                    </select>
+                                                </div>
+
+                                                {{-- NEW: Input Tanggal Assign Massal --}}
+                                                <div class="mb-2">
+                                                    <label class="fw-bold mb-1 small">Tanggal Assign <span class="text-danger">*</span></label>
+                                                    <input type="date" name="tanggal_assign" class="form-control form-control-sm" value="{{ date('Y-m-d') }}" required>
+                                                    <small class="text-muted d-block mt-1">Ubah tanggal jika ingin mendeliver untuk besok/kemarin.</small>
+                                                </div>
                                             </div>
                                             <div class="modal-footer border-0">
                                                 <button type="submit" class="btn btn-primary btn-sm btn-round w-100">Kirim ke Pipeline</button>
@@ -276,25 +329,17 @@
                             @endif
 
                             <div class="table-responsive">
-                                <table class="table table-bordered align-middle">
+                                <table class="table table-bordered table-hover align-middle">
                                     <thead class="bg-light text-center">
                                         <tr>
-                                            {{-- HEADER CHECKBOX --}}
                                             @if (in_array(auth()->user()->role, ['admin', 'superadmin']))
                                                 <th width="40"><input type="checkbox" id="checkAll" class="form-check-input"></th>
                                             @endif
-                                            
-                                            <th width="120">Tanggal Input</th>
-                                            <th>Marketing Assignment</th>
-                                            <th>Perusahaan</th>
-                                            <th>Telp Perusahaan</th>
-                                            <th>Unit Bisnis</th>
-                                            <th>Email</th>
-                                            <th>Status Email</th>
-                                            <th>WhatsApp</th>
-                                            <th>Lokasi</th>
-                                            <th>Sumber</th>
-                                            <th width="150">Aksi</th>
+                                            <th width="150">INFO DATA</th>
+                                            <th>PERUSAHAAN & UNIT</th>
+                                            <th>KONTAK</th>
+                                            <th>ASSIGNMENT</th>
+                                            <th width="100">ACTION</th>
                                         </tr>
                                     </thead>
                                     <tbody>
@@ -307,20 +352,45 @@
                                                     </td>
                                                 @endif
 
-                                                <td class="text-center small">{{ $item->created_at->format('d/m/Y') }}</td>
+                                                {{-- INFO DATA --}}
+                                                <td>
+                                                    <span class="fw-bold text-dark">{{ $item->created_at->format('d M Y') }}</span><br>
+                                                    @if($item->is_ads)
+                                                        <span class="badge badge-primary my-1"><i class="fas fa-bullhorn me-1"></i> Ads</span>
+                                                    @else
+                                                        <span class="badge badge-secondary my-1">{{ $item->sumber }}</span>
+                                                    @endif
+                                                    <small class="d-block text-muted"><i class="fas fa-map-marker-alt text-danger me-1"></i>{{ $item->lokasi ?? '-' }}</small>
+                                                </td>
                                                 
-                                                {{-- KODE TABEL KAMU YANG LAIN TETAP SAMA --}}
+                                                {{-- PERUSAHAAN & UNIT --}}
+                                                <td>
+                                                    <div class="fw-bold text-primary" style="font-size: 15px;">{{ $item->perusahaan }}</div>
+                                                    <small class="text-muted d-block"><i class="fas fa-building me-1"></i> Unit: {{ $item->unit_bisnis ?? '-' }}</small>
+                                                </td>
+
+                                                {{-- KONTAK --}}
+                                                <td>
+                                                    <div style="font-size: 12px;">
+                                                        @if($item->email)
+                                                            <div title="Email"><i class="fas fa-envelope text-secondary me-1"></i> {{ $item->email }} 
+                                                                @if($item->status_email) <span class="badge bg-light text-muted border border-secondary p-1 ms-1" style="font-size: 9px;">{{ $item->status_email }}</span> @endif
+                                                            </div>
+                                                        @endif
+                                                        @if($item->telp) <div title="Telp Perusahaan" class="mt-1"><i class="fas fa-phone text-primary me-1"></i> {{ $item->telp }}</div> @endif
+                                                        @if($item->wa_baru ?? $item->wa_pic) <div title="WhatsApp" class="mt-1"><i class="fab fa-whatsapp text-success me-1"></i> {{ $item->wa_baru ?? $item->wa_pic }}</div> @endif
+                                                    </div>
+                                                </td>
+
+                                                {{-- ASSIGNMENT --}}
                                                 <td class="text-center">
                                                     @if($item->marketing)
-                                                        {{-- CEK: Apakah perusahaan ini ADA di array $prospekList? --}}
                                                         @if(!in_array($item->perusahaan, $prospekList))
-                                                            {{-- Jika TIDAK ADA di Prospek, tampilkan badge peringatan --}}
                                                             <span class="badge badge-warning shadow-sm" title="Data ini nyangkut! Assigned tapi tidak ada di Pipeline Prospek">
                                                                 <i class="fas fa-exclamation-triangle text-dark me-1"></i> 
                                                                 <span class="text-dark">Data Nyangkut ({{ $item->marketing->name }})</span>
                                                             </span>
                                                         @else
-                                                            {{-- Jika AMAN, tampilkan normal --}}
                                                             <span class="badge badge-info shadow-sm">
                                                                 <i class="fas fa-user-check me-1"></i> {{ $item->marketing->name }}
                                                             </span>
@@ -331,44 +401,33 @@
                                                         </span>
                                                     @endif
                                                 </td>
-                                                <td class="fw-bold">{{ $item->perusahaan }}</td>
-                                                <td>{{ $item->telp }}</td>
-                                                <td>{{ $item->unit_bisnis }}</td>
-                                                <td>{{ $item->email }}</td>
-                                                <td>{{ $item->status_email }}</td>
-                                                <td class="text-center">{{ $item->wa_baru ?? $item->wa_pic }}</td>
-                                                <td class="text-center">{{ $item->lokasi }}</td>
-                                                <td class="text-center">
-                                                    @if($item->is_ads)
-                                                        <span class="badge badge-primary"><i class="fas fa-bullhorn me-1"></i> Ads</span>
-                                                    @else
-                                                        {{ $item->sumber }}
-                                                    @endif
-                                                </td>
-                                                <td class="text-center">
-                                                    @php $role = auth()->user()->role; @endphp
 
-                                                    @if (in_array($role, ['rnd', 'digitalmarketing']))
-                                                        <div class="btn-group mb-1">
-                                                            <a href="{{ route('data-masuk.edit', $item->id) }}" class="btn btn-warning btn-xs" title="Edit Data">
-                                                                <i class="fa fa-edit"></i>
-                                                            </a>
-                                                            {{-- Note: Karena ada form bulk, hapus satuan butuh button type button yg manggil JS atau biarkan jika tidak konflik --}}
-                                                            <a href="#" onclick="event.preventDefault(); if(confirm('Hapus data ini?')) document.getElementById('delete-form-{{ $item->id }}').submit();" class="btn btn-danger btn-xs">
-                                                                <i class="fa fa-trash"></i>
-                                                            </a>
-                                                        </div>
-                                                    @endif
+                                                {{-- ACTION --}}
+                                                <td class="text-center">
+                                                    <div class="d-flex flex-column gap-1 justify-content-center align-items-center">
+                                                        @php $role = auth()->user()->role; @endphp
 
-                                                    @if (in_array($role, ['admin']))
-                                                        @if(!$item->marketing)
-                                                            <button type="button" class="btn btn-primary btn-xs btn-round w-100" data-bs-toggle="modal" data-bs-target="#modalDeliver{{ $item->id }}">
-                                                                <i class="fas fa-paper-plane me-1"></i> Deliver
-                                                            </button>
-                                                        @else
-                                                            <span class="badge badge-success mb-1"><i class="fa fa-check"></i> Sent</span>
+                                                        {{-- Tombol Deliver (Admin) --}}
+                                                        @if (in_array($role, ['admin']))
+                                                            @if(!$item->marketing)
+                                                                <button type="button" class="btn btn-primary btn-sm btn-round w-100" data-bs-toggle="modal" data-bs-target="#modalDeliver{{ $item->id }}">
+                                                                    <i class="fas fa-paper-plane me-1"></i> Deliver
+                                                                </button>
+                                                            @else
+                                                                <span class="badge badge-success w-100 py-2"><i class="fa fa-check me-1"></i> Sent</span>
+                                                            @endif
                                                         @endif
-                                                    @endif
+
+                                                        {{-- Tombol Edit & Delete (RnD / DM) --}}
+                                                        @if (in_array($role, ['rnd', 'digitalmarketing']))
+                                                            <a href="{{ route('data-masuk.edit', $item->id) }}" class="btn btn-warning btn-sm w-100 btn-round">
+                                                                <i class="fa fa-edit"></i> Edit
+                                                            </a>
+                                                            <a href="#" onclick="event.preventDefault(); if(confirm('Hapus data ini?')) document.getElementById('delete-form-{{ $item->id }}').submit();" class="btn btn-danger btn-sm w-100 btn-round">
+                                                                <i class="fa fa-trash"></i> Delete
+                                                            </a>
+                                                        @endif
+                                                    </div>
                                                 </td>
                                             </tr>
                                         @endforeach
@@ -376,6 +435,51 @@
                                 </table>
                             </div>
                         </form>
+
+                        {{-- ================= MODAL DELIVER SATUAN (DATA UMUM) ================= --}}
+                        @if (in_array(auth()->user()->role, ['admin', 'superadmin']))
+                            @foreach ($allData as $item)
+                                @if(!$item->marketing)
+                                    <div class="modal fade" id="modalDeliver{{ $item->id }}" tabindex="-1" aria-hidden="true">
+                                        <div class="modal-dialog modal-dialog-centered">
+                                            <form action="{{ route('data-masuk.deliver', $item->id) }}" method="POST">
+                                                @csrf
+                                                <div class="modal-content card-round text-start">
+                                                    <div class="modal-header border-0">
+                                                        <h6 class="fw-bold m-0">Assign Lead Prospek</h6>
+                                                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                                    </div>
+                                                    <div class="modal-body py-3">
+                                                        <p class="small text-muted mb-3">Assign <b>{{ Str::limit($item->perusahaan, 30) }}</b> ke Pipeline.</p>
+                                                        
+                                                        <div class="mb-3">
+                                                            <label class="fw-bold mb-1 small">Pilih Marketing <span class="text-danger">*</span></label>
+                                                            <select name="marketing_id" class="form-select form-select-sm" required>
+                                                                <option value="">-- Pilih Marketing --</option>
+                                                                @foreach($marketings as $m)
+                                                                    <option value="{{ $m->id }}">{{ $m->name }}</option>
+                                                                @endforeach
+                                                            </select>
+                                                        </div>
+
+                                                        {{-- NEW: Input Tanggal Assign Satuan --}}
+                                                        <div class="mb-2">
+                                                            <label class="fw-bold mb-1 small">Tanggal Assign <span class="text-danger">*</span></label>
+                                                            <input type="date" name="tanggal_assign" class="form-control form-control-sm" value="{{ date('Y-m-d') }}" required>
+                                                        </div>
+                                                    </div>
+                                                    <div class="modal-footer border-0">
+                                                        <button type="submit" class="btn btn-primary btn-sm btn-round w-100">Kirim ke Pipeline</button>
+                                                    </div>
+                                                </div>
+                                            </form>
+                                        </div>
+                                    </div>
+                                @endif
+                            @endforeach
+                        @endif
+                        {{-- ================= END MODAL ================= --}}
+
                         {{-- Form Delete Satuan Dipisah agar tidak bentrok dengan form massal --}}
                         @if (in_array(auth()->user()->role, ['rnd', 'digitalmarketing']))
                             @foreach ($allData as $item)
@@ -393,86 +497,105 @@
                 </div>
             </div>
 
-            {{-- TAB 2: DATA ADS --}}
+            {{-- ================= TAB 2: DATA ADS (SUDAH DIRAPIKAN) ================= --}}
             <div class="tab-pane fade" id="pills-ads" role="tabpanel">
-                <div class="card card-round shadow-sm">
+                <div class="card card-round shadow-sm border-0">
                     <div class="card-body">
                         <div class="table-responsive">
-                            <table class="table table-bordered align-middle" style="min-width: 1000px">
+                            <table class="table table-bordered table-hover align-middle">
                                 <thead class="bg-light text-center">
                                     <tr>
-                                        <th>Tanggal</th>
-                                        <th>HRD / Perusahaan</th>
-                                        <th>Kontak</th>
-                                        <th>Program & Sertifikasi</th>
-                                        <th>Sumber/Klien</th>
-                                        <th width="150">Aksi</th>
+                                        <th width="140">TANGGAL & SUMBER</th>
+                                        <th>PERUSAHAAN & HRD</th>
+                                        <th>KONTAK</th>
+                                        <th>PROGRAM & SERTIFIKASI</th>
+                                        <th width="100">ACTION</th>
                                     </tr>
                                 </thead>
                                 <tbody>
                                     @foreach ($adsData as $ad)
                                     <tr>
-                                        <td class="text-center small">{{ $ad->created_at->format('d/m/Y') }}</td>
-                                        <td>
-                                            <span class="fw-bold">{{ $ad->nama_hrd }}</span><br>
-                                            <small class="text-muted">{{ $ad->nama_perusahaan }}</small>
-                                        </td>
-                                        <td>
-                                            <i class="fab fa-whatsapp text-success"></i> {{ $ad->wa_hrd }}<br>
-                                            <small>{{ $ad->email }}</small>
-                                        </td>
-                                        <td>
-                                            <span class="badge badge-secondary">{{ $ad->jenis_sertifikasi }}</span><br>
-                                            <small>{{ Str::limit($ad->kebutuhan_program, 30) }}</small>
-                                        </td>
+                                        {{-- TANGGAL & SUMBER --}}
                                         <td class="text-center">
-                                            <span class="badge badge-primary">{{ $ad->channel_akuisisi }}</span><br>
-                                            <small>{{ $ad->jenis_klien }}</small>
+                                            <span class="fw-bold text-dark">{{ $ad->created_at->format('d M Y') }}</span><br>
+                                            <span class="badge badge-primary mt-1 mb-1">{{ $ad->channel_akuisisi }}</span><br>
+                                            <small class="text-muted"><i class="fas fa-tag me-1"></i>{{ $ad->jenis_klien }}</small>
                                         </td>
-                                        <td class="text-center">
-                                            @php $role = auth()->user()->role; @endphp
-                                            
-                                            {{-- Deliver khusus Admin --}}
-                                            @if ($role == 'admin')
-                                                @if(!$ad->marketing_id)
-                                                    <button class="btn btn-primary btn-xs btn-round w-100 mb-1" data-bs-toggle="modal" data-bs-target="#modalDeliverAds{{ $ad->id }}">
-                                                        <i class="fas fa-paper-plane"></i> Deliver
-                                                    </button>
-                                                @else
-                                                    <span class="badge badge-success mb-1"><i class="fa fa-check"></i> Sent</span>
-                                                @endif
-                                            @endif
 
-                                            {{-- Edit & Hapus (RnD / Admin) --}}
-                                            @if (in_array($role, ['rnd', 'digitalmarketing']))
-                                                <div class="btn-group">
-                                                    <a href="{{ route('ads.edit', $ad->id) }}" class="btn btn-warning btn-xs"><i class="fa fa-edit"></i></a>
-                                                    <form action="{{ route('ads.destroy', $ad->id) }}" method="POST" class="d-inline">
+                                        {{-- PERUSAHAAN & HRD --}}
+                                        <td>
+                                            <div class="fw-bold text-primary" style="font-size: 15px;">{{ $ad->nama_perusahaan }}</div>
+                                            <small class="text-dark fw-bold d-block mt-1"><i class="fas fa-user-tie me-1"></i>{{ $ad->nama_hrd }}</small>
+                                        </td>
+
+                                        {{-- KONTAK --}}
+                                        <td>
+                                            <div style="font-size: 12px;">
+                                                <div title="WA HRD"><i class="fab fa-whatsapp text-success me-1"></i> {{ $ad->wa_hrd }}</div>
+                                                <div title="Email HRD" class="mt-1"><i class="fas fa-envelope text-secondary me-1"></i> {{ $ad->email }}</div>
+                                            </div>
+                                        </td>
+
+                                        {{-- PROGRAM & SERTIFIKASI --}}
+                                        <td>
+                                            <span class="badge badge-info mb-1">{{ $ad->jenis_sertifikasi }}</span><br>
+                                            <small class="text-dark d-block fw-medium">{{ Str::limit($ad->kebutuhan_program, 50) }}</small>
+                                        </td>
+
+                                        {{-- ACTION --}}
+                                        <td class="text-center">
+                                            <div class="d-flex flex-column gap-1 justify-content-center align-items-center">
+                                                @php $role = auth()->user()->role; @endphp
+                                                
+                                                {{-- Deliver khusus Admin --}}
+                                                @if ($role == 'admin')
+                                                    @if(!$ad->marketing_id)
+                                                        <button class="btn btn-primary btn-sm btn-round w-100" data-bs-toggle="modal" data-bs-target="#modalDeliverAds{{ $ad->id }}">
+                                                            <i class="fas fa-paper-plane me-1"></i> Deliver
+                                                        </button>
+                                                    @else
+                                                        <span class="badge badge-success w-100 py-2"><i class="fa fa-check me-1"></i> Sent</span>
+                                                    @endif
+                                                @endif
+
+                                                {{-- Edit & Hapus (RnD / DM) --}}
+                                                @if (in_array($role, ['rnd', 'digitalmarketing']))
+                                                    <a href="{{ route('ads.edit', $ad->id) }}" class="btn btn-warning btn-sm w-100 btn-round"><i class="fa fa-edit"></i> Edit</a>
+                                                    <form action="{{ route('ads.destroy', $ad->id) }}" method="POST" class="d-inline w-100">
                                                         @csrf @method('DELETE')
-                                                        <button class="btn btn-danger btn-xs" onclick="return confirm('Hapus data ads ini?')"><i class="fa fa-trash"></i></button>
+                                                        <button class="btn btn-danger btn-sm w-100 btn-round" onclick="return confirm('Hapus data ads ini?')"><i class="fa fa-trash"></i> Delete</button>
                                                     </form>
-                                                </div>
-                                            @endif
+                                                @endif
+                                            </div>
                                         </td>
                                     </tr>
 
                                     {{-- Modal Deliver Khusus Ads --}}
                                     <div class="modal fade" id="modalDeliverAds{{ $ad->id }}" tabindex="-1" aria-hidden="true">
-                                        <div class="modal-dialog modal-dialog-centered modal-sm">
+                                        <div class="modal-dialog modal-dialog-centered">
                                             <form action="{{ route('ads.deliver', $ad->id) }}" method="POST">
                                                 @csrf
                                                 <div class="modal-content card-round">
                                                     <div class="modal-header border-0 pb-0">
                                                         <h6 class="fw-bold m-0">Assign Lead Ads</h6>
+                                                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                                                     </div>
                                                     <div class="modal-body py-3">
-                                                        <label class="small mb-1">Pilih Marketing:</label>
-                                                        <select name="marketing_id" class="form-select form-select-sm" required>
-                                                            <option value="">-- Pilih --</option>
-                                                            @foreach($marketings as $m)
-                                                                <option value="{{ $m->id }}">{{ $m->name }}</option>
-                                                            @endforeach
-                                                        </select>
+                                                        <div class="mb-3">
+                                                            <label class="fw-bold mb-1 small">Pilih Marketing <span class="text-danger">*</span></label>
+                                                            <select name="marketing_id" class="form-select form-select-sm" required>
+                                                                <option value="">-- Pilih --</option>
+                                                                @foreach($marketings as $m)
+                                                                    <option value="{{ $m->id }}">{{ $m->name }}</option>
+                                                                @endforeach
+                                                            </select>
+                                                        </div>
+
+                                                        {{-- NEW: Input Tanggal Assign Ads --}}
+                                                        <div class="mb-2">
+                                                            <label class="fw-bold mb-1 small">Tanggal Assign <span class="text-danger">*</span></label>
+                                                            <input type="date" name="tanggal_assign" class="form-control form-control-sm" value="{{ date('Y-m-d') }}" required>
+                                                        </div>
                                                     </div>
                                                     <div class="modal-footer border-0 pt-0">
                                                         <button type="submit" class="btn btn-primary btn-sm btn-round w-100">Kirim Ke Prospek</button>
@@ -485,6 +608,7 @@
                                 </tbody>
                             </table>
                         </div>
+                        
                         {{-- Pagination --}}
                         <div class="demo mt-3 d-flex justify-content-center">
                             {{ $adsData->links('partials.pagination') }} 
@@ -498,16 +622,16 @@
 
 <style>
     /* Animasi Pulse untuk data yang belum diassign */
-    .animate-pulse {
-        animation: pulse 2s infinite;
-    }
+    .animate-pulse { animation: pulse 2s infinite; }
     @keyframes pulse {
         0% { transform: scale(1); opacity: 1; }
         50% { transform: scale(1.05); opacity: 0.8; }
         100% { transform: scale(1); opacity: 1; }
     }
-    .btn-xs { padding: 3px 10px; font-size: 0.75rem; }
     .badge-count { font-size: 0.65rem; }
+    .nav-pills.nav-secondary .nav-link.active { background: #1a2035; color: #fff; border-radius: 8px; }
+    .nav-pills .nav-link { color: #555; font-weight: 600; padding: 10px 20px; transition: all 0.2s; }
+    .nav-pills .nav-link:hover:not(.active) { background: #f1f1f1; border-radius: 8px; }
 </style>
 
 <script>
@@ -518,7 +642,7 @@
         const countSpan = document.getElementById('countSelected');
         const textCountModal = document.getElementById('textCountModal');
 
-        // Fungsi update tombol
+        // Fungsi update tombol bulk assign
         function updateBulkButton() {
             const checkedCount = document.querySelectorAll('.checkItem:checked').length;
             countSpan.innerText = checkedCount;
@@ -541,13 +665,9 @@
 
             checkItems.forEach(cb => {
                 cb.addEventListener('change', function() {
-                    // Uncheck 'checkAll' jika ada satu yang tidak dicentang
                     if(!this.checked) checkAll.checked = false;
-                    
-                    // Check 'checkAll' jika semua item aktif tercentang
                     const allChecked = Array.from(checkItems).every(item => item.checked);
                     if(allChecked && checkItems.length > 0) checkAll.checked = true;
-
                     updateBulkButton();
                 });
             });

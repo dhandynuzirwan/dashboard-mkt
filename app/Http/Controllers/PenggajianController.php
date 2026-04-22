@@ -32,6 +32,8 @@ class PenggajianController extends Controller
             'target' => 'required|numeric',
             'gaji_pokok' => 'required|numeric',
             'tunjangan' => 'required|numeric',
+            'tunjangan_bpjs' => 'required|numeric', // 🔥 Tambahkan ini
+            'iuran_bpjs' => 'required|numeric',
         ]);
 
         Penggajian::create($request->all());
@@ -56,6 +58,8 @@ class PenggajianController extends Controller
             'target' => 'required|numeric',
             'gaji_pokok' => 'required|numeric',
             'tunjangan' => 'required|numeric',
+            'tunjangan_bpjs' => 'required|numeric', // 🔥 Tambahkan ini
+            'iuran_bpjs' => 'required|numeric',
         ]);
 
         $penggajian = Penggajian::findOrFail($id);

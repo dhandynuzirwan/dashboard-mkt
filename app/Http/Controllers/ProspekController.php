@@ -34,9 +34,22 @@ class ProspekController extends Controller
         $all_status_akhir = Prospek::select('status')
             ->whereNotNull('status')
             ->distinct()
+            ->orderBy('status', 'asc')
             ->pluck('status');
 
         $query = Prospek::with(['marketing', 'cta']);
+        
+        // Tambahkan logika sorting ini
+        $sortBy = $request->get('sort_by', 'created_at'); // Default urutkan berdasar tgl dibuat
+        $sortOrder = $request->get('sort_order', 'desc'); // Default terbaru di atas
+    
+        // Pastikan hanya kolom tertentu yang boleh di-sort untuk keamanan
+        $allowedSortColumns = ['perusahaan', 'tanggal_prospek', 'id'];
+        if (in_array($sortBy, $allowedSortColumns)) {
+            $query->orderBy($sortBy, $sortOrder);
+        } else {
+            $query->latest();
+        }
 
         if ($user->role === 'marketing') {
             $query->where('marketing_id', $user->id);
@@ -61,9 +74,17 @@ class ProspekController extends Controller
             }
         }
 
-        // Filter Status Akhir (Ini filter untuk kolom 'status' di tabel Prospek)
-        if ($request->status_akhir) {
-            $query->where('status', $request->status_akhir);
+        // Filter Status Akhir Data (Catatan Prospek)
+        if ($request->filled('status_akhir')) {
+            if ($request->status_akhir === 'belum_ada_status') {
+                // 🔥 Jika mencari yang belum ada status (Null atau Kosong)
+                $query->where(function($q) {
+                    $q->whereNull('status')->orWhere('status', '');
+                });
+            } else {
+                // Pencarian normal sesuai nama status
+                $query->where('status', $request->status_akhir);
+            }
         }
 
         // FIX: Filter Status Penawaran (Ini filter untuk kolom 'status_penawaran' di tabel CTA)
@@ -82,6 +103,10 @@ class ProspekController extends Controller
             $query->whereHas('cta', function ($q) use ($request) {
                 $q->where('status_penawaran', $request->status_penawaran);
             });
+        }
+        
+        if (!$request->has('sort_by')) {
+            $query->orderBy('id', 'desc');
         }
 
         // 2. HITUNG STATS
@@ -112,11 +137,85 @@ class ProspekController extends Controller
         ];
 
         // 3. PAGINATION
-        $prospeks = (clone $query)->orderBy('id', 'desc')->paginate(10, ['*'], 'page_pipeline')->withQueryString();
-        $ctaProspeks = (clone $query)->whereHas('cta')->orderBy('id', 'desc')->paginate(10, ['*'], 'page_cta')->withQueryString();
+        $prospeks = (clone $query)->paginate(10, ['*'], 'page_pipeline')->withQueryString();
+        // Untuk CTA Prospeks, kita juga samakan agar sortingnya konsisten
+        $ctaProspeks = (clone $query)->whereHas('cta')
+            ->paginate(10, ['*'], 'page_cta')
+            ->withQueryString();
+        
+        // ================= 🔥 DETEKSI DATA DUPLIKAT 🔥 =================
+        // Hanya dijalankan jika user adalah admin / superadmin
+        $duplicateGroups = collect();
+        if (in_array($user->role, ['admin', 'superadmin'])) {
+            // 1. Cari kombinasi Perusahaan & Lokasi yang jumlahnya > 1
+            $rawDuplicates = Prospek::select('perusahaan', 'lokasi', DB::raw('COUNT(*) as count'))
+                ->groupBy('perusahaan', 'lokasi')
+                ->havingRaw('COUNT(*) > 1')
+                ->get();
+
+            // 2. Jika ada duplikat, ambil detail datanya
+            if ($rawDuplicates->count() > 0) {
+                $dupQuery = Prospek::with('marketing');
+                foreach ($rawDuplicates as $dup) {
+                    $dupQuery->orWhere(function($q) use ($dup) {
+                        $q->where('perusahaan', $dup->perusahaan);
+                        if (is_null($dup->lokasi)) {
+                            $q->whereNull('lokasi');
+                        } else {
+                            $q->where('lokasi', $dup->lokasi);
+                        }
+                    });
+                }
+                
+                // 3. Kelompokkan berdasarkan Nama Perusahaan & Lokasi
+                $duplicateGroups = $dupQuery->orderBy('perusahaan')
+                    ->orderBy('created_at', 'asc')
+                    ->get()
+                    ->groupBy(function($item) {
+                        return $item->perusahaan . ' - (' . ($item->lokasi ?? 'Tanpa Lokasi') . ')';
+                    });
+            }
+        }
+        // ================= 🔥 END DETEKSI DUPLIKAT 🔥 =================
+        
+        // ================= 🔥 DETEKSI DATA DUPLIKAT CTA 🔥 =================
+        $duplicateCtaGroups = collect();
+        if (in_array($user->role, ['admin', 'superadmin'])) {
+            // 1. Cari kombinasi Perusahaan, Lokasi, dan Judul CTA
+            $rawCtaDuplicates = \App\Models\Cta::join('prospeks', 'ctas.prospek_id', '=', 'prospeks.id')
+                ->select('prospeks.perusahaan', 'prospeks.lokasi', 'ctas.judul_permintaan')
+                ->groupBy('prospeks.perusahaan', 'prospeks.lokasi', 'ctas.judul_permintaan')
+                ->havingRaw('COUNT(ctas.id) > 1')
+                ->get();
+
+            if ($rawCtaDuplicates->count() > 0) {
+                $dupCtaQuery = \App\Models\Cta::with('prospek.marketing');
+                
+                $dupCtaQuery->where(function($query) use ($rawCtaDuplicates) {
+                    foreach ($rawCtaDuplicates as $dup) {
+                        $query->orWhere(function($q) use ($dup) {
+                            $q->whereHas('prospek', function($pq) use ($dup) {
+                                $pq->where('perusahaan', $dup->perusahaan);
+                                if (is_null($dup->lokasi)) {
+                                    $pq->whereNull('lokasi');
+                                } else {
+                                    $pq->where('lokasi', $dup->lokasi);
+                                }
+                            })->where('judul_permintaan', $dup->judul_permintaan);
+                        });
+                    }
+                });
+                
+                // 2. Kelompokkan hasilnya
+                $duplicateCtaGroups = $dupCtaQuery->orderBy('created_at', 'asc')->get()->groupBy(function($item) {
+                    return $item->prospek->perusahaan . ' - (' . ($item->prospek->lokasi ?? 'Tanpa Lokasi') . ') | Judul CTA: ' . ($item->judul_permintaan ?? 'Tanpa Judul');
+                });
+            }
+        }
+        // ================= 🔥 END DETEKSI DUPLIKAT CTA 🔥 =================
 
         // Kirim $start dan $end ke view
-        return view('pipeline', compact('prospeks', 'ctaProspeks', 'marketings', 'stats', 'all_status_akhir', 'start', 'end'));
+        return view('pipeline', compact('prospeks', 'ctaProspeks', 'marketings', 'stats', 'all_status_akhir', 'start', 'end', 'duplicateGroups', 'duplicateCtaGroups'));
     }
 
     // Menampilkan Form Input Massal
@@ -181,12 +280,73 @@ class ProspekController extends Controller
     {
         $prospek = \App\Models\Prospek::findOrFail($id);
         $marketings = \App\Models\User::where('role', 'marketing')->get();
+        $user = auth()->user();
         
-        // Cari ID sebelumnya (lebih kecil dari ID saat ini)
-        $previous = Prospek::where('id', '<', $prospek->id)->orderBy('id', 'desc')->first();
-    
-        // Cari ID selanjutnya (lebih besar dari ID saat ini)
-        $next = Prospek::where('id', '>', $prospek->id)->orderBy('id', 'asc')->first();
+        // --- LOGIKA NEXT & PREVIOUS BERDASARKAN FILTER SESSION PIPELINE ---
+        $query = \App\Models\Prospek::query();
+
+        // 1. Aturan Wajib: Marketing hanya boleh lihat data miliknya
+        if ($user->role === 'marketing') {
+            $query->where('marketing_id', $user->id);
+        }
+
+        // 2. Ambil URL terakhir dari session dan bedah isinya
+        $lastUrl = session('url_pipeline_terakhir');
+        $filters = [];
+        
+        if ($lastUrl) {
+            $queryString = parse_url($lastUrl, PHP_URL_QUERY); 
+            if ($queryString) {
+                parse_str($queryString, $filters); 
+            }
+        }
+
+        // 3. Terapkan Filter Tanggal
+        if (!empty($filters['start_date']) && !empty($filters['end_date'])) {
+            $query->whereBetween('tanggal_prospek', [$filters['start_date'], $filters['end_date']]);
+        }
+
+        // 4. Terapkan Filter Marketing 
+        if (!empty($filters['marketing_id'])) {
+            $query->where('marketing_id', $filters['marketing_id']);
+        }
+
+        // 5. Terapkan Filter TAHAP (Sudah di-CTA / Belum)
+        if (!empty($filters['cta_status'])) {
+            if ($filters['cta_status'] == 'pending') {
+                $query->whereDoesntHave('cta'); 
+            } elseif ($filters['cta_status'] == 'done') {
+                $query->whereHas('cta'); 
+            }
+        }
+
+        // 6. Terapkan Filter Status Akhir Data (Catatan Prospek)
+        if (!empty($filters['status_akhir'])) {
+            if ($filters['status_akhir'] === 'belum_ada_status') {
+                $query->where(function($q) {
+                    $q->whereNull('status')->orWhere('status', '');
+                });
+            } else {
+                $query->where('status', $filters['status_akhir']);
+            }
+        }
+
+        // 7. Terapkan Filter Status Penawaran (Deal, Hold, dll) - Kolom CTA
+        if (!empty($filters['status'])) {
+            $query->whereHas('cta', function ($q) use ($filters) {
+                $q->where('status_penawaran', $filters['status']);
+            });
+        }
+
+        // 8. Terapkan Filter Pencarian Nama Perusahaan
+        if (!empty($filters['search_perusahaan'])) {
+            $query->where('perusahaan', 'LIKE', '%' . $filters['search_perusahaan'] . '%');
+        }
+
+        // 9. Cari ID Sebelumnya & Selanjutnya sesuai filter
+        $previous = (clone $query)->where('id', '<', $prospek->id)->orderBy('id', 'desc')->first();
+        $next = (clone $query)->where('id', '>', $prospek->id)->orderBy('id', 'asc')->first();
+        // ------------------------------------------------------------------
 
         return view('form-prospek-edit', compact('prospek', 'marketings', 'previous', 'next'));
     }
@@ -221,5 +381,145 @@ class ProspekController extends Controller
         ]);
 
         return redirect()->back()->with('success', 'Data prospek berhasil disimpan!');
+    }
+    
+    public function massDelete(Request $request)
+    {
+        // 1. Keamanan Ekstra: Pastikan hanya admin/superadmin yang bisa akses
+        if (!in_array(auth()->user()->role, ['superadmin', 'admin'])) {
+            abort(403, 'Unauthorized Access');
+        }
+
+        // 2. Ambil array ID dari checkbox
+        $selectedIds = $request->input('selected_prospek');
+
+        // 3. Validasi
+        if (empty($selectedIds) || !is_array($selectedIds)) {
+            return redirect()->back()->withErrors('Gagal! Anda belum memilih data apapun untuk dihapus.');
+        }
+
+        $jumlahData = count($selectedIds);
+
+        // 4. EKSEKUSI HAPUS
+        // Hapus file proposal fisik (Jika ada)
+        $fileProposals = \App\Models\Cta::whereIn('prospek_id', $selectedIds)
+                                        ->whereNotNull('file_proposal')
+                                        ->pluck('file_proposal');
+                                        
+        foreach($fileProposals as $file) {
+            if (\Illuminate\Support\Facades\Storage::disk('public')->exists($file)) {
+                \Illuminate\Support\Facades\Storage::disk('public')->delete($file);
+            }
+        }
+
+        // Hapus CTA yang terhubung
+        \App\Models\Cta::whereIn('prospek_id', $selectedIds)->delete();
+        
+        // Hapus Data Prospek Utama
+        \App\Models\Prospek::whereIn('id', $selectedIds)->delete();
+
+        return redirect()->route('prospek.index')->with('success', "Berhasil menghapus {$jumlahData} data prospek pilihan beserta penawarannya secara permanen.");
+    }
+    
+    public function showCheckData()
+    {
+        return view('prospek-check'); // Kita akan buat view-nya di langkah 3
+    }
+    
+    public function processCheck(Request $request)
+    {
+        $request->validate([
+            'names' => 'required|string',
+            'check_date' => 'required|date',
+        ]);
+    
+        // 1. Bersihkan input: ubah teks copas (baris baru) menjadi array, buang spasi kosong
+        $inputRaw = preg_split('/\r\n|\r|\n/', $request->names);
+        $inputNames = collect($inputRaw)
+            ->map(fn($name) => trim($name))
+            ->filter()
+            ->unique()
+            ->values();
+    
+        // 2. Ambil data dari database pada tanggal tersebut
+        $dbNames = \App\Models\Prospek::whereDate('tanggal_prospek', $request->check_date)
+            ->pluck('perusahaan')
+            ->map(fn($name) => trim($name))
+            ->unique();
+    
+        // 3. LOGIKA CEK:
+        // A. Mana yang ada di Copas-an, tapi TIDAK ADA di sistem (Gak ada di sistem)
+        $missingInSystem = $inputNames->diff($dbNames);
+    
+        // B. Mana yang ada di Sistem, tapi TIDAK ADA di Copas-an (Data siluman / kelebihan)
+        $missingInInput = $dbNames->diff($inputNames);
+    
+        return view('prospek-check', [
+            'missingInSystem' => $missingInSystem,
+            'missingInInput' => $missingInInput,
+            'checkedDate' => $request->check_date,
+            'inputCount' => $inputNames->count(),
+            'dbCount' => $dbNames->count(),
+            'oldInput' => $request->names
+        ]);
+    }
+    
+    public function getDetailStatusAjax(Request $request)
+    {
+        $marketing_id = $request->marketing_id;
+        $status = $request->status;
+        $start = $request->start_date;
+        $end = $request->end_date;
+
+        $query = Prospek::where('marketing_id', $marketing_id)
+                        ->whereBetween('tanggal_prospek', [$start, $end])
+                        ->orderBy('tanggal_prospek', 'desc');
+
+        // Daftar status resmi (Sama persis seperti yang ada di Index)
+        $statusResmi = [
+            'DATA TIDAK VALID & TIDAK TERHUBUNG', 'TIDAK RESPON', 'DAPAT NO WA HRD', 'KIRIM COMPRO',
+            'MANJA', 'MANJA ULANG', 'REQUEST PERMINTAAN PELATIHAN', 'MASUK PENAWARAN',
+            'BELUM ADA KEBUTUHAN', 'REQUES PERPANJANGAN SERTIFIKAT', 'PENAWARAN HARDFILE',
+            'TIDAK MENERIMA PENAWARAN', 'DAPAT NO TELP', 'SUDAH ADA VENDOR KERJASAMA', 'HOLD', 'DAPAT EMAIL'
+        ];
+
+        // Terapkan filter berdasarkan status yang diklik
+        if ($status === 'tanpa_status') {
+            $query->where(function($q) use ($statusResmi) {
+                $q->whereNull('status')->orWhere('status', '')->orWhereNotIn('status', $statusResmi);
+            });
+        } elseif ($status !== 'semua') {
+            $query->where('status', $status);
+        }
+        // Jika status == 'semua', query biarkan saja agar mengambil semua data
+
+        $data = $query->get();
+
+        // Susun HTML untuk disuntikkan ke dalam Modal
+        $html = '';
+        if ($data->count() > 0) {
+            foreach ($data as $index => $d) {
+                $tgl = \Carbon\Carbon::parse($d->tanggal_prospek)->format('d/m/Y');
+                $wa = $d->wa_pic ? "<a href='https://wa.me/".preg_replace('/[^0-9]/', '', $d->wa_pic)."' target='_blank' class='btn btn-xs btn-success'><i class='fab fa-whatsapp'></i> Hubungi</a>" : '-';
+                
+                $html .= "<tr>
+                    <td class='text-center'>".($index + 1)."</td>
+                    <td class='text-center'>{$tgl}</td>
+                    <td class='fw-bold text-dark'>{$d->perusahaan}</td>
+                    <td>{$d->nama_pic} <br><small class='text-muted'>{$d->jabatan}</small></td>
+                    <td class='text-center'>{$wa}</td>
+                </tr>";
+            }
+        } else {
+            $html = "<tr><td colspan='5' class='text-center text-muted py-4'>Tidak ada data ditemukan.</td></tr>";
+        }
+
+        $nama_marketing = \App\Models\User::find($marketing_id)->name ?? 'Marketing';
+        $judul_status = $status === 'semua' ? 'Semua Status' : ($status === 'tanpa_status' ? 'Belum Ada Status' : $status);
+
+        return response()->json([
+            'title' => "Data Prospek: {$nama_marketing} - {$judul_status}",
+            'html' => $html
+        ]);
     }
 }

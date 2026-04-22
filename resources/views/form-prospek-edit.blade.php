@@ -117,18 +117,20 @@
                                 <label>Status Akhir Data</label>
                                 <select name="status" class="form-select">
                                     <option value="">-- Pilih Status --</option>
-                                    <option value="MANJA ULANG" {{ $prospek->status == 'MANJA ULANG' ? 'selected' : '' }}>MANJA ULANG</option>
-                                    <option value="KIRIM COMPRO" {{ $prospek->status == 'KIRIM COMPRO' ? 'selected' : '' }}>KIRIM COMPRO</option>
-                                    <option value="TIDAK RESPON" {{ $prospek->status == 'TIDAK RESPON' ? 'selected' : '' }}>TIDAK RESPON</option>
-                                    <option value="TIDAK MENERIMA PENAWARAN" {{ $prospek->status == 'TIDAK MENERIMA PENAWARAN' ? 'selected' : '' }}>TIDAK MENERIMA PENAWARAN</option>
-                                    <option value="DAPAT NO WA HRD" {{ $prospek->status == 'DAPAT NO WA HRD' ? 'selected' : '' }}>DAPAT NO WA HRD</option>
                                     <option value="DATA TIDAK VALID & TIDAK TERHUBUNG" {{ $prospek->status == 'DATA TIDAK VALID & TIDAK TERHUBUNG' ? 'selected' : '' }}>DATA TIDAK VALID & TIDAK TERHUBUNG</option>
+                                    <option value="TIDAK RESPON" {{ $prospek->status == 'TIDAK RESPON' ? 'selected' : '' }}>TIDAK RESPON</option>
+                                    <option value="DAPAT NO WA HRD" {{ $prospek->status == 'DAPAT NO WA HRD' ? 'selected' : '' }}>DAPAT NO WA HRD</option>
+                                    <option value="KIRIM COMPRO" {{ $prospek->status == 'KIRIM COMPRO' ? 'selected' : '' }}>KIRIM COMPRO</option>
+                                    <option value="MANJA" {{ $prospek->status == 'MANJA' ? 'selected' : '' }}>MANJA</option>
+                                    <option value="MANJA ULANG" {{ $prospek->status == 'MANJA ULANG' ? 'selected' : '' }}>MANJA ULANG</option>
+                                    <option value="REQUEST PERMINTAAN PELATIHAN" {{ $prospek->status == 'REQUEST PERMINTAAN PELATIHAN' ? 'selected' : '' }}>REQUEST PERMINTAAN PELATIHAN</option>
                                     <option value="MASUK PENAWARAN" {{ $prospek->status == 'MASUK PENAWARAN' ? 'selected' : '' }}>MASUK PENAWARAN</option>
-                                    <option value="SUDAH ADA REKANAN VENDOR" {{ $prospek->status == 'SUDAH ADA REKANAN VENDOR' ? 'selected' : '' }}>SUDAH ADA REKANAN VENDOR</option>
                                     <option value="BELUM ADA KEBUTUHAN" {{ $prospek->status == 'BELUM ADA KEBUTUHAN' ? 'selected' : '' }}>BELUM ADA KEBUTUHAN</option>
+                                    <option value="REQUES PERPANJANGAN SERTIFIKAT" {{ $prospek->status == 'REQUES PERPANJANGAN SERTIFIKAT' ? 'selected' : '' }}>REQUES PERPANJANGAN SERTIFIKAT</option>
+                                    <option value="PENAWARAN HARDFILE" {{ $prospek->status == 'PENAWARAN HARDFILE' ? 'selected' : '' }}>PENAWARAN HARDFILE</option>
+                                    <option value="TIDAK MENERIMA PENAWARAN" {{ $prospek->status == 'TIDAK MENERIMA PENAWARAN' ? 'selected' : '' }}>TIDAK MENERIMA PENAWARAN</option>
+                                    <option value="DAPAT NO TELP" {{ $prospek->status == 'DAPAT NO TELP' ? 'selected' : '' }}>DAPAT NO TELP</option>
                                     <option value="SUDAH ADA VENDOR KERJASAMA" {{ $prospek->status == 'SUDAH ADA VENDOR KERJASAMA' ? 'selected' : '' }}>SUDAH ADA VENDOR KERJASAMA</option>
-                                    <option value="HOLD" {{ $prospek->status == 'HOLD' ? 'selected' : '' }}>HOLD</option>
-                                    <option value="SUDAH ADA VENDOR REKANAN" {{ $prospek->status == 'SUDAH ADA VENDOR REKANAN' ? 'selected' : '' }}>SUDAH ADA VENDOR REKANAN</option>
                                 </select>
                             </div>
 
@@ -183,7 +185,7 @@
                             </div>
                         
                             <div class="d-flex gap-2">
-                                <a href="{{ route('prospek.index') }}" class="btn btn-outline-secondary">Kembali</a>
+                                <a href="{{ session('url_pipeline_terakhir', route('prospek.index')) }}" class="btn btn-secondary shadow-sm">Kembali</a>
                                 <button type="submit" class="btn btn-primary">Update Prospek</button>
                             </div>
                         

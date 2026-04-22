@@ -86,12 +86,16 @@
 
                                 <div class="form-group">
                                     <label>Harga Penawaran</label>
-                                    <input type="number" class="form-control" name="harga_penawaran" value="{{ $cta->harga_penawaran }}">
+                                    {{-- Input yang dilihat user (Sudah diformat dari DB) --}}
+                                    <input type="text" class="form-control input-rupiah" value="{{ $cta->harga_penawaran ? number_format($cta->harga_penawaran, 0, ',', '.') : '' }}" placeholder="Rp 0">
+                                    {{-- Input asli yang dikirim ke database (Hidden) --}}
+                                    <input type="hidden" name="harga_penawaran" class="input-real" value="{{ $cta->harga_penawaran }}">
                                 </div>
 
                                 <div class="form-group">
                                     <label>Harga Titip Vendor</label>
-                                    <input type="number" class="form-control" name="harga_vendor" value="{{ $cta->harga_vendor }}">
+                                    <input type="text" class="form-control input-rupiah" value="{{ $cta->harga_vendor ? number_format($cta->harga_vendor, 0, ',', '.') : '' }}" placeholder="Rp 0">
+                                    <input type="hidden" name="harga_vendor" class="input-real" value="{{ $cta->harga_vendor }}">
                                 </div>
 
                                 <div class="row mx-0">
@@ -179,7 +183,7 @@
                                             <i class="fas fa-trash"></i> Hapus
                                         </button>
 
-                                        <a href="{{ route('pipeline') }}" class="btn btn-secondary">Kembali</a>
+                                        <a href="{{ session('url_pipeline_terakhir', route('prospek.index')) }}" class="btn btn-secondary shadow-sm">Kembali</a>
                                     </div>
 
                                     {{-- Tombol Next --}}
@@ -345,6 +349,50 @@
                     text: '{!! session('deal_congrats') !!}',
                     confirmButtonText: 'Sikat Terus!',
                     confirmButtonColor: '#28a745',
+                    backdrop: `rgba(0,0,0,0.4)`
+                });
+            @endif
+            
+            // 🔥 FORMAT INPUT RUPIAH OTOMATIS 🔥
+            $('.input-rupiah').on('input', function() {
+                let inputVal = $(this).val();
+                
+                // Hapus semua karakter selain angka
+                let angkaString = inputVal.replace(/[^,\d]/g, '').toString();
+                
+                // Format jadi titik (Ribuan)
+                let split = angkaString.split(',');
+                let sisa = split[0].length % 3;
+                let rupiah = split[0].substr(0, sisa);
+                let ribuan = split[0].substr(sisa).match(/\d{3}/gi);
+
+                if (ribuan) {
+                    let separator = sisa ? '.' : '';
+                    rupiah += separator + ribuan.join('.');
+                }
+
+                // Tampilkan formatnya di layar user
+                $(this).val(rupiah);
+
+                // Kirim angka aslinya (tanpa titik) ke input Hidden untuk dikirim ke database
+                let cleanNumber = angkaString.replace(/\./g, '');
+                $(this).siblings('.input-real').val(cleanNumber);
+            });
+
+            // 🔥 LOGIKA JIKA GAGAL VALIDASI (ERROR) 🔥
+            @if($errors->any())
+                // Matikan loading di tombol kalau halamannya kereload karena error
+                let btnError = $('#btn-simpan');
+                btnError.prop('disabled', false);
+                btnError.html('<i class="fas fa-save"></i> Update'); // Ganti text sesuai tombol edit
+
+                // Munculkan Pop-up Error
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Oops! Ada yang terlewat',
+                    text: 'Silakan cek kembali kotak peringatan warna merah di atas form.',
+                    confirmButtonColor: '#dc3545',
+                    confirmButtonText: 'Perbaiki Data',
                     backdrop: `rgba(0,0,0,0.4)`
                 });
             @endif

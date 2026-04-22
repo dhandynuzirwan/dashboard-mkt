@@ -8,7 +8,7 @@ use App\Models\Prospek;
 use App\Models\User;
 use App\Models\AbsensiLog;
 use App\Models\Perizinan;
-use App\Models\Holiday; // 1. PASTIKAN MODEL HOLIDAY DIPANGGIL
+use App\Models\Holiday; 
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 
@@ -84,17 +84,17 @@ class KpiController extends Controller
             // Bobot Absensi 10%
             $user->absensi_kpi = ($user->absensi_ach / 100) * 0.1 * 100; 
 
-            // ================= PROGRESS (CTA / PENAWARAN) =================
+            // ================= PROGRESS (CTA / PENAWARAN) (VERSI LAMA) =================
             // Target: target harian x JADWAL SEBULAN (dikurangi libur)
             $user->progress_target = $target_call * $hariEfektifSebulan;
 
-            // Buat Base Query agar tidak perlu menulis ulang whereHas berulang kali
-            $baseCtaQuery = Cta::whereHas('prospek', function ($q) use ($user) {
-                    $q->where('marketing_id', $user->id);
-                })
-                ->whereBetween('created_at', [$start . " 00:00:00", $end . " 23:59:59"]);
+            // Buat Query Base untuk CTA
+            $baseCtaQuery = \App\Models\Cta::whereHas('prospek', function ($q) use ($user, $start, $end) {
+                $q->where('marketing_id', $user->id)
+                  ->whereBetween('tanggal_prospek', [$start . " 00:00:00", $end . " 23:59:59"]); 
+            });
 
-            // 1. Hitung JUMLAH SEMUA CTA
+            // 1. Hitung JUMLAH SEMUA CTA (Base)
             $jumlahCtaBase = (clone $baseCtaQuery)->count();
 
             // 2. Hitung JUMLAH CTA YANG MEMILIKI STATUS
@@ -103,7 +103,7 @@ class KpiController extends Controller
                 ->where('status_penawaran', '!=', '')
                 ->count();
 
-            // 3. RUMUS BARU: Total CTA + Total CTA Berstatus
+            // 3. 🔥 RUMUS LAMA: Total Base CTA + CTA Berstatus 🔥
             $user->progress_real = $jumlahCtaBase + $jumlahCtaBerstatus;
 
             $user->progress_ach = ($user->progress_target > 0)
@@ -116,14 +116,14 @@ class KpiController extends Controller
             // ================= REVENUE (DEAL) =================
             $user->revenue_target = $target_revenue;
 
-            // FIX: Hitung Nilai Deal = Harga Penawaran x Jumlah Peserta
-            $user->revenue_actual = Cta::whereHas('prospek', function ($q) use ($user) {
-                    $q->where('marketing_id', $user->id);
+            // FIX: Pindahkan filter tanggal ke dalam relasi prospek dan ubah ke tanggal_prospek
+            $user->revenue_actual = Cta::whereHas('prospek', function ($q) use ($user, $start, $end) {
+                    $q->where('marketing_id', $user->id)
+                      ->whereBetween('tanggal_prospek', [$start . " 00:00:00", $end . " 23:59:59"]);
                 })
                 ->where('status_penawaran', 'deal')
-                ->whereBetween('created_at', [$start . " 00:00:00", $end . " 23:59:59"])
-                ->get() // Ambil collection dulu
-                ->sum(fn($item) => $item->harga_penawaran * $item->jumlah_peserta); // Lakukan perkalian
+                ->get() 
+                ->sum(fn($item) => $item->harga_penawaran * $item->jumlah_peserta); 
 
             $user->revenue_ach = ($user->revenue_target > 0)
                 ? ($user->revenue_actual / $user->revenue_target) * 100

@@ -14,137 +14,154 @@ use Illuminate\Http\Request;
 
 class SalaryController extends Controller
 {
-    public function index(Request $request)
+    private function getSalaryCalculation($user, $start, $end)
     {
-        $authUser = auth()->user();
-
-        // 1. --- INISIALISASI FILTER ---
-        $start = $request->query('start_date', Carbon::now()->startOfMonth()->format('Y-m-d'));
-        $end = $request->query('end_date', Carbon::now()->format('Y-m-d'));
-        $marketing_filter = $request->query('marketing_id');
-
-        // 2. --- HITUNG HARI KERJA (FULL 1 BULAN) ---
-        // 1. Tentukan rentang awal dan akhir bulan berdasarkan filter $start
+        // A. Hitung Hari Efektif
         $startDate = Carbon::parse($start);
         $startOfMonth = $startDate->copy()->startOfMonth();
         $endOfMonth = $startDate->copy()->endOfMonth();
+        $daftarLibur = Holiday::whereBetween('tanggal', [$startOfMonth->format('Y-m-d'), $endOfMonth->format('Y-m-d')])
+                        ->pluck('tanggal')->toArray();
 
-        // 2. Ambil daftar tanggal merah bulan ini dari database
-        $daftarLibur = \App\Models\Holiday::whereBetween('tanggal', [
-                $startOfMonth->format('Y-m-d'), 
-                $endOfMonth->format('Y-m-d')
-            ])->pluck('tanggal')->toArray();
-
-        // 3. Hitung Hari Efektif (Hanya Senin-Jumat & Bukan Tanggal Merah)
         $hariEfektif = 0; 
-
         for ($date = $startOfMonth->copy(); $date->lte($endOfMonth); $date->addDay()) {
-            // Logika: Jika hari biasa (Senin-Jumat) DAN tidak terdaftar di tabel Holiday
             if ($date->isWeekday() && !in_array($date->format('Y-m-d'), $daftarLibur)) { 
                 $hariEfektif++;
             }
         }
 
-        // 3. 🔐 FILTER USER
+        // B. Data Dasar Gaji
+        $gaji = Penggajian::where('user_id', $user->id)->first();
+        $gapokDasar = $gaji->gaji_pokok ?? 0;
+        $tunjangan = $gaji->tunjangan ?? 0;
+        $tunjBpjs = $gaji->tunjangan_bpjs ?? 0;
+        $iuranBpjs = $gaji->iuran_bpjs ?? 0;
+        $targetCall = $gaji->target_call ?? 0;
+        $targetRev = $gaji->target ?? 0;
+
+        // C. Hitung KPI (Absensi, Progress, Revenue)
+        $hadir = AbsensiLog::where('user_id', $user->id)->whereBetween('tanggal', [$start, $end])->distinct()->count('tanggal');
+        $izin = Perizinan::where('user_id', $user->id)->whereBetween('tanggal', [$start, $end])->where('status', 'approved')->count();
+        $totalHadir = $hadir + $izin;
+        
+        $absensiKpi = (($hariEfektif > 0) ? min(100, ($totalHadir / $hariEfektif) * 100) : 0) * 0.1;
+
+        // FIX: Pindahkan filter tanggal ke dalam prospek dan gunakan tanggal_prospek
+        $baseCta = Cta::whereHas('prospek', function ($q) use ($user, $start, $end) {
+                $q->where('marketing_id', $user->id)
+                  ->whereBetween('tanggal_prospek', [$start . " 00:00:00", $end . " 23:59:59"]);
+            });
+
+        $progReal = (clone $baseCta)->count() + (clone $baseCta)->whereNotNull('status_penawaran')->where('status_penawaran','!=','')->count();
+        $progTarget = $targetCall * $hariEfektif;
+        $progKpi = (($progTarget > 0) ? ($progReal / $progTarget) * 100 : 0) * 0.3;
+
+        $income = (clone $baseCta)->where('status_penawaran', 'deal')->get()->sum(fn($i) => $i->harga_penawaran * $i->jumlah_peserta);
+        $revKpi = (($targetRev > 0) ? ($income / $targetRev) * 100 : 0) * 0.6;
+
+        $totalKpi = $absensiKpi + $progKpi + $revKpi;
+
+        // D. Hitung Nominal Rupiah (Ikuti rumus Dashboard)
+        $gapok_hitung = ($hariEfektif > 0) ? ($totalHadir / $hariEfektif) * $gapokDasar : 0;
+        $fee_mkt = ($income * 0.6) * (($totalKpi < 70) ? 0.025 : 0.05);
+        $prog_val = $gapokDasar * ($progKpi / 100);
+        
+        // Potongan Izin (Berdasarkan tabel jenis_izins)
+        $potIzin = Perizinan::where('perizinans.user_id', $user->id)
+                    ->whereBetween('perizinans.tanggal', [$start, $end])
+                    ->where('perizinans.status', 'approved')
+                    ->join('jenis_izins', 'perizinans.jenis', '=', 'jenis_izins.nama_izin')
+                    ->sum('jenis_izins.potongan') ?? 0;
+
+        $total_gaji = $gapok_hitung + $fee_mkt + $prog_val + $tunjangan + $tunjBpjs - $iuranBpjs - $potIzin;
+
+        // E. Kembalikan semua hasil dalam satu object
+        return (object) [
+            'gapok_hitung' => $gapok_hitung,
+            'fee_marketing' => $fee_mkt,
+            'progress_val' => $prog_val,
+            'tunj_kemahalan' => $tunjangan,
+            'tunjangan_bpjs' => $tunjBpjs,
+            'iuran_bpjs' => $iuranBpjs,
+            'potonganIzin' => $potIzin,
+            'total_gaji' => $total_gaji,
+            'absensi_hadir_real' => $totalHadir,
+            'hari_efektif' => $hariEfektif,
+            'income' => $income,
+            'kpi_persen' => $totalKpi,
+            'ach_absensi' => $absensiKpi,
+            'ach_progress' => $progKpi,
+            'ach_revenue' => $revKpi,
+            'target_penawaran' => $progTarget,
+            'real_penawaran' => $progReal
+        ];
+    }
+    
+    public function index(Request $request)
+    {
+        $start = $request->query('start_date', now()->startOfMonth()->format('Y-m-d'));
+        $end = $request->query('end_date', now()->format('Y-m-d'));
+        
         $query = User::where('role', 'marketing');
-        if ($authUser->role === 'marketing') {
-            $query->where('id', $authUser->id);
-        } elseif ($marketing_filter) {
-            $query->where('id', $marketing_filter);
+        if (auth()->user()->role === 'marketing') {
+            $query->where('id', auth()->id());
+        } elseif ($request->marketing_id) {
+            $query->where('id', $request->marketing_id);
         }
-        $users = $query->get();
-
-        $marketings = $users->map(function ($user) use ($hariEfektif, $start, $end) {
-
-            // ================= DATA GAJI DASAR =================
-            $gaji = Penggajian::where('user_id', $user->id)->first();
-            $gapokDasar        = $gaji->gaji_pokok ?? 0;
-            $tunjangan         = $gaji->tunjangan ?? 0;
-            $targetCallHarian  = $gaji->target_call ?? 0;
-            $targetRevenue     = $gaji->target ?? 0;
-
-            // ================= KPI 1: ABSENSI (10%) =================
-            $hadirMesin = AbsensiLog::where('user_id', $user->id)
-                ->whereBetween('tanggal', [$start, $end])->distinct()->count('tanggal');
-
-            $izinApproved = Perizinan::where('user_id', $user->id)
-                ->whereBetween('tanggal', [$start, $end])->where('status', 'approved')->count();
-
-            $totalHadirKpi = $hadirMesin + $izinApproved;
-            $absensiAch = ($hariEfektif > 0) ? min(100, ($totalHadirKpi / $hariEfektif) * 100) : 0;
-            $absensiKpi = $absensiAch * 0.1; 
-
-            // ================= KPI 2: PROGRESS (30%) =================
-            // Buat Base Query agar rapi dan tidak query berulang-ulang
-            $baseCtaQuery = Cta::whereHas('prospek', function ($q) use ($user) {
-                    $q->where('marketing_id', $user->id);
-                })
-                ->whereBetween('created_at', [$start . " 00:00:00", $end . " 23:59:59"]);
-
-            // 1. Hitung JUMLAH SEMUA CTA
-            $jumlahCtaBase = (clone $baseCtaQuery)->count();
-
-            // 2. Hitung JUMLAH CTA YANG MEMILIKI STATUS (Update / Follow Up)
-            $jumlahCtaBerstatus = (clone $baseCtaQuery)
-                ->whereNotNull('status_penawaran')
-                ->where('status_penawaran', '!=', '')
-                ->count();
-
-            // 3. RUMUS BARU: Total CTA + Total CTA Berstatus
-            $progressReal = $jumlahCtaBase + $jumlahCtaBerstatus;
-                
-            $progressTarget = $targetCallHarian * $hariEfektif;
-            $progressAch = ($progressTarget > 0) ? ($progressReal / $progressTarget) * 100 : 0;
-            $progressKpi = $progressAch * 0.3;
+        
+        $marketings = $query->get()->map(function ($user) use ($start, $end) {
+            // Panggil Mesin Penghitung
+            $calc = $this->getSalaryCalculation($user, $start, $end);
             
-
-            // ================= KPI 3: REVENUE (60%) =================
-            $incomeDeal = Cta::whereHas('prospek', function ($q) use ($user) {
-                    $q->where('marketing_id', $user->id);
-                })
-                ->where('status_penawaran', 'deal')
-                ->whereBetween('created_at', [$start . " 00:00:00", $end . " 23:59:59"])
-                ->get()
-                ->sum(fn($item) => $item->harga_penawaran * $item->jumlah_peserta);
-
-            $revenueAch = ($targetRevenue > 0) ? ($incomeDeal / $targetRevenue) * 100 : 0;
-            $revenueKpi = $revenueAch * 0.6;
-
-            $totalKpiPersen = ($absensiKpi + $progressKpi + $revenueKpi);
-
-            // ================= ASSIGN KE OBJECT (SESUAI 10:30:60) =================
-            $user->income = $incomeDeal;
-            $user->kpi_persen = $totalKpiPersen;
-            
-            // KEMBALIKAN KE NILAI KPI (Bukan Achievement Mentah)
-            $user->ach_absensi  = $absensiKpi;  // Misal: 10.0%
-            $user->ach_progress = $progressKpi; // Misal: 30.0%
-            $user->ach_revenue  = $revenueKpi;  // Misal: 60.0%
-
-            // ================= PERHITUNGAN GAJI =================
-            $user->gapok_hitung = ($hariEfektif > 0) ? ($totalHadirKpi / $hariEfektif) * $gapokDasar : 0;
-
-            $nilai_revenueKpi = $user->income * 0.6; 
-            $user->weighted_revenue_rp = $nilai_revenueKpi;
-            $multiplier = ($totalKpiPersen < 70) ? 0.025 : 0.05;
-            $user->fee_marketing = $nilai_revenueKpi * $multiplier;
-
-            $user->progress_val = $gapokDasar * ($progressKpi / 100);
-            
-            // $user->tunj_kemahalan = ($tunjangan / $hariEfektif) * $totalHadirKpi;
-            $user->tunj_kemahalan = $tunjangan;
-            $user->total_gaji = $user->gapok_hitung + $user->fee_marketing + $user->progress_val + $user->tunj_kemahalan;
-
-            // Variabel detail untuk label di Blade
-            $user->absensi_hadir_real = $totalHadirKpi;
-            $user->target_penawaran    = $progressTarget;
-            $user->real_penawaran      = $progressReal;
-
+            // Gabungkan hasil hitungan ke object user
+            foreach ($calc as $key => $value) { $user->$key = $value; }
             return $user;
         });
 
         $all_marketing = User::where('role', 'marketing')->get();
-        // Pakai nama $hariEfektif agar Blade tidak error "Undefined variable"
+        $hariEfektif = $marketings->first()->hari_efektif ?? 0;
+
         return view('simulasi-gaji', compact('marketings', 'hariEfektif', 'start', 'end', 'all_marketing'));
+    }
+    
+    public function previewSlip($id)
+    {
+        // 1. Cari User berdasarkan ID (Marketing)
+        $user = User::findOrFail($id);
+        
+        // 2. Ambil juga data Penggajian dasarnya agar variabel $penggajian tersedia di Blade
+        $penggajian = Penggajian::where('user_id', $user->id)->firstOrFail();
+        
+        // 3. Ambil range bulan sekarang untuk slip
+        $now = now();
+        $start = $now->copy()->startOfMonth()->format('Y-m-d');
+        $end = $now->copy()->format('Y-m-d');
+    
+        // 4. Panggil Mesin Penghitung
+        $calc = $this->getSalaryCalculation($user, $start, $end);
+    
+        // 5. Logic Nomor Referensi & Jabatan
+        $romawi = ['', 'I', 'II', 'III', 'IV', 'V', 'VI', 'VII', 'VIII', 'IX', 'X', 'XI', 'XII'];
+        $noReferensi = str_pad($now->month, 3, '0', STR_PAD_LEFT) . "/AJP/GJ/" . $romawi[$now->month] . "/" . $now->year;
+        $jabatan = stripos($user->name, 'arsa') !== false ? 'Marketing' : ($user->nama_lengkap ? 'Staff' : 'Karyawan');
+    
+        // 6. Breakdown BPJS untuk tampilan slip
+        $jht_karyawan = $calc->iuran_bpjs - $calc->tunjangan_bpjs;
+        $jkk = round((0.24 / 4.24) * $calc->tunjangan_bpjs);
+        $jkm = round((0.30 / 4.24) * $calc->tunjangan_bpjs);
+        $jht_kantor = $calc->tunjangan_bpjs - $jkk - $jkm;
+    
+        // 7. Kirim semua data ke View (Pastikan 'penggajian' masuk ke array)
+        return view('penggajian.slip_print', array_merge((array)$calc, [
+            'user' => $user,
+            'penggajian' => $penggajian, 
+            'noReferensi' => $noReferensi,
+            'jabatan' => $jabatan,
+            'now' => $now,
+            'jkk' => $jkk,
+            'jkm' => $jkm,
+            'jht_kantor' => $jht_kantor,
+            'jht_karyawan' => $jht_karyawan
+        ]));
     }
 }

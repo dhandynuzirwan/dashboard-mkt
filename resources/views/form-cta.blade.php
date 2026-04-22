@@ -21,6 +21,33 @@
                             <div class="card-title">Form Tambah CTA</div>
                         </div>
                         <div class="card-body">
+                            {{-- 🔥 PERINGATAN DATA DUPLIKAT 🔥 --}}
+                            @if(isset($existingCtaCount) && $existingCtaCount > 0)
+                                <div class="alert alert-warning alert-dismissible fade show shadow-sm border-warning" role="alert">
+                                    <div class="d-flex align-items-center">
+                                        <i class="fas fa-exclamation-triangle fs-2 me-3 text-warning"></i>
+                                        <div>
+                                            <strong>Prospek ini sudah memiliki {{ $existingCtaCount }} CTA!</strong><br>
+                                            <span class="small">Tombol simpan otomatis <b>dikunci</b> agar Anda tidak membuat data ganda secara tidak sengaja saat menekan Next/Prev.</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            @endif
+                            {{-- 🔥 TAMBAHKAN BLOK ERROR INI 🔥 --}}
+                            @if ($errors->any())
+                                <div class="alert alert-danger alert-dismissible fade show shadow-sm" role="alert">
+                                    <strong><i class="fas fa-exclamation-triangle me-1"></i> Gagal Menyimpan!</strong> 
+                                    Silakan periksa kembali isian form Anda:
+                                    <ul class="mb-0 mt-1 text-start">
+                                        @foreach ($errors->all() as $error)
+                                            <li>{{ $error }}</li>
+                                        @endforeach
+                                    </ul>
+                                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                                </div>
+                            @endif
+                            {{-- 🔥 END BLOK ERROR 🔥 --}}
+                        
                             <form action="{{ route('cta.store') }}" method="POST" id="form-cta" enctype="multipart/form-data">
                                 @csrf
                                 <input type="hidden" name="prospek_id" value="{{ $prospek->id }}">
@@ -85,12 +112,16 @@
 
                                 <div class="form-group">
                                     <label>Harga Penawaran</label>
-                                    <input type="number" class="form-control" name="harga_penawaran">
+                                    {{-- Input yang dilihat user --}}
+                                    <input type="text" class="form-control input-rupiah" placeholder="Rp 0">
+                                    {{-- Input asli yang dikirim ke database (Hidden) --}}
+                                    <input type="hidden" name="harga_penawaran" class="input-real">
                                 </div>
 
                                 <div class="form-group">
                                     <label>Harga Titip Vendor</label>
-                                    <input type="number" class="form-control" name="harga_vendor">
+                                    <input type="text" class="form-control input-rupiah" placeholder="Rp 0">
+                                    <input type="hidden" name="harga_vendor" class="input-real">
                                 </div>
 
                                 <div class="row">
@@ -149,11 +180,24 @@
                                     </div>
 
                                     {{-- Tombol Utama --}}
-                                    <div>
-                                        <button type="submit" id="btn-simpan" class="btn btn-primary shadow-sm">
-                                            <i class="fas fa-save"></i> Simpan CTA
-                                        </button>
-                                        <a href="{{ route('pipeline') }}" class="btn btn-secondary">Batal</a>
+                                    <div class="d-flex" style="gap: 8px;">
+                                        @if(isset($existingCtaCount) && $existingCtaCount > 0)
+                                            {{-- Tombol Terkunci --}}
+                                            <button type="submit" id="btn-simpan" class="btn btn-secondary shadow-sm" disabled>
+                                                <i class="fas fa-lock"></i> Terkunci
+                                            </button>
+                                            {{-- Tombol Buka Kunci (Jika memang sengaja mau nambah CTA ke-2) --}}
+                                            <button type="button" id="btn-unlock" class="btn btn-warning shadow-sm">
+                                                <i class="fas fa-unlock"></i> Buka Kunci
+                                            </button>
+                                        @else
+                                            {{-- Tombol Normal --}}
+                                            <button type="submit" id="btn-simpan" class="btn btn-primary shadow-sm">
+                                                <i class="fas fa-save"></i> Simpan CTA
+                                            </button>
+                                        @endif
+                                        
+                                        <a href="{{ route('pipeline') }}" class="btn btn-outline-secondary">Kembali</a> 
                                     </div>
 
                                     {{-- Tombol Next --}}
@@ -234,6 +278,64 @@
                     backdrop: `rgba(0,0,0,0.4)`
                 });
             @endif
+            
+            // 5. 🔥 LOGIKA JIKA GAGAL VALIDASI (ERROR) 🔥
+            @if($errors->any())
+                // Matikan loading di tombol kalau halamannya kereload karena error
+                let btnError = $('#btn-simpan');
+                btnError.prop('disabled', false);
+                btnError.html('<i class="fas fa-save"></i> Simpan CTA');
+
+                // Munculkan Pop-up Error
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Oops! Ada yang terlewat',
+                    text: 'Silakan cek kembali kotak peringatan warna merah di atas form.',
+                    confirmButtonColor: '#dc3545',
+                    confirmButtonText: 'Perbaiki Data',
+                    backdrop: `rgba(0,0,0,0.4)`
+                });
+            @endif
+            
+            // 6. 🔥 FORMAT INPUT RUPIAH OTOMATIS 🔥
+            $('.input-rupiah').on('input', function() {
+                // Ambil nilai input
+                let inputVal = $(this).val();
+                
+                // Hapus semua karakter selain angka
+                let angkaString = inputVal.replace(/[^,\d]/g, '').toString();
+                
+                // Format jadi titik (Ribuan)
+                let split = angkaString.split(',');
+                let sisa = split[0].length % 3;
+                let rupiah = split[0].substr(0, sisa);
+                let ribuan = split[0].substr(sisa).match(/\d{3}/gi);
+
+                if (ribuan) {
+                    let separator = sisa ? '.' : '';
+                    rupiah += separator + ribuan.join('.');
+                }
+
+                // Tambahkan koma jika ada (opsional)
+                rupiah = split[1] != undefined ? rupiah + ',' + split[1] : rupiah;
+
+                // Tampilkan formatnya di layar user
+                $(this).val(rupiah);
+
+                // Kirim angka aslinya (tanpa titik) ke input Hidden untuk dikirim ke database
+                let cleanNumber = angkaString.replace(/\./g, '');
+                $(this).siblings('.input-real').val(cleanNumber);
+            });
+            
+            // 7. 🔥 LOGIKA BUKA KUNCI TOMBOL SIMPAN 🔥
+            $('#btn-unlock').on('click', function() {
+                let btnSimpan = $('#btn-simpan');
+                btnSimpan.prop('disabled', false); // Aktifkan tombol
+                btnSimpan.removeClass('btn-secondary').addClass('btn-primary'); // Ubah warna
+                btnSimpan.html('<i class="fas fa-save"></i> Simpan CTA Ke-2'); // Ubah teks
+                
+                $(this).fadeOut(); // Hilangkan tombol Buka Kunci dengan animasi halus
+            });
         });
     </script>
 @endpush

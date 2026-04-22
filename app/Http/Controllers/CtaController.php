@@ -11,6 +11,7 @@ use Illuminate\Support\Facades\Storage;
 class CtaController extends Controller
 {
     // 1. UPDATE METHOD CREATE (Untuk Form Tambah CTA)
+   // 1. UPDATE METHOD CREATE (Untuk Form Tambah CTA)
     public function create($prospek_id)
     {
         $prospek = Prospek::with('marketing')->findOrFail($prospek_id);
@@ -22,17 +23,75 @@ class CtaController extends Controller
             abort(403, 'Unauthorized');
         }
 
-        // --- LOGIKA NEXT & PREVIOUS PROSPEK ---
+        // 🔥 CEK APAKAH PROSPEK INI SUDAH PUNYA CTA SEBELUMNYA 🔥
+        $existingCtaCount = Cta::where('prospek_id', $prospek_id)->count();
+
+        // --- LOGIKA NEXT & PREVIOUS PROSPEK (SESUAI FILTER PIPELINE) ---
         $query = Prospek::query();
+
+        // 1. Filter Role
         if ($authUser->role === 'marketing') {
             $query->where('marketing_id', $authUser->id);
         }
+
+        // 2. Ambil URL Session Terakhir
+        $lastUrl = session('url_pipeline_terakhir');
+        $filters = [];
+        if ($lastUrl) {
+            $queryString = parse_url($lastUrl, PHP_URL_QUERY); 
+            if ($queryString) {
+                parse_str($queryString, $filters); 
+            }
+        }
+
+        // 3. Terapkan Filter Tanggal
+        if (!empty($filters['start_date']) && !empty($filters['end_date'])) {
+            $query->whereBetween('tanggal_prospek', [$filters['start_date'], $filters['end_date']]);
+        }
+
+        // 4. Terapkan Filter Marketing
+        if (!empty($filters['marketing_id'])) {
+            $query->where('marketing_id', $filters['marketing_id']);
+        }
+
+        // 5. Terapkan Filter TAHAP (Pending / Done)
+        if (!empty($filters['cta_status'])) {
+            if ($filters['cta_status'] == 'pending') {
+                $query->whereDoesntHave('cta'); 
+            } elseif ($filters['cta_status'] == 'done') {
+                $query->whereHas('cta'); 
+            }
+        }
+
+        // 6. Terapkan Filter Status Akhir Data (Catatan)
+        if (!empty($filters['status_akhir'])) {
+            if ($filters['status_akhir'] === 'belum_ada_status') {
+                $query->where(function($q) {
+                    $q->whereNull('status')->orWhere('status', '');
+                });
+            } else {
+                $query->where('status', $filters['status_akhir']);
+            }
+        }
+
+        // 7. Terapkan Filter Status Penawaran CTA
+        if (!empty($filters['status'])) {
+            $query->whereHas('cta', function ($q) use ($filters) {
+                $q->where('status_penawaran', $filters['status']);
+            });
+        }
+
+        // 8. Terapkan Filter Pencarian
+        if (!empty($filters['search_perusahaan'])) {
+            $query->where('perusahaan', 'LIKE', '%' . $filters['search_perusahaan'] . '%');
+        }
         
+        // 9. Eksekusi Next & Prev
         $prevProspek = (clone $query)->where('id', '<', $prospek_id)->orderBy('id', 'desc')->first();
         $nextProspek = (clone $query)->where('id', '>', $prospek_id)->orderBy('id', 'asc')->first();
         // --------------------------------------
 
-        return view('form-cta', compact('prospek', 'trainings', 'prevProspek', 'nextProspek'));
+        return view('form-cta', compact('prospek', 'trainings', 'prevProspek', 'nextProspek', 'existingCtaCount'));
     }
 
     public function store(Request $request)
@@ -154,17 +213,73 @@ class CtaController extends Controller
                                 ->latest()
                                 ->get();
 
-        // --- LOGIKA NEXT & PREVIOUS CTA ---
+        // --- LOGIKA NEXT & PREVIOUS CTA (SESUAI FILTER PIPELINE) ---
         $query = Cta::with('prospek');
+
+        // 1. Filter Role
         if ($authUser->role === 'marketing') {
             $query->whereHas('prospek', function($q) use ($authUser) {
                 $q->where('marketing_id', $authUser->id);
             });
         }
 
+        // 2. Ambil URL Session Terakhir
+        $lastUrl = session('url_pipeline_terakhir');
+        $filters = [];
+        if ($lastUrl) {
+            $queryString = parse_url($lastUrl, PHP_URL_QUERY);
+            if ($queryString) {
+                parse_str($queryString, $filters);
+            }
+        }
+
+        // 3. Terapkan Filter Tanggal
+        if (!empty($filters['start_date']) && !empty($filters['end_date'])) {
+            $query->whereHas('prospek', function($q) use ($filters) {
+                $q->whereBetween('tanggal_prospek', [$filters['start_date'], $filters['end_date']]);
+            });
+        }
+
+        // 4. Terapkan Filter Marketing 
+        if (!empty($filters['marketing_id'])) {
+            $query->whereHas('prospek', function($q) use ($filters) {
+                $q->where('marketing_id', $filters['marketing_id']);
+            });
+        }
+
+        // 5. Terapkan Filter Status Penawaran CTA (Deal, Hold, dll)
+        if (!empty($filters['status'])) {
+            if ($filters['status'] === 'not_null') {
+                $query->whereNotNull('status_penawaran')->where('status_penawaran', '!=', '');
+            } else {
+                $query->where('status_penawaran', $filters['status']);
+            }
+        }
+
+        // 6. Terapkan Filter Status Akhir Data (Manja, Dapat Email, dll)
+        if (!empty($filters['status_akhir'])) {
+            $query->whereHas('prospek', function($q) use ($filters) {
+                if ($filters['status_akhir'] === 'belum_ada_status') {
+                    $q->where(function($subQ) {
+                        $subQ->whereNull('status')->orWhere('status', '');
+                    });
+                } else {
+                    $q->where('status', $filters['status_akhir']);
+                }
+            });
+        }
+
+        // 7. Terapkan Filter Pencarian Nama Perusahaan
+        if (!empty($filters['search_perusahaan'])) {
+            $query->whereHas('prospek', function($q) use ($filters) {
+                $q->where('perusahaan', 'LIKE', '%' . $filters['search_perusahaan'] . '%');
+            });
+        }
+
+        // 8. Eksekusi Next & Prev!
         $prevCta = (clone $query)->where('id', '<', $id)->orderBy('id', 'desc')->first();
         $nextCta = (clone $query)->where('id', '>', $id)->orderBy('id', 'asc')->first();
-        // ----------------------------------
+        // -------------------------------------------------------------
 
         return view('form-cta-edit', compact('cta', 'trainings', 'penawaranLainnya', 'prevCta', 'nextCta'));
     }
@@ -216,7 +331,7 @@ class CtaController extends Controller
     //         ->with('success', 'CTA berhasil diupdate!');
     // }
     
-    public function storeMassal(Request $request)
+   public function storeMassal(Request $request)
     {
         $rows = $request->input('rows');
     
@@ -226,40 +341,60 @@ class CtaController extends Controller
     
         $countSuccess = 0;
         $countFailed = 0;
-        $countSkipped = 0; // Tambahan: Menghitung data yang dilewati
+        $countSkipped = 0;
     
         foreach ($rows as $row) {
-            // 🚨 LOGIKA BARU: Lewati baris jika Perusahaan, Lokasi, ATAU Catatan Prospek kosong
+            // 1. Lewati baris jika Perusahaan, Lokasi, ATAU Catatan kosong
             if (empty($row['perusahaan']) || empty($row['lokasi']) || empty($row['catatan_prospek'])) {
                 $countSkipped++;
-                continue; // Langsung lompat ke baris berikutnya, tidak ada yang disimpan
+                continue; 
             }
     
+            // 2. CARI PROSPEK (Ini bagian yang mungkin terhapus sebelumnya)
             $prospek = Prospek::where('perusahaan', 'LIKE', '%' . trim($row['perusahaan']) . '%')
                               ->where('lokasi', 'LIKE', '%' . trim($row['lokasi']) . '%')
                               ->first();
     
+            // 3. JIKA PROSPEK DITEMUKAN
             if ($prospek) {
-                // Update Catatan (Pasti tereksekusi karena sudah lolos pengecekan empty di atas)
+                // Update Catatan 
                 $prospek->update([
                     'catatan' => $row['catatan_prospek']
                 ]);
     
-                // Auto Multiply
+                // Hitung-hitungan Angka
                 $jumlah = !empty($row['jumlah_peserta']) ? (int)$row['jumlah_peserta'] : null;
                 $hargaPenawaran = !empty($row['harga_penawaran']) ? (float)$row['harga_penawaran'] : null;
                 $hargaVendor = !empty($row['harga_vendor']) ? (float)$row['harga_vendor'] : null;
     
                 $totalPenawaran = ($jumlah && $hargaPenawaran) ? $jumlah * $hargaPenawaran : null;
                 $totalVendor = ($jumlah && $hargaVendor) ? $jumlah * $hargaVendor : null;
-    
                 $keterangan = !empty($row['keterangan']) ? $row['keterangan'] : '-';
+
+                // 🔥 LOGIKA TERJEMAHAN SERTIFIKASI (Pencarian Kata Kunci Kuat)
+                $sertifikasiExcel = isset($row['sertifikasi']) ? strtoupper(trim($row['sertifikasi'])) : '';
+                $sertifikasiDB = null;
+        
+                if ($sertifikasiExcel !== '') {
+                    if (str_contains($sertifikasiExcel, 'KEMENAKER') || str_contains($sertifikasiExcel, 'KEMNAKER')) {
+                        $sertifikasiDB = 'kemnaker';
+                    } elseif (str_contains($sertifikasiExcel, 'BNSP')) {
+                        $sertifikasiDB = 'bnsp';
+                    } elseif (str_contains($sertifikasiExcel, 'INTERNAL')) {
+                        $sertifikasiDB = 'internal';
+                    } elseif (str_contains($sertifikasiExcel, 'SIO')) {
+                        $sertifikasiDB = 'sio';
+                    } elseif (str_contains($sertifikasiExcel, 'RIKSA')) {
+                        $sertifikasiDB = 'riksa';
+                    }
+                }
     
+                // 4. SIMPAN DATA KE TABEL CTA
                 Cta::create([
-                    'prospek_id'       => $prospek->id,
+                    'prospek_id'       => $prospek->id, // <-- Ini tidak akan error lagi
                     'judul_permintaan' => $row['judul_permintaan'] ?? null,
                     'jumlah_peserta'   => $jumlah,
-                    'sertifikasi'      => $row['sertifikasi'] ?? null,
+                    'sertifikasi'      => $sertifikasiDB, 
                     'skema'            => $row['skema'] ?? null,
                     'harga_penawaran'  => $hargaPenawaran,
                     'harga_vendor'     => $hargaVendor,
@@ -276,7 +411,7 @@ class CtaController extends Controller
             }
         }
     
-        // Buat pesan notifikasi yang detail
+        // 5. PESAN NOTIFIKASI
         $pesan = "$countSuccess Data CTA berhasil ditambahkan.";
         
         if ($countFailed > 0) {
@@ -288,5 +423,30 @@ class CtaController extends Controller
         }
     
         return redirect()->back()->with('success', $pesan);
+    }
+    
+    // ================= DELETE MASSAL CTA (DUPLIKAT) =================
+    public function massDelete(Request $request)
+    {
+        if (!in_array(auth()->user()->role, ['superadmin', 'admin'])) {
+            abort(403, 'Unauthorized Access');
+        }
+
+        $selectedIds = $request->input('selected_cta');
+
+        if (empty($selectedIds) || !is_array($selectedIds)) {
+            return redirect()->back()->withErrors('Gagal! Anda belum memilih data CTA apapun untuk dihapus.');
+        }
+
+        // Ambil data dan hapus file proposalnya jika ada
+        $ctas = Cta::whereIn('id', $selectedIds)->get();
+        foreach($ctas as $cta) {
+            if ($cta->file_proposal && Storage::disk('public')->exists($cta->file_proposal)) {
+                Storage::disk('public')->delete($cta->file_proposal);
+            }
+            $cta->forceDelete(); // Hapus permanen
+        }
+
+        return redirect()->back()->with('success', "Berhasil menghapus " . count($selectedIds) . " data penawaran (CTA) duplikat secara permanen.");
     }
 }

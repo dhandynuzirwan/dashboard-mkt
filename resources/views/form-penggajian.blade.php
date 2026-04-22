@@ -89,6 +89,26 @@
                                         </div>
                                     </div>
 
+                                    {{-- 🔥 TAMBAHAN: TUNJANGAN BPJS --}}
+                                    <div class="form-group mb-3">
+                                        <label>Tunjangan BPJS <small class="text-success fw-bold">(Penambah)</small></label>
+                                        <div class="input-group">
+                                            <span class="input-group-text">Rp</span>
+                                            <input type="number" class="form-control" name="tunjangan_bpjs"
+                                                value="{{ old('tunjangan_bpjs', 0) }}" placeholder="0" required>
+                                        </div>
+                                    </div>
+
+                                    {{-- 🔥 TAMBAHAN: IURAN BPJS --}}
+                                    <div class="form-group mb-3">
+                                        <label>Iuran BPJS <small class="text-danger fw-bold">(Potongan)</small></label>
+                                        <div class="input-group">
+                                            <span class="input-group-text">Rp</span>
+                                            <input type="number" class="form-control" name="iuran_bpjs"
+                                                value="{{ old('iuran_bpjs', 0) }}" placeholder="0" required>
+                                        </div>
+                                    </div>
+
                                     {{-- BUTTON --}}
                                     <div class="form-group mt-3">
                                         <button type="submit" class="btn btn-primary">
