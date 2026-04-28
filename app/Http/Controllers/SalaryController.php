@@ -16,13 +16,14 @@ class SalaryController extends Controller
 {
     private function getSalaryCalculation($user, $start, $end)
     {
-        // A. Hitung Hari Efektif
+        // A. Setup Tanggal & Libur
         $startDate = Carbon::parse($start);
         $startOfMonth = $startDate->copy()->startOfMonth();
         $endOfMonth = $startDate->copy()->endOfMonth();
         $daftarLibur = Holiday::whereBetween('tanggal', [$startOfMonth->format('Y-m-d'), $endOfMonth->format('Y-m-d')])
                         ->pluck('tanggal')->toArray();
 
+        // B1. Hitung TOTAL Hari Efektif Sebulan Penuh (Untuk penentuan Gaji Per Hari & Target Bulanan)
         $hariEfektif = 0; 
         for ($date = $startOfMonth->copy(); $date->lte($endOfMonth); $date->addDay()) {
             if ($date->isWeekday() && !in_array($date->format('Y-m-d'), $daftarLibur)) { 
@@ -30,7 +31,17 @@ class SalaryController extends Controller
             }
         }
 
-        // B. Data Dasar Gaji
+        // B2. Hitung Hari Efektif BERJALAN (Maksimal sampai hari ini agar tidak ada potongan siluman)
+        // Jika filter tanggal akhir ($end) melebihi hari ini, maka mentok di hari ini.
+        $batasAkhir = min($end, now()->format('Y-m-d'));
+        $hariEfektifBerjalan = 0;
+        for ($date = $startOfMonth->copy(); $date->lte(Carbon::parse($batasAkhir)); $date->addDay()) {
+            if ($date->isWeekday() && !in_array($date->format('Y-m-d'), $daftarLibur)) { 
+                $hariEfektifBerjalan++;
+            }
+        }
+
+        // C. Data Dasar Gaji
         $gaji = Penggajian::where('user_id', $user->id)->first();
         $gapokDasar = $gaji->gaji_pokok ?? 0;
         $tunjangan = $gaji->tunjangan ?? 0;
@@ -39,54 +50,88 @@ class SalaryController extends Controller
         $targetCall = $gaji->target_call ?? 0;
         $targetRev = $gaji->target ?? 0;
 
-        // C. Hitung KPI (Absensi, Progress, Revenue)
+        // D. Hitung Hadir & Izin
         $hadir = AbsensiLog::where('user_id', $user->id)->whereBetween('tanggal', [$start, $end])->distinct()->count('tanggal');
         $izin = Perizinan::where('user_id', $user->id)->whereBetween('tanggal', [$start, $end])->where('status', 'approved')->count();
         $totalHadir = $hadir + $izin;
         
-        $absensiKpi = (($hariEfektif > 0) ? min(100, ($totalHadir / $hariEfektif) * 100) : 0) * 0.1;
-
-        // FIX: Pindahkan filter tanggal ke dalam prospek dan gunakan tanggal_prospek
+        // E. Kalkulasi CTA & Revenue
         $baseCta = Cta::whereHas('prospek', function ($q) use ($user, $start, $end) {
                 $q->where('marketing_id', $user->id)
                   ->whereBetween('tanggal_prospek', [$start . " 00:00:00", $end . " 23:59:59"]);
             });
 
         $progReal = (clone $baseCta)->count() + (clone $baseCta)->whereNotNull('status_penawaran')->where('status_penawaran','!=','')->count();
-        $progTarget = $targetCall * $hariEfektif;
-        $progKpi = (($progTarget > 0) ? ($progReal / $progTarget) * 100 : 0) * 0.3;
-
+        $progTarget = $targetCall * $hariEfektif; // Target tetap dihitung full sebulan
         $income = (clone $baseCta)->where('status_penawaran', 'deal')->get()->sum(fn($i) => $i->harga_penawaran * $i->jumlah_peserta);
-        $revKpi = (($targetRev > 0) ? ($income / $targetRev) * 100 : 0) * 0.6;
 
-        $totalKpi = $absensiKpi + $progKpi + $revKpi;
+        // ================= 🔥 LOGIKA POTONGAN ALPA & IZIN 🔥 =================
+        // 1. Hitung jumlah hari tidak masuk (Alpa) berdasarkan hari yang SUDAH BERJALAN
+        $hariAlpa = max(0, $hariEfektifBerjalan - $totalHadir);
 
-        // D. Hitung Nominal Rupiah (Ikuti rumus Dashboard)
-        $gapok_hitung = ($hariEfektif > 0) ? ($totalHadir / $hariEfektif) * $gapokDasar : 0;
-        $fee_mkt = ($income * 0.6) * (($totalKpi < 70) ? 0.025 : 0.05);
-        $prog_val = $gapokDasar * ($progKpi / 100);
+        // 2. Hitung potongan per hari (Gaji Pokok dibagi Total Hari Efektif Sebulan)
+        $potonganPerHari = ($hariEfektif > 0) ? ($gapokDasar / $hariEfektif) : 0;
         
-        // Potongan Izin (Berdasarkan tabel jenis_izins)
-        $potIzin = Perizinan::where('perizinans.user_id', $user->id)
+        // 3. Eksekusi nominal potongan Alpa
+        $potonganAlpa = $hariAlpa * $potonganPerHari;
+
+        // 4. Potongan dari Form Izin (Misal: Izin telat, pulang awal)
+        $potIzinForm = Perizinan::where('perizinans.user_id', $user->id)
                     ->whereBetween('perizinans.tanggal', [$start, $end])
                     ->where('perizinans.status', 'approved')
                     ->join('jenis_izins', 'perizinans.jenis', '=', 'jenis_izins.nama_izin')
                     ->sum('jenis_izins.potongan') ?? 0;
 
-        $total_gaji = $gapok_hitung + $fee_mkt + $prog_val + $tunjangan + $tunjBpjs - $iuranBpjs - $potIzin;
+        // 5. Total semua potongan kehadiran
+        $totalPotonganKehadiran = $potIzinForm + $potonganAlpa;
+        // ======================================================================
 
-        // E. Kembalikan semua hasil dalam satu object
+        // F. Hitung KPI (Absensi, Progress, Revenue)
+        $kpiCapped = true; 
+
+        // Agar KPI Absensi juga fair, kita hitung persentasenya menggunakan Hari Berjalan, bukan Hari Full Sebulan
+        $persenAbsensi = ($hariEfektifBerjalan > 0) ? ($totalHadir / $hariEfektifBerjalan) * 100 : 0;
+        $persenProg = ($progTarget > 0) ? ($progReal / $progTarget) * 100 : 0;
+        $persenRev = ($targetRev > 0) ? ($income / $targetRev) * 100 : 0;
+
+        if ($kpiCapped) {
+            $persenAbsensi = min(100, $persenAbsensi); 
+            $persenProg = min(100, $persenProg);       
+            $persenRev = min(100, $persenRev);         
+        }
+
+        $absensiKpi = $persenAbsensi * 0.1;
+        $progKpi = $persenProg * 0.3;
+        $revKpi = $persenRev * 0.6;
+
+        $totalKpi = $absensiKpi + $progKpi + $revKpi;
+
+        // G. Hitung Nominal Gaji Akhir
+        $fee_mkt = ($income * 0.6) * (($totalKpi < 70) ? 0.025 : 0.05);
+        $prog_val = $gapokDasar * ($progKpi / 100);
+        
+        // Final Eksekusi (Dikurangi total potongan yang baru)
+        $total_gaji = $gapokDasar + $fee_mkt + $prog_val + $tunjangan + $tunjBpjs - $iuranBpjs - $totalPotonganKehadiran;
+
+        // H. Kembalikan Object
         return (object) [
-            'gapok_hitung' => $gapok_hitung,
+            'gapok_hitung' => $gapokDasar,
             'fee_marketing' => $fee_mkt,
             'progress_val' => $prog_val,
             'tunj_kemahalan' => $tunjangan,
             'tunjangan_bpjs' => $tunjBpjs,
             'iuran_bpjs' => $iuranBpjs,
-            'potonganIzin' => $potIzin,
+            
+            // Nilai ini sudah mewakili Potongan Form + Potongan Alpa
+            'potonganIzin' => $totalPotonganKehadiran, 
+            
+            // Detail opsional untuk ditampilkan
+            'detail_hari_alpa' => $hariAlpa,
+            'hari_efektif_berjalan' => $hariEfektifBerjalan,
+            
             'total_gaji' => $total_gaji,
             'absensi_hadir_real' => $totalHadir,
-            'hari_efektif' => $hariEfektif,
+            'hari_efektif' => $hariEfektif, // Tetap kita kirim yang full bulan untuk label di view
             'income' => $income,
             'kpi_persen' => $totalKpi,
             'ach_absensi' => $absensiKpi,

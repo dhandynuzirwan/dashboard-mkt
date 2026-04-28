@@ -166,12 +166,18 @@ class DashboardController extends Controller
             return $user;
         });
 
-        // 4. LOGIKA PIE CHART (Total Nominal RUPIAH dari Status DEAL)
+        // ================= 4. LOGIKA PIE CHART & KAMUS WARNA MARKETING =================
         $pieLabels = [];
         $pieData = [];
-        foreach ($users as $user) {
+        // Daftar warna yang SAMA PERSIS dengan konfigurasi Pie Chart di Blade
+        $warnaPieChart = ['#0d6efd', '#0dcaf0', '#ffc107', '#198754', '#dc3545', '#6610f2', '#fd7e14', '#20c997'];
+        $kamusWarnaMarketing = [];
+
+        foreach ($users as $index => $user) {
             $pieLabels[] = $user->name;
-            // FIX: Tambahkan jam agar akurat
+            // Catat warna per marketing ke dalam kamus
+            $kamusWarnaMarketing[$user->name] = $warnaPieChart[$index % count($warnaPieChart)];
+
             $totalNominalDeal = \App\Models\Cta::whereHas('prospek', function ($q) use ($user, $start, $end) {
                 $q->where('marketing_id', $user->id)
                   ->whereBetween('tanggal_prospek', [$start . " 00:00:00", $end . " 23:59:59"]); 
@@ -239,22 +245,22 @@ class DashboardController extends Controller
         $showReminder = $isAdmin && now()->hour < 16 && $dataMasukToday < $targetDataMasuk;
         $showSuccessReminder = $isAdmin && now()->hour < 16 && $dataMasukToday >= $targetDataMasuk;
         
-        // ================= 🔥 DATA UNTUK PETA (JVECTOR MAP) 🔥 =================
-        // 1. Ambil data jumlah penawaran (CTA) yang di-group berdasarkan teks 'lokasi'
-        $mapDataRaw = Prospek::whereHas('cta')
+        // ================= 🔥 DATA UNTUK PETA (DENGAN WARNA MARKETING DOMINAN) 🔥 =================
+        // 1. Ambil semua prospek yang ada CTA dan lokasinya (ambil ID marketingnya juga)
+        $semuaProspekMap = Prospek::whereHas('cta')
             ->whereBetween('tanggal_prospek', [$start, $end])
             ->whereNotNull('lokasi')
-            ->select('lokasi', DB::raw('COUNT(*) as total'))
-            ->groupBy('lokasi')
-            ->pluck('total', 'lokasi');
+            ->get(['lokasi', 'marketing_id']); // Optimasi memori
 
-        // 2. Mapping teks lokasi ke kode wilayah jVectorMap (ISO 3166-2:ID)
-        $mapData = [];
-        foreach ($mapDataRaw as $lokasi => $total) {
-            $lokasiUpper = strtoupper(trim($lokasi));
+        $mapDataMentah = [];
+
+        // 2. Mapping lokasi ke kode provinsi dan hitung skor marketing
+        foreach ($semuaProspekMap as $p) {
+            $lokasiUpper = strtoupper(trim($p->lokasi));
+            $marketingData = $users->firstWhere('id', $p->marketing_id);
+            $namaMarketing = $marketingData ? $marketingData->name : 'Unknown';
             $code = '';
 
-            // Cocokkan kata kunci untuk mendapat kode provinsi
             if (str_contains($lokasiUpper, 'JAKARTA') || $lokasiUpper == 'DKI') $code = 'ID-JK';
             elseif (str_contains($lokasiUpper, 'JAWA BARAT') || $lokasiUpper == 'JABAR') $code = 'ID-JB';
             elseif (str_contains($lokasiUpper, 'JAWA TENGAH') || $lokasiUpper == 'JATENG') $code = 'ID-JT';
@@ -290,15 +296,39 @@ class DashboardController extends Controller
             elseif (str_contains($lokasiUpper, 'NUSA TENGGARA BARAT') || $lokasiUpper == 'NTB') $code = 'ID-NB';
             elseif (str_contains($lokasiUpper, 'NUSA TENGGARA TIMUR') || $lokasiUpper == 'NTT') $code = 'ID-NT';
 
-            // Jika dikenali, tambahkan ke total map
             if ($code != '') {
-                if(!isset($mapData[$code])) $mapData[$code] = 0;
-                $mapData[$code] += $total;
+                if(!isset($mapDataMentah[$code])) {
+                    $mapDataMentah[$code] = [
+                        'total' => 0,
+                        'marketing_counts' => [] // Menyimpan siapa dapat berapa di provinsi ini
+                    ];
+                }
+                
+                $mapDataMentah[$code]['total'] += 1;
+                
+                if (!isset($mapDataMentah[$code]['marketing_counts'][$namaMarketing])) {
+                    $mapDataMentah[$code]['marketing_counts'][$namaMarketing] = 0;
+                }
+                $mapDataMentah[$code]['marketing_counts'][$namaMarketing] += 1;
             }
+        }
+
+        // 3. Rakit Data Akhir untuk Highcharts
+        $mapData = [];
+        foreach ($mapDataMentah as $code => $data) {
+            // Cari nama marketing dengan angka tertinggi di provinsi tersebut
+            $marketingDominan = array_keys($data['marketing_counts'], max($data['marketing_counts']))[0];
+            
+            // Ambil warna dari kamus (fallback ke oranye kalau tidak ada)
+            $warnaHover = $kamusWarnaMarketing[$marketingDominan] ?? '#ff9e27';
+
+            $mapData[$code] = [
+                'total' => $data['total'],
+                'warna' => $warnaHover
+            ];
         }
         // ================= 🔥 END DATA PETA 🔥 =================
 
-        // 🔥 PASTIKAN BAGIAN RETURN VIEW DIUBAH MENJADI SEPERTI INI 🔥
         return view('dashboard-progress', compact(
             'marketings', 'all_marketing', 'start', 'end',
             'pieLabels', 'pieData', 

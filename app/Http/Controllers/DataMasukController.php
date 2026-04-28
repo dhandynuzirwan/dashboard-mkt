@@ -109,12 +109,19 @@ class DataMasukController extends Controller
 
         $request->validate([
             'marketing_id' => $isRnD ? 'nullable' : 'required',
+            'tanggal_input' => 'nullable|date', // Validasi inputan tanggal RnD
             'rows' => 'required|array',
             'rows.*.perusahaan' => 'required',
         ]);
 
         $successCount = 0;
         $duplicates = [];
+
+        // Atur Waktu Input: Jika ada inputan tanggal (dari RnD), gunakan itu. Jika tidak, gunakan waktu sekarang.
+        // Kita tambahkan jam saat ini agar tidak ter-set jam 00:00:00
+        $waktuInput = $request->tanggal_input 
+            ? Carbon::parse($request->tanggal_input)->format('Y-m-d ' . now()->format('H:i:s')) 
+            : now();
 
         try {
             foreach ($request->rows as $row) {
@@ -127,12 +134,17 @@ class DataMasukController extends Controller
                     ->where('lokasi', $lokasi)
                     ->exists();
 
+                // ... kode sebelumnya di dalam foreach ...
                 if ($isDuplicate) {
                     $duplicates[] = $nama . ($lokasi ? " ($lokasi)" : "");
                     continue;
                 }
 
-                DataMasuk::create([
+                // ================= GANTI BAGIAN INI =================
+                $dataBaru = new DataMasuk();
+                
+                // 1. Isi data normal (yang diizinkan fillable)
+                $dataBaru->fill([
                     'marketing_id' => $isRnD ? null : $request->marketing_id,
                     'perusahaan'   => $nama,
                     'lokasi'       => $lokasi,
@@ -144,6 +156,14 @@ class DataMasukController extends Controller
                     'sumber'       => $row['sumber'] ?? null,
                     'is_ads'       => $row['is_ads'] ?? false,
                 ]);
+
+                // 2. PAKSA ubah tanggalnya (Bypass perlindungan Laravel)
+                $dataBaru->created_at = $waktuInput;
+                $dataBaru->updated_at = $waktuInput;
+                
+                // 3. Simpan ke database
+                $dataBaru->save();
+                // ====================================================
 
                 $successCount++;
             }

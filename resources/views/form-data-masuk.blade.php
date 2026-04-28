@@ -47,13 +47,20 @@
                             </div>
                         @else
                             {{-- Tampilan untuk RnD / Digital Marketing --}}
-                            <div class="alert alert-light border-left-info shadow-sm mb-4 py-3">
-                                <div class="d-flex align-items-center">
-                                    <i class="fas fa-info-circle text-info fa-lg me-3"></i>
-                                    <div>
-                                        <span class="fw-bold d-block text-dark">Mode Input RnD</span>
-                                        <span class="small text-muted">Data akan disimpan sebagai "Data Mentah". Admin akan melakukan pembagian (Deliver) ke Marketing secara manual.</span>
+                            <div class="row mb-4">
+                                <div class="col-md-8 mb-3 mb-md-0">
+                                    <div class="alert alert-light border-left-info shadow-sm py-3 m-0 h-100 d-flex align-items-center">
+                                        <i class="fas fa-info-circle text-info fa-2x me-3"></i>
+                                        <div>
+                                            <span class="fw-bold d-block text-dark">Mode Input Terpusat</span>
+                                            <span class="small text-muted">Data akan disimpan sebagai "Data Mentah". Admin operasional akan membagikannya ke Marketing nanti.</span>
+                                        </div>
                                     </div>
+                                </div>
+                                <div class="col-md-4">
+                                    <label class="fw-bold mb-2">Pilih Tanggal Masuk <span class="text-danger">*</span></label>
+                                    <input type="date" name="tanggal_input" class="form-control shadow-sm" value="{{ date('Y-m-d') }}" required>
+                                    <small class="text-muted mt-1 d-block">Ubah jika data berasal dari hari sebelumnya.</small>
                                 </div>
                             </div>
                             {{-- Input Hidden agar Controller tidak error --}}

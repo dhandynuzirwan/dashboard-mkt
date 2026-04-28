@@ -136,6 +136,7 @@ Route::middleware('auth')->group(function () {
         Route::resource('monitoring-paket', PengirimanPaketController::class)->names([
             'index' => 'operational.monitoring-paket',
         ]);
+        Route::put('/monitoring-paket/{id}', [PengirimanPaketController::class, 'update'])->name('monitoring-paket.update');
         Route::post('/monitoring-paket/import', [App\Http\Controllers\PengirimanPaketController::class, 'import'])->name('operational.monitoring-paket.import');
     });
 
@@ -203,8 +204,8 @@ Route::middleware('auth')->group(function () {
         Route::get('/prospek/{id}/edit', [ProspekController::class, 'edit'])->name('prospek.edit');
         Route::put('/prospek/{id}', [ProspekController::class, 'update'])->name('prospek.update');
         Route::delete('/prospek/mass-delete', [ProspekController::class, 'massDelete'])->name('prospek.massDelete');
-        Route::get('/prospek/check-data', [ProspekController::class, 'showCheckData'])->name('prospek.check');
-        Route::post('/prospek/process-check', [ProspekController::class, 'processCheck'])->name('prospek.processCheck');
+        Route::get('/prospek/check', [ProspekController::class, 'showCheckData'])->name('prospek.check');
+        Route::post('/prospek/check-massal', [ProspekController::class, 'processCheckMassal'])->name('prospek.processCheckMassal');
         Route::get('/prospek/detail-status-ajax', [ProspekController::class, 'getDetailStatusAjax'])->name('prospek.detailAjax');
 
         Route::post('/data-masuk/deliver/{id}', [DataMasukController::class, 'deliver'])->name('data-masuk.deliver');

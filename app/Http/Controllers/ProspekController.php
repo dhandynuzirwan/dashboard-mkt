@@ -61,9 +61,21 @@ class ProspekController extends Controller
         }
 
         // ================= APPLY FILTER =================
-        
-        // Gunakan variabel $start dan $end yang sudah diinisialisasi
         $query->whereBetween('tanggal_prospek', [$start, $end]);
+
+        // 🔥 TAMBAHAN: FILTER SUMBER ADS / ORGANIK 🔥
+        if ($request->filled('sumber_tipe')) {
+            if ($request->sumber_tipe == 'ads') {
+                // Mencari yang kolom sumbernya mengandung kata 'Ads'
+                $query->where('sumber', 'LIKE', '%Ads%');
+            } elseif ($request->sumber_tipe == 'organik') {
+                // Mencari yang kolom sumbernya TIDAK mengandung 'Ads' atau Kosong
+                $query->where(function($q) {
+                    $q->where('sumber', 'NOT LIKE', '%Ads%')
+                      ->orWhereNull('sumber');
+                });
+            }
+        }
 
         // A. FILTER TAHAP (Ini yang tadi hilang, Lang!)
         if ($request->filled('cta_status')) {
@@ -116,14 +128,24 @@ class ProspekController extends Controller
         // b. Ambil SEMUA data CTA yang berelasi dengan prospek-prospek tersebut
         $semuaCta = \App\Models\Cta::whereIn('prospek_id', $prospekIds)->get();
 
+        // --- LOGIKA BARU TOTAL PROSPEK ---
+        // Hitung berapa prospek unik yang jumlah aslinya ada di database
+        $jumlahProspekUnik = $prospekIds->count();
+        
+        // Hitung berapa prospek unik yang sudah dibuatkan CTA/Penawaran
+        $jumlahProspekPunyaCta = $semuaCta->unique('prospek_id')->count();
+        
+        // Kalkulasi: (Prospek yang belum ada CTA) + (Total seluruh form CTA)
+        $totalProspekDihitung = ($jumlahProspekUnik - $jumlahProspekPunyaCta) + $semuaCta->count();
+
         // c. Kalkulasi Statistik yang benar
         $stats = [
-            'total_prospek' => $prospekIds->count(),
+            'total_prospek' => $totalProspekDihitung,
             
             // Total form penawaran yang pernah dibuat
             'total_cta'     => $semuaCta->count(), 
             
-            // FIX: Menghitung Nilai Pipeline (Harga Penawaran x Jumlah Peserta) dari SEMUA judul
+            // Menghitung Nilai Pipeline (Harga Penawaran x Jumlah Peserta) dari SEMUA judul
             'total_nilai'   => $semuaCta->sum(function($cta) {
                 // Gunakan default 0 jika kosong agar tidak error kalkulasi
                 $harga = $cta->harga_penawaran ?? 0;
@@ -343,6 +365,18 @@ class ProspekController extends Controller
             $query->where('perusahaan', 'LIKE', '%' . $filters['search_perusahaan'] . '%');
         }
 
+        // 🔥 TAMBAHAN: 8b. Terapkan Filter Sumber (Ads / Organik) 🔥
+        if (!empty($filters['sumber_tipe'])) {
+            if ($filters['sumber_tipe'] === 'ads') {
+                $query->where('sumber', 'LIKE', '%Ads%');
+            } elseif ($filters['sumber_tipe'] === 'organik') {
+                $query->where(function($q) {
+                    $q->where('sumber', 'NOT LIKE', '%Ads%')
+                      ->orWhereNull('sumber');
+                });
+            }
+        }
+
         // 9. Cari ID Sebelumnya & Selanjutnya sesuai filter
         $previous = (clone $query)->where('id', '<', $prospek->id)->orderBy('id', 'desc')->first();
         $next = (clone $query)->where('id', '>', $prospek->id)->orderBy('id', 'asc')->first();
@@ -426,41 +460,127 @@ class ProspekController extends Controller
         return view('prospek-check'); // Kita akan buat view-nya di langkah 3
     }
     
-    public function processCheck(Request $request)
+    public function processCheckMassal(Request $request)
     {
         $request->validate([
-            'names' => 'required|string',
-            'check_date' => 'required|date',
+            'data_excel' => 'required|string',
         ]);
-    
-        // 1. Bersihkan input: ubah teks copas (baris baru) menjadi array, buang spasi kosong
-        $inputRaw = preg_split('/\r\n|\r|\n/', $request->names);
-        $inputNames = collect($inputRaw)
-            ->map(fn($name) => trim($name))
-            ->filter()
-            ->unique()
-            ->values();
-    
-        // 2. Ambil data dari database pada tanggal tersebut
-        $dbNames = \App\Models\Prospek::whereDate('tanggal_prospek', $request->check_date)
-            ->pluck('perusahaan')
-            ->map(fn($name) => trim($name))
-            ->unique();
-    
-        // 3. LOGIKA CEK:
-        // A. Mana yang ada di Copas-an, tapi TIDAK ADA di sistem (Gak ada di sistem)
-        $missingInSystem = $inputNames->diff($dbNames);
-    
-        // B. Mana yang ada di Sistem, tapi TIDAK ADA di Copas-an (Data siluman / kelebihan)
-        $missingInInput = $dbNames->diff($inputNames);
-    
+
+        $inputRaw = preg_split('/\r\n|\r|\n/', $request->data_excel);
+        
+        $inputData = [];
+        $uniqueDates = [];
+        $excelOccurrence = []; // Untuk menghitung baris keberapa perusahaan muncul
+
+        // 1. BACA DATA EXCEL (MENGHITUNG DUPLIKAT SEBAGAI ENTITAS BERBEDA)
+        foreach ($inputRaw as $line) {
+            $line = trim($line);
+            if (empty($line)) continue;
+
+            $parts = explode("\t", $line); 
+            
+            if (count($parts) >= 2) {
+                $rawTanggal = trim($parts[0]);
+                $perusahaan = trim($parts[1]);
+                
+                try {
+                    $safeDate = str_replace('/', '-', $rawTanggal);
+                    $formattedDate = \Carbon\Carbon::parse($safeDate)->format('Y-m-d');
+                } catch (\Exception $e) {
+                    $formattedDate = $rawTanggal;
+                }
+
+                if (!in_array($formattedDate, $uniqueDates)) {
+                    $uniqueDates[] = $formattedDate;
+                }
+
+                // Logika Index Kemunculan (Misal: pt_maju_1, pt_maju_2)
+                $baseKey = $formattedDate . '_' . strtolower(trim($perusahaan));
+                $excelOccurrence[$baseKey] = ($excelOccurrence[$baseKey] ?? 0) + 1;
+                $finalKey = $baseKey . '_item_' . $excelOccurrence[$baseKey];
+
+                $inputData[] = [
+                    'tanggal' => $formattedDate, 
+                    'perusahaan' => $perusahaan,
+                    'marketing' => '-', // <-- TAMBAHKAN BARIS INI KEMBALI
+                    'key' => $finalKey
+                ];
+            }
+        }
+
+        // 2. AMBIL DATA DARI DB (PROSPEK + JUMLAH CTA)
+        if (count($uniqueDates) > 0) {
+            $dbData = \App\Models\Prospek::with('marketing', 'cta')
+                ->where(function($query) use ($uniqueDates) {
+                    foreach($uniqueDates as $date) {
+                        $query->orWhereDate('tanggal_prospek', $date);
+                    }
+                })->get();
+        } else {
+            $dbData = collect();
+        }
+        
+        $dbProspeksStructured = [];
+        $dbKeys = [];
+        $dbOccurrence = [];
+
+        foreach($dbData as $db) {
+            $dbDate = \Carbon\Carbon::parse($db->tanggal_prospek)->format('Y-m-d');
+            $baseKey = $dbDate . '_' . strtolower(trim($db->perusahaan));
+            
+            // --- FIX ERROR: LOGIKA AMAN UNTUK MENGHITUNG CTA ---
+            $ctaCount = 0;
+            if ($db->cta) {
+                // Jika hasilnya Collection (banyak data), hitung jumlahnya. 
+                // Jika hasilnya Model tunggal (1 data), tetapkan nilainya 1.
+                $ctaCount = $db->cta instanceof \Illuminate\Database\Eloquent\Collection ? $db->cta->count() : 1;
+            }
+            
+            $iterations = $ctaCount > 0 ? $ctaCount : 1;
+            // ---------------------------------------------------
+
+            for ($i = 1; $i <= $iterations; $i++) {
+                $dbOccurrence[$baseKey] = ($dbOccurrence[$baseKey] ?? 0) + 1;
+                $finalKey = $baseKey . '_item_' . $dbOccurrence[$baseKey];
+                
+                $dbKeys[] = $finalKey;
+                $dbProspeksStructured[] = [
+                    'tanggal' => $dbDate,
+                    'perusahaan' => $db->perusahaan,
+                    'marketing' => $db->marketing ? $db->marketing->name : 'Tidak Diketahui',
+                    'key' => $finalKey
+                ];
+            }
+        }
+
+        // 3. KOMPARASI (MENGGUNAKAN UNIQUE KEY BERBASIS INDEX)
+        $inputKeys = collect($inputData)->pluck('key')->toArray();
+        
+        // Data Kurang di Sistem
+        $missingInSystem = [];
+        foreach ($inputData as $data) {
+            if (!in_array($data['key'], $dbKeys)) {
+                $missingInSystem[] = $data;
+            }
+        }
+
+        // Data Berlebih di Sistem
+        $missingInInput = [];
+        foreach ($dbProspeksStructured as $data) {
+            if (!in_array($data['key'], $inputKeys)) {
+                $missingInInput[] = $data;
+            }
+        }
+
         return view('prospek-check', [
-            'missingInSystem' => $missingInSystem,
-            'missingInInput' => $missingInInput,
-            'checkedDate' => $request->check_date,
-            'inputCount' => $inputNames->count(),
-            'dbCount' => $dbNames->count(),
-            'oldInput' => $request->names
+            'missingInSystemGrouped' => collect($missingInSystem)->groupBy('tanggal')->sortKeysDesc(),
+            'missingInInputGrouped' => collect($missingInInput)->groupBy('tanggal')->sortKeysDesc(),
+            'totalMissingInSystem' => count($missingInSystem),
+            'totalMissingInInput' => count($missingInInput),
+            'totalInput' => count($inputData),
+            'totalDb' => count($dbKeys), // Total baris yang terdeteksi (Prospek + CTA)
+            'jumlahTanggalUnik' => count($uniqueDates),
+            'oldInput' => $request->data_excel
         ]);
     }
     

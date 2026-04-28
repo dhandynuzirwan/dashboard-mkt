@@ -63,14 +63,43 @@ class AbsensiController extends Controller
             'fingerspot_id' => 'required|array',
         ]);
 
+        $errors = [];
+        $successCount = 0;
+
         foreach ($request->fingerspot_id as $userId => $pin) {
-            // Gunakan updateQuietly jika tidak ingin memicu event/observer (opsional)
+            // Jika dikosongkan, hapus mapping-nya (set null)
+            if (empty($pin)) {
+                User::where('id', $userId)->update(['fingerspot_id' => null]);
+                $successCount++;
+                continue;
+            }
+
+            // CEK DUPLIKAT: Apakah PIN ini sudah dipakai oleh karyawan LAIN?
+            $existingUser = User::where('fingerspot_id', $pin)->where('id', '!=', $userId)->first();
+
+            if ($existingUser) {
+                // Jika sudah dipakai, catat error-nya dan lewati karyawan ini
+                $namaKaryawan = User::find($userId)->name;
+                $errors[] = "Gagal: ID <b>$pin</b> untuk $namaKaryawan sudah dipakai oleh <b>{$existingUser->name}</b>.";
+                continue; 
+            }
+
+            // Jika aman, simpan ke database
             User::where('id', $userId)->update([
                 'fingerspot_id' => $pin
             ]);
+            $successCount++;
         }
 
-        return back()->with('success', 'Mapping User ID berhasil diperbarui!');
+        // Jika ada error duplikat, kembalikan dengan pesan error
+        if (count($errors) > 0) {
+            $errorMessage = implode('<br>', $errors);
+            return back()
+                ->with('error', $errorMessage)
+                ->with('success', "$successCount data mapping lainnya berhasil disimpan.");
+        }
+
+        return back()->with('success', 'Semua Mapping User ID berhasil diperbarui!');
     }
 
     public function importManual(Request $request)

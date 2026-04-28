@@ -38,8 +38,13 @@ class PengirimanPaketController extends Controller
             $query->whereBetween('tanggal_kirim', [$request->start_date, $request->end_date]);
         }
 
-        // Ambil Data untuk Tabel
-        $data_pengiriman = $query->orderBy('tanggal_kirim', 'desc')->paginate(10)->withQueryString();
+        // ================= PENYESUAIAN SORTING =================
+        // 1. Taruh yang statusnya "Diterima" di paling bawah (0 = atas, 1 = bawah)
+        // 2. Setelah itu, urutkan berdasarkan tanggal terbaru
+        $data_pengiriman = $query->orderByRaw("CASE WHEN status_pengiriman = 'Diterima' THEN 1 ELSE 0 END ASC")
+                                 ->orderBy('tanggal_kirim', 'desc')
+                                 ->paginate(10)
+                                 ->withQueryString();
 
         // --- HITUNG STATISTIK (Untuk Card di Atas) ---
         $stats = [
@@ -90,12 +95,21 @@ class PengirimanPaketController extends Controller
         $paket = PengirimanPaket::findOrFail($id);
         
         $validated = $request->validate([
-            'instansi'          => 'required',
-            'nama_penerima'     => 'required',
-            'status_pengiriman' => 'required',
+            'instansi'          => 'required|string',
+            'nama_penerima'     => 'required|string',
+            'no_hp'             => 'required',
+            'alamat_pengiriman' => 'required',
+            'jenis_paket'       => 'required',
+            'isi_paket'         => 'required|array', // Harus array karena dari checkbox
+            'isi_paket_lainnya' => 'nullable|string',
+            'ekspedisi'         => 'required',
             'no_resi'           => 'nullable',
+            'biaya_pengiriman'  => 'required|numeric',
+            'status_pengiriman' => 'required',
+            'tanggal_kirim'     => 'required|date',
             'tanggal_diterima'  => 'nullable|date',
-            // ... tambahkan validasi lain sesuai kebutuhan
+            'catatan_teks'      => 'nullable',
+            'catatan_file'      => 'nullable|file|mimes:jpg,png,pdf|max:2048',
         ]);
 
         // Handle Ganti File Jika ada upload baru
