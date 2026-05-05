@@ -53,6 +53,12 @@
                                     <span class="sub-item">Pipeline Marketing</span>
                                 </a>
                             </li>
+                            <li class="{{ request()->routeIs('monitoring.pelatihan') ? 'active' : '' }}">
+                                <a href="{{ route('monitoring.pelatihan') }}">
+                                    <span class="sub-item">Monitoring Pelatihan</span>
+                                    <span class="badge badge-dark">Beta</span>
+                                </a>
+                            </li>
                             <li class="{{ request()->routeIs('revenue') ? 'active' : '' }}">
                                 <a href="{{ route('revenue') }}">
                                     <span class="sub-item">Revenue</span>
@@ -170,6 +176,12 @@
                                         </a>
                                     </li>
                                 @endif
+                                <li class="{{ request()->routeIs('monitoring.pelatihan') ? 'active' : '' }}">
+                                    <a href="{{ route('monitoring.pelatihan') }}">
+                                        <span class="sub-item">Monitoring Pelatihan</span>
+                                        <span class="badge badge-dark">Beta</span>
+                                    </a>
+                                </li>
                         
                                 {{-- Menu Aset & Inventaris DAN Monitoring Paket --}}
                                 {{-- Hanya: team_leader, superadmin, web_dev --}}
@@ -195,23 +207,13 @@
                 {{-- Menu Download --}}
                 @php $isDownload = request()->routeIs(['download.approval', 'download.my']); @endphp
                 <li class="nav-item {{ $isDownload ? 'active' : '' }}">
-                    @if ($role === 'superadmin')
-                        <a href="{{ route('download.approval') }}">
-                            <i class="fas fa-download"></i>
-                            <p>Download Approval</p>
-                            @if ($pendingCount > 0)
-                                <span class="badge badge-danger">{{ $pendingCount }}</span>
-                            @endif
-                        </a>
-                    @else
-                        <a href="{{ route('download.my') }}">
-                            <i class="fas fa-download"></i>
-                            <p>My Downloads</p>
-                            @if ($approvedCount > 0)
-                                <span class="badge badge-danger">{{ $approvedCount }}</span>
-                            @endif
-                        </a>
-                    @endif
+                    <a href="{{ route('download.approval') }}">
+                        <i class="fas fa-download"></i>
+                        <p>Download Approval</p>
+                        @if ($pendingCount > 0)
+                            <span class="badge badge-danger">{{ $pendingCount }}</span>
+                        @endif
+                    </a>
                 </li>
                 
                 {{-- ================= MENU PORTAL BACK OFFICE ================= --}}
@@ -235,7 +237,7 @@
                 {{-- ================= MENU BRANKAS AKUN (PRIVATE) ================= --}}
                 @php
                     // Daftar nama yang diizinkan sesuai database kamu
-                    $allowedNames = ['direktur', 'Desainer Grafis'];
+                    $allowedNames = ['Direktur PT Arsa Jaya Prima', 'Desainer Grafis'];
                 @endphp
                 
                 @if(in_array(auth()->user()->name, $allowedNames))

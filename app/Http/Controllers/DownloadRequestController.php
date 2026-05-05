@@ -12,7 +12,7 @@ use Maatwebsite\Excel\Facades\Excel;
 
 class DownloadRequestController extends Controller
 {
-    // Submit Request
+    // ================= 1. SUBMIT REQUEST =================
     public function store(Request $request)
     {
         $requestData = DownloadRequest::create([
@@ -35,19 +35,29 @@ class DownloadRequestController extends Controller
         return back()->with('success', 'Request download berhasil dikirim.');
     }
 
-    // Halaman Pending (Superadmin)
+    // ================= 2. HALAMAN GABUNGAN (APPROVAL & MY REQUEST) =================
     public function index()
     {
-        // $requests = DownloadRequest::where('status', 'pending')->latest()->get();
-        // Ganti ini (yang kemungkinan menyembunyikan data approved):
-        $requests = DownloadRequest::where('status', 'pending')->get();
+        $user = auth()->user();
 
-        // Menjadi ini (agar semua data tampil dengan yang terbaru di atas):
-        $requests = DownloadRequest::orderBy('created_at', 'desc')->paginate(10); // Atau gunakan ->paginate(10)
+        // Tandai notifikasi sudah dibaca saat membuka halaman ini
+        $user->unreadNotifications->markAsRead();
 
+        // Logika Pintar: Jika Superadmin/Admin -> Tampilkan Semua. Jika User -> Tampilkan miliknya.
+        if (in_array($user->role, ['superadmin', 'admin'])) {
+            $requests = DownloadRequest::with('user')->orderBy('created_at', 'desc')->paginate(10);
+        } else {
+            $requests = DownloadRequest::with('user')
+                ->where('user_id', $user->id)
+                ->orderBy('created_at', 'desc')
+                ->paginate(10);
+        }
+
+        // Kita arahkan ke satu view saja
         return view('download-approval', compact('requests'));
     }
 
+    // ================= 3. APPROVE REQUEST =================
     public function approve($id)
     {
         $req = DownloadRequest::findOrFail($id);
@@ -57,11 +67,13 @@ class DownloadRequestController extends Controller
             'approved_by' => auth()->id(),
             'approved_at' => now(),
         ]);
+        
         $req->user->notify(new DownloadApprovedNotification($req));
 
         return back()->with('success', 'Request disetujui.');
     }
 
+    // ================= 4. REJECT REQUEST =================
     public function reject($id)
     {
         $req = DownloadRequest::findOrFail($id);
@@ -70,6 +82,7 @@ class DownloadRequestController extends Controller
         return back()->with('success', 'Request ditolak.');
     }
 
+    // ================= 5. DOWNLOAD FILE EXCEL =================
     public function download($id)
     {
         $req = DownloadRequest::findOrFail($id);
@@ -78,22 +91,11 @@ class DownloadRequestController extends Controller
             abort(403, 'File belum di-approve.');
         }
 
-        // PERBAIKAN DI SINI: Pakai != (bukan !==) agar tidak sensitif tipe data.
-        // Jika Admin boleh mendownload semua file layaknya superadmin, gunakan in_array
+        // Superadmin/Admin bisa download semua. User hanya bisa download miliknya.
         if ($req->user_id != auth()->id() && !in_array(auth()->user()->role, ['superadmin', 'admin'])) {
             abort(403, 'Anda tidak memiliki akses untuk mendownload file ini.');
         }
 
         return Excel::download(new ProspekExport($req), 'pipeline.xlsx');
-    }
-
-    public function myRequests()
-    {
-        $requests = DownloadRequest::where('user_id', auth()->id())
-            ->latest()
-            ->get();
-        auth()->user()->unreadNotifications->markAsRead();
-
-        return view('download-my-requests', compact('requests'));
     }
 }

@@ -109,7 +109,7 @@
                 <div class="card card-modern h-100 hover-lift border-info-subtle border-2">
                     <div class="card-body p-3 p-xl-4 d-flex align-items-center">
                         <div class="icon-modern bg-info-subtle text-info me-3">
-                            <i class="fas fa-calendar-day"></i>
+                            <i class="fas fa-calendar-check"></i>
                         </div>
                         <div>
                             <p class="text-muted fw-bold mb-1" style="font-size: 11px; text-transform: uppercase; letter-spacing: 0.5px;">Data Hari Ini</p>
@@ -123,7 +123,7 @@
                 <div class="card card-modern h-100 hover-lift">
                     <div class="card-body p-3 p-xl-4 d-flex align-items-center">
                         <div class="icon-modern bg-success-subtle text-success me-3">
-                            <i class="fas fa-envelope-circle-check"></i>
+                            <i class="fas fa-check-circle"></i>
                         </div>
                         <div class="flex-grow-1">
                             <p class="text-muted fw-bold mb-1" style="font-size: 11px; text-transform: uppercase; letter-spacing: 0.5px;">Email Valid</p>

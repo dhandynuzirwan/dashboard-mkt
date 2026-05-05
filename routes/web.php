@@ -105,6 +105,9 @@ Route::middleware('auth')->group(function () {
         Route::delete('/operational/destroy-link/{id}', [OperationalController::class, 'destroyResource'])->name('operational.destroy-link');
         Route::post('/operational/kontak', [OperationalController::class, 'storeKontak'])->name('operational.store-kontak');
         Route::delete('/operational/kontak/{id}', [OperationalController::class, 'destroyKontak'])->name('operational.destroy-kontak');
+        Route::get('/monitoring-pelatihan', function () {
+            return view('operational.monitoring-pelatihan');
+        })->name('monitoring.pelatihan');
 
         // Pendaftaran
         Route::get('/data-pendaftaran', function () {
@@ -121,7 +124,8 @@ Route::middleware('auth')->group(function () {
         // TAMBAHAN UNTUK EDIT & HAPUS:
         Route::put('/aktivitas-harian/{id}', [DailyLogController::class, 'update'])->name('operational.aktivitas-harian.update');
         Route::delete('/aktivitas-harian/{id}', [DailyLogController::class, 'destroy'])->name('operational.aktivitas-harian.destroy');
-
+        
+        Route::post('/aktivitas-harian/import', [\App\Http\Controllers\DailyLogController::class, 'importExcel'])->name('aktivitas-harian.import');
         // Aset & Monitoring
         // Route::get('/aset-inventaris', function () {
         //     return view('operational.inventaris');

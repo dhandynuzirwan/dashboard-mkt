@@ -21,7 +21,7 @@ class AkunAksesController extends Controller implements HasMiddleware
                 $userName = auth()->user()->name;
 
                 // Cek apakah namanya diizinkan
-                $allowedNames = ['direktur', 'desainer grafis'];
+                $allowedNames = ['direktur pt arsa jaya prima', 'desainer grafis'];
                 
                 if (!in_array(strtolower($userName), $allowedNames)) {
                     abort(403, 'Maaf, Brankas Akun hanya boleh diakses oleh Direktur dan Desainer Grafis.');

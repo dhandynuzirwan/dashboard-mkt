@@ -108,7 +108,11 @@ class SalaryController extends Controller
 
         // G. Hitung Nominal Gaji Akhir
         $fee_mkt = ($income * 0.6) * (($totalKpi < 70) ? 0.025 : 0.05);
-        $prog_val = $gapokDasar * ($progKpi / 100);
+        
+        // 🔥 UPDATE LOGIKA NILAI PROGRESS 🔥
+        // Maksimal Rp 500.000 jika KPI Progress mencapai batas maksimal (30)
+        // Dihitung secara proporsional: (Skor saat ini / 30) * 500.000
+        $prog_val = ($progKpi > 0) ? ($progKpi / 30) * 500000 : 0;
         
         // Final Eksekusi (Dikurangi total potongan yang baru)
         $total_gaji = $gapokDasar + $fee_mkt + $prog_val + $tunjangan + $tunjBpjs - $iuranBpjs - $totalPotonganKehadiran;

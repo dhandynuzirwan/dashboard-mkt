@@ -23,7 +23,7 @@ class KpiController extends Controller
         $end = $request->query('end_date', Carbon::now()->format('Y-m-d'));
         $marketing_filter = $request->query('marketing_id');
 
-        // 2. --- HITUNG HARI KERJA (FULL 1 BULAN + DETEKSI LIBUR) ---
+        // 2. --- HITUNG HARI KERJA (FULL BULAN & BERJALAN) ---
         $startDate = Carbon::parse($start);
         $startOfMonth = $startDate->copy()->startOfMonth();
         $endOfMonth = $startDate->copy()->endOfMonth();
@@ -35,10 +35,20 @@ class KpiController extends Controller
         ])->pluck('tanggal')->toArray();
 
         $hariEfektifSebulan = 0;
+        $hariEfektifBerjalan = 0;
+        
+        // Batas akhir perhitungan berjalan adalah Hari Ini (Jika $end melewati hari ini)
+        $batasAkhirBerjalan = min($end, Carbon::now()->format('Y-m-d'));
+
         for ($date = $startOfMonth->copy(); $date->lte($endOfMonth); $date->addDay()) {
-            // Logika: Hari kerja (Senin-Jumat) DAN tidak ada di daftarLibur
             if ($date->isWeekday() && !in_array($date->format('Y-m-d'), $daftarLibur)) { 
+                // Hitung total hari efektif sebulan penuh
                 $hariEfektifSebulan++;
+                
+                // Hitung hari efektif yang sudah dilewati (berjalan)
+                if ($date->format('Y-m-d') <= $batasAkhirBerjalan) {
+                    $hariEfektifBerjalan++;
+                }
             }
         }
 
@@ -52,15 +62,19 @@ class KpiController extends Controller
         $users = $query->get();
 
         // 4. --- MAPPING DATA KPI ---
-        $marketings = $users->map(function ($user) use ($hariEfektifSebulan, $start, $end) {
+        // 🔥 PASTIKAN $hariEfektifBerjalan MASUK KE DALAM "use" 🔥
+        $marketings = $users->map(function ($user) use ($hariEfektifSebulan, $hariEfektifBerjalan, $start, $end) {
 
             // ================= TARGET DARI PENGGAJIAN =================
             $penggajian = Penggajian::where('user_id', $user->id)->first();
             $target_call = $penggajian->target_call ?? 0;
             $target_revenue = $penggajian->target ?? 0;
 
+            // 🔥 OPSI: Batasan Maksimal KPI 
+            // (Jika true, achievement mentok 100%, sehingga Skor KPI max 10/30/60)
+            $kpiCapped = true;
+
             // ================= ABSENSI (HADIR + IZIN APPROVED) =================
-            // Target Jadwal: Diambil dari sebulan penuh (dikurangi libur)
             $user->absensi_jadwal = $hariEfektifSebulan;
             
             $hadirMesin = AbsensiLog::where('user_id', $user->id)
@@ -74,49 +88,51 @@ class KpiController extends Controller
                 ->whereBetween('tanggal', [$start, $end])
                 ->count();
 
+            // 🔥 TAMPILAN VISUAL JUJUR: Tampilkan kehadiran apa adanya (Misal: 19)
             $user->absensi_hadir = $hadirMesin + $izinApproved;
 
-            // Achievement vs JADWAL SEBULAN
-            $user->absensi_ach = ($hariEfektifSebulan > 0)
-                ? min(100, ($user->absensi_hadir / $hariEfektifSebulan) * 100)
+            // 🔥 RUMUS PINTAR: Hitung Achievement dari HARI BERJALAN
+            // Misal: Hadir 19 hari / 19 Hari Berjalan = 100% (Meskipun jadwal fullnya 21)
+            $user->absensi_ach = ($hariEfektifBerjalan > 0)
+                ? ($user->absensi_hadir / $hariEfektifBerjalan) * 100
                 : 0;
 
+            // Eksekusi Limit (Cap) Absensi agar tidak tembus > 100% jika ada anomali
+            $hitungAbsensiAch = $kpiCapped ? min(100, $user->absensi_ach) : $user->absensi_ach;
+            
             // Bobot Absensi 10%
-            $user->absensi_kpi = ($user->absensi_ach / 100) * 0.1 * 100; 
+            $user->absensi_kpi = ($hitungAbsensiAch / 100) * 10; 
 
-            // ================= PROGRESS (CTA / PENAWARAN) (VERSI LAMA) =================
-            // Target: target harian x JADWAL SEBULAN (dikurangi libur)
+            // ================= PROGRESS (CTA / PENAWARAN) =================
             $user->progress_target = $target_call * $hariEfektifSebulan;
 
-            // Buat Query Base untuk CTA
             $baseCtaQuery = \App\Models\Cta::whereHas('prospek', function ($q) use ($user, $start, $end) {
                 $q->where('marketing_id', $user->id)
                   ->whereBetween('tanggal_prospek', [$start . " 00:00:00", $end . " 23:59:59"]); 
             });
 
-            // 1. Hitung JUMLAH SEMUA CTA (Base)
             $jumlahCtaBase = (clone $baseCtaQuery)->count();
-
-            // 2. Hitung JUMLAH CTA YANG MEMILIKI STATUS
             $jumlahCtaBerstatus = (clone $baseCtaQuery)
                 ->whereNotNull('status_penawaran')
                 ->where('status_penawaran', '!=', '')
                 ->count();
 
-            // 3. 🔥 RUMUS LAMA: Total Base CTA + CTA Berstatus 🔥
             $user->progress_real = $jumlahCtaBase + $jumlahCtaBerstatus;
 
+            // Achievement Progress (Murni)
             $user->progress_ach = ($user->progress_target > 0)
                 ? ($user->progress_real / $user->progress_target) * 100
                 : 0;
 
+            // Eksekusi Limit (Cap) Progress
+            $hitungProgressAch = $kpiCapped ? min(100, $user->progress_ach) : $user->progress_ach;
+            
             // Bobot Progress 30%
-            $user->progress_kpi = ($user->progress_ach / 100) * 0.3 * 100;
+            $user->progress_kpi = ($hitungProgressAch / 100) * 30;
 
             // ================= REVENUE (DEAL) =================
             $user->revenue_target = $target_revenue;
 
-            // FIX: Pindahkan filter tanggal ke dalam relasi prospek dan ubah ke tanggal_prospek
             $user->revenue_actual = Cta::whereHas('prospek', function ($q) use ($user, $start, $end) {
                     $q->where('marketing_id', $user->id)
                       ->whereBetween('tanggal_prospek', [$start . " 00:00:00", $end . " 23:59:59"]);
@@ -125,12 +141,16 @@ class KpiController extends Controller
                 ->get() 
                 ->sum(fn($item) => $item->harga_penawaran * $item->jumlah_peserta); 
 
+            // Achievement Revenue (Murni)
             $user->revenue_ach = ($user->revenue_target > 0)
                 ? ($user->revenue_actual / $user->revenue_target) * 100
                 : 0;
 
+            // Eksekusi Limit (Cap) Revenue
+            $hitungRevenueAch = $kpiCapped ? min(100, $user->revenue_ach) : $user->revenue_ach;
+            
             // Bobot Revenue 60%
-            $user->revenue_kpi = ($user->revenue_ach / 100) * 0.6 * 100;
+            $user->revenue_kpi = ($hitungRevenueAch / 100) * 60;
 
             // ================= TOTAL KPI (FINAL SCORE) =================
             $user->total_kpi = $user->absensi_kpi + $user->progress_kpi + $user->revenue_kpi;

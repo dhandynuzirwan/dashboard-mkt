@@ -9,70 +9,66 @@
     <div class="card shadow-sm">
         <div class="card-body">
             <div class="table-responsive">
-                <table class="table table-hover align-middle">
+                <table class="table table-modern table-hover align-middle mb-0">
                     <thead class="bg-light">
                         <tr>
-                            <th>User</th>
-                            <th>Alasan</th>
                             <th>Tanggal Request</th>
+                            <th>Nama Pegawai</th>
+                            <th>Alasan</th>
                             <th>Status</th>
-                            <th>Aksi</th>
+                            <th class="text-center">Aksi</th>
                         </tr>
                     </thead>
                     <tbody>
-                        @forelse($requests as $r)
-                        <tr>
-                            <td><span class="fw-bold">{{ $r->user->name }}</span></td>
-                            <td>{{ $r->reason }}</td>
-                            <td>{{ \Carbon\Carbon::parse($r->created_at)->format('d M Y, H:i') }}</td>
-                            <td>
-                                {{-- Menampilkan Badge Status --}}
-                                @if($r->status == 'pending')
-                                    <span class="badge bg-warning text-dark"><i class="fas fa-clock"></i> Pending</span>
-                                @elseif($r->status == 'approved')
-                                    <span class="badge bg-success"><i class="fas fa-check-circle"></i> Approved</span>
-                                @elseif($r->status == 'rejected')
-                                    <span class="badge bg-danger"><i class="fas fa-times-circle"></i> Rejected</span>
-                                @else
-                                    <span class="badge bg-secondary">{{ $r->status }}</span>
-                                @endif
-                            </td>
-                            <td>
-                                {{-- Tombol Aksi hanya muncul jika status masih pending --}}
-                                @if($r->status == 'pending')
-                                    <form action="{{ route('download.approve', $r->id) }}" method="POST" style="display:inline">
-                                        @csrf
-                                        <button type="submit" class="btn btn-success btn-sm btn-round" title="Setujui">
-                                            <i class="fas fa-check"></i>
-                                        </button>
-                                    </form>
-
-                                    <form action="{{ route('download.reject', $r->id) }}" method="POST" style="display:inline">
-                                        @csrf
-                                        <button type="submit" class="btn btn-danger btn-sm btn-round" title="Tolak" onclick="return confirm('Yakin ingin menolak request ini?')">
-                                            <i class="fas fa-times"></i>
-                                        </button>
-                                    </form>
-                                @else
-                                    {{-- Indikator visual bahwa aksi sudah dikunci --}}
-                                    <button class="btn btn-light btn-sm btn-round text-muted" disabled>
-                                        <i class="fas fa-lock"></i> Selesai
-                                    </button>
-                                @endif
-                            </td>
-                        </tr>
+                        {{-- 🔥 LOOPING DIMULAI DI SINI 🔥 --}}
+                        @forelse($requests as $req)
+                            <tr>
+                                <td>{{ $req->created_at->format('d M Y, H:i') }}</td>
+                                <td>{{ $req->user->name }}</td>
+                                <td>{{ $req->reason }}</td>
+                                <td>
+                                    {{-- Tampilan Status (Opsional, sesuaikan dengan desainmu) --}}
+                                    @if($req->status == 'pending') <span class="badge bg-warning text-dark">Pending</span> @endif
+                                    @if($req->status == 'approved') <span class="badge bg-success">Approved</span> @endif
+                                    @if($req->status == 'rejected') <span class="badge bg-danger">Rejected</span> @endif
+                                </td>
+            
+                                {{-- 🔥 KOLOM AKSI YANG TADI SAYA BERIKAN 🔥 --}}
+                                <td class="text-center">
+                                    @if($req->status == 'pending' && in_array(auth()->user()->role, ['superadmin', 'admin']))
+                                        <form action="{{ route('download.approve', $req->id) }}" method="POST" class="d-inline">
+                                            @csrf <button class="btn btn-success btn-sm btn-round shadow-sm"><i class="fas fa-check"></i></button>
+                                        </form>
+                                        <form action="{{ route('download.reject', $req->id) }}" method="POST" class="d-inline">
+                                            @csrf <button class="btn btn-danger btn-sm btn-round shadow-sm"><i class="fas fa-times"></i></button>
+                                        </form>
+                                    @endif
+            
+                                    @if($req->status == 'approved')
+                                        <a href="{{ route('download.file', $req->id) }}" class="btn btn-primary btn-sm btn-round shadow-sm fw-bold">
+                                            <i class="fas fa-download me-1"></i> Download
+                                        </a>
+                                    @endif
+                                    
+                                    @if($req->status == 'pending' && !in_array(auth()->user()->role, ['superadmin', 'admin']))
+                                        <span class="text-muted small fst-italic"><i class="fas fa-hourglass-half me-1"></i> Menunggu...</span>
+                                    @endif
+                                </td>
+                            </tr>
                         @empty
-                        <tr>
-                            <td colspan="5" class="text-center text-muted py-4">Tidak ada data request download.</td>
-                        </tr>
+                            <tr>
+                                <td colspan="5" class="text-center text-muted py-4">Tidak ada data request download.</td>
+                            </tr>
                         @endforelse
+                        {{-- 🔥 LOOPING SELESAI 🔥 --}}
                     </tbody>
                 </table>
             </div>
-            {{-- Tambahkan pagination jika data sudah banyak --}}
-            {{-- <div class="mt-3 d-flex justify-content-center">
+            
+            {{-- Pagination jika diperlukan --}}
+            <div class="mt-3">
                 {{ $requests->links() }}
-            </div> --}}
+            </div>
         </div>
     </div>
 </div>

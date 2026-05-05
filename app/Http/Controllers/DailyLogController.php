@@ -7,6 +7,8 @@ use App\Models\DailyLog; // Pastikan nama Model kamu disesuaikan (AktivitasHaria
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 use Carbon\Carbon;
+use App\Imports\DailyLogImport;
+use Maatwebsite\Excel\Facades\Excel;
 
 class DailyLogController extends Controller
 {
@@ -15,47 +17,30 @@ class DailyLogController extends Controller
      */
     public function index(Request $request)
     {
-        // 1. Tangkap parameter filter (Default: Hari ini & Semua Pegawai)
-        $filter_date = $request->input('filter_date', date('Y-m-d'));
+        // 1. Tangkap parameter filter (Default: Awal s/d Akhir Bulan Ini)
+        $start_date = $request->input('start_date', Carbon::now()->startOfMonth()->format('Y-m-d'));
+        $end_date   = $request->input('end_date', Carbon::now()->endOfMonth()->format('Y-m-d'));
         $pegawai_id = $request->input('pegawai_id', 'all');
 
-        // 2. Siapkan Query Dasar (Ambil data berdasarkan tanggal)
-        $query = DailyLog::with('user')->whereDate('tanggal_aktivitas', $filter_date);
+        // 2. Siapkan Query Dasar (Range Tanggal)
+        $query = DailyLog::with('user')->whereBetween('tanggal_aktivitas', [$start_date, $end_date]);
 
-        // 3. Aplikasikan Filter Pegawai (Jika atasan memilih nama spesifik)
+        // 3. Aplikasikan Filter Pegawai
         if ($pegawai_id != 'all') {
             $query->where('user_id', $pegawai_id);
         }
 
-        // 4. Eksekusi Query (Urutkan dari yang terbaru)
-        $aktivitas = $query->latest()->get();
+        // 4. Eksekusi Query (Urutkan dari tgl terbaru, lalu inputan terbaru)
+        $aktivitas = $query->orderBy('tanggal_aktivitas', 'desc')->latest()->get();
 
-        // ==========================================
-        // KALKULASI STATISTIK UNTUK 4 CARD DI ATAS
-        // ==========================================
-        
+        // 5. Kalkulasi Statistik 
         $totalAktivitas = $aktivitas->count();
+        $totalJamKerja  = round($aktivitas->sum('durasi_menit') / 60, 1);
         
-        // Hitung total jam (Menit dibagi 60, bulatkan 1 angka di belakang koma)
-        $totalMenit = $aktivitas->sum('durasi_menit');
-        $totalJamKerja = round($totalMenit / 60, 1);
-        
-        // Hitung berapa orang yang mengunggah evidence (file atau link)
-        $adaEvidence = $aktivitas->filter(function($item) {
-            return !empty($item->file_evidence) || !empty($item->link_evidence);
-        })->count();
-        
-        // Ambil daftar user untuk dropdown filter (Hanya role operasional & team_leader)
         $pegawaiOperasional = User::whereIn('role', ['operasional', 'team_leader','web_dev'])->get();
 
-        // 5. Kirim semua variabel ke Blade
         return view('operational.aktivitas-harian', compact(
-            'aktivitas', 
-            'filter_date', 
-            'pegawai_id', 
-            'totalAktivitas', 
-            'totalJamKerja', 
-            'pegawaiOperasional'
+            'aktivitas', 'start_date', 'end_date', 'pegawai_id', 'totalAktivitas', 'totalJamKerja', 'pegawaiOperasional'
         ));
     }
 
@@ -107,7 +92,7 @@ class DailyLogController extends Controller
             'user_id'           => auth()->id(), // Otomatis terisi ID pegawai yang sedang login
             'tanggal_aktivitas' => $request->tanggal_aktivitas,
             'nama_kegiatan'     => $request->nama_kegiatan,
-            // Validasi lainnya tetap ada...
+            'status' => $request->status,
             'durasi_menit'      => $totalKalkulasiMenit,
             'deskripsi'         => $request->deskripsi,
             'file_evidence'     => $filePath,
@@ -121,19 +106,22 @@ class DailyLogController extends Controller
     /**
      * Memproses Update Data (Edit)
      */
+    /**
+     * Memproses Update Data (Edit)
+     */
     public function update(Request $request, $id)
     {
         $log = \App\Models\DailyLog::findOrFail($id);
 
         // Kunci Keamanan: Hanya pemilik log atau atasan yang bisa edit
-        if (auth()->id() !== $log->user_id) {
+        if (auth()->id() !== $log->user_id && !in_array(auth()->user()->role, ['team_leader', 'web_dev', 'superadmin'])) {
             return redirect()->back()->with('error', 'Akses Ditolak: Anda hanya bisa mengubah data aktivitas milik Anda sendiri.');
         }
 
         $request->validate([
             'tanggal_aktivitas' => 'required|date|before_or_equal:today',
             'nama_kegiatan'     => 'required|string|max:255',
-            // Validasi lainnya tetap ada...
+            'status'            => 'required|string', // 🔥 TAMBAHKAN VALIDASI STATUS
             'durasi_jam'        => 'nullable|integer|min:0',
             'durasi_menit'      => 'nullable|integer|min:0|max:59',
             'deskripsi'         => 'nullable|string',
@@ -161,15 +149,16 @@ class DailyLogController extends Controller
             
             $totalKalkulasiMenit = ($jam * 60) + $menit;
             
-            // Jika hasilnya 0 menit, kembalikan ke null (dianggap tidak diisi)
             if ($totalKalkulasiMenit === 0) {
                 $totalKalkulasiMenit = null;
             }
         }
 
+        // Simpan pembaruan ke Database
         $log->update([
             'tanggal_aktivitas' => $request->tanggal_aktivitas,
             'nama_kegiatan'     => $request->nama_kegiatan,
+            'status'            => $request->status, // 🔥 PASTIKAN STATUS IKUT DISIMPAN
             'durasi_menit'      => $totalKalkulasiMenit,
             'deskripsi'         => $request->deskripsi,
             'file_evidence'     => $filePath,
@@ -197,5 +186,21 @@ class DailyLogController extends Controller
     
         $log->delete();
         return back()->with('success', 'Aktivitas harian berhasil dihapus.');
+    }
+    
+    public function importExcel(Request $request)
+    {
+        $request->validate([
+            'file_excel' => 'required|mimes:xlsx,xls,csv|max:5120', // Max 5MB
+        ]);
+
+        try {
+            // Eksekusi Import menggunakan Class yang tadi dibuat
+            Excel::import(new DailyLogImport, $request->file('file_excel'));
+
+            return redirect()->back()->with('success', 'Upload Massal Aktivitas Harian berhasil diproses!');
+        } catch (\Exception $e) {
+            return redirect()->back()->with('error', 'Gagal import! Pastikan format sesuai. Error: ' . $e->getMessage());
+        }
     }
 }

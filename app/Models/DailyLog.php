@@ -13,13 +13,8 @@ class DailyLog extends Model
     protected $table = 'daily_logs';
 
     protected $fillable = [
-        'user_id',
-        'tanggal_aktivitas',
-        'nama_kegiatan',
-        'durasi_menit',
-        'deskripsi',
-        'file_evidence',
-        'link_evidence',
+        'user_id', 'tanggal_aktivitas', 'nama_kegiatan', 
+        'status', 'durasi_menit', 'deskripsi', 'file_evidence', 'link_evidence'
     ];
 
     // Relasi ke User

@@ -462,11 +462,29 @@
                                                 </td>
                                                 <td class="align-middle">
                                                     <div class="fw-bold text-dark">{{ $data->nama_pic }}</div>
-                                                    <small class="text-muted d-block mb-1">{{ $data->jabatan }}</small>
-                                                    <div class="d-flex flex-wrap gap-2 mt-1">
-                                                        @if($data->wa_pic) <a href="https://wa.me/{{ preg_replace('/[^0-9]/', '', $data->wa_pic) }}" target="_blank" class="badge badge-soft-success text-decoration-none" title="WA PIC"><i class="fab fa-whatsapp me-1"></i> WA</a> @endif
-                                                        @if($data->telp) <span class="badge badge-soft-primary" title="Telp"><i class="fas fa-phone me-1"></i> Telp</span> @endif
-                                                        @if($data->email) <span class="badge badge-soft-secondary" title="Email"><i class="fas fa-envelope me-1"></i> Email</span> @endif
+                                                    <small class="text-muted d-block mb-2">{{ $data->jabatan }}</small>
+                                                    
+                                                    <div class="d-flex flex-column gap-2" style="font-size: 12px;">
+                                                        {{-- WhatsApp --}}
+                                                        @if($data->wa_pic) 
+                                                            <a href="https://wa.me/{{ preg_replace('/[^0-9]/', '', $data->wa_pic) }}" target="_blank" class="text-success fw-bold text-decoration-none hover-lift">
+                                                                <i class="fab fa-whatsapp me-1"></i> {{ $data->wa_pic }}
+                                                            </a> 
+                                                        @endif
+                                                
+                                                        {{-- Telepon Langsung Dial --}}
+                                                        @if($data->telp) 
+                                                            <a href="tel:{{ preg_replace('/[^0-9]/', '', $data->telp) }}" class="text-primary fw-bold text-decoration-none hover-lift">
+                                                                <i class="fas fa-phone-alt me-1"></i> {{ $data->telp }}
+                                                            </a> 
+                                                        @endif
+                                                
+                                                        {{-- Email Langsung ke Compose Gmail --}}
+                                                        @if($data->email) 
+                                                            <a href="https://mail.google.com/mail/?view=cm&fs=1&to={{ $data->email }}" target="_blank" class="text-secondary fw-bold text-decoration-none hover-lift">
+                                                                <i class="fas fa-envelope me-1"></i> {{ $data->email }}
+                                                            </a> 
+                                                        @endif
                                                     </div>
                                                 </td>
                                                 <td class="align-middle">

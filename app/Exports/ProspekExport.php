@@ -3,113 +3,129 @@
 namespace App\Exports;
 
 use App\Models\Prospek;
-use Maatwebsite\Excel\Concerns\FromCollection;
-use Maatwebsite\Excel\Concerns\ShouldAutoSize;
-use Maatwebsite\Excel\Concerns\WithColumnFormatting;
+use App\Models\Cta;
+use Maatwebsite\Excel\Concerns\FromArray;
 use Maatwebsite\Excel\Concerns\WithHeadings;
-use Maatwebsite\Excel\Concerns\WithMapping;
-use Illuminate\Support\Number;
-class ProspekExport implements FromCollection, ShouldAutoSize, WithColumnFormatting, WithHeadings, WithMapping
+use Maatwebsite\Excel\Concerns\ShouldAutoSize;
+
+class ProspekExport implements FromArray, WithHeadings, ShouldAutoSize
 {
-    protected $requestData;
+    protected $request;
 
-    public function __construct($requestData)
+    // Menangkap request filter dari Controller
+    public function __construct($request)
     {
-        $this->requestData = $requestData;
+        $this->request = $request;
     }
 
-public function collection()
-{
-    $query = Prospek::with(['marketing','cta']);
-
-    // FILTER TANGGAL
-    if ($this->requestData->start_date && $this->requestData->end_date) {
-        $query->whereBetween('tanggal_prospek', [
-            $this->requestData->start_date,
-            $this->requestData->end_date
-        ]);
-    }
-
-    // FILTER MARKETING
-    if ($this->requestData->marketing_id) {
-        $query->where('marketing_id', $this->requestData->marketing_id);
-    }
-
-    // FILTER STATUS AKHIR
-    if ($this->requestData->status_akhir) {
-        $query->where('status', $this->requestData->status_akhir);
-    }
-
-    // FILTER STATUS PENAWARAN
-    if ($this->requestData->status_penawaran) {
-        $query->whereHas('cta', function ($q) {
-            $q->where('status_penawaran', $this->requestData->status_penawaran);
-        });
-    }
-
-    // FILTER CTA STATUS
-    if ($this->requestData->cta_status == 'pending') {
-        $query->whereDoesntHave('cta');
-    }
-
-    if ($this->requestData->cta_status == 'done') {
-        $query->whereHas('cta');
-    }
-
-    return $query->orderBy('id','asc')->get();
-}
-
-    public function headings(): array
+    public function array(): array
     {
-        return [
-            'Tanggal Prospek',
-            'Nama Marketing',
-            'Perusahaan',
-            'Nama PIC',
-            'WA PIC',
-            'Email',
-            'Lokasi',
-            'Sumber',
-            'Status Prospek',
+        // 1. Siapkan Query Prospek
+        $query = Prospek::query()->with('marketing');
 
-            'Judul Permintaan',
-            'Jumlah Peserta',
-            'Sertifikasi',
-            'Skema',
-            'Harga Penawaran',
-            'Harga Vendor',
-            'Status Penawaran',
-        ];
+        // --- APLIKASIKAN FILTER DARI REQUEST ---
+        if ($this->request->start_date && $this->request->end_date) {
+            $query->whereBetween('tanggal_prospek', [$this->request->start_date, $this->request->end_date]);
+        }
+        if ($this->request->marketing_id) {
+            $query->where('marketing_id', $this->request->marketing_id);
+        }
+        if ($this->request->status_akhir) {
+            $query->where('status', $this->request->status_akhir);
+        }
+
+        $prospeks = $query->get();
+        $data = [];
+
+        // 2. Looping Data untuk Dibentuk Menjadi Baris Excel
+        foreach ($prospeks as $prospek) {
+            // Ambil SEMUA CTA milik prospek ini
+            $semuaCta = Cta::where('prospek_id', $prospek->id)->get();
+
+            // Jika prospek INI PUNYA CTA (Bisa 1 atau lebih)
+            if ($semuaCta->count() > 0) {
+                // Looping setiap CTA menjadi baris baru
+                foreach ($semuaCta as $cta) {
+                    // Terapkan Filter Status CTA jika ada
+                    if ($this->request->cta_status == 'pending' && $cta) continue; 
+                    if ($this->request->status_penawaran && $cta->status_penawaran != $this->request->status_penawaran) continue;
+
+                    $data[] = $this->mapRow($prospek, $cta);
+                }
+            } 
+            // Jika prospek INI BELUM PUNYA CTA SAMA SEKALI
+            else {
+                // Jangan tampilkan jika filter meminta hanya yang "Sudah di-CTA"
+                if ($this->request->cta_status == 'done') continue;
+                if ($this->request->status_penawaran) continue; // Skip jika ada filter status deal/hold tapi dia gak punya CTA
+
+                // Masukkan prospek dengan kolom CTA dikosongkan
+                $data[] = $this->mapRow($prospek, null);
+            }
+        }
+
+        return $data;
     }
 
-    public function map($prospek): array
+    /**
+     * Format struktur baris Excel
+     */
+    private function mapRow($prospek, $cta)
     {
         return [
             $prospek->tanggal_prospek,
-            optional($prospek->marketing)->name, // 🔥 NAMA bukan ID
             $prospek->perusahaan,
             $prospek->nama_pic,
-            $prospek->wa_pic,
+            $prospek->jabatan,
+            $prospek->telp,
             $prospek->email,
             $prospek->lokasi,
             $prospek->sumber,
             $prospek->status,
-
-            optional($prospek->cta)->judul_permintaan,
-            optional($prospek->cta)->jumlah_peserta,
-            optional($prospek->cta)->sertifikasi,
-            optional($prospek->cta)->skema,
-            optional($prospek->cta)->harga_penawaran,
-            optional($prospek->cta)->harga_vendor,
-            optional($prospek->cta)->status_penawaran,
+            strip_tags($prospek->catatan), // Hapus tag HTML jika pake rich text
+            $prospek->marketing->name ?? 'Belum Diassign',
+            
+            // --- BAGIAN CTA (Jika null, kembalikan strip "-") ---
+            $cta ? $cta->judul_permintaan : '-',
+            $cta ? strtoupper($cta->sertifikasi) : '-',
+            $cta ? $cta->skema : '-',
+            $cta ? $cta->jumlah_peserta : '-',
+            $cta ? $cta->harga_penawaran : '-',
+            $cta ? $cta->harga_vendor : '-',
+            $cta ? ($cta->jumlah_peserta * $cta->harga_penawaran) : '-', // Total Omzet
+            $cta ? strtoupper($cta->status_penawaran) : '-',
+            $cta ? strip_tags($cta->keterangan) : '-',
         ];
     }
 
-    public function columnFormats(): array
+    /**
+     * Judul Kolom di Baris 1
+     */
+    public function headings(): array
     {
         return [
-            'N' => '"Rp" #,##0', // Harga Penawaran
-            'O' => '"Rp" #,##0', // Harga Vendor
+            'Tanggal', 
+            'Perusahaan', 
+            'Nama PIC', 
+            'Jabatan', 
+            'Telp/WA', 
+            'Email',
+            'Lokasi', 
+            'Sumber', 
+            'Status Prospek', 
+            'Catatan Prospek', 
+            'Marketing PIC',
+            
+            // Kolom CTA
+            'Judul CTA', 
+            'Sertifikasi', 
+            'Skema', 
+            'Jml Peserta', 
+            'Harga Jual', 
+            'Harga Modal',
+            'Total Potensi Omzet', 
+            'Status CTA', 
+            'Keterangan CTA'
         ];
     }
 }
