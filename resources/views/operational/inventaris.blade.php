@@ -120,21 +120,118 @@
         </div>
 
         {{-- ================= SEGMENTED TABS (MODERN) ================= --}}
-        <div class="d-flex justify-content-start mb-4 fade-in">
+        <div class="d-flex justify-content-center mb-4 fade-in">
             <div class="nav-modern p-1 rounded-pill bg-white border shadow-sm d-inline-flex" id="pills-tab" role="tablist">
-                <button class="nav-link active" id="pills-aset-tab" data-bs-toggle="pill" data-bs-target="#pills-aset" type="button" role="tab">
-                    <i class="fas fa-laptop me-1"></i> Aset Tetap
-                </button>
-                <button class="nav-link" id="pills-persediaan-tab" data-bs-toggle="pill" data-bs-target="#pills-persediaan" type="button" role="tab">
+                {{-- Persediaan ditaruh di kiri dan jadi Active --}}
+                <button class="nav-link active" id="pills-persediaan-tab" data-bs-toggle="pill" data-bs-target="#pills-persediaan" type="button" role="tab">
                     <i class="fas fa-box-open me-1"></i> Barang Persediaan
+                </button>
+                <button class="nav-link" id="pills-aset-tab" data-bs-toggle="pill" data-bs-target="#pills-aset" type="button" role="tab">
+                    <i class="fas fa-laptop me-1"></i> Aset Tetap
                 </button>
             </div>
         </div>
 
         <div class="tab-content fade-in" id="pills-tabContent">
             
-            {{-- ================= TAB 1: ASET TETAP ================= --}}
-            <div class="tab-pane fade show active" id="pills-aset" role="tabpanel">
+            {{-- ================= TAB 1: BARANG PERSEDIAAN (Tampil Pertama) ================= --}}
+            <div class="tab-pane fade show active" id="pills-persediaan" role="tabpanel">
+                
+                <div class="card card-modern border-0 shadow-sm mb-4">
+                    <div class="card-body p-3 p-md-4 d-flex flex-wrap justify-content-between align-items-center gap-3 bg-light" style="border-radius: 16px;">
+                        <form action="{{ route('operational.inventaris') }}" method="GET" class="d-flex gap-2 flex-grow-1 align-items-end flex-wrap">
+                            <div style="min-width: 280px; flex-grow: 1; max-width: 400px;">
+                                <label class="label-modern">Cari Persediaan</label>
+                                <div class="input-group input-group-sm shadow-sm" style="border-radius: 8px; overflow: hidden;">
+                                    <span class="input-group-text bg-white border-end-0 text-muted"><i class="fas fa-search"></i></span>
+                                    <input type="text" name="search_stok" class="form-control border-start-0 shadow-none ps-0" placeholder="Cari Nama Barang..." value="{{ request('search_stok') }}">
+                                </div>
+                            </div>
+                            <button type="submit" class="btn btn-primary btn-sm btn-round fw-bold px-4 shadow-sm hover-lift">Filter</button>
+                            <a href="{{ route('operational.inventaris') }}" class="btn btn-white btn-sm border btn-round fw-bold text-dark px-4 shadow-sm hover-lift">Reset</a>
+                        </form>
+                        <button class="btn btn-success btn-round btn-sm fw-bold shadow-sm hover-lift px-4" data-bs-toggle="modal" data-bs-target="#modalTambahPersediaan">
+                            <i class="fas fa-plus me-1"></i> Tambah Barang Baru
+                        </button>
+                    </div>
+                </div>
+
+                <div class="card card-modern border-0 shadow-sm mb-4">
+                    <div class="card-body p-0">
+                        <div class="table-responsive">
+                            <table class="table table-modern table-hover align-middle mb-0 text-center">
+                                <thead class="bg-light sticky-top">
+                                    <tr>
+                                        <th class="text-start ps-4">Nama Barang</th>
+                                        <th>Kategori</th>
+                                        <th>Sisa Stok</th>
+                                        <th>Satuan</th>
+                                        <th>Status Stok</th>
+                                        <th class="text-center" width="130">Mutasi Stok</th>
+                                        <th class="text-center pe-4" width="120">Aksi</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @forelse($items as $item)
+                                        <tr>
+                                            <td class="text-start ps-4 fw-bolder text-dark" style="font-size: 14px;">{{ $item->nama }}</td>
+                                            <td><span class="badge badge-soft-secondary border text-muted px-2 py-1" style="font-size: 10px;">{{ $item->kategori }}</span></td>
+                                            <td>
+                                                <h4 class="mb-0 fw-bolder {{ $item->stok <= $item->min_stok ? 'text-danger' : 'text-primary' }}">
+                                                    {{ number_format($item->stok) }}
+                                                </h4>
+                                            </td>
+                                            <td class="text-muted fw-bold small text-uppercase">{{ $item->satuan }}</td>
+                                            <td>
+                                                @if($item->stok <= $item->min_stok)
+                                                    <span class="badge badge-soft-danger border border-danger px-3 py-1 rounded-pill animate-pulse" title="Batas Minimal: {{ $item->min_stok }}"><i class="fas fa-exclamation-circle me-1"></i> Menipis</span>
+                                                @else
+                                                    <span class="badge badge-soft-success border border-success px-3 py-1 rounded-pill" title="Batas Minimal: {{ $item->min_stok }}"><i class="fas fa-check me-1"></i> Aman</span>
+                                                @endif
+                                            </td>
+                                            <td class="text-center">
+                                                <div class="d-flex gap-2 justify-content-center">
+                                                    <button class="btn btn-sm btn-primary btn-round fw-bold shadow-sm hover-lift flex-grow-1 px-2" data-bs-toggle="modal" data-bs-target="#modalMutasi{{ $item->id }}In" title="Stok Masuk (+)">
+                                                        <i class="fas fa-plus"></i> In
+                                                    </button>
+                                                    <button class="btn btn-sm btn-warning btn-round fw-bold text-dark shadow-sm hover-lift flex-grow-1 px-2" data-bs-toggle="modal" data-bs-target="#modalMutasi{{ $item->id }}Out" title="Stok Keluar (-)">
+                                                        <i class="fas fa-minus"></i> Out
+                                                    </button>
+                                                </div>
+                                            </td>
+                                            <td class="text-center pe-4">
+                                                <div class="d-flex gap-2 justify-content-center">
+                                                    {{-- Tombol Edit --}}
+                                                    <button class="btn btn-sm btn-light border text-primary btn-round shadow-sm hover-lift px-2" title="Edit Barang" data-bs-toggle="modal" data-bs-target="#modalEditPersediaan{{ $item->id }}">
+                                                        <i class="fas fa-edit"></i>
+                                                    </button>
+                                                    {{-- Tombol Hapus --}}
+                                                    <form action="{{ route('inventaris.item.destroy', $item->id) }}" method="POST" class="d-inline form-hapus m-0 p-0">
+                                                        @csrf @method('DELETE')
+                                                        <button type="button" class="btn btn-sm btn-light border text-danger btn-round shadow-sm hover-lift btn-delete px-2" title="Hapus Barang">
+                                                            <i class="fas fa-trash-alt"></i>
+                                                        </button>
+                                                    </form>
+                                                </div>
+                                            </td>
+                                        </tr>
+                                    @empty
+                                        <tr>
+                                            <td colspan="7" class="text-center py-5 text-muted">
+                                                <i class="fas fa-box-open fs-1 mb-3 text-light opacity-50"></i><br>
+                                                Belum ada data barang persediaan.
+                                            </td>
+                                        </tr>
+                                    @endforelse
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            {{-- ================= TAB 2: ASET TETAP ================= --}}
+            <div class="tab-pane fade" id="pills-aset" role="tabpanel">
                 
                 <div class="card card-modern border-0 shadow-sm mb-4">
                     <div class="card-body p-3 p-md-4 d-flex flex-wrap justify-content-between align-items-center gap-3 bg-light" style="border-radius: 16px;">
@@ -201,82 +298,6 @@
                                             <td colspan="5" class="text-center py-5 text-muted">
                                                 <i class="fas fa-box-open fs-1 mb-3 text-light opacity-50"></i><br>
                                                 Belum ada data aset tetap terdaftar.
-                                            </td>
-                                        </tr>
-                                    @endforelse
-                                </tbody>
-                            </table>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            {{-- ================= TAB 2: BARANG PERSEDIAAN ================= --}}
-            <div class="tab-pane fade" id="pills-persediaan" role="tabpanel">
-                
-                <div class="card card-modern border-0 shadow-sm mb-4">
-                    <div class="card-body p-3 p-md-4 d-flex flex-wrap justify-content-between align-items-center gap-3 bg-light" style="border-radius: 16px;">
-                        <form action="{{ route('operational.inventaris') }}" method="GET" class="d-flex gap-2 flex-grow-1 align-items-end flex-wrap">
-                            <div style="min-width: 280px; flex-grow: 1; max-width: 400px;">
-                                <label class="label-modern">Cari Persediaan</label>
-                                <div class="input-group input-group-sm shadow-sm" style="border-radius: 8px; overflow: hidden;">
-                                    <span class="input-group-text bg-white border-end-0 text-muted"><i class="fas fa-search"></i></span>
-                                    <input type="text" name="search_stok" class="form-control border-start-0 shadow-none ps-0" placeholder="Cari Nama Barang..." value="{{ request('search_stok') }}">
-                                </div>
-                            </div>
-                            <button type="submit" class="btn btn-primary btn-sm btn-round fw-bold px-4 shadow-sm hover-lift">Filter</button>
-                            <a href="{{ route('operational.inventaris') }}" class="btn btn-white btn-sm border btn-round fw-bold text-dark px-4 shadow-sm hover-lift">Reset</a>
-                        </form>
-                        <button class="btn btn-success btn-round btn-sm fw-bold shadow-sm hover-lift px-4" data-bs-toggle="modal" data-bs-target="#modalTambahPersediaan">
-                            <i class="fas fa-plus me-1"></i> Tambah Barang Baru
-                        </button>
-                    </div>
-                </div>
-
-                <div class="card card-modern border-0 shadow-sm mb-4">
-                    <div class="card-body p-0">
-                        <div class="table-responsive">
-                            <table class="table table-modern table-hover align-middle mb-0 text-center">
-                                <thead class="bg-light sticky-top">
-                                    <tr>
-                                        <th class="text-start ps-4">Nama Barang</th>
-                                        <th>Kategori</th>
-                                        <th>Sisa Stok</th>
-                                        <th>Satuan</th>
-                                        <th>Status Stok</th>
-                                        <th class="text-center pe-4" width="180">Logistik (Mutasi)</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    @forelse($items as $item)
-                                        <tr>
-                                            <td class="text-start ps-4 fw-bolder text-dark" style="font-size: 14px;">{{ $item->nama }}</td>
-                                            <td><span class="badge badge-soft-secondary border text-muted px-2 py-1" style="font-size: 10px;">{{ $item->kategori }}</span></td>
-                                            <td>
-                                                <h4 class="mb-0 fw-bolder {{ $item->stok <= $item->min_stok ? 'text-danger' : 'text-primary' }}">
-                                                    {{ number_format($item->stok) }}
-                                                </h4>
-                                            </td>
-                                            <td class="text-muted fw-bold small text-uppercase">{{ $item->satuan }}</td>
-                                            <td>
-                                                @if($item->stok <= $item->min_stok)
-                                                    <span class="badge badge-soft-danger border border-danger px-3 py-1 rounded-pill animate-pulse" title="Batas Minimal: {{ $item->min_stok }}"><i class="fas fa-exclamation-circle me-1"></i> Menipis</span>
-                                                @else
-                                                    <span class="badge badge-soft-success border border-success px-3 py-1 rounded-pill" title="Batas Minimal: {{ $item->min_stok }}"><i class="fas fa-check me-1"></i> Aman</span>
-                                                @endif
-                                            </td>
-                                            <td class="text-center pe-4">
-                                                <div class="d-flex gap-2 justify-content-center">
-                                                    <button class="btn btn-sm btn-primary btn-round fw-bold shadow-sm hover-lift flex-grow-1" data-bs-toggle="modal" data-bs-target="#modalMutasi{{ $item->id }}In" title="Tambah Stok Masuk"><i class="fas fa-arrow-down me-1"></i> In</button>
-                                                    <button class="btn btn-sm btn-warning btn-round fw-bold text-dark shadow-sm hover-lift flex-grow-1" data-bs-toggle="modal" data-bs-target="#modalMutasi{{ $item->id }}Out" title="Kurangi Stok (Pemakaian)"><i class="fas fa-arrow-up me-1"></i> Out</button>
-                                                </div>
-                                            </td>
-                                        </tr>
-                                    @empty
-                                        <tr>
-                                            <td colspan="6" class="text-center py-5 text-muted">
-                                                <i class="fas fa-box-open fs-1 mb-3 text-light opacity-50"></i><br>
-                                                Belum ada data barang persediaan.
                                             </td>
                                         </tr>
                                     @endforelse
@@ -419,8 +440,57 @@
     </div>
 </div>
 
-{{-- Modals Looping untuk Mutasi In & Out (Persediaan) --}}
+{{-- Modals Looping untuk Mutasi In & Out & Edit (Persediaan) --}}
 @foreach($items as $item)
+    {{-- Modal Edit Persediaan --}}
+    <div class="modal fade" id="modalEditPersediaan{{ $item->id }}" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content card-modern border-0 shadow-lg">
+                <div class="modal-header bg-primary-subtle text-primary border-bottom-0 pb-3 pt-4 px-4">
+                    <h5 class="modal-title fw-bolder">
+                        <i class="fas fa-edit me-2"></i> Edit Item Persediaan
+                    </h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                
+                <form action="{{ route('inventaris.item.update', $item->id) }}" method="POST">
+                    @csrf
+                    @method('PUT')
+                    <div class="modal-body px-4 pt-3">
+                        <div class="row g-3">
+                            <div class="col-md-12">
+                                <label class="label-modern">Nama Barang <span class="text-danger">*</span></label>
+                                <input type="text" class="form-control input-modern shadow-none" name="nama_barang" value="{{ $item->nama }}" required>
+                            </div>
+                            <div class="col-md-6">
+                                <label class="label-modern">Kategori <span class="text-danger">*</span></label>
+                                <select name="kategori" class="form-select input-modern shadow-none" required>
+                                    <option value="Atribut Pelatihan" {{ $item->kategori == 'Atribut Pelatihan' ? 'selected' : '' }}>Atribut Pelatihan</option>
+                                    <option value="ATK & Modul" {{ $item->kategori == 'ATK & Modul' ? 'selected' : '' }}>ATK & Modul</option>
+                                    <option value="Konsumsi/Pantry" {{ $item->kategori == 'Konsumsi/Pantry' ? 'selected' : '' }}>Konsumsi / Pantry</option>
+                                    <option value="Lainnya" {{ $item->kategori == 'Lainnya' ? 'selected' : '' }}>Lainnya</option>
+                                </select>
+                            </div>
+                            <div class="col-md-6">
+                                <label class="label-modern">Satuan Unit <span class="text-danger">*</span></label>
+                                <input type="text" class="form-control input-modern shadow-none" name="satuan" value="{{ $item->satuan }}" required>
+                            </div>
+                            <div class="col-md-12">
+                                <label class="label-modern">Batas Min. Peringatan <span class="text-danger">*</span></label>
+                                <input type="number" class="form-control input-modern shadow-none" name="batas_minimum" value="{{ $item->min_stok }}" min="1" required>
+                                <small class="text-muted" style="font-size: 10px;">*Stok saat ini: {{ $item->stok }} {{ $item->satuan }} (Perubahan stok hanya bisa lewat mutasi In/Out)</small>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="modal-footer bg-light border-top-0 pt-3 pb-3 px-4 rounded-bottom-4">
+                        <button type="button" class="btn btn-white btn-round border fw-bold text-dark hover-lift" data-bs-dismiss="modal">Batal</button>
+                        <button type="submit" class="btn btn-primary text-white btn-round fw-bold shadow-sm hover-lift px-4">Simpan Perubahan</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
     {{-- Modal Mutasi IN --}}
     <div class="modal fade" id="modalMutasi{{ $item->id }}In" tabindex="-1" aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered">
@@ -558,8 +628,10 @@
 </style>
 
 {{-- ================= SCRIPTS ================= --}}
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 <script>
     document.addEventListener("DOMContentLoaded", function() {
+        // Fungsi Jam Realtime
         function updateClock() {
             const now = new Date();
             const options = { weekday: 'long', year: 'numeric', month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit', second: '2-digit', hour12: false };
@@ -567,6 +639,35 @@
         }
         setInterval(updateClock, 1000);
         updateClock();
+
+        // Konfirmasi Hapus SweetAlert
+        document.querySelectorAll('.btn-delete').forEach(button => {
+            button.addEventListener('click', function() {
+                const form = this.closest('.form-hapus');
+                
+                Swal.fire({
+                    title: 'Hapus data ini?',
+                    text: "Seluruh log riwayat mutasi stok barang ini juga akan ikut terhapus permanen!",
+                    icon: 'warning',
+                    showCancelButton: true,
+                    confirmButtonColor: '#ef4444',
+                    cancelButtonColor: '#94a3b8', 
+                    confirmButtonText: 'Ya, Hapus!',
+                    cancelButtonText: 'Batal',
+                    reverseButtons: true,
+                    customClass: {
+                        popup: 'card-modern',
+                        confirmButton: 'btn btn-round shadow-sm px-4 ms-2',
+                        cancelButton: 'btn btn-round shadow-sm px-4'
+                    }
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        form.submit();
+                    }
+                });
+            });
+        });
     });
 </script>
+
 @endsection

@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\PengirimanPaket;
+use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 use Carbon\Carbon;
@@ -16,37 +17,35 @@ class PengirimanPaketController extends Controller
     // ================= INDEX & FILTER =================
     public function index(Request $request)
     {
-        $query = PengirimanPaket::query();
+        // Gunakan with('marketing') agar query lebih ringan (Eager Loading)
+        $query = PengirimanPaket::with('marketing');
 
-        // 1. Filter Pencarian (Nama, Instansi, Resi)
         if ($request->filled('search')) {
             $search = $request->search;
             $query->where(function($q) use ($search) {
                 $q->where('nama_penerima', 'LIKE', "%{$search}%")
                   ->orWhere('instansi', 'LIKE', "%{$search}%")
-                  ->orWhere('no_resi', 'LIKE', "%{$search}%");
+                  ->orWhere('no_resi', 'LIKE', "%{$search}%")
+                  // Mencari berdasarkan nama marketing di tabel users
+                  ->orWhereHas('marketing', function($qM) use ($search) {
+                      $qM->where('name', 'LIKE', "%{$search}%");
+                  });
             });
         }
 
-        // 2. Filter Status
         if ($request->filled('status')) {
             $query->where('status_pengiriman', $request->status);
         }
 
-        // 3. Filter Tanggal
         if ($request->filled('start_date') && $request->filled('end_date')) {
             $query->whereBetween('tanggal_kirim', [$request->start_date, $request->end_date]);
         }
 
-        // ================= PENYESUAIAN SORTING =================
-        // 1. Taruh yang statusnya "Diterima" di paling bawah (0 = atas, 1 = bawah)
-        // 2. Setelah itu, urutkan berdasarkan tanggal terbaru
         $data_pengiriman = $query->orderByRaw("CASE WHEN status_pengiriman = 'Diterima' THEN 1 ELSE 0 END ASC")
                                  ->orderBy('tanggal_kirim', 'desc')
                                  ->paginate(10)
                                  ->withQueryString();
 
-        // --- HITUNG STATISTIK (Untuk Card di Atas) ---
         $stats = [
             'total'      => PengirimanPaket::count(),
             'diproses'   => PengirimanPaket::where('status_pengiriman', 'Diproses')->count(),
@@ -54,19 +53,23 @@ class PengirimanPaketController extends Controller
             'diterima'   => PengirimanPaket::where('status_pengiriman', 'Diterima')->count(),
         ];
 
-        return view('operational.monitoring-paket', compact('data_pengiriman', 'stats'));
+        // Tarik data user marketing untuk Dropdown Form
+        $marketings = User::where('role', 'marketing')->get();
+
+        return view('operational.monitoring-paket', compact('data_pengiriman', 'stats', 'marketings'));
     }
 
     // ================= STORE DATA BARU =================
     public function store(Request $request)
     {
         $validated = $request->validate([
+            'marketing_id'      => 'nullable|exists:users,id', // 🔥 Ganti pj_marketing jadi ini
             'instansi'          => 'required|string',
             'nama_penerima'     => 'required|string',
             'no_hp'             => 'required',
             'alamat_pengiriman' => 'required',
             'jenis_paket'       => 'required',
-            'isi_paket'         => 'required|array', // Harus array karena dari checkbox
+            'isi_paket'         => 'required|array',
             'isi_paket_lainnya' => 'nullable|string',
             'ekspedisi'         => 'required',
             'no_resi'           => 'nullable',
@@ -78,14 +81,12 @@ class PengirimanPaketController extends Controller
             'catatan_file'      => 'nullable|file|mimes:jpg,png,pdf|max:2048',
         ]);
 
-        // Handle Upload File Bukti/Resi
         if ($request->hasFile('catatan_file')) {
             $path = $request->file('catatan_file')->store('bukti_pengiriman', 'public');
             $validated['catatan_file'] = $path;
         }
 
         PengirimanPaket::create($validated);
-
         return redirect()->back()->with('success', 'Data pengiriman paket berhasil disimpan!');
     }
 
@@ -95,12 +96,13 @@ class PengirimanPaketController extends Controller
         $paket = PengirimanPaket::findOrFail($id);
         
         $validated = $request->validate([
+            'marketing_id'      => 'nullable|exists:users,id', // 🔥 Ganti pj_marketing jadi ini
             'instansi'          => 'required|string',
             'nama_penerima'     => 'required|string',
             'no_hp'             => 'required',
             'alamat_pengiriman' => 'required',
             'jenis_paket'       => 'required',
-            'isi_paket'         => 'required|array', // Harus array karena dari checkbox
+            'isi_paket'         => 'required|array',
             'isi_paket_lainnya' => 'nullable|string',
             'ekspedisi'         => 'required',
             'no_resi'           => 'nullable',
@@ -112,18 +114,15 @@ class PengirimanPaketController extends Controller
             'catatan_file'      => 'nullable|file|mimes:jpg,png,pdf|max:2048',
         ]);
 
-        // Handle Ganti File Jika ada upload baru
         if ($request->hasFile('catatan_file')) {
-            // Hapus file lama
             if ($paket->catatan_file) {
-                Storage::disk('public')->delete($paket->catatan_file);
+                \Illuminate\Support\Facades\Storage::disk('public')->delete($paket->catatan_file);
             }
             $path = $request->file('catatan_file')->store('bukti_pengiriman', 'public');
             $validated['catatan_file'] = $path;
         }
 
         $paket->update($validated);
-
         return redirect()->back()->with('success', 'Data pengiriman berhasil diperbarui!');
     }
 

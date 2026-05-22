@@ -151,4 +151,41 @@ class InventoryController extends Controller
 
         return redirect()->back()->with('success', 'Stok berhasil diupdate!');
     }
+    
+    // ================= 5. EDIT DATA BARANG PERSEDIAAN =================
+    public function updateItem(Request $request, $id)
+    {
+        $item = Item::findOrFail($id);
+
+        $validated = $request->validate([
+            'nama_barang'   => 'required|string|max:255',
+            'kategori'      => 'required|string',
+            'satuan'        => 'required|string',
+            'batas_minimum' => 'required|integer|min:1',
+        ]);
+
+        // Update Master Data Barang (Catatan: Stok tidak diubah dari sini untuk menjaga validitas Log Mutasi)
+        $item->update([
+            'nama'     => $validated['nama_barang'],
+            'kategori' => $validated['kategori'],
+            'satuan'   => $validated['satuan'],
+            'min_stok' => $validated['batas_minimum'],
+        ]);
+
+        return redirect()->back()->with('success', 'Data Barang Persediaan berhasil diperbarui!');
+    }
+
+    // ================= 6. HAPUS BARANG PERSEDIAAN =================
+    public function destroyItem($id)
+    {
+        $item = Item::findOrFail($id);
+        
+        // Hapus semua log mutasi terkait barang ini terlebih dahulu agar tidak terjadi error Foreign Key Constraint
+        ItemLog::where('item_id', $item->id)->delete();
+        
+        // Hapus Master Barang
+        $item->delete();
+
+        return redirect()->back()->with('success', 'Data Barang Persediaan berhasil dihapus!');
+    }
 }

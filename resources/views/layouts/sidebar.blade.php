@@ -53,12 +53,6 @@
                                     <span class="sub-item">Pipeline Marketing</span>
                                 </a>
                             </li>
-                            <li class="{{ request()->routeIs('monitoring.pelatihan') ? 'active' : '' }}">
-                                <a href="{{ route('monitoring.pelatihan') }}">
-                                    <span class="sub-item">Monitoring Pelatihan</span>
-                                    <span class="badge badge-dark">Beta</span>
-                                </a>
-                            </li>
                             <li class="{{ request()->routeIs('revenue') ? 'active' : '' }}">
                                 <a href="{{ route('revenue') }}">
                                     <span class="sub-item">Revenue</span>
@@ -151,7 +145,7 @@
 
                 {{-- Menu Operasional (Admin & Superadmin Only) --}}
                 @if (in_array($role, ['superadmin','operasional','team_leader','web_dev']))
-                    @php $isOperational = request()->routeIs(['operational.aktivitas-harian', 'operational.data-pendaftaran', 'operational.inventaris', 'operational.monitoring-paket']); @endphp
+                    @php $isOperational = request()->routeIs(['operational.aktivitas-harian', 'operational.data-pendaftaran', 'operational.inventaris', 'operational.monitoring-paket', 'monitoring.pelatihan']); @endphp
                     <li class="nav-item {{ $isOperational ? 'active' : '' }}">
                         <a data-bs-toggle="collapse" href="#operasional" class="{{ $isOperational ? '' : 'collapsed' }}" aria-expanded="{{ $isOperational ? 'true' : 'false' }}">
                             <i class="fas fa-tasks"></i>

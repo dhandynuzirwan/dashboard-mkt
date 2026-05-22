@@ -61,6 +61,7 @@ Route::prefix('portal')->group(function () {
     Route::get('/pendaftaran', function () { return view('portal.pendaftaran'); });
     Route::get('/pendaftaran-perusahaan', function () { return view('portal.pendaftaran-perusahaan'); });
     Route::get('/sukses', function () { return view('portal.sukses'); });
+    Route::get('/sukses-perusahaan', function () { return view('portal.sukses-perusahaan'); });
     Route::get('/cek-status', function () { return view('portal.cek-status'); });
     Route::get('/cek-status-perusahaan', function () { return view('portal.cek-status-perusahaan'); });
 });
@@ -86,8 +87,9 @@ Route::middleware('auth')->group(function () {
     Route::resource('akun-vault', AkunAksesController::class)->names([
         'index'   => 'akun.index',
         'store'   => 'akun.store',
+        'update'  => 'akun.update',
         'destroy' => 'akun.destroy',
-    ])->except(['create', 'show', 'edit', 'update']); // Kita kecualikan yang tidak dipakai
+    ])->except(['create', 'show', 'edit']); // Kita kecualikan yang tidak dipakai
 
     /*
     |--------------------------------------------------------------------------
@@ -136,6 +138,8 @@ Route::middleware('auth')->group(function () {
         Route::post('/inventaris/aset', [App\Http\Controllers\InventoryController::class, 'storeAset'])->name('inventaris.aset.store');
         Route::post('/inventaris/item', [App\Http\Controllers\InventoryController::class, 'storeItem'])->name('inventaris.item.store');
         Route::post('/inventaris/mutasi/{id}', [App\Http\Controllers\InventoryController::class, 'updateStok'])->name('inventaris.mutasi');
+        Route::put('/inventaris/item/{id}', [App\Http\Controllers\InventoryController::class, 'updateItem'])->name('inventaris.item.update');
+        Route::delete('/inventaris/item/{id}', [App\Http\Controllers\InventoryController::class, 'destroyItem'])->name('inventaris.item.destroy');
         
         Route::resource('monitoring-paket', PengirimanPaketController::class)->names([
             'index' => 'operational.monitoring-paket',

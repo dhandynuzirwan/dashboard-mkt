@@ -80,7 +80,7 @@
                                         <option value="Online Training" {{ $cta->skema == 'Online Training' ? 'selected' : '' }}>Online Training</option>
                                         <option value="Offline Training" {{ $cta->skema == 'Offline Training' ? 'selected' : '' }}>Offline Training</option>
                                         <option value="Inhouse Training" {{ $cta->skema == 'Inhouse Training' ? 'selected' : '' }}>Inhouse Training</option>
-                                        <option value="Inhouse Training" {{ $cta->skema == 'Blended Training' ? 'selected' : '' }}>Blended Training</option>
+                                        <option value="Blended Training" {{ $cta->skema == 'Blended Training' ? 'selected' : '' }}>Blended Training</option>
                                     </select>
                                 </div>
 

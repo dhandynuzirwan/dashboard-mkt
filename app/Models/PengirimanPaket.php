@@ -12,6 +12,7 @@ class PengirimanPaket extends Model
     // Tambahkan semua nama field agar bisa diisi massal (Mass Assignment)
     protected $fillable = [
         'instansi',
+        'marketing_id',
         'nama_penerima',
         'no_hp',
         'alamat_pengiriman',
@@ -33,4 +34,9 @@ class PengirimanPaket extends Model
     protected $casts = [
         'isi_paket' => 'array', 
     ];
+    
+    public function marketing()
+    {
+        return $this->belongsTo(User::class, 'marketing_id');
+    }
 }

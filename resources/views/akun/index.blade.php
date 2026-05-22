@@ -109,36 +109,48 @@
             box-shadow: 0 12px 25px rgba(0,0,0,0.06);
         }
 
+        /* 🔥 PERBAIKAN TOMBOL AKSI 🔥 */
         .card-actions {
             position: absolute;
-            top: 16px;
-            right: 16px;
+            top: 12px;
+            right: 12px;
             display: flex;
-            gap: 6px;
-            opacity: 0.6;
+            gap: 8px;
+            opacity: 0; /* Sembunyikan saat tidak dihover agar super clean */
+            visibility: hidden;
             transition: all 0.2s ease;
+            z-index: 20; /* Pastikan posisinya paling atas, tidak tertimpa teks */
         }
-        .resource-card:hover .card-actions { opacity: 1; }
+        .resource-card:hover .card-actions { 
+            opacity: 1; 
+            visibility: visible;
+        }
         .action-btn {
-            width: 32px;
-            height: 32px;
+            width: 38px; /* Area klik diperbesar */
+            height: 38px;
             padding: 0;
             display: flex;
             align-items: center;
             justify-content: center;
-            border-radius: 8px;
+            border-radius: 10px; /* Sudut lebih membulat */
             background: #f8fafc;
             border: 1px solid #e2e8f0;
             color: #64748b;
+            font-size: 1rem; /* Ikon sedikit lebih besar */
             transition: all 0.2s;
             cursor: pointer;
         }
-        .action-btn:hover { transform: translateY(-2px); box-shadow: 0 4px 6px rgba(0,0,0,0.05); }
+        .action-btn:hover { transform: translateY(-2px); box-shadow: 0 4px 8px rgba(0,0,0,0.08); }
+        .action-btn.edit:hover { background: #eff6ff; color: #3b82f6; border-color: #bfdbfe; }
         .action-btn.delete:hover { background: #fef2f2; color: #ef4444; border-color: #fecaca; }
+
+        @media (max-width: 767.98px) {
+            .card-actions { opacity: 1; visibility: visible; } /* Selalu tampil di HP */
+        }
 
         .icon-box { width: 52px; height: 52px; border-radius: 14px; display: flex; align-items: center; justify-content: center; font-size: 1.5rem; flex-shrink: 0; }
         .card-category { font-size: 0.75rem; font-weight: 700; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 4px; }
-        .card-title { font-size: 1.1rem; font-weight: 700; color: #0f172a; margin-bottom: 0; line-height: 1.4; padding-right: 40px; }
+        .card-title { font-size: 1.1rem; font-weight: 700; color: #0f172a; margin-bottom: 0; line-height: 1.4; padding-right: 70px; } /* padding right ditambah agar teks tidak nabrak tombol */
 
         .input-group-vault .form-control { background-color: #f8fafc; border-color: #e2e8f0; font-family: monospace; font-size: 0.9rem; }
         .input-group-vault .btn { border-color: #e2e8f0; color: #64748b; }
@@ -166,8 +178,6 @@
                 Brankas Akun
             </a>
             
-            {{-- 🔥 Tombol Kembali ke Dashboard 🔥 --}}
-            {{-- Menggunakan url('/') untuk menghindari error route not defined --}}
             <a href="{{ url('/') }}" class="btn btn-light btn-sm fw-bold border rounded-pill px-3 shadow-sm transition-all" style="color: #475569;">
                 <i class="fas fa-arrow-left me-1"></i> Kembali <span class="d-none d-sm-inline">ke Dashboard</span>
             </a>
@@ -181,6 +191,13 @@
         @if(session('success'))
             <div class="alert alert-success alert-dismissible fade show mt-3 shadow-sm border-0" role="alert">
                 <i class="fas fa-check-circle me-2"></i> {{ session('success') }}
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            </div>
+        @endif
+
+        @if($errors->any())
+            <div class="alert alert-danger alert-dismissible fade show mt-3 shadow-sm border-0" role="alert">
+                <i class="fas fa-exclamation-triangle me-2"></i> Gagal menyimpan! Pastikan semua kolom wajib diisi.
                 <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
             </div>
         @endif
@@ -246,8 +263,13 @@
 
                 <div class="col-sm-6 col-lg-4">
                     <div class="resource-card">
+                        {{-- Tombol Aksi Kanan Atas --}}
                         <div class="card-actions">
-                            <form action="{{ route('akun.destroy', $akun->id) }}" method="POST" class="d-inline form-hapus">
+                            <button type="button" class="action-btn edit" data-bs-toggle="modal" data-bs-target="#modalEditAkun{{ $akun->id }}" title="Edit Akun">
+                                <i class="fas fa-edit"></i>
+                            </button>
+                            {{-- Tambahkan m-0 p-0 d-flex agar tombol tidak turun/geser --}}
+                            <form action="{{ route('akun.destroy', $akun->id) }}" method="POST" class="m-0 p-0 d-flex form-hapus">
                                 @csrf
                                 @method('DELETE')
                                 <button type="button" class="action-btn delete btn-delete" title="Hapus Akun">
@@ -260,7 +282,7 @@
                             <div class="icon-box {{ $iconBg }} bg-opacity-10 {{ $textColor }}">
                                 <i class="fas {{ $iconClass }}"></i>
                             </div>
-                            <div class="ms-3 pt-1">
+                            <div class="ms-3 pt-1 w-100">
                                 <p class="card-category {{ $textColor }} opacity-75">{{ $akun->kategori }}</p>
                                 <h4 class="card-title">{{ $akun->platform }}</h4>
                             </div>
@@ -294,6 +316,61 @@
                                 <i class="fas fa-external-link-alt me-2"></i> Buka Link Login
                             </a>
                         @endif
+                    </div>
+                </div>
+
+                {{-- Modal Form Edit Akun (Spesifik per Akun) --}}
+                <div class="modal fade" id="modalEditAkun{{ $akun->id }}" tabindex="-1" aria-hidden="true">
+                    <div class="modal-dialog modal-dialog-centered">
+                        <form action="{{ route('akun.update', $akun->id) }}" method="POST">
+                            @csrf
+                            @method('PUT')
+                            <div class="modal-content border-0 shadow-lg" style="border-radius: 16px;">
+                                <div class="modal-header bg-light border-0 py-3 px-4" style="border-radius: 16px 16px 0 0;">
+                                    <h5 class="modal-title fw-bold text-primary m-0"><i class="fas fa-edit me-2"></i> Edit Kredensial Akun</h5>
+                                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                </div>
+                                <div class="modal-body p-4">
+                                    <div class="mb-3">
+                                        <label class="fw-bold mb-1 small text-muted">NAMA PLATFORM <span class="text-danger">*</span></label>
+                                        <input type="text" name="platform" class="form-control" value="{{ $akun->platform }}" required>
+                                    </div>
+                                    <div class="mb-3">
+                                        <label class="fw-bold mb-1 small text-muted">KATEGORI <span class="text-danger">*</span></label>
+                                        <select name="kategori" class="form-select" required>
+                                            <option value="Website" {{ $akun->kategori == 'Website' ? 'selected' : '' }}>Website / Hosting</option>
+                                            <option value="Sosial Media" {{ $akun->kategori == 'Sosial Media' ? 'selected' : '' }}>Sosial Media</option>
+                                            <option value="Marketing Tools" {{ $akun->kategori == 'Marketing Tools' ? 'selected' : '' }}>Marketing Tools</option>
+                                            <option value="Email & Cloud" {{ $akun->kategori == 'Email & Cloud' ? 'selected' : '' }}>Email & Cloud</option>
+                                            <option value="Lainnya" {{ $akun->kategori == 'Lainnya' ? 'selected' : '' }}>Lainnya</option>
+                                        </select>
+                                    </div>
+                                    <div class="mb-3">
+                                        <label class="fw-bold mb-1 small text-muted">URL LOGIN (Opsional)</label>
+                                        <input type="url" name="url_login" class="form-control" value="{{ $akun->url_login }}" placeholder="https://...">
+                                    </div>
+                                    <div class="mb-3">
+                                        <label class="fw-bold mb-1 small text-muted">USERNAME / EMAIL <span class="text-danger">*</span></label>
+                                        <input type="text" name="username_email" class="form-control" value="{{ $akun->username_email }}" required>
+                                    </div>
+                                    <div class="mb-3">
+                                        <label class="fw-bold mb-1 small text-muted">PASSWORD BARU</label>
+                                        <input type="text" name="password" class="form-control border-primary" placeholder="Ketik jika ingin mengubah password">
+                                        <small class="text-muted d-block mt-1" style="font-size: 11px;">
+                                            <i class="fas fa-info-circle me-1 text-primary"></i>Kosongkan jika <b>tidak ingin</b> mengubah password lama.
+                                        </small>
+                                    </div>
+                                    <div class="mb-0">
+                                        <label class="fw-bold mb-1 small text-muted">CATATAN (Opsional)</label>
+                                        <textarea name="catatan" class="form-control" rows="2">{{ $akun->catatan }}</textarea>
+                                    </div>
+                                </div>
+                                <div class="modal-footer border-0 bg-light py-3 px-4" style="border-radius: 0 0 16px 16px;">
+                                    <button type="button" class="btn btn-light border btn-custom px-4" data-bs-dismiss="modal">Batal</button>
+                                    <button type="submit" class="btn btn-primary btn-custom px-4 shadow-sm"><i class="fas fa-save me-1"></i> Simpan Perubahan</button>
+                                </div>
+                            </div>
+                        </form>
                     </div>
                 </div>
 

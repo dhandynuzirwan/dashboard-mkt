@@ -66,7 +66,7 @@
                             <span class="absolute inset-y-0 left-0 flex items-center pl-4 text-gray-400">
                                 <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-10V4m-5 10h.01M15 7h.01M15 11h.01M15 15h.01M11 15h.01M7 15h.01" /></svg>
                             </span>
-                            <input type="text" required class="w-full pl-11 pr-4 py-3.5 bg-gray-50 border border-gray-200 rounded-xl focus:bg-white focus:border-emerald-500 outline-none transition-colors" placeholder="Contoh: PT. Arsa Jaya Prima">
+                            <input type="text" class="w-full pl-11 pr-4 py-3.5 bg-gray-50 border border-gray-200 rounded-xl focus:bg-white focus:border-emerald-500 outline-none transition-colors" placeholder="Contoh: PT. Arsa Jaya Prima">
                         </div>
                     </div>
 
@@ -76,21 +76,21 @@
                             <span class="absolute inset-y-0 left-0 flex items-center pl-4 text-gray-400">
                                 <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" /><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" /></svg>
                             </span>
-                            <input type="text" required class="w-full pl-11 pr-4 py-3.5 bg-gray-50 border border-gray-200 rounded-xl focus:bg-white focus:border-emerald-500 outline-none transition-colors" placeholder="Contoh: Jl. Sudirman No. 123, Yogyakarta">
+                            <input type="text" class="w-full pl-11 pr-4 py-3.5 bg-gray-50 border border-gray-200 rounded-xl focus:bg-white focus:border-emerald-500 outline-none transition-colors" placeholder="Contoh: Jl. Sudirman No. 123, Yogyakarta">
                         </div>
                     </div>
 
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
                         <div class="input-focus-ring transition-shadow rounded-xl">
                             <label class="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-2 ml-1">Nama Penanggung Jawab</label>
-                            <input type="text" required class="w-full px-4 py-3.5 bg-gray-50 border border-gray-200 rounded-xl focus:bg-white focus:border-emerald-500 outline-none transition-colors text-gray-700" placeholder="Nama Anda">
+                            <input type="text" class="w-full px-4 py-3.5 bg-gray-50 border border-gray-200 rounded-xl focus:bg-white focus:border-emerald-500 outline-none transition-colors text-gray-700" placeholder="Nama Anda">
                         </div>
 
                         <div class="input-focus-ring transition-shadow rounded-xl">
                             <label class="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-2 ml-1">WhatsApp Penanggung Jawab</label>
                             <div class="relative">
                                 <span class="absolute inset-y-0 left-0 flex items-center pl-4 text-gray-500 font-medium">+62</span>
-                                <input type="tel" required class="w-full pl-12 pr-4 py-3.5 bg-gray-50 border border-gray-200 rounded-xl focus:bg-white focus:border-emerald-500 outline-none transition-colors" placeholder="8123456789">
+                                <input type="tel" class="w-full pl-12 pr-4 py-3.5 bg-gray-50 border border-gray-200 rounded-xl focus:bg-white focus:border-emerald-500 outline-none transition-colors" placeholder="8123456789">
                             </div>
                         </div>
                     </div>
@@ -139,19 +139,40 @@
                         <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                             <div class="input-focus-ring rounded-xl">
                                 <label class="block text-xs font-bold text-gray-500 mb-1 ml-1">Nama Lengkap</label>
-                                <input type="text" required class="w-full px-3 py-2.5 bg-white border border-gray-200 rounded-xl focus:border-emerald-500 outline-none text-sm" placeholder="Sesuai KTP">
+                                <input type="text" class="w-full px-3 py-2.5 bg-white border border-gray-200 rounded-xl focus:border-emerald-500 outline-none text-sm" placeholder="Sesuai KTP">
                             </div>
                             <div class="input-focus-ring rounded-xl">
-                                <label class="block text-xs font-bold text-gray-500 mb-1 ml-1">Divisi / Jabatan</label>
-                                <input type="text" required class="w-full px-3 py-2.5 bg-white border border-gray-200 rounded-xl focus:border-emerald-500 outline-none text-sm" placeholder="Contoh: Staff IT">
+                                <label class="block text-xs font-bold text-gray-500 mb-1 ml-1">NIK</label>
+                                <input type="text" class="w-full px-3 py-2.5 bg-white border border-gray-200 rounded-xl focus:border-emerald-500 outline-none text-sm" placeholder="16 Digit NIK">
+                            </div>
+                            <div class="input-focus-ring rounded-xl">
+                                <label class="block text-xs font-bold text-gray-500 mb-1 ml-1">Tempat Lahir</label>
+                                <input type="text" class="w-full px-3 py-2.5 bg-white border border-gray-200 rounded-xl focus:border-emerald-500 outline-none text-sm" placeholder="Sesuai KTP">
+                            </div>
+                            <div class="input-focus-ring rounded-xl">
+                                <label class="block text-xs font-bold text-gray-500 mb-1 ml-1">Tanggal Lahir</label>
+                                <input type="text" class="w-full px-3 py-2.5 bg-white border border-gray-200 rounded-xl focus:border-emerald-500 outline-none text-sm" placeholder="Sesuai KTP">
                             </div>
                             <div class="input-focus-ring rounded-xl">
                                 <label class="block text-xs font-bold text-gray-500 mb-1 ml-1">No. WhatsApp</label>
-                                <input type="tel" required class="w-full px-3 py-2.5 bg-white border border-gray-200 rounded-xl focus:border-emerald-500 outline-none text-sm" placeholder="0812xxxx">
+                                <input type="tel" class="w-full px-3 py-2.5 bg-white border border-gray-200 rounded-xl focus:border-emerald-500 outline-none text-sm" placeholder="0812xxxx">
+                            </div>
+                            <div class="input-focus-ring rounded-xl">
+                                <label class="block text-xs font-bold text-gray-500 mb-1 ml-1">Alamat Peserta (Sesuai KTP)</label>
+                                <input type="tel" class="w-full px-3 py-2.5 bg-white border border-gray-200 rounded-xl focus:border-emerald-500 outline-none text-sm" placeholder="0812xxxx">
+                            </div>
+                            <div class="input-focus-ring rounded-xl">
+                                <label class="block text-xs font-bold text-gray-500 mb-1 ml-1">Ijazah Terakhir</label>
+                                <select  class="w-full px-3 py-2.5 bg-white border border-gray-200 rounded-xl focus:border-emerald-500 outline-none text-sm text-gray-700">
+                                    <option value="" disabled selected>Pilih ...</option>
+                                    <option value="web">SD</option>
+                                    <option value="seo">SMP</option>
+                                    <option value="uiux">SMA</option>
+                                </select>
                             </div>
                             <div class="input-focus-ring rounded-xl">
                                 <label class="block text-xs font-bold text-gray-500 mb-1 ml-1">Judul Pelatihan</label>
-                                <select required class="w-full px-3 py-2.5 bg-white border border-gray-200 rounded-xl focus:border-emerald-500 outline-none text-sm text-gray-700">
+                                <select  class="w-full px-3 py-2.5 bg-white border border-gray-200 rounded-xl focus:border-emerald-500 outline-none text-sm text-gray-700">
                                     <option value="" disabled selected>Pilih Pelatihan...</option>
                                     <option value="web">Web Development</option>
                                     <option value="seo">Digital Marketing & SEO</option>
@@ -327,19 +348,19 @@
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                     <div class="input-focus-ring rounded-xl">
                         <label class="block text-xs font-bold text-gray-500 mb-1 ml-1">Nama Lengkap</label>
-                        <input type="text" required class="w-full px-3 py-2.5 bg-white border border-gray-200 rounded-xl focus:border-emerald-500 outline-none text-sm" placeholder="Sesuai KTP">
+                        <input type="text"  class="w-full px-3 py-2.5 bg-white border border-gray-200 rounded-xl focus:border-emerald-500 outline-none text-sm" placeholder="Sesuai KTP">
                     </div>
                     <div class="input-focus-ring rounded-xl">
                         <label class="block text-xs font-bold text-gray-500 mb-1 ml-1">Divisi / Jabatan</label>
-                        <input type="text" required class="w-full px-3 py-2.5 bg-white border border-gray-200 rounded-xl focus:border-emerald-500 outline-none text-sm" placeholder="Contoh: Staff IT">
+                        <input type="text"  class="w-full px-3 py-2.5 bg-white border border-gray-200 rounded-xl focus:border-emerald-500 outline-none text-sm" placeholder="Contoh: Staff IT">
                     </div>
                     <div class="input-focus-ring rounded-xl">
                         <label class="block text-xs font-bold text-gray-500 mb-1 ml-1">No. WhatsApp</label>
-                        <input type="tel" required class="w-full px-3 py-2.5 bg-white border border-gray-200 rounded-xl focus:border-emerald-500 outline-none text-sm" placeholder="0812xxxx">
+                        <input type="tel"  class="w-full px-3 py-2.5 bg-white border border-gray-200 rounded-xl focus:border-emerald-500 outline-none text-sm" placeholder="0812xxxx">
                     </div>
                     <div class="input-focus-ring rounded-xl">
                         <label class="block text-xs font-bold text-gray-500 mb-1 ml-1">Judul Pelatihan</label>
-                        <select required class="w-full px-3 py-2.5 bg-white border border-gray-200 rounded-xl focus:border-emerald-500 outline-none text-sm text-gray-700">
+                        <select  class="w-full px-3 py-2.5 bg-white border border-gray-200 rounded-xl focus:border-emerald-500 outline-none text-sm text-gray-700">
                             <option value="" disabled selected>Pilih Pelatihan...</option>
                             <option value="web">Web Development</option>
                             <option value="seo">Digital Marketing & SEO</option>
@@ -421,7 +442,7 @@
             btn.classList.replace('bg-emerald-600', 'bg-emerald-400');
 
             setTimeout(() => {
-                window.location.href = "{{ url('portal/sukses') }}";
+                window.location.href = "{{ url('portal/sukses-perusahaan') }}";
                 
                 btn.disabled = false;
                 btn.innerHTML = `

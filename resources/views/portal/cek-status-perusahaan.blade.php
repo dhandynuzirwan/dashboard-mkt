@@ -45,29 +45,51 @@
                     <svg class="w-10 h-10 transform -rotate-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-10V4m-5 10h.01M15 7h.01M15 11h.01M15 15h.01M11 15h.01M7 15h.01"></path></svg>
                 </div>
                 <h2 class="text-2xl font-bold text-gray-900 mb-2">Selamat Datang</h2>
-                <p class="text-sm text-gray-500 leading-relaxed">Masukkan Nama Perusahaan dan Nomor WhatsApp Penanggung Jawab untuk mengakses data karyawan.</p>
+                <p class="text-sm text-gray-500 leading-relaxed">Pilih metode masuk untuk mengakses data karyawan Anda.</p>
             </div>
 
             <div class="bg-white p-6 md:p-8 rounded-3xl shadow-sm border border-gray-100">
+                
+                <div class="flex bg-gray-100 p-1.5 rounded-2xl mb-6 relative">
+                    <button type="button" onclick="switchLogin('id')" id="tab-login-id" class="flex-1 bg-white text-emerald-600 shadow-sm font-bold text-xs py-2.5 rounded-xl transition-all relative z-10">Via ID Registrasi</button>
+                    <button type="button" onclick="switchLogin('data')" id="tab-login-data" class="flex-1 text-gray-500 font-bold text-xs py-2.5 rounded-xl hover:text-gray-700 transition-all relative z-10">Via Data Perusahaan</button>
+                </div>
+
                 <form onsubmit="event.preventDefault(); prosesLogin();" class="space-y-6">
-                    <div class="space-y-2">
-                        <label class="block text-xs font-bold text-gray-500 uppercase tracking-wider ml-1">Nama Instansi / Perusahaan</label>
-                        <div class="input-focus-ring transition-shadow rounded-xl relative">
-                            <span class="absolute inset-y-0 left-0 flex items-center pl-4 text-gray-400">
-                                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-10V4m-5 10h.01M15 7h.01M15 11h.01M15 15h.01M11 15h.01M7 15h.01"></path></svg>
-                            </span>
-                            <input type="text" class="w-full pl-11 pr-4 py-3.5 bg-gray-50 border border-gray-200 rounded-xl focus:bg-white focus:border-emerald-500 outline-none transition-colors text-gray-700" placeholder="Contoh: PT Arsa Jaya Prima">
+                    
+                    <div id="form-login-id" class="space-y-6">
+                        <div class="space-y-2">
+                            <label class="block text-xs font-bold text-gray-500 uppercase tracking-wider ml-1">ID Registrasi Kolektif</label>
+                            <div class="input-focus-ring transition-shadow rounded-xl relative">
+                                <span class="absolute inset-y-0 left-0 flex items-center pl-4 text-gray-400">
+                                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 20l4-16m4 4l4 4-4 4M6 16l-4-4 4-4"></path></svg>
+                                </span>
+                                <input type="text" class="w-full pl-11 pr-4 py-3.5 bg-gray-50 border border-gray-200 rounded-xl focus:bg-white focus:border-emerald-500 outline-none transition-colors text-gray-800 font-mono font-bold tracking-widest uppercase" placeholder="CORP-XXXX-XXX">
+                            </div>
                         </div>
                     </div>
-                    <div class="space-y-2">
-                        <label class="block text-xs font-bold text-gray-500 uppercase tracking-wider ml-1">No. WhatsApp Penanggung Jawab</label>
-                        <div class="input-focus-ring transition-shadow rounded-xl relative">
-                            <span class="absolute inset-y-0 left-0 flex items-center pl-4 text-gray-400">
-                                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"></path></svg>
-                            </span>
-                            <input type="tel" class="w-full pl-11 pr-4 py-3.5 bg-gray-50 border border-gray-200 rounded-xl focus:bg-white focus:border-emerald-500 outline-none transition-colors tracking-widest" placeholder="0812xxxxxx">
+
+                    <div id="form-login-data" class="space-y-6 hidden">
+                        <div class="space-y-2">
+                            <label class="block text-xs font-bold text-gray-500 uppercase tracking-wider ml-1">Nama Instansi / Perusahaan</label>
+                            <div class="input-focus-ring transition-shadow rounded-xl relative">
+                                <span class="absolute inset-y-0 left-0 flex items-center pl-4 text-gray-400">
+                                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-10V4m-5 10h.01M15 7h.01M15 11h.01M15 15h.01M11 15h.01M7 15h.01"></path></svg>
+                                </span>
+                                <input type="text" class="w-full pl-11 pr-4 py-3.5 bg-gray-50 border border-gray-200 rounded-xl focus:bg-white focus:border-emerald-500 outline-none transition-colors text-gray-700" placeholder="Contoh: PT Arsa Jaya Prima">
+                            </div>
+                        </div>
+                        <div class="space-y-2">
+                            <label class="block text-xs font-bold text-gray-500 uppercase tracking-wider ml-1">No. WhatsApp Penanggung Jawab</label>
+                            <div class="input-focus-ring transition-shadow rounded-xl relative">
+                                <span class="absolute inset-y-0 left-0 flex items-center pl-4 text-gray-400">
+                                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"></path></svg>
+                                </span>
+                                <input type="tel" class="w-full pl-11 pr-4 py-3.5 bg-gray-50 border border-gray-200 rounded-xl focus:bg-white focus:border-emerald-500 outline-none transition-colors tracking-widest" placeholder="0812xxxxxx">
+                            </div>
                         </div>
                     </div>
+
                     <button id="btn-login" type="submit" class="w-full bg-emerald-600 text-white font-bold text-lg py-4 rounded-2xl shadow-lg shadow-emerald-600/30 hover:bg-emerald-700 active:scale-95 transition-all flex items-center justify-center mt-4">
                         <span>Akses Dashboard</span>
                         <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 ml-2" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M11 16l-4-4m0 0l4-4m-4 4h14m-5 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h7a3 3 0 013 3v1"></path></svg>
@@ -300,6 +322,33 @@
     </div>
 
     <script>
+        // Logika Tab Login
+        function switchLogin(method) {
+            const tabId = document.getElementById('tab-login-id');
+            const tabData = document.getElementById('tab-login-data');
+            const formId = document.getElementById('form-login-id');
+            const formData = document.getElementById('form-login-data');
+
+            if(method === 'id') {
+                tabId.classList.add('bg-white', 'text-emerald-600', 'shadow-sm');
+                tabId.classList.remove('text-gray-500');
+                tabData.classList.remove('bg-white', 'text-emerald-600', 'shadow-sm');
+                tabData.classList.add('text-gray-500');
+                
+                formId.classList.remove('hidden');
+                formData.classList.add('hidden');
+            } else {
+                tabData.classList.add('bg-white', 'text-emerald-600', 'shadow-sm');
+                tabData.classList.remove('text-gray-500');
+                tabId.classList.remove('bg-white', 'text-emerald-600', 'shadow-sm');
+                tabId.classList.add('text-gray-500');
+                
+                formData.classList.remove('hidden');
+                formId.classList.add('hidden');
+            }
+        }
+
+        // Logika Otentikasi
         function prosesLogin() {
             const btn = document.getElementById('btn-login');
             btn.disabled = true;

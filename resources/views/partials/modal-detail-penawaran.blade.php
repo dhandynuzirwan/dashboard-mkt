@@ -8,6 +8,15 @@
                 <th class="text-center py-3" width="15%">STATUS</th>
             </tr>
         </thead>
+        @php
+            // 1. Filter data agar rapi dan tidak diulang-ulang
+            $filteredDetails = $details->whereNotNull('status_penawaran')->where('status_penawaran', '!=', '');
+            
+            // 2. Hitung Grand Total otomatis
+            $grandTotal = $filteredDetails->sum(function($d) {
+                return ($d->harga_penawaran ?? 0) * ($d->jumlah_peserta ?? 1);
+            });
+        @endphp
         <tbody>
             {{-- Filter untuk membuang status yang null atau kosong --}}
             @forelse($details->whereNotNull('status_penawaran')->where('status_penawaran', '!=', '') as $d)
@@ -17,7 +26,8 @@
                     <td class="ps-4 py-3">
                         <div class="fw-bold text-dark" style="font-size: 14px;">{{ $d->prospek->perusahaan ?? 'N/A' }}</div>
                         <small class="text-muted mt-1 d-block">
-                            <i class="fas fa-calendar-alt me-1 text-primary"></i> {{ $d->created_at->format('d M Y') }}
+                            <i class="fas fa-calendar-alt me-1 text-primary"></i> 
+                            {{ $d->prospek && $d->prospek->tanggal_prospek ? \Carbon\Carbon::parse($d->prospek->tanggal_prospek)->format('d M Y') : 'Tanggal tidak tersedia' }}
                         </small>
                     </td>
 
@@ -84,5 +94,20 @@
                 </tr>
             @endforelse
         </tbody>
+        {{-- 🔥 BARIS GRAND TOTAL (Akan muncul jika ada data) 🔥 --}}
+        @if($filteredDetails->count() > 0)
+        <tfoot class="bg-light" style="border-top: 2px solid #e2e8f0;">
+            <tr>
+                <td colspan="2" class="text-end py-3 pe-4 fw-bolder text-dark" style="font-size: 13px;">
+                    TOTAL SELURUH PENAWARAN:
+                </td>
+                <td colspan="2" class="py-3 text-start">
+                    <span class="fw-bolder text-success px-3 py-2 bg-success-subtle rounded-3 border border-success-subtle shadow-sm" style="font-size: 16px;">
+                        Rp {{ number_format($grandTotal, 0, ',', '.') }}
+                    </span>
+                </td>
+            </tr>
+        </tfoot>
+        @endif
     </table>
 </div>

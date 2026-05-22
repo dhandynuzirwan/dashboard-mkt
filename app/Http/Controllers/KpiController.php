@@ -104,7 +104,7 @@ class KpiController extends Controller
             $user->absensi_kpi = ($hitungAbsensiAch / 100) * 10; 
 
             // ================= PROGRESS (CTA / PENAWARAN) =================
-            $user->progress_target = $target_call * $hariEfektifSebulan;
+            $user->progress_target = $target_call * 23;
 
             $baseCtaQuery = \App\Models\Cta::whereHas('prospek', function ($q) use ($user, $start, $end) {
                 $q->where('marketing_id', $user->id)

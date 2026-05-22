@@ -102,7 +102,8 @@ class CtaController extends Controller
             'judul_permintaan' => 'nullable',
             'jumlah_peserta' => 'nullable|numeric|min:1',
             'sertifikasi' => 'nullable',
-            'skema' => 'nullable',
+            // 🔥 Skema diubah menjadi string bebas
+            'skema' => 'nullable|string|max:255',
             'harga_penawaran' => 'nullable|numeric|min:0',
             'harga_vendor' => 'nullable|numeric|min:0',
             'proposal_link' => 'nullable|url',
@@ -147,18 +148,19 @@ class CtaController extends Controller
         $cta = Cta::findOrFail($id);
         $statusLama = $cta->status_penawaran;
     
-        // 2. Validasi (Pastikan semua field yang ingin diupdate ada di sini)
+        // 2. Validasi
         $validated = $request->validate([
             'catatan_prospek' => 'required|string', 
             'judul_permintaan' => 'nullable',
             'jumlah_peserta' => 'nullable|numeric|min:1',
             'sertifikasi' => 'nullable',
-            'skema' => 'nullable',
+            // 🔥 Skema diubah menjadi string bebas
+            'skema' => 'nullable|string|max:255',
             'harga_penawaran' => 'nullable|numeric|min:0',
             'harga_vendor' => 'nullable|numeric|min:0',
             'proposal_link' => 'nullable|url',
             'file_proposal' => 'nullable|mimes:pdf|max:5120',
-            'status_penawaran' => 'nullable|string', // Pastikan ini terkirim dari form
+            'status_penawaran' => 'nullable|string', 
             'keterangan' => 'nullable|string',
         ]);
     
@@ -192,11 +194,9 @@ class CtaController extends Controller
 
         // 2. Jika status berubah jadi deal
         if ($request->status_penawaran == 'deal' && $statusLama != 'deal') {
-            // Gunakan back() agar tetap di Form Edit
             return back()->with('deal_congrats', 'Gokil! Project Deal baru berhasil diamankan!');
         }
 
-        // Gunakan back() agar tetap di Form Edit
         return back()->with('success', 'Perubahan data penawaran berhasil disimpan!');
     }
 
@@ -350,7 +350,7 @@ class CtaController extends Controller
                 continue; 
             }
     
-            // 2. CARI PROSPEK (Ini bagian yang mungkin terhapus sebelumnya)
+            // 2. CARI PROSPEK
             $prospek = Prospek::where('perusahaan', 'LIKE', '%' . trim($row['perusahaan']) . '%')
                               ->where('lokasi', 'LIKE', '%' . trim($row['lokasi']) . '%')
                               ->first();
@@ -371,7 +371,7 @@ class CtaController extends Controller
                 $totalVendor = ($jumlah && $hargaVendor) ? $jumlah * $hargaVendor : null;
                 $keterangan = !empty($row['keterangan']) ? $row['keterangan'] : '-';
 
-                // 🔥 LOGIKA TERJEMAHAN SERTIFIKASI (Pencarian Kata Kunci Kuat)
+                // 🔥 LOGIKA TERJEMAHAN SERTIFIKASI
                 $sertifikasiExcel = isset($row['sertifikasi']) ? strtoupper(trim($row['sertifikasi'])) : '';
                 $sertifikasiDB = null;
         
@@ -391,11 +391,12 @@ class CtaController extends Controller
     
                 // 4. SIMPAN DATA KE TABEL CTA
                 Cta::create([
-                    'prospek_id'       => $prospek->id, // <-- Ini tidak akan error lagi
+                    'prospek_id'       => $prospek->id,
                     'judul_permintaan' => $row['judul_permintaan'] ?? null,
                     'jumlah_peserta'   => $jumlah,
                     'sertifikasi'      => $sertifikasiDB, 
-                    'skema'            => $row['skema'] ?? null,
+                    // 🔥 Input skema dari Excel sekarang langsung ditelan mentah-mentah sebagai string
+                    'skema'            => isset($row['skema']) ? trim($row['skema']) : null,
                     'harga_penawaran'  => $hargaPenawaran,
                     'harga_vendor'     => $hargaVendor,
                     'total_penawaran'  => $totalPenawaran,

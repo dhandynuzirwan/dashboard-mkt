@@ -42,20 +42,20 @@
                 <div class="space-y-5">
                     <div class="input-focus-ring transition-shadow rounded-xl">
                         <label class="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-2 ml-1">Nama Lengkap (Sesuai KTP) <span class="text-red-500">*</span></label>
-                        <input type="text" class="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-xl focus:bg-white focus:border-blue-500 outline-none transition-colors" placeholder="Contoh: Dhandy Nuzirwan" required>
+                        <input type="text" class="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-xl focus:bg-white focus:border-blue-500 outline-none transition-colors" placeholder="Contoh: Dhandy Nuzirwan">
                     </div>
 
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
                         <div class="input-focus-ring transition-shadow rounded-xl">
                             <label class="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-2 ml-1">Tanggal Lahir <span class="text-red-500">*</span></label>
-                            <input type="date" class="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-xl focus:bg-white focus:border-blue-500 outline-none transition-colors text-gray-700" required>
+                            <input type="date" class="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-xl focus:bg-white focus:border-blue-500 outline-none transition-colors text-gray-700">
                         </div>
 
                         <div class="input-focus-ring transition-shadow rounded-xl">
                             <label class="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-2 ml-1">Nomor WhatsApp <span class="text-red-500">*</span></label>
                             <div class="relative">
                                 <span class="absolute inset-y-0 left-0 flex items-center pl-4 text-gray-500 font-medium">+62</span>
-                                <input type="tel" class="w-full pl-12 pr-4 py-3 bg-gray-50 border border-gray-200 rounded-xl focus:bg-white focus:border-blue-500 outline-none transition-colors" placeholder="8123456789" required>
+                                <input type="tel" class="w-full pl-12 pr-4 py-3 bg-gray-50 border border-gray-200 rounded-xl focus:bg-white focus:border-blue-500 outline-none transition-colors" placeholder="8123456789" >
                             </div>
                         </div>
                     </div>

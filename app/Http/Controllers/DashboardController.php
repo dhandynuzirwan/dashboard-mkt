@@ -64,7 +64,7 @@ class DashboardController extends Controller
             $gaji = \App\Models\Penggajian::where('user_id', $user->id)->first();
             $targetCallHarian = $gaji->target_call ?? 0;
 
-            $user->target_total = $targetCallHarian * $hariEfektif;
+            $user->target_total = $targetCallHarian * 23;
 
             // ================= PERHITUNGAN PROGRESS / PENCAPAIAN (VERSI LAMA) =================
             $baseCtaQuery = \App\Models\Cta::whereHas('prospek', function ($q) use ($user, $start, $end) {

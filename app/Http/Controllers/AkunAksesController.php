@@ -73,6 +73,41 @@ class AkunAksesController extends Controller implements HasMiddleware
         AkunAkses::create($data);
         return back()->with('success', 'Akun berhasil disimpan ke Brankas.');
     }
+    
+    // ================= UPDATE =================
+    public function update(Request $request, $id)
+    {
+        $akun = AkunAkses::findOrFail($id);
+
+        $request->validate([
+            'platform'       => 'required',
+            'username_email' => 'required',
+            'kategori'       => 'required',
+            'url_login'      => 'nullable|url',
+            'catatan'        => 'nullable',
+            // Password dibuat nullable (tidak wajib) agar bisa pakai password lama jika dikosongkan
+            'password'       => 'nullable' 
+        ]);
+
+        // Siapkan data dasar yang akan diupdate
+        $updateData = [
+            'platform'       => $request->platform,
+            'username_email' => $request->username_email,
+            'kategori'       => $request->kategori,
+            'url_login'      => $request->url_login,
+            'catatan'        => $request->catatan,
+        ];
+
+        // Cek jika form password diisi teks baru, maka enkripsi dan masukkan ke data update
+        if ($request->filled('password')) {
+            $updateData['password'] = Crypt::encryptString($request->password);
+        }
+
+        // Eksekusi update
+        $akun->update($updateData);
+
+        return back()->with('success', 'Data kredensial akun berhasil diperbarui.');
+    }
 
     // ================= DESTROY =================
     public function destroy($id)
