@@ -396,4 +396,71 @@ class AbsensiController extends Controller
         \App\Models\Holiday::findOrFail($id)->delete();
         return back()->with('success', 'Hari libur berhasil dihapus!');
     }
+
+    // =================================================================
+    // FITUR ABSENSI KAMERA (SELFIE)
+    // =================================================================
+
+    // 1. Tampilkan halaman kamera untuk Pegawai
+    public function indexKamera()
+    {
+        $today = \Carbon\Carbon::now()->format('Y-m-d');
+        
+        // Cek apakah user sudah absen masuk ('in') hari ini
+        $sudahAbsen = AbsensiLog::where('user_id', auth()->id())
+                                ->where('tanggal', $today)
+                                ->where('tipe', 'in')
+                                ->exists();
+
+        return view('absensi-kamera', compact('sudahAbsen'));
+    }
+
+    // 2. Proses simpan foto dan data absen dari Web Kamera
+    public function storeKamera(Request $request)
+    {
+        $request->validate([
+            'foto_selfie' => 'required',
+            'tipe_absen'  => 'required|in:in,out' // Menggunakan in/out agar konsisten dengan data Fingerspot
+        ]);
+
+        // Decode Gambar Base64
+        $image_64 = $request->foto_selfie;
+        $extension = explode('/', explode(':', substr($image_64, 0, strpos($image_64, ';')))[1])[1];
+        $replace = substr($image_64, 0, strpos($image_64, ',') + 1); 
+        $image = str_replace($replace, '', $image_64); 
+        $image = str_replace(' ', '+', $image); 
+        
+        $imageName = 'absen_' . auth()->id() . '_' . time() . '.' . $extension;
+        
+        // Simpan file fisik
+        \Illuminate\Support\Facades\Storage::disk('public')->put('absensi/' . $imageName, base64_decode($image));
+
+        // Simpan ke database AbsensiLog
+        AbsensiLog::create([
+            'user_id'   => auth()->id(),
+            'tanggal'   => \Carbon\Carbon::now()->format('Y-m-d'),
+            'jam'       => \Carbon\Carbon::now()->format('H:i:s'),
+            'tipe'      => $request->tipe_absen,
+            'source'    => 'web_kamera', // Penanda ini dari kamera, bukan import fingerspot
+            'foto_path' => 'absensi/' . $imageName,
+        ]);
+
+        return redirect()->back()->with('success', 'Berhasil! Data absensi dan foto Anda telah terekam.');
+    }
+
+    // 3. Eksekusi hapus data absen jika HRD menolak (foto palsu)
+    public function destroyKamera($id)
+    {
+        $absen = AbsensiLog::findOrFail($id);
+        
+        // Hapus file foto dari storage agar hardisk server tidak penuh
+        if ($absen->foto_path && \Illuminate\Support\Facades\Storage::disk('public')->exists($absen->foto_path)) {
+            \Illuminate\Support\Facades\Storage::disk('public')->delete($absen->foto_path);
+        }
+        
+        // Hapus data dari tabel
+        $absen->delete();
+        
+        return redirect()->back()->with('success', 'Data absensi yang tidak valid telah ditolak dan dihapus.');
+    }
 }

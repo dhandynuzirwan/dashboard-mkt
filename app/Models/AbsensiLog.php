@@ -8,7 +8,7 @@ class AbsensiLog extends Model
 {
     protected $table = 'absensi_logs';
     
-    protected $fillable = ['user_id', 'tanggal', 'jam', 'tipe', 'source'];
+    protected $fillable = ['user_id', 'tanggal', 'jam', 'tipe', 'source', 'foto_path'];
 
     public function user()
     {

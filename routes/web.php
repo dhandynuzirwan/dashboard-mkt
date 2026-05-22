@@ -91,6 +91,11 @@ Route::middleware('auth')->group(function () {
         'destroy' => 'akun.destroy',
     ])->except(['create', 'show', 'edit']); // Kita kecualikan yang tidak dipakai
 
+    Route::get('/absensi-online', [AbsensiController::class, 'indexKamera'])->name('pegawai.absensi.index');
+    
+    // Proses Simpan Data Absen & Foto Selfie
+    Route::post('/absensi-online', [AbsensiController::class, 'storeKamera'])->name('pegawai.absensi.store');
+
     /*
     |--------------------------------------------------------------------------
     | AKSES BERDASARKAN ROLE
@@ -273,6 +278,7 @@ Route::middleware('auth')->group(function () {
             Route::delete('/izin/delete-range', [AbsensiController::class, 'destroyIzinRange'])->name('absensi.delete_izin_range');
             Route::post('/holiday', [AbsensiController::class, 'storeHoliday'])->name('absensi.store_holiday');
             Route::delete('/holiday/{id}', [AbsensiController::class, 'destroyHoliday'])->name('absensi.destroy_holiday');
+            Route::delete('/kamera/{id}', [AbsensiController::class, 'destroyKamera'])->name('hrd.absensi.destroy');
         });
         
         Route::post('/panduan/update', [App\Http\Controllers\PanduanController::class, 'update'])->name('panduan.update');

@@ -1,6 +1,25 @@
 @extends('layouts.app')
 
 @section('content')
+
+<style>
+    .badge-soft-success { background-color: #f0fdf4; color: #16a34a; }
+    .badge-soft-danger { background-color: #fef2f2; color: #dc2626; }
+    .badge-soft-secondary { background-color: #f8fafc; color: #475569; }
+    
+    .table-modern th { 
+        text-transform: uppercase; 
+        font-size: 11px; 
+        letter-spacing: 0.5px; 
+        color: #64748b; 
+        padding: 16px; 
+        border-bottom: 2px solid #e2e8f0;
+    }
+    .table-modern td { 
+        padding: 16px; 
+        border-bottom: 1px solid #f1f5f9; 
+    }
+</style>
 <div class="container">
     <div class="page-inner">
         <div class="d-flex align-items-left align-items-md-center flex-column flex-md-row mb-3">
@@ -152,34 +171,83 @@
                     </div>
                     <div class="card-body">
                         <div class="tab-content mt-2 mb-3" id="pills-tabContent">
-                            
                             <div class="tab-pane fade show active" id="pills-log" role="tabpanel">
                                 <div class="table-responsive">
-                                    <table class="table table-bordered table-hover">
-                                        <thead class="bg-primary text-white">
+                                    <table class="table table-modern table-hover align-middle mb-0">
+                                        <thead class="bg-light">
                                             <tr>
-                                                <th>Tanggal</th>
-                                                <th>Nama Karyawan</th>
-                                                <th>Jam</th>
-                                                <th class="text-center">Tipe</th>
-                                                <th>Sumber Data</th>
+                                                <th class="ps-4">TANGGAL</th>
+                                                <th class="text-center">FOTO</th>
+                                                <th class="text-start">KARYAWAN</th>
+                                                <th>JAM</th>
+                                                <th class="text-center">STATUS</th>
+                                                <th class="text-center">VIA</th>
+                                                <th class="text-center pe-4" width="120">AKSI</th>
                                             </tr>
                                         </thead>
                                         <tbody>
                                             @forelse($absensi as $log)
                                             <tr>
-                                                <td>{{ \Carbon\Carbon::parse($log->tanggal)->format('d/m/Y') }}</td>
-                                                <td class="fw-bold">{{ $log->user->name }}</td>
-                                                <td>{{ $log->jam }}</td>
+                                                <td class="ps-4 text-muted small fw-bold">{{ \Carbon\Carbon::parse($log->tanggal)->format('d/m/Y') }}</td>
+                                                
+                                                {{-- KOLOM FOTO MODERN --}}
                                                 <td class="text-center">
-                                                    <span class="badge {{ $log->tipe == 'in' ? 'badge-success' : 'badge-danger' }}">
+                                                    <div style="width: 48px; height: 48px; border-radius: 12px; overflow: hidden; margin: 0 auto; border: 2px solid #eef2f7; cursor: pointer;" 
+                                                        class="hover-lift shadow-sm"
+                                                        onclick="showFoto('{{ asset('storage/' . $log->foto_path) }}', '{{ $log->user->nama_lengkap ?? $log->user->name }}')"
+                                                        data-bs-toggle="modal" data-bs-target="#modalViewFoto">
+                                                        
+                                                        @if($log->foto_path)
+                                                            <img src="{{ asset('storage/' . $log->foto_path) }}" alt="Foto Absen" style="width: 100%; height: 100%; object-fit: cover;">
+                                                        @else
+                                                            <div class="w-100 h-100 bg-light d-flex align-items-center justify-content-center text-muted">
+                                                                <i class="fas fa-user"></i>
+                                                            </div>
+                                                        @endif
+                                                    </div>
+                                                </td>
+                                                
+                                                <td class="text-start">
+                                                    <div class="fw-bolder text-dark" style="font-size: 14px;">{{ $log->user->nama_lengkap ?? $log->user->name }}</div>
+                                                    <small class="text-muted">{{ $log->user->email ?? '-' }}</small>
+                                                </td>
+                                                
+                                                <td>
+                                                    <div class="fw-bolder text-dark" style="font-size: 14px;">{{ $log->jam }}</div>
+                                                </td>
+                                                
+                                                <td class="text-center">
+                                                    <span class="badge {{ $log->tipe == 'in' ? 'badge-soft-success border border-success' : 'badge-soft-danger border border-danger' }} px-3 py-1 rounded-pill">
                                                         {{ strtoupper($log->tipe) }}
                                                     </span>
                                                 </td>
-                                                <td><small class="text-muted"><i class="fas fa-server me-1"></i> {{ strtoupper($log->source) }}</small></td>
+                                                
+                                                <td class="text-center">
+                                                    <span class="badge badge-soft-secondary border text-muted px-2" style="font-size: 10px;">
+                                                        {{ strtoupper($log->source) }}
+                                                    </span>
+                                                </td>
+                                                
+                                                <td class="text-center pe-4">
+                                                    @if($log->source == 'web_kamera')
+                                                        <form action="{{ route('hrd.absensi.destroy', $log->id) }}" method="POST" class="d-inline form-hapus">
+                                                            @csrf @method('DELETE')
+                                                            <button type="button" class="btn btn-sm btn-light border text-danger btn-round shadow-sm hover-lift btn-delete px-2" title="Tolak Data">
+                                                                <i class="fas fa-trash-alt"></i>
+                                                            </button>
+                                                        </form>
+                                                    @else
+                                                        <span class="text-muted opacity-50">-</span>
+                                                    @endif
+                                                </td>
                                             </tr>
                                             @empty
-                                            <tr><td colspan="5" class="text-center py-4">Belum ada data absensi.</td></tr>
+                                            <tr>
+                                                <td colspan="7" class="text-center py-5 text-muted">
+                                                    <i class="fas fa-user-clock fs-1 mb-3 text-light opacity-50"></i><br>
+                                                    Belum ada data absensi.
+                                                </td>
+                                            </tr>
                                             @endforelse
                                         </tbody>
                                     </table>
@@ -470,6 +538,21 @@
     </div>
 </div>
 
+{{-- Modal Pop-up Foto --}}
+<div class="modal fade" id="modalViewFoto" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content border-0 shadow-lg" style="border-radius: 20px; overflow: hidden;">
+            <div class="modal-header border-0 pb-0">
+                <button type="button" class="btn-close shadow-none" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body p-3 pt-0 text-center">
+                <img src="" id="modal-foto-src" class="img-fluid rounded-4" style="width: 100%; object-fit: contain;">
+                <p class="text-muted mt-3 mb-0 fw-bold" id="modal-nama-karyawan"></p>
+            </div>
+        </div>
+    </div>
+</div>
+
 <style>
     .card-animate { transition: transform 0.3s ease; }
     .card-animate:hover { transform: translateY(-5px); box-shadow: 0 10px 20px rgba(0,0,0,0.1) !important; }
@@ -499,5 +582,12 @@
             }
         }
     });
+</script>
+
+<script>
+    function showFoto(url, nama) {
+        document.getElementById('modal-foto-src').src = url;
+        document.getElementById('modal-nama-karyawan').innerText = nama;
+    }
 </script>
 @endsection

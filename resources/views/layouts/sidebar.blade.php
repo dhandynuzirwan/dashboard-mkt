@@ -68,6 +68,11 @@
                                     <span class="sub-item">Simulasi Gaji</span>
                                 </a>
                             </li>
+                            <li class="{{ request()->routeIs('pegawai.absensi.index') ? 'active' : '' }}">
+                                <a href="{{ route('pegawai.absensi.index') }}">Absensi Online</a>
+                                    <span class="sub-item">Absensi Online</span>
+                                </a>
+                            </li>
                         </ul>
                     </div>
                 </li>
