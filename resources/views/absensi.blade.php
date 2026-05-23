@@ -230,9 +230,9 @@
                                                 
                                                 <td class="text-center pe-4">
                                                     @if($log->source == 'web_kamera')
-                                                        <form action="{{ route('hrd.absensi.destroy', $log->id) }}" method="POST" class="d-inline form-hapus">
+                                                        <form action="{{ route('absensi.destroy', $log->id) }}" method="POST" class="d-inline form-hapus">
                                                             @csrf @method('DELETE')
-                                                            <button type="button" class="btn btn-sm btn-light border text-danger btn-round shadow-sm hover-lift btn-delete px-2" title="Tolak Data">
+                                                            <button type="submit" class="btn btn-sm btn-light border text-danger btn-round shadow-sm hover-lift px-2" title="Tolak Data" onclick="return confirm('Yakin ingin menolak/menghapus data absensi ini?')">
                                                                 <i class="fas fa-trash-alt"></i>
                                                             </button>
                                                         </form>

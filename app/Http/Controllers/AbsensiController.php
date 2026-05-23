@@ -24,25 +24,44 @@ class AbsensiController extends Controller
         $end = $request->query('end_date', \Carbon\Carbon::now()->format('Y-m-d'));
         $userId = $request->query('user_id');
 
-        $query = AbsensiLog::with('user');
+        // ==========================================
+        // 2. QUERY ABSENSI LOG
+        // ==========================================
+        $queryAbsen = AbsensiLog::with('user');
 
-        // 2. --- APPLY FILTER ---
         if ($start) {
-            $query->where('tanggal', '>=', $start);
+            $queryAbsen->where('tanggal', '>=', $start);
         }
         if ($end) {
-            $query->where('tanggal', '<=', $end);
+            $queryAbsen->where('tanggal', '<=', $end);
         }
         if ($userId) {
-            $query->where('user_id', $userId);
+            $queryAbsen->where('user_id', $userId);
         }
 
-        // 3. --- AMBIL DATA ---
-        $absensi = $query->orderBy('tanggal', 'desc')->paginate(10)->withQueryString();
+        $absensi = $queryAbsen->orderBy('tanggal', 'desc')->paginate(10, ['*'], 'page_absen')->withQueryString();
+
+        // ==========================================
+        // 3. QUERY PERIZINAN (Ditambahkan Filter & Paginate)
+        // ==========================================
+        $queryIzin = Perizinan::with('user');
+
+        if ($start) {
+            $queryIzin->where('tanggal', '>=', $start);
+        }
+        if ($end) {
+            $queryIzin->where('tanggal', '<=', $end);
+        }
+        if ($userId) {
+            $queryIzin->where('user_id', $userId);
+        }
+
+        $perizinans = $queryIzin->orderBy('tanggal', 'desc')->paginate(10, ['*'], 'page_izin')->withQueryString();
+
+        // ==========================================
+        // 4. DATA LAINNYA
+        // ==========================================
         $users = User::all();
-        $perizinans = Perizinan::with('user')->latest()->get();
-        // $holidays = \App\Models\Holiday::orderBy('tanggal', 'desc')->get();
-        // UPDATE INI: Gunakan paginate dengan nama parameter unik
         $holidays = \App\Models\Holiday::orderBy('tanggal', 'desc')
                 ->paginate(10, ['*'], 'page_libur') 
                 ->withQueryString();

@@ -219,7 +219,7 @@ Route::middleware('auth')->group(function () {
         Route::delete('/prospek/mass-delete', [ProspekController::class, 'massDelete'])->name('prospek.massDelete');
         Route::get('/prospek/check', [ProspekController::class, 'showCheckData'])->name('prospek.check');
         Route::post('/prospek/check-massal', [ProspekController::class, 'processCheckMassal'])->name('prospek.processCheckMassal');
-        Route::get('/prospek/detail-ajax', [App\Http\Controllers\DashboardController::class, 'getDetailStatusAjax'])->name('prospek.detailAjax');
+        // 🔥 TAMBAHKAN DI SINI 🔥
         Route::get('/dashboard/detail-prospek-ajax', [DashboardController::class, 'getDetailStatusAjax'])->name('prospek.detailAjax');
 
         Route::post('/data-masuk/deliver/{id}', [DataMasukController::class, 'deliver'])->name('data-masuk.deliver');
@@ -279,7 +279,7 @@ Route::middleware('auth')->group(function () {
             Route::delete('/izin/delete-range', [AbsensiController::class, 'destroyIzinRange'])->name('absensi.delete_izin_range');
             Route::post('/holiday', [AbsensiController::class, 'storeHoliday'])->name('absensi.store_holiday');
             Route::delete('/holiday/{id}', [AbsensiController::class, 'destroyHoliday'])->name('absensi.destroy_holiday');
-            Route::delete('/kamera/{id}', [AbsensiController::class, 'destroyKamera'])->name('hrd.absensi.destroy');
+            Route::delete('/kamera/{id}', [AbsensiController::class, 'destroyKamera'])->name('absensi.destroy');
         });
         
         Route::post('/panduan/update', [App\Http\Controllers\PanduanController::class, 'update'])->name('panduan.update');
