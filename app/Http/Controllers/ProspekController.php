@@ -63,7 +63,7 @@ class ProspekController extends Controller
         // ================= APPLY FILTER =================
         $query->whereBetween('tanggal_prospek', [$start, $end]);
 
-        // 🔥 TAMBAHAN: FILTER SUMBER ADS / ORGANIK 🔥
+        // TAMBAHAN: FILTER SUMBER ADS / ORGANIK
         if ($request->filled('sumber_tipe')) {
             if ($request->sumber_tipe == 'ads') {
                 // Mencari yang kolom sumbernya mengandung kata 'Ads'
@@ -115,6 +115,21 @@ class ProspekController extends Controller
             $query->whereHas('cta', function ($q) use ($request) {
                 $q->where('status_penawaran', $request->status_penawaran);
             });
+        }
+
+        // 🔥 BARU: FILTER KELENGKAPAN HARGA PENAWARAN 🔥
+        if ($request->filled('status_harga')) {
+            if ($request->status_harga == 'sudah_diisi') {
+                // Mencari prospek yang di form CTA-nya kolom harga_penawaran sudah terisi (Tidak Null & Bukan 0)
+                $query->whereHas('cta', function ($q) {
+                    $q->whereNotNull('harga_penawaran')->where('harga_penawaran', '!=', 0)->where('harga_penawaran', '!=', '');
+                });
+            } elseif ($request->status_harga == 'belum_diisi') {
+                // Mencari prospek yang SUDAH PUNYA CTA, tapi harga penawarannya belum diisi (Null atau 0)
+                $query->whereHas('cta', function ($q) {
+                    $q->whereNull('harga_penawaran')->orWhere('harga_penawaran', 0)->orWhere('harga_penawaran', '');
+                });
+            }
         }
         
         if (!$request->has('sort_by')) {

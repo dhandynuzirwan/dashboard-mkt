@@ -85,6 +85,14 @@
                             @endforeach
                         </select>
                     </div>
+                    <div class="col-sm-12 col-md-6 col-lg-3">
+                        <label class="label-modern">Kelengkapan Harga</label>
+                        <select name="status_harga" class="form-select form-select-sm input-modern">
+                            <option value="">Semua Kelengkapan Harga</option>
+                            <option value="sudah_diisi" {{ request('status_harga') == 'sudah_diisi' ? 'selected' : '' }}>Sudah Diisi Harga</option>
+                            <option value="belum_diisi" {{ request('status_harga') == 'belum_diisi' ? 'selected' : '' }}>Belum Diisi Harga</option>
+                        </select>
+                    </div>
                     <div class="col-sm-12 col-md-6 col-lg-9 d-flex gap-2 justify-content-md-end mt-4 mt-md-0">
                         <button type="submit" class="btn btn-primary btn-sm btn-round fw-bold px-4 hover-lift">
                             <i class="fas fa-search me-1"></i> Terapkan Filter
