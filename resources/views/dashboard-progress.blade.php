@@ -310,7 +310,10 @@
 
                                             <td class="align-middle px-3">
                                                 <div class="d-flex justify-content-between align-items-end mb-1">
-                                                    <span class="fw-bold text-dark">{{ $leads_valid }}</span>
+                                                    {{-- Gunakan class "btn-detail" agar otomatis memicu pop-up yang sudah ada --}}
+                                                    <a href="javascript:void(0)" class="fw-bold text-info text-decoration-none btn-detail bg-info-subtle px-2 rounded hover-lift" data-id="{{ $m->id }}" data-type="leads_valid">
+                                                        {{ $leads_valid }}
+                                                    </a>
                                                     <span class="small text-muted" style="font-size: 10px;">{{ number_format($persen_valid, 0) }}%</span>
                                                 </div>
                                                 <div class="progress bg-light" style="height: 6px; border-radius: 10px;">
@@ -607,7 +610,7 @@
     <div class="modal-dialog modal-lg modal-dialog-centered">
         <div class="modal-content card-modern shadow-lg">
             <div class="modal-header border-bottom-0 pb-0">
-                <h5 class="modal-title fw-bolder text-dark"><i class="fas fa-info-circle text-info me-2"></i>Detail Penawaran & Follow Up</h5>
+                <h5 class="modal-title fw-bolder text-dark"><i class="fas fa-info-circle text-info me-2"></i>Detail Data Marketing</h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body pt-3" id="detailBody"></div>
@@ -1146,5 +1149,25 @@
             };
         }
     });
+
+    // Tambahkan ini di file script/blade terbawah Anda
+    $(document).on('click', '.btn-detail-valid', function() {
+        let marketingId = $(this).data('id');
+        
+        // Panggil AJAX ke route controller Anda untuk mengambil data Leads Valid
+        $.ajax({
+            url: '/url-route-anda/detail-leads-valid/' + marketingId,
+            type: 'GET',
+            success: function(response) {
+                // Tampilkan data ke dalam modal
+                // $('#modalDetailBody').html(response);
+                // $('#modalDetail').modal('show');
+            },
+            error: function(err) {
+                console.log("Gagal mengambil data", err);
+            }
+        });
+    });
 </script>
+
 @endsection
