@@ -34,7 +34,7 @@
             <ul class="nav nav-secondary">
                 
                 {{-- ================= MENU DASHBOARD ================= --}}
-                @php $isDashboard = request()->routeIs(['dashboard.*', 'pipeline', 'revenue', 'data-kpi', 'simulasi-gaji']); @endphp
+                @php $isDashboard = request()->routeIs(['dashboard.*', 'pipeline', 'revenue', 'data-kpi', 'simulasi-gaji', 'pegawai.absensi.index']); @endphp
                 <li class="nav-item {{ $isDashboard ? 'active' : '' }}">
                     <a data-bs-toggle="collapse" href="#dashboard" class="{{ $isDashboard ? '' : 'collapsed' }}" aria-expanded="{{ $isDashboard ? 'true' : 'false' }}">
                         <i class="fas fa-home"></i>
@@ -69,7 +69,7 @@
                                 </a>
                             </li>
                             <li class="{{ request()->routeIs('pegawai.absensi.index') ? 'active' : '' }}">
-                                <a href="{{ route('pegawai.absensi.index') }}">Absensi Online</a>
+                                <a href="{{ route('pegawai.absensi.index') }}">
                                     <span class="sub-item">Absensi Online</span>
                                 </a>
                             </li>

@@ -37,8 +37,17 @@
             <div class="card card-modern border-0 shadow-lg p-4 p-md-5 w-100" style="max-width: 500px; border-radius: 24px;">
                 
                 <div class="text-center mb-4">
-                    <div class="icon-modern bg-primary-subtle text-primary mx-auto mb-3 d-flex align-items-center justify-content-center rounded-4" style="width: 65px; height: 65px; font-size: 28px;">
-                        <i class="fas fa-fingerprint"></i>
+                    {{-- Ikon Face ID Apple Style --}}
+                    <div class="icon-modern bg-primary-subtle text-primary mx-auto mb-3 d-flex align-items-center justify-content-center rounded-4" style="width: 65px; height: 65px;">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M3 7V5a2 2 0 0 1 2-2h2"></path>
+                            <path d="M17 3h2a2 2 0 0 1 2 2v2"></path>
+                            <path d="M21 17v2a2 2 0 0 1-2 2h-2"></path>
+                            <path d="M7 21H5a2 2 0 0 1-2-2v-2"></path>
+                            <path d="M8 14s1.5 2 4 2 4-2 4-2"></path>
+                            <path d="M9 9h.01"></path>
+                            <path d="M15 9h.01"></path>
+                        </svg>
                     </div>
                     <h4 class="fw-bolder text-dark mb-1">Verifikasi Wajah</h4>
                     <p class="text-muted small mb-0">Posisikan wajah Anda di dalam bingkai dengan pencahayaan yang cukup.</p>
@@ -48,23 +57,25 @@
                     @csrf
                     <input type="hidden" name="foto_selfie" id="foto_selfie" required>
                     
-                    {{-- Pilihan Tipe Absen (Masuk / Pulang) --}}
-                    <div class="mb-4 d-flex justify-content-center">
-                        <div class="btn-group shadow-sm" role="group" aria-label="Tipe Absen">
-                            <input type="radio" class="btn-check" name="tipe_absen" id="absen_masuk" value="in" {{ !$sudahAbsen ? 'checked' : '' }}>
-                            <label class="btn btn-outline-primary px-4 fw-bold {{ !$sudahAbsen ? 'active' : '' }}" for="absen_masuk">
-                                <i class="fas fa-sign-in-alt me-1"></i> Masuk
-                            </label>
+                    {{-- Pilihan Tipe Absen (Masuk = Hijau / Pulang = Merah) --}}
+                    <div class="mb-4 d-flex justify-content-center gap-3">
+                        {{-- Tambahkan 'checked' di sini agar selalu default Masuk --}}
+                        <input type="radio" class="btn-check btn-absen-custom" name="tipe_absen" id="absen_masuk" value="in" checked>
+                        <label class="btn btn-outline-success rounded-4 px-4 py-2 fw-bold d-flex flex-column align-items-center shadow-sm" for="absen_masuk" style="min-width: 130px;">
+                            <i class="fas fa-sign-in-alt fs-4 mb-1"></i>
+                            <span>MASUK</span>
+                        </label>
 
-                            <input type="radio" class="btn-check" name="tipe_absen" id="absen_pulang" value="out" {{ $sudahAbsen ? 'checked' : '' }}>
-                            <label class="btn btn-outline-warning px-4 fw-bold {{ $sudahAbsen ? 'active' : '' }}" for="absen_pulang" style="color: #b45309;">
-                                <i class="fas fa-sign-out-alt me-1"></i> Pulang
-                            </label>
-                        </div>
+                        {{-- Hapus kondisi pada Pulang agar tidak bentrok --}}
+                        <input type="radio" class="btn-check btn-absen-custom" name="tipe_absen" id="absen_pulang" value="out">
+                        <label class="btn btn-outline-danger rounded-4 px-4 py-2 fw-bold d-flex flex-column align-items-center shadow-sm" for="absen_pulang" style="min-width: 130px;">
+                            <i class="fas fa-sign-out-alt fs-4 mb-1"></i>
+                            <span>PULANG</span>
+                        </label>
                     </div>
                     
                     {{-- Area Kamera --}}
-                    <div class="position-relative bg-dark overflow-hidden shadow-sm mb-4 mx-auto" style="width: 100%; aspect-ratio: 1/1; max-width: 320px; border-radius: 50%; border: 6px solid #eef2f7;">
+                    <div class="position-relative bg-dark overflow-hidden shadow-sm mb-3 mx-auto" style="width: 100%; aspect-ratio: 1/1; max-width: 320px; border-radius: 50%; border: 6px solid #eef2f7;">
                         {{-- Loading State --}}
                         <div class="position-absolute top-50 start-50 translate-middle text-white text-center w-100" id="kamera-loading">
                             <i class="fas fa-spinner fa-spin fs-2 mb-2"></i>
@@ -73,6 +84,18 @@
                         
                         {{-- Video Stream --}}
                         <video id="kamera-preview" class="w-100 h-100" style="object-fit: cover; transform: scaleX(-1);" autoplay playsinline></video>
+                    </div>
+
+                    {{-- Panduan / Keterangan K3 & Mandi --}}
+                    <div class="alert alert-light border rounded-4 text-start mb-4 shadow-sm" style="background-color: #f8fafc;">
+                        <h6 class="fw-bold text-dark mb-2" style="font-size: 14px;"><i class="fas fa-clipboard-list text-primary me-2"></i>Persyaratan Foto:</h6>
+                        <ul class="mb-0 text-muted ps-3" style="font-size: 13px; line-height: 1.6;">
+                            <li>Pastikan <strong>baju yang dikenakan</strong> rapi dan sesuai standar.</li>
+                            <li><strong>Ekspresi muka</strong> harus terlihat jelas menghadap kamera.</li>
+                            <li>Pake <strong>gaya K3</strong> harusnya tau kan ya gaya K3 kek mana 👌.</li>
+                            <li><strong>Jangan lupa mandi!</strong> Biar wajah terlihat segar dan cakep.</li>
+                            <li class="text-danger fw-bold">Penting: Jangan lupa absen untuk keluar/out nya juga nanti!</li>
+                        </ul>
                     </div>
 
                     {{-- Canvas Hidden --}}
@@ -92,7 +115,7 @@
                                 <button type="button" id="btn-ulangi" class="btn btn-light border btn-round fw-bold shadow-sm py-3 hover-lift text-muted w-50">
                                     <i class="fas fa-sync-alt me-1"></i> Ulangi
                                 </button>
-                                <button type="submit" id="btn-submit" class="btn btn-success btn-round fw-bold shadow-sm py-3 hover-lift w-50 text-white">
+                                <button type="submit" id="btn-submit" class="btn btn-primary btn-round fw-bold shadow-sm py-3 hover-lift w-50 text-white">
                                     <i class="fas fa-paper-plane me-1"></i> Kirim Absen
                                 </button>
                             </div>
@@ -116,9 +139,19 @@
     .alert-modern-warning { background-color: #fffbeb; color: #b45309; border-radius: 8px; }
     .fade-in { animation: fadeIn 0.6s ease-in-out; }
     
-    /* Styling Custom Toggle Button Absen */
-    .btn-check:checked + .btn-outline-primary { background-color: #3b82f6; color: white; border-color: #3b82f6; }
-    .btn-check:checked + .btn-outline-warning { background-color: #f59e0b; color: white !important; border-color: #f59e0b; }
+    /* Styling Custom Toggle Button Absen (Hijau & Merah) */
+    .btn-check.btn-absen-custom:checked + label[for="absen_masuk"] { 
+        background-color: #22c55e !important; 
+        color: white !important; 
+        border-color: #22c55e !important; 
+    }
+    .btn-check.btn-absen-custom:checked + label[for="absen_pulang"] { 
+        background-color: #ef4444 !important; 
+        color: white !important; 
+        border-color: #ef4444 !important; 
+    }
+    label[for="absen_masuk"] { color: #22c55e; border-color: #22c55e; border-width: 2px; }
+    label[for="absen_pulang"] { color: #ef4444; border-color: #ef4444; border-width: 2px; }
     
     @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
 </style>
