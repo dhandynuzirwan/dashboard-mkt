@@ -599,62 +599,62 @@ class ProspekController extends Controller
         ]);
     }
     
-    public function getDetailStatusAjax(Request $request)
-    {
-        $marketing_id = $request->marketing_id;
-        $status = $request->status;
-        $start = $request->start_date;
-        $end = $request->end_date;
+    // public function getDetailStatusAjax(Request $request)
+    // {
+    //     $marketing_id = $request->marketing_id;
+    //     $status = $request->status;
+    //     $start = $request->start_date;
+    //     $end = $request->end_date;
 
-        $query = Prospek::where('marketing_id', $marketing_id)
-                        ->whereBetween('tanggal_prospek', [$start, $end])
-                        ->orderBy('tanggal_prospek', 'desc');
+    //     $query = Prospek::where('marketing_id', $marketing_id)
+    //                     ->whereBetween('tanggal_prospek', [$start, $end])
+    //                     ->orderBy('tanggal_prospek', 'desc');
 
-        // Daftar status resmi (Sama persis seperti yang ada di Index)
-        $statusResmi = [
-            'DATA TIDAK VALID & TIDAK TERHUBUNG', 'TIDAK RESPON', 'DAPAT NO WA HRD', 'KIRIM COMPRO',
-            'MANJA', 'MANJA ULANG', 'REQUEST PERMINTAAN PELATIHAN', 'MASUK PENAWARAN',
-            'BELUM ADA KEBUTUHAN', 'REQUES PERPANJANGAN SERTIFIKAT', 'PENAWARAN HARDFILE',
-            'TIDAK MENERIMA PENAWARAN', 'DAPAT NO TELP', 'SUDAH ADA VENDOR KERJASAMA', 'HOLD', 'DAPAT EMAIL'
-        ];
+    //     // Daftar status resmi (Sama persis seperti yang ada di Index)
+    //     $statusResmi = [
+    //         'DATA TIDAK VALID & TIDAK TERHUBUNG', 'TIDAK RESPON', 'DAPAT NO WA HRD', 'KIRIM COMPRO',
+    //         'MANJA', 'MANJA ULANG', 'REQUEST PERMINTAAN PELATIHAN', 'MASUK PENAWARAN',
+    //         'BELUM ADA KEBUTUHAN', 'REQUES PERPANJANGAN SERTIFIKAT', 'PENAWARAN HARDFILE',
+    //         'TIDAK MENERIMA PENAWARAN', 'DAPAT NO TELP', 'SUDAH ADA VENDOR KERJASAMA', 'HOLD', 'DAPAT EMAIL'
+    //     ];
 
-        // Terapkan filter berdasarkan status yang diklik
-        if ($status === 'tanpa_status') {
-            $query->where(function($q) use ($statusResmi) {
-                $q->whereNull('status')->orWhere('status', '')->orWhereNotIn('status', $statusResmi);
-            });
-        } elseif ($status !== 'semua') {
-            $query->where('status', $status);
-        }
-        // Jika status == 'semua', query biarkan saja agar mengambil semua data
+    //     // Terapkan filter berdasarkan status yang diklik
+    //     if ($status === 'tanpa_status') {
+    //         $query->where(function($q) use ($statusResmi) {
+    //             $q->whereNull('status')->orWhere('status', '')->orWhereNotIn('status', $statusResmi);
+    //         });
+    //     } elseif ($status !== 'semua') {
+    //         $query->where('status', $status);
+    //     }
+    //     // Jika status == 'semua', query biarkan saja agar mengambil semua data
 
-        $data = $query->get();
+    //     $data = $query->get();
 
-        // Susun HTML untuk disuntikkan ke dalam Modal
-        $html = '';
-        if ($data->count() > 0) {
-            foreach ($data as $index => $d) {
-                $tgl = \Carbon\Carbon::parse($d->tanggal_prospek)->format('d/m/Y');
-                $wa = $d->wa_pic ? "<a href='https://wa.me/".preg_replace('/[^0-9]/', '', $d->wa_pic)."' target='_blank' class='btn btn-xs btn-success'><i class='fab fa-whatsapp'></i> Hubungi</a>" : '-';
+    //     // Susun HTML untuk disuntikkan ke dalam Modal
+    //     $html = '';
+    //     if ($data->count() > 0) {
+    //         foreach ($data as $index => $d) {
+    //             $tgl = \Carbon\Carbon::parse($d->tanggal_prospek)->format('d/m/Y');
+    //             $wa = $d->wa_pic ? "<a href='https://wa.me/".preg_replace('/[^0-9]/', '', $d->wa_pic)."' target='_blank' class='btn btn-xs btn-success'><i class='fab fa-whatsapp'></i> Hubungi</a>" : '-';
                 
-                $html .= "<tr>
-                    <td class='text-center'>".($index + 1)."</td>
-                    <td class='text-center'>{$tgl}</td>
-                    <td class='fw-bold text-dark'>{$d->perusahaan}</td>
-                    <td>{$d->nama_pic} <br><small class='text-muted'>{$d->jabatan}</small></td>
-                    <td class='text-center'>{$wa}</td>
-                </tr>";
-            }
-        } else {
-            $html = "<tr><td colspan='5' class='text-center text-muted py-4'>Tidak ada data ditemukan.</td></tr>";
-        }
+    //             $html .= "<tr>
+    //                 <td class='text-center'>".($index + 1)."</td>
+    //                 <td class='text-center'>{$tgl}</td>
+    //                 <td class='fw-bold text-dark'>{$d->perusahaan}</td>
+    //                 <td>{$d->nama_pic} <br><small class='text-muted'>{$d->jabatan}</small></td>
+    //                 <td class='text-center'>{$wa}</td>
+    //             </tr>";
+    //         }
+    //     } else {
+    //         $html = "<tr><td colspan='5' class='text-center text-muted py-4'>Tidak ada data ditemukan.</td></tr>";
+    //     }
 
-        $nama_marketing = \App\Models\User::find($marketing_id)->name ?? 'Marketing';
-        $judul_status = $status === 'semua' ? 'Semua Status' : ($status === 'tanpa_status' ? 'Belum Ada Status' : $status);
+    //     $nama_marketing = \App\Models\User::find($marketing_id)->name ?? 'Marketing';
+    //     $judul_status = $status === 'semua' ? 'Semua Status' : ($status === 'tanpa_status' ? 'Belum Ada Status' : $status);
 
-        return response()->json([
-            'title' => "Data Prospek: {$nama_marketing} - {$judul_status}",
-            'html' => $html
-        ]);
-    }
+    //     return response()->json([
+    //         'title' => "Data Prospek: {$nama_marketing} - {$judul_status}",
+    //         'html' => $html
+    //     ]);
+    // }
 }

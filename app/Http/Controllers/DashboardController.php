@@ -359,4 +359,106 @@ class DashboardController extends Controller
 
         return view('partials.modal-detail-penawaran', compact('details'));
     }
+
+    public function getDetailStatusAjax(Request $request)
+    {
+        $marketing_id = $request->marketing_id;
+        $status = $request->status;
+        
+        // 1. Query Dasar
+        $query = \App\Models\Prospek::where('marketing_id', $marketing_id)
+            ->whereBetween('tanggal_prospek', [$request->start_date . " 00:00:00", $request->end_date . " 23:59:59"]);
+
+        $statusResmi = [
+            'DATA TIDAK VALID & TIDAK TERHUBUNG', 'TIDAK RESPON', 'DAPAT NO WA HRD', 'KIRIM COMPRO',
+            'MANJA', 'MANJA ULANG', 'REQUEST PERMINTAAN PELATIHAN', 'MASUK PENAWARAN',
+            'BELUM ADA KEBUTUHAN', 'REQUES PERPANJANGAN SERTIFIKAT', 'PENAWARAN HARDFILE',
+            'TIDAK MENERIMA PENAWARAN', 'DAPAT NO TELP', 'SUDAH ADA VENDOR KERJASAMA', 'HOLD', 'DAPAT EMAIL'
+        ];
+
+        $title = "Detail Prospek";
+
+        // ==============================================================
+        // 2. LOGIKA UNTUK TABEL FUNNEL KONVERSI (Leads Masuk & Valid)
+        // ==============================================================
+        if ($status === 'semua_leads') {
+            $title = "Detail Semua Leads Masuk";
+            
+        } elseif ($status === 'leads_valid') {
+            $title = "Detail Leads Valid";
+            // Kecualikan Invalid & Tidak Respon dari kolom update_terakhir
+            $query->where(function($q) {
+                $q->whereNotIn('update_terakhir', ['DATA TIDAK VALID & TIDAK TERHUBUNG', 'TIDAK RESPON'])
+                ->orWhereNull('update_terakhir');
+            });
+
+        // ==============================================================
+        // 3. LOGIKA UNTUK TABEL STATUS AKHIR (Tabel Bawah)
+        // ==============================================================
+        } elseif ($status === 'semua') {
+            $title = "Total Keseluruhan Data";
+            
+        } elseif ($status === 'tanpa_status') {
+            $title = "Belum Ada Status";
+            $query->where(function($q) use ($statusResmi) {
+                $q->whereNull('status')->orWhere('status', '')->orWhereNotIn('status', $statusResmi);
+            });
+            
+        } elseif (in_array($status, ['DATA TIDAK VALID & TIDAK TERHUBUNG', 'TIDAK RESPON'])) {
+            $title = "Detail Status: " . $status;
+            // Cari di kolom update_terakhir
+            $query->where('update_terakhir', $status);
+            
+        } else {
+            $title = "Detail Status: " . strtoupper(str_replace('_', ' ', $status));
+            // Pencarian normal di kolom status
+            $query->where('status', $status);
+        }
+
+        // Eksekusi Query
+        $data = $query->orderBy('tanggal_prospek', 'desc')->get();
+
+        // 4. Susun HTML Modal (Tanpa perlu file partial lagi)
+        $html = '';
+        if ($data->count() > 0) {
+            foreach ($data as $index => $d) {
+                $tgl = \Carbon\Carbon::parse($d->tanggal_prospek)->format('d M Y');
+                
+                // Tombol WA
+                $wa = $d->wa_pic ? "<a href='https://wa.me/".preg_replace('/[^0-9]/', '', $d->wa_pic)."' target='_blank' class='btn btn-xs btn-success me-1 mb-1'><i class='fab fa-whatsapp'></i> Hubungi</a>" : '';
+                
+                // Tombol CTA
+                $cta = "<a href='".route('form-cta', $d->id)."' class='btn btn-xs btn-primary mb-1'>Lihat CTA</a>";
+                
+                $html .= "<tr>
+                    <td class='text-center align-middle'>".($index + 1)."</td>
+                    <td class='text-center align-middle'>{$tgl}</td>
+                    <td class='align-middle'>
+                        <div class='fw-bold text-dark'>{$d->perusahaan}</div>
+                    </td>
+                    <td class='align-middle'>
+                        <div class='fw-medium'>".($d->nama_pic ?? '-')."</div>
+                        <small class='text-muted' style='font-size: 11px;'>".($d->jabatan ?? '-')."</small>
+                    </td>
+                    <td class='text-center align-middle'>
+                        <div class='d-flex flex-wrap justify-content-center'>
+                            {$wa} {$cta}
+                        </div>
+                    </td>
+                </tr>";
+            }
+        } else {
+            $html = "<tr><td colspan='5' class='text-center text-muted py-5'>
+                <i class='fas fa-folder-open fs-2 mb-2 opacity-50 d-block'></i>
+                Tidak ada data yang ditemukan.
+            </td></tr>";
+        }
+
+        $nama_marketing = \App\Models\User::find($marketing_id)->name ?? 'Marketing';
+
+        return response()->json([
+            'title' => "{$nama_marketing} - {$title} (" . $data->count() . " Data)",
+            'html' => $html
+        ]);
+    }
 }

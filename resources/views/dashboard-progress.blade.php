@@ -303,15 +303,31 @@
                                         <tr>
                                             <td class="fw-bold ps-4 text-dark">{{ $m->name }}</td>
                                             
+                                            {{-- Kolom Leads Masuk --}}
                                             <td class="text-center align-middle">
-                                                <div class="fw-bolder fs-6 mb-1">{!! $renderLink($total_leads, $m->id, 'semua') !!}</div>
-                                                <span class="badge badge-soft-secondary" style="font-size: 9px;">100% Base</span>
+                                                <div class="fw-bolder fs-6 mb-1">
+                                                    <a href="javascript:void(0)" 
+                                                    class="btn-detail-status fw-bold text-primary text-decoration-none bg-primary-subtle px-2 py-1 rounded hover-lift d-inline-block" 
+                                                    data-marketing="{{ $m->id }}" 
+                                                    data-status="semua_leads" 
+                                                    data-start="{{ $start }}" 
+                                                    data-end="{{ $end }}"
+                                                    title="Lihat Detail Semua Leads">
+                                                        {{ $total_leads }}
+                                                    </a>
+                                                </div>
                                             </td>
 
+                                            {{-- Kolom Leads Valid --}}
                                             <td class="align-middle px-3">
                                                 <div class="d-flex justify-content-between align-items-end mb-1">
-                                                    {{-- Gunakan class "btn-detail" agar otomatis memicu pop-up yang sudah ada --}}
-                                                    <a href="javascript:void(0)" class="fw-bold text-info text-decoration-none btn-detail bg-info-subtle px-2 rounded hover-lift" data-id="{{ $m->id }}" data-type="leads_valid">
+                                                    <a href="javascript:void(0)" 
+                                                    class="btn-detail-status fw-bold text-info text-decoration-none bg-info-subtle px-2 py-1 rounded hover-lift d-inline-block" 
+                                                    data-marketing="{{ $m->id }}" 
+                                                    data-status="leads_valid" 
+                                                    data-start="{{ $start }}" 
+                                                    data-end="{{ $end }}"
+                                                    title="Lihat Detail Leads Valid">
                                                         {{ $leads_valid }}
                                                     </a>
                                                     <span class="small text-muted" style="font-size: 10px;">{{ number_format($persen_valid, 0) }}%</span>
@@ -321,9 +337,14 @@
                                                 </div>
                                             </td>
 
+                                            {{-- Kolom Masuk Penawaran --}}
                                             <td class="align-middle px-3">
                                                 <div class="d-flex justify-content-between align-items-end mb-1">
-                                                    <a href="javascript:void(0)" class="fw-bold text-primary text-decoration-none btn-detail bg-primary-subtle px-2 rounded hover-lift" data-id="{{ $m->id }}">
+                                                    {{-- Class btn-detail ini akan memicu modal Penawaran (berbeda dengan leads) --}}
+                                                    <a href="javascript:void(0)" 
+                                                    class="btn-detail fw-bold text-warning-dark text-decoration-none bg-warning-subtle px-2 py-1 rounded hover-lift d-inline-block" 
+                                                    data-id="{{ $m->id }}"
+                                                    title="Lihat Detail Penawaran">
                                                         {{ $total_penawaran }}
                                                     </a>
                                                     <span class="small text-muted" style="font-size: 10px;">{{ number_format($persen_penawaran, 0) }}%</span>
@@ -572,45 +593,21 @@
             </div>
         </div>
 
-    </div>
-</div>
+    </div> <!-- Penutup page-inner -->
+</div> <!-- Penutup container -->
 
 {{-- ================= MODALS ================= --}}
-<div class="modal fade" id="modalDetailStatus" tabindex="-1" aria-hidden="true">
-    <div class="modal-dialog modal-lg modal-dialog-centered modal-dialog-scrollable">
-        <div class="modal-content card-modern shadow-lg">
-            <div class="modal-header bg-primary-subtle text-primary border-bottom-0">
-                <h5 class="modal-title fw-bolder" id="modalDetailTitle"><i class="fas fa-list me-2"></i> Detail Prospek</h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-            </div>
-            <div class="modal-body p-0">
-                <div class="table-responsive">
-                    <table class="table table-modern table-hover mb-0 align-middle">
-                        <thead class="bg-light sticky-top">
-                            <tr>
-                                <th class="text-center" width="50">No</th>
-                                <th class="text-center" width="100">Tanggal</th>
-                                <th>Perusahaan</th>
-                                <th>PIC & Jabatan</th>
-                                <th class="text-center" width="100">Action</th>
-                            </tr>
-                        </thead>
-                        <tbody id="modalDetailBody"></tbody>
-                    </table>
-                </div>
-            </div>
-            <div class="modal-footer bg-light border-top-0 pt-2 pb-2">
-                <button type="button" class="btn btn-white border fw-bold btn-round btn-sm text-dark" data-bs-dismiss="modal">Tutup Layar</button>
-            </div>
-        </div>
-    </div>
-</div>
+{{-- Modal Prospek (Leads Masuk & Valid) ditarik dari folder partials --}}
+@include('partials.modal-detail-prospek')
 
+{{-- Modal Penawaran (Diisi via AJAX dari Controller) --}}
 <div class="modal fade" id="modalDetail" tabindex="-1" aria-hidden="true">
     <div class="modal-dialog modal-lg modal-dialog-centered">
         <div class="modal-content card-modern shadow-lg">
             <div class="modal-header border-bottom-0 pb-0">
-                <h5 class="modal-title fw-bolder text-dark"><i class="fas fa-info-circle text-info me-2"></i>Detail Data Marketing</h5>
+                <h5 class="modal-title fw-bolder text-dark">
+                    <i class="fas fa-info-circle text-info me-2"></i>Detail Data Penawaran
+                </h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body pt-3" id="detailBody"></div>
@@ -792,7 +789,9 @@
     // --- 2. Main DOM Ready ---
     document.addEventListener("DOMContentLoaded", function() {
 
-        // Jam Realtime
+        // ==========================================
+        // 1. JAM REALTIME
+        // ==========================================
         function updateClock() {
             const now = new Date();
             const options = { weekday: 'long', year: 'numeric', month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit', second: '2-digit', hour12: false };
@@ -801,52 +800,77 @@
         setInterval(updateClock, 1000);
         updateClock();
 
-        // AJAX Modal Detail Follow Up Penawaran
-        document.querySelectorAll('.btn-detail').forEach(button => {
-            button.addEventListener('click', function() {
-                const mId = this.getAttribute('data-id');
-                const modalBody = document.getElementById('detailBody');
-                
-                $('#modalDetail').modal('show');
-                modalBody.innerHTML = `<div class="text-center py-4"><div class="spinner-border text-primary" role="status"></div><p class="mt-2 text-muted small">Memuat data detail...</p></div>`;
 
-                fetch(`/marketing-detail/${mId}?start={{ $start }}&end={{ $end }}`)
-                    .then(response => response.text())
-                    .then(html => { modalBody.innerHTML = html; })
-                    .catch(error => { modalBody.innerHTML = '<p class="text-center text-danger py-4">Gagal memuat data.</p>'; });
+        // ==========================================
+        // 2. AJAX MODAL PENAWARAN (Tabel Bawah)
+        // ==========================================
+        const modalDetailNode = document.getElementById('modalDetail');
+        if(modalDetailNode) {
+            const modalDetail = new bootstrap.Modal(modalDetailNode);
+            
+            document.querySelectorAll('.btn-detail').forEach(button => {
+                button.addEventListener('click', function() {
+                    const mId = this.getAttribute('data-id');
+                    const modalBody = document.getElementById('detailBody');
+                    
+                    modalDetail.show();
+                    modalBody.innerHTML = `<div class="text-center py-4"><div class="spinner-border text-warning" role="status"></div><p class="mt-2 text-muted small">Memuat data penawaran...</p></div>`;
+
+                    fetch(`/marketing-detail/${mId}?start={{ $start }}&end={{ $end }}`)
+                        .then(response => response.text())
+                        .then(html => { modalBody.innerHTML = html; })
+                        .catch(error => { modalBody.innerHTML = '<p class="text-center text-danger py-4">Gagal memuat data.</p>'; });
+                });
             });
-        });
+        }
 
-        // AJAX Modal Detail Status Prospek
-        const modalDetailStatus = new bootstrap.Modal(document.getElementById('modalDetailStatus'));
-        const modalTitleStatus = document.getElementById('modalDetailTitle');
-        const modalBodyStatus = document.getElementById('modalDetailBody');
 
-        document.querySelectorAll('.btn-detail-status').forEach(button => {
-            button.addEventListener('click', function () {
-                const marketingId = this.getAttribute('data-marketing');
-                const status = this.getAttribute('data-status');
-                const startDate = this.getAttribute('data-start');
-                const endDate = this.getAttribute('data-end');
+        // ==========================================
+        // 3. AJAX MODAL PROSPEK (Leads Masuk / Valid / Status Akhir)
+        // ==========================================
+        const modalStatusNode = document.getElementById('modalDetailStatus');
+        if(modalStatusNode) {
+            const modalDetailStatus = new bootstrap.Modal(modalStatusNode);
+            const modalTitleStatus = document.getElementById('modalDetailTitle'); 
+            const modalBodyStatus = document.getElementById('modalDetailBody');
 
-                modalTitleStatus.innerHTML = '<i class="fas fa-spinner fa-spin me-2"></i> Mengambil Data...';
-                modalBodyStatus.innerHTML = '<tr><td colspan="5" class="text-center py-5"><div class="spinner-border text-primary" role="status"></div><p class="mt-2 text-muted">Sedang memuat data prospek...</p></td></tr>';
-                
-                modalDetailStatus.show();
+            document.querySelectorAll('.btn-detail-status').forEach(button => {
+                button.addEventListener('click', function (e) {
+                    e.preventDefault(); // Mencegah scroll ke atas karena href="#"
+                    
+                    const mId = this.getAttribute('data-marketing');
+                    const status = this.getAttribute('data-status');
+                    const startDate = this.getAttribute('data-start');
+                    const endDate = this.getAttribute('data-end');
 
-                fetch(`{{ route('prospek.detailAjax') }}?marketing_id=${marketingId}&status=${status}&start_date=${startDate}&end_date=${endDate}`)
-                    .then(response => response.json())
-                    .then(data => {
-                        modalTitleStatus.innerHTML = `<i class="fas fa-list me-2"></i> ${data.title}`;
-                        modalBodyStatus.innerHTML = data.html;
-                    })
-                    .catch(error => {
-                        modalTitleStatus.innerHTML = '<i class="fas fa-exclamation-triangle text-warning me-2"></i> Terjadi Kesalahan';
-                        modalBodyStatus.innerHTML = '<tr><td colspan="5" class="text-center text-danger py-4">Gagal memuat data. Silakan coba lagi.</td></tr>';
-                    });
+                    modalTitleStatus.innerHTML = '<i class="fas fa-spinner fa-spin me-2"></i> Mengambil Data...';
+                    modalBodyStatus.innerHTML = '<tr><td colspan="5" class="text-center py-5"><div class="spinner-border text-primary" role="status"></div><p class="mt-2 text-muted small">Memuat data prospek...</p></td></tr>';
+                    
+                    modalDetailStatus.show();
+
+                    fetch(`{{ route('prospek.detailAjax') }}?marketing_id=${mId}&status=${status}&start_date=${startDate}&end_date=${endDate}`)
+                        .then(response => {
+                            if (!response.ok) throw new Error('Jaringan bermasalah');
+                            return response.json();
+                        })
+                        .then(data => {
+                            modalTitleStatus.innerHTML = `<i class="fas fa-list me-2"></i> ${data.title}`;
+                            modalBodyStatus.innerHTML = data.html;
+                        })
+                        .catch(error => {
+                            console.error('Error:', error);
+                            modalTitleStatus.innerHTML = '<i class="fas fa-exclamation-triangle text-danger me-2"></i> Gagal Memuat Data';
+                            modalBodyStatus.innerHTML = '<tr><td colspan="5" class="text-center text-danger py-4 fw-bold">Gagal mengambil data dari server.</td></tr>';
+                        });
+                });
             });
-        });
+        }
 
+        // ==========================================
+        // 4. CHART.JS & HIGHCHARTS (Biarkan kode aslinya di sini)
+        // ==========================================
+        // =========================================================================
+        
         // Pie Chart
         const ctxPie = document.getElementById('achTargetChart');
         let pieChartInstance = null;
@@ -858,7 +882,6 @@
                     labels: @json($pieLabels),
                     datasets: [{
                         data: @json($pieData),
-                        // Warna dikembalikan ke versi lama yang lebih pop-out
                         backgroundColor: ['#0d6efd', '#0dcaf0', '#ffc107', '#198754', '#dc3545', '#6610f2', '#fd7e14', '#20c997'],
                         borderWidth: 2,
                         borderColor: '#fff'
@@ -1052,7 +1075,7 @@
             };
         }
 
-        // ================= 🔥 MAP HIGHCHARTS 🔥 =================
+        // Map Highcharts
         if (document.getElementById('indonesia-map')) {
             const rawMapData = @json($mapData ?? []);
             
@@ -1148,25 +1171,6 @@
                 mapChartInstance.exportChartLocal({ type: 'image/png', filename: 'Peta_Persebaran_Prospek' });
             };
         }
-    });
-
-    // Tambahkan ini di file script/blade terbawah Anda
-    $(document).on('click', '.btn-detail-valid', function() {
-        let marketingId = $(this).data('id');
-        
-        // Panggil AJAX ke route controller Anda untuk mengambil data Leads Valid
-        $.ajax({
-            url: '/url-route-anda/detail-leads-valid/' + marketingId,
-            type: 'GET',
-            success: function(response) {
-                // Tampilkan data ke dalam modal
-                // $('#modalDetailBody').html(response);
-                // $('#modalDetail').modal('show');
-            },
-            error: function(err) {
-                console.log("Gagal mengambil data", err);
-            }
-        });
     });
 </script>
 

@@ -219,7 +219,8 @@ Route::middleware('auth')->group(function () {
         Route::delete('/prospek/mass-delete', [ProspekController::class, 'massDelete'])->name('prospek.massDelete');
         Route::get('/prospek/check', [ProspekController::class, 'showCheckData'])->name('prospek.check');
         Route::post('/prospek/check-massal', [ProspekController::class, 'processCheckMassal'])->name('prospek.processCheckMassal');
-        Route::get('/prospek/detail-status-ajax', [ProspekController::class, 'getDetailStatusAjax'])->name('prospek.detailAjax');
+        Route::get('/prospek/detail-ajax', [App\Http\Controllers\DashboardController::class, 'getDetailStatusAjax'])->name('prospek.detailAjax');
+        Route::get('/dashboard/detail-prospek-ajax', [DashboardController::class, 'getDetailStatusAjax'])->name('prospek.detailAjax');
 
         Route::post('/data-masuk/deliver/{id}', [DataMasukController::class, 'deliver'])->name('data-masuk.deliver');
         Route::post('/data-masuk/deliver-massal', [DataMasukController::class, 'deliverMassal'])->name('data-masuk.deliver-massal');
