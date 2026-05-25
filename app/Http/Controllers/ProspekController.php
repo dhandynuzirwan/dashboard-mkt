@@ -30,12 +30,29 @@ class ProspekController extends Controller
         $end   = $request->filled('end_date') 
                     ? $request->end_date 
                     : now()->endOfMonth()->format('Y-m-d');
-        // Ambil semua daftar status unik untuk pilihan filter
-        $all_status_akhir = Prospek::select('status')
+        // 1. Tentukan Pakem Status Resmi Perusahaan
+        $statusResmi = [
+            'BELUM ADA KEBUTUHAN', 'DAPAT EMAIL', 'DAPAT NO TELP', 'DAPAT NO WA HRD',
+            'HOLD', 'DATA TIDAK VALID & TIDAK TERHUBUNG', 'KIRIM COMPRO', 'MANJA',
+            'MANJA ULANG', 'MASUK PENAWARAN', 'PENAWARAN HARDFILE', 'REQUES PERPANJANGAN SERTIFIKAT',
+            'REQUEST PERMINTAAN PELATIHAN', 'TIDAK MENERIMA PENAWARAN', 'TIDAK RESPON', 'SUDAH ADA VENDOR KERJASAMA'
+        ];
+
+        // 2. Ambil status unik yang benar-benar ADA DATANYA di bulan ini
+        $statusDbBulanIni = Prospek::whereBetween('tanggal_prospek', [$start, $end])
             ->whereNotNull('status')
+            ->where('status', '!=', '')
             ->distinct()
-            ->orderBy('status', 'asc')
-            ->pluck('status');
+            ->pluck('status')
+            ->toArray();
+
+        // 3. Gabungkan Pakem Resmi + Status di DB, lalu hilangkan duplikat dan urutkan abjad
+        // array_filter untuk membuang string kosong
+        $all_status_akhir = collect(array_merge($statusResmi, $statusDbBulanIni))
+                            ->filter()
+                            ->unique()
+                            ->sort()
+                            ->values();
 
         $query = Prospek::with(['marketing', 'cta']);
         
