@@ -107,7 +107,7 @@
                                         <option value="Online Training">Online Training</option>
                                         <option value="Offline Training">Offline Training</option>
                                         <option value="Inhouse Training">Inhouse Training</option>
-                                        <option value="Blended Training">Inhouse Training</option>
+                                        <option value="Blended Training">Blended Training</option>
                                     </select>
                                 </div>
 
