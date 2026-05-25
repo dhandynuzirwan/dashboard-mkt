@@ -461,4 +461,117 @@ class DashboardController extends Controller
             'html' => $html
         ]);
     }
+
+    // Method untuk menangani klik pada Peta
+    public function getMapDetailAjax(Request $request)
+    {
+        $provinsiName = $request->provinsi; // cth: "Jakarta", "Jawa Barat"
+        $marketingId = $request->marketing_id;
+        $start = $request->start_date;
+        $end = $request->end_date;
+
+        // Ambil keyword lokasi berdasarkan nama provinsi yang diklik
+        $keywords = $this->getKeywordsFromProvince($provinsiName);
+
+        // Cari prospek yang sudah ada CTA-nya pada rentang waktu tersebut
+        $query = \App\Models\Prospek::whereHas('cta')
+            ->with(['cta', 'marketing'])
+            ->whereBetween('tanggal_prospek', [$start . " 00:00:00", $end . " 23:59:59"]);
+
+        if ($marketingId) {
+            $query->where('marketing_id', $marketingId);
+        }
+
+        // Filter berdasarkan keyword lokasi (LIKE)
+        $query->where(function($q) use ($keywords) {
+            foreach($keywords as $kw) {
+                $q->orWhere('lokasi', 'LIKE', '%'.$kw.'%');
+            }
+        });
+
+        $data = $query->orderBy('tanggal_prospek', 'desc')->get();
+
+        // Generate HTML untuk isi Modal
+        $html = '';
+        if ($data->count() > 0) {
+            foreach ($data as $index => $d) {
+                $tgl = \Carbon\Carbon::parse($d->tanggal_prospek)->format('d M Y');
+                $nama_marketing = $d->marketing ? $d->marketing->name : 'Unknown';
+                
+                // Jika 1 prospek punya lebih dari 1 CTA, kita looping CTA-nya
+                foreach($d->cta as $cta) {
+                    $nominal = "Rp " . number_format(($cta->harga_penawaran ?? 0) * ($cta->jumlah_peserta ?? 1), 0, ',', '.');
+                    $statusBadge = $cta->status_penawaran == 'deal' ? 'bg-success' : ($cta->status_penawaran == 'under_review' ? 'bg-info' : 'bg-secondary');
+
+                    $html .= "<tr>
+                        <td class='text-center align-middle'>".($index + 1)."</td>
+                        <td class='align-middle'>
+                            <div class='fw-bold text-dark'>{$d->perusahaan}</div>
+                            <small class='text-muted'><i class='fas fa-map-marker-alt text-danger me-1'></i>{$d->lokasi}</small>
+                        </td>
+                        <td class='align-middle text-dark fw-medium'>{$nama_marketing}</td>
+                        <td class='align-middle'>
+                            <span class='fw-bold text-primary d-block'>{$cta->judul_permintaan}</span>
+                            <span class='badge {$statusBadge} rounded-pill mt-1'>".strtoupper($cta->status_penawaran)."</span>
+                        </td>
+                        <td class='align-middle text-end fw-bolder text-success'>{$nominal}</td>
+                    </tr>";
+                }
+            }
+        } else {
+            $html = "<tr><td colspan='5' class='text-center text-muted py-5'>
+                <i class='fas fa-map-marked-alt fs-2 mb-2 opacity-50 d-block'></i>
+                Belum ada data penawaran di wilayah {$provinsiName}.
+            </td></tr>";
+        }
+
+        return response()->json([
+            'title' => "<i class='fas fa-map-marker-alt me-2 text-danger'></i> Penawaran di Wilayah: {$provinsiName}",
+            'html' => $html
+        ]);
+    }
+
+    // Helper untuk Mapping Nama Provinsi Highcharts ke Database
+    private function getKeywordsFromProvince($provinceName)
+    {
+        $prov = strtoupper(trim($provinceName));
+        $map = [
+            'JAKARTA' => ['JAKARTA', 'DKI'],
+            'JAWA BARAT' => ['JAWA BARAT', 'JABAR'],
+            'JAWA TENGAH' => ['JAWA TENGAH', 'JATENG'],
+            'JAWA TIMUR' => ['JAWA TIMUR', 'JATIM'],
+            'YOGYAKARTA' => ['YOGYAKARTA', 'JOGJA', 'DIY'],
+            'BANTEN' => ['BANTEN'],
+            'BALI' => ['BALI'],
+            'SUMATERA UTARA' => ['SUMATERA UTARA', 'SUMUT'],
+            'SUMATERA BARAT' => ['SUMATERA BARAT', 'SUMBAR'],
+            'SUMATERA SELATAN' => ['SUMATERA SELATAN', 'SUMSEL'],
+            'RIAU' => ['RIAU'],
+            'KEPULAUAN RIAU' => ['KEPULAUAN RIAU', 'KEPRI'],
+            'JAMBI' => ['JAMBI'],
+            'BENGKULU' => ['BENGKULU'],
+            'LAMPUNG' => ['LAMPUNG'],
+            'BANGKA BELITUNG' => ['BANGKA BELITUNG', 'BABEL'],
+            'ACEH' => ['ACEH'],
+            'KALIMANTAN BARAT' => ['KALIMANTAN BARAT', 'KALBAR'],
+            'KALIMANTAN TENGAH' => ['KALIMANTAN TENGAH', 'KALTENG'],
+            'KALIMANTAN SELATAN' => ['KALIMANTAN SELATAN', 'KALSEL'],
+            'KALIMANTAN TIMUR' => ['KALIMANTAN TIMUR', 'KALTIM'],
+            'KALIMANTAN UTARA' => ['KALIMANTAN UTARA', 'KALTARA'],
+            'SULAWESI UTARA' => ['SULAWESI UTARA', 'SULUT'],
+            'SULAWESI TENGAH' => ['SULAWESI TENGAH', 'SULTENG'],
+            'SULAWESI SELATAN' => ['SULAWESI SELATAN', 'SULSEL'],
+            'SULAWESI TENGGARA' => ['SULAWESI TENGGARA', 'SULTRA'],
+            'SULAWESI BARAT' => ['SULAWESI BARAT', 'SULBAR'],
+            'GORONTALO' => ['GORONTALO'],
+            'MALUKU UTARA' => ['MALUKU UTARA', 'MALUT'],
+            'MALUKU' => ['MALUKU'],
+            'PAPUA BARAT' => ['PAPUA BARAT'],
+            'PAPUA' => ['PAPUA'],
+            'NUSA TENGGARA BARAT' => ['NUSA TENGGARA BARAT', 'NTB'],
+            'NUSA TENGGARA TIMUR' => ['NUSA TENGGARA TIMUR', 'NTT'],
+        ];
+
+        return $map[$prov] ?? [$prov];
+    }
 }

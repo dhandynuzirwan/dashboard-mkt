@@ -1110,6 +1110,45 @@
                 credits: { enabled: false },
                 exporting: { enabled: true, buttons: { contextButton: { enabled: false } } }, 
 
+                // 🔥 TAMBAHKAN BLOK PLOT OPTIONS INI UNTUK EFEK KLIK 🔥
+                plotOptions: {
+                    series: {
+                        point: {
+                            events: {
+                                click: function () {
+                                    let provinceName = this.name;
+                                    let marketingId = document.querySelector('select[name="marketing_id"]')?.value || '{{ request("marketing_id") }}';
+                                    let startDate = '{{ $start }}';
+                                    let endDate = '{{ $end }}';
+
+                                    // Gunakan Modal yang sama dengan Detail Prospek
+                                    const modalDetailStatus = new bootstrap.Modal(document.getElementById('modalDetailStatus'));
+                                    const modalTitleStatus = document.getElementById('modalDetailTitle');
+                                    const modalBodyStatus = document.getElementById('modalDetailBody');
+
+                                    modalTitleStatus.innerHTML = '<i class="fas fa-spinner fa-spin me-2"></i> Mengambil Data Wilayah...';
+                                    modalBodyStatus.innerHTML = '<tr><td colspan="5" class="text-center py-5"><div class="spinner-border text-primary" role="status"></div><p class="mt-2 text-muted">Mencari penawaran di '+provinceName+'...</p></td></tr>';
+                                    
+                                    modalDetailStatus.show();
+
+                                    // Panggil AJAX
+                                    fetch(`{{ route('prospek.mapAjax') }}?provinsi=${provinceName}&marketing_id=${marketingId}&start_date=${startDate}&end_date=${endDate}`)
+                                        .then(response => response.json())
+                                        .then(data => {
+                                            modalTitleStatus.innerHTML = data.title;
+                                            modalBodyStatus.innerHTML = data.html;
+                                        })
+                                        .catch(error => {
+                                            modalTitleStatus.innerHTML = '<i class="fas fa-exclamation-triangle text-warning me-2"></i> Terjadi Kesalahan';
+                                            modalBodyStatus.innerHTML = '<tr><td colspan="5" class="text-center text-danger py-4">Gagal memuat data.</td></tr>';
+                                        });
+                                }
+                            }
+                        }
+                    }
+                },
+                // ========================================================
+
                 mapNavigation: {
                     enabled: true,
                     buttonOptions: { 
