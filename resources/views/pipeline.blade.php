@@ -421,7 +421,7 @@
                         <form action="{{ route('prospek.massDelete') }}" method="POST" id="formMassDelete">
                             @csrf @method('DELETE')
                             
-                            @if(in_array(auth()->user()->role, ['superadmin', 'admin']))
+                            @if(in_array(auth()->user()->role, ['superadmin', 'admin', 'spv_marketing']))
                             <div class="bg-light p-3 border-bottom d-flex justify-content-between align-items-center">
                                 <h6 class="m-0 fw-bold text-dark"><i class="fas fa-list text-primary me-2"></i>Daftar Prospek Masuk</h6>
                                 <button type="button" class="btn btn-danger btn-sm btn-round fw-bold shadow-sm" id="btnHapusTerpilih" disabled>
@@ -517,7 +517,7 @@
                                                 </td>
                                                 <td class="text-center align-middle">
                                                     <div class="d-flex flex-column gap-2 justify-content-center px-2">
-                                                        @if (in_array(auth()->user()->role, ['superadmin', 'admin']))
+                                                        @if (in_array(auth()->user()->role, ['superadmin', 'admin', 'spv_marketing']))
                                                             <a href="{{ route('prospek.edit', $data->id) }}" class="btn btn-primary btn-sm btn-round fw-bold shadow-sm">
                                                                 Edit
                                                             </a>
@@ -640,7 +640,7 @@
                                                     </small>
                                                 </td>
                                                 <td class="text-center align-middle pe-3">
-                                                    @if (auth()->id() == $data->marketing_id || in_array(auth()->user()->role, ['superadmin', 'admin']))
+                                                    @if (auth()->id() == $data->marketing_id || in_array(auth()->user()->role, ['superadmin', 'admin', 'spv_marketing']))
                                                         <a href="{{ route('cta.edit', $itemCta->id) }}" class="btn btn-primary btn-sm btn-round fw-bold shadow-sm w-100 hover-lift">
                                                             Edit
                                                         </a>

@@ -95,6 +95,9 @@
                                         <option value="marketing" {{ old('role', $user->role) == 'marketing' ? 'selected' : '' }}>Marketing</option>
                                         <option value="rnd" {{ old('role', $user->role) == 'rnd' ? 'selected' : '' }}>RnD</option>
                                         <option value="digitalmarketing" {{ old('role', $user->role) == 'digitalmarketing' ? 'selected' : '' }}>Digital Marketing</option>
+                                        <option value="operasional" {{ old('role', $user->role) == 'operasional' ? 'selected' : '' }}>Operasional / Backoffice / PIC</option>
+                                        <option value="team_leader" {{ old('role', $user->role) == 'team_leader' ? 'selected' : '' }}>Team Leader / Admin PIC</option>
+                                        <option value="spv_marketing" {{ old('role', $user->role) == 'spv_marketing' ? 'selected' : '' }}>SPV Marketing</option>
                                         <option value="web_dev" {{ old('role', $user->role) == 'web_dev' ? 'selected' : '' }}>Web Developer</option>
                                     </select>
                                 </div>

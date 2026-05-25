@@ -154,7 +154,7 @@ Route::middleware('auth')->group(function () {
     });
 
     // 1. FITUR UMUM (Superadmin, Web Dev, Admin, Marketing, RnD, Digital Marketing)
-    Route::middleware('role:superadmin,web_dev,admin,marketing,rnd,digitalmarketing,operasional,team_leader')->group(function () {
+    Route::middleware('role:superadmin,web_dev,spv_marketing,admin,marketing,rnd,digitalmarketing,operasional,team_leader')->group(function () {
         
         
         Route::post('/download-request', [DownloadRequestController::class, 'store'])->name('download.request');
@@ -164,11 +164,16 @@ Route::middleware('auth')->group(function () {
         Route::get('/panduan', [App\Http\Controllers\PanduanController::class, 'index'])->name('panduan.index');
     });
 
-    // 2. MONITORING BISNIS (Superadmin, Web Dev, Admin, Marketing)
-    Route::middleware('role:superadmin,web_dev,admin,marketing')->group(function () {
+    // 2. ANALYTICS & REPORTING (Superadmin, Web Dev, SPV Marketing, Marketing)
+    Route::middleware('role:superadmin,web_dev,spv_marketing,marketing')->group(function () {
+
         Route::get('/revenue', [RevenueController::class, 'index'])->name('revenue');
         Route::get('/data-kpi', [KpiController::class, 'index'])->name('data-kpi');
         Route::get('/simulasi-gaji', [SalaryController::class, 'index'])->name('simulasi-gaji');
+    });
+
+    // 2. MONITORING BISNIS (Superadmin, Web Dev, Admin, Marketing)
+    Route::middleware('role:superadmin,web_dev,spv_marketing,admin,marketing')->group(function () {
         Route::get('/pipeline', [ProspekController::class, 'index'])->name('prospek.index');
         Route::get('/pipeline-alias', [ProspekController::class, 'index'])->name('pipeline');
         
@@ -180,7 +185,7 @@ Route::middleware('auth')->group(function () {
     });
 
     // 3. PENGELOLAAN DATA & TRAINING (Superadmin, Web Dev, Admin, RnD, Digital Marketing)
-    Route::middleware('role:superadmin,web_dev,admin,rnd,digitalmarketing')->group(function () {
+    Route::middleware('role:superadmin,web_dev,spv_marketing,admin,rnd,digitalmarketing')->group(function () {
         Route::get('/data-masuk', [DataMasukController::class, 'index'])->name('data-masuk.index');
         Route::get('/form-data-masuk', [DataMasukController::class, 'create'])->name('form-data-masuk');
         Route::post('/data-masuk/store', [DataMasukController::class, 'store'])->name('data-masuk.store');
@@ -211,7 +216,7 @@ Route::middleware('auth')->group(function () {
     });
 
     // 4. KHUSUS ADMIN & SUPERADMIN/WEB DEV (Prospek & Penggajian Dasar)
-    Route::middleware('role:superadmin,web_dev,admin')->group(function () {
+    Route::middleware('role:superadmin,web_dev,spv_marketing,admin')->group(function () {
         Route::get('/form-prospek', [ProspekController::class, 'create'])->name('form-prospek');
         Route::post('/prospek/store', [ProspekController::class, 'store'])->name('prospek.store');
         Route::get('/prospek/{id}/edit', [ProspekController::class, 'edit'])->name('prospek.edit');
