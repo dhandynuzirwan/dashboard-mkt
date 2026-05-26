@@ -72,8 +72,13 @@ class RevenueController extends Controller
             // 🔥 PERHITUNGAN ADS VS ORGANIK PENAWARAN
             $m->rp_pen_ads = $ctaDibuat->filter(function($i) {
                 $sumber = strtolower($i->prospek->sumber ?? '');
-                return str_contains($sumber, 'ads'); // Anggap yg mengandung kata 'ads' adalah Ads
-            })->sum(fn($i) => ($i->harga_penawaran ?? 0) * ($i->jumlah_peserta ?? 1));
+                return str_contains($sumber, 'ads');
+            })->sum(function($i) {
+                $harga = $i->harga_penawaran ?? 0;
+                $peserta = $i->jumlah_peserta ?? 1;
+                
+                return $harga * $peserta;
+            });
             
             $m->rp_pen_organik = $m->total_rp_pen - $m->rp_pen_ads; // Sisanya adalah Organik
 
@@ -97,7 +102,12 @@ class RevenueController extends Controller
             $m->rp_deal_ads = $ctaDeal->filter(function($i) {
                 $sumber = strtolower($i->prospek->sumber ?? '');
                 return str_contains($sumber, 'ads');
-            })->sum(fn($i) => ($i->harga_penawaran ?? 0) * ($i->jumlah_peserta ?? 1));
+            })->sum(function($i) {
+                $harga = $i->harga_penawaran ?? 0;
+                $peserta = $i->jumlah_peserta ?? 1;
+                
+                return $harga * $peserta;
+            });
             
             $m->rp_deal_organik = $m->total_rp_deal - $m->rp_deal_ads;
 
@@ -140,7 +150,7 @@ class RevenueController extends Controller
         ];
 
         $all_marketing = User::where('role', 'marketing')->get();
-        
+
         return view('revenue', compact('marketings', 'start', 'end', 'all_marketing', 'hariEfektif', 'chartData'));
     }
 }
