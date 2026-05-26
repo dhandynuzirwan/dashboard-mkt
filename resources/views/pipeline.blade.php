@@ -122,7 +122,7 @@
                 </div>
             </div>
 
-            {{-- Total Penawaran --}}
+            {{-- Total CTA --}}
             <div class="col-sm-6 col-md-3 mb-3">
                 <div class="card card-modern h-100 hover-lift">
                     <div class="card-body p-3 p-xl-4 d-flex align-items-center">
@@ -130,7 +130,7 @@
                             <i class="fas fa-file-invoice-dollar"></i>
                         </div>
                         <div class="flex-grow-1">
-                            <p class="text-muted fw-bold mb-1" style="font-size: 11px; text-transform: uppercase; letter-spacing: 0.5px;">Total Penawaran</p>
+                            <p class="text-muted fw-bold mb-1" style="font-size: 11px; text-transform: uppercase; letter-spacing: 0.5px;">Total CTA</p>
                             <div class="d-flex align-items-end justify-content-between">
                                 <h3 class="fw-bolder text-dark mb-0 lh-1">{{ number_format($stats['total_cta']) }}</h3>
                                 <span class="badge badge-soft-info" style="font-size: 10px;">

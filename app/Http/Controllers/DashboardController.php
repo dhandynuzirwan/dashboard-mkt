@@ -54,7 +54,10 @@ class DashboardController extends Controller
             }
         });
 
-        $stat_total_qty = (clone $statsQuery)->count();
+        $stat_total_qty = (clone $statsQuery)
+            ->whereNotNull('harga_penawaran')
+            ->where('harga_penawaran', '>', 0)
+            ->count();
         $stat_deal_qty = (clone $statsQuery)->where('status_penawaran', 'deal')->count();
         $stat_total_nilai = (clone $statsQuery)->get()->sum(fn ($item) => ($item->harga_penawaran ?? 0) * ($item->jumlah_peserta ?? 1));
         $stat_deal_nilai = (clone $statsQuery)->where('status_penawaran', 'deal')->get()->sum(fn ($item) => ($item->harga_penawaran ?? 0) * ($item->jumlah_peserta ?? 1));
