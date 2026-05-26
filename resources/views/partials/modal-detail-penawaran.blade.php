@@ -9,17 +9,19 @@
             </tr>
         </thead>
         @php
-            // 1. Filter data agar rapi dan tidak diulang-ulang
-            $filteredDetails = $details->whereNotNull('status_penawaran')->where('status_penawaran', '!=', '');
+            // 1. FILTER CERDAS: Hanya ambil data yang harga_penawarannya sudah diisi dan lebih dari 0
+            $filteredDetails = $details->filter(function($d) {
+                return !empty($d->harga_penawaran) && $d->harga_penawaran > 0;
+            }); 
             
             // 2. Hitung Grand Total otomatis
             $grandTotal = $filteredDetails->sum(function($d) {
-                return ($d->harga_penawaran ?? 0) * ($d->jumlah_peserta ?? 1);
+                return $d->harga_penawaran * ($d->jumlah_peserta ?? 1);
             });
         @endphp
         <tbody>
-            {{-- Filter untuk membuang status yang null atau kosong --}}
-            @forelse($details->whereNotNull('status_penawaran')->where('status_penawaran', '!=', '') as $d)
+            {{-- Loop data yang sudah difilter (Hanya yang punya harga) --}}
+            @forelse($filteredDetails as $d)
                 <tr class="border-bottom">
                     
                     {{-- Kolom 1: Perusahaan & Tanggal --}}
@@ -57,7 +59,7 @@
                             </div>
                             <div class="d-flex justify-content-between border-top pt-1 mt-1">
                                 <span class="fw-bold text-dark">Total:</span>
-                                <span class="fw-bold text-success" style="font-size: 14px;">Rp {{ number_format(($d->harga_penawaran ?? 0) * ($d->jumlah_peserta ?? 1), 0, ',', '.') }}</span>
+                                <span class="fw-bold text-success" style="font-size: 14px;">Rp {{ number_format($d->harga_penawaran * ($d->jumlah_peserta ?? 1), 0, ',', '.') }}</span>
                             </div>
                         </div>
                     </td>
@@ -73,9 +75,9 @@
                                 'deal'         => ['label' => 'Deal', 'class' => 'bg-success'],
                             ];
                             
-                            $statusKey = strtolower($d->status_penawaran);
+                            $statusKey = strtolower($d->status_penawaran ?? '');
                             $current_status = $status_labels[$statusKey] ?? [
-                                'label' => ucwords(str_replace('_', ' ', $d->status_penawaran)), 
+                                'label' => empty($d->status_penawaran) ? 'BELUM ADA STATUS' : ucwords(str_replace('_', ' ', $d->status_penawaran)), 
                                 'class' => 'bg-secondary'
                             ];
                         @endphp
@@ -88,18 +90,19 @@
             @empty
                 <tr>
                     <td colspan="4" class="text-center py-5 text-muted bg-light">
-                        <i class="fas fa-folder-open fs-1 text-secondary opacity-50 mb-3 d-block"></i>
-                        <p class="mb-0 fw-medium">Tidak ada data penawaran yang tercatat dalam periode ini.</p>
+                        <i class="fas fa-file-invoice-dollar fs-1 text-secondary opacity-50 mb-3 d-block"></i>
+                        <p class="mb-0 fw-medium">Tidak ada data yang sudah diisi nominal penawarannya.</p>
                     </td>
                 </tr>
             @endforelse
         </tbody>
-        {{-- 🔥 BARIS GRAND TOTAL (Akan muncul jika ada data) 🔥 --}}
+        
+        {{-- 🔥 BARIS GRAND TOTAL 🔥 --}}
         @if($filteredDetails->count() > 0)
         <tfoot class="bg-light" style="border-top: 2px solid #e2e8f0;">
             <tr>
                 <td colspan="2" class="text-end py-3 pe-4 fw-bolder text-dark" style="font-size: 13px;">
-                    TOTAL SELURUH PENAWARAN:
+                    TOTAL NILAI PENAWARAN:
                 </td>
                 <td colspan="2" class="py-3 text-start">
                     <span class="fw-bolder text-success px-3 py-2 bg-success-subtle rounded-3 border border-success-subtle shadow-sm" style="font-size: 16px;">

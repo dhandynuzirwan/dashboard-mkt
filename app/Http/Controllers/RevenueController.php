@@ -54,38 +54,36 @@ class RevenueController extends Controller
         $marketings = $users->map(function ($m) use ($start, $end, $hariEfektif) {
             
             // =========================================================
-            // 1. DATA PENAWARAN (Dibuat bulan ini ATAU di-follow up/Deal bulan ini)
+            // 1. DATA PENAWARAN (Acuan disamakan: tanggal_prospek)
             // =========================================================
-            $ctaDibuat = Cta::whereHas('prospek', function ($query) use ($m) {
-                $query->where('marketing_id', $m->id);
-            })->where(function ($q) use ($start, $end) {
-                $q->whereBetween('created_at', [$start . " 00:00:00", $end . " 23:59:59"])
-                  ->orWhereBetween('updated_at', [$start . " 00:00:00", $end . " 23:59:59"]);
+            $ctaDibuat = Cta::whereHas('prospek', function ($query) use ($m, $start, $end) {
+                $query->where('marketing_id', $m->id)
+                      ->whereBetween('tanggal_prospek', [$start . " 00:00:00", $end . " 23:59:59"]);
             })->get();
 
-            $m->rp_pen_kemenaker = $ctaDibuat->filter(fn($i) => in_array(strtolower($i->sertifikasi), ['kemnaker', 'kemenaker']))->sum(fn($i) => $i->harga_penawaran * ($i->jumlah_peserta ?? 1));
-            $m->rp_pen_bnsp      = $ctaDibuat->filter(fn($i) => strtolower($i->sertifikasi) == 'bnsp')->sum(fn($i) => $i->harga_penawaran * ($i->jumlah_peserta ?? 1));
-            $m->rp_pen_internal  = $ctaDibuat->filter(fn($i) => strtolower($i->sertifikasi) == 'internal')->sum(fn($i) => $i->harga_penawaran * ($i->jumlah_peserta ?? 1));
-            $m->rp_pen_ppsio     = $ctaDibuat->filter(fn($i) => in_array(strtolower($i->sertifikasi), ['sio', 'ppsio']))->sum(fn($i) => $i->harga_penawaran * ($i->jumlah_peserta ?? 1));
-            $m->rp_pen_riksa     = $ctaDibuat->filter(fn($i) => strtolower($i->sertifikasi) == 'riksa')->sum(fn($i) => $i->harga_penawaran * ($i->jumlah_peserta ?? 1));
+            $m->rp_pen_kemenaker = $ctaDibuat->filter(fn($i) => in_array(strtolower($i->sertifikasi), ['kemnaker', 'kemenaker']))->sum(fn($i) => ($i->harga_penawaran ?? 0) * ($i->jumlah_peserta ?? 1));
+            $m->rp_pen_bnsp      = $ctaDibuat->filter(fn($i) => strtolower($i->sertifikasi) == 'bnsp')->sum(fn($i) => ($i->harga_penawaran ?? 0) * ($i->jumlah_peserta ?? 1));
+            $m->rp_pen_internal  = $ctaDibuat->filter(fn($i) => strtolower($i->sertifikasi) == 'internal')->sum(fn($i) => ($i->harga_penawaran ?? 0) * ($i->jumlah_peserta ?? 1));
+            $m->rp_pen_ppsio     = $ctaDibuat->filter(fn($i) => in_array(strtolower($i->sertifikasi), ['sio', 'ppsio']))->sum(fn($i) => ($i->harga_penawaran ?? 0) * ($i->jumlah_peserta ?? 1));
+            $m->rp_pen_riksa     = $ctaDibuat->filter(fn($i) => strtolower($i->sertifikasi) == 'riksa')->sum(fn($i) => ($i->harga_penawaran ?? 0) * ($i->jumlah_peserta ?? 1));
             
-            $m->total_rp_pen     = $ctaDibuat->sum(fn($i) => $i->harga_penawaran * ($i->jumlah_peserta ?? 1));
+            $m->total_rp_pen     = $ctaDibuat->sum(fn($i) => ($i->harga_penawaran ?? 0) * ($i->jumlah_peserta ?? 1));
 
             // =========================================================
-            // 2. DATA DEAL / REVENUE (Mutlak berdasarkan kapan dia berubah jadi Deal)
+            // 2. DATA DEAL / REVENUE (Acuan disamakan: tanggal_prospek)
             // =========================================================
-            $ctaDeal = Cta::whereHas('prospek', function ($query) use ($m) {
-                $query->where('marketing_id', $m->id);
-            })->where('status_penawaran', 'deal')
-              ->whereBetween('updated_at', [$start . " 00:00:00", $end . " 23:59:59"])->get();
+            $ctaDeal = Cta::whereHas('prospek', function ($query) use ($m, $start, $end) {
+                $query->where('marketing_id', $m->id)
+                      ->whereBetween('tanggal_prospek', [$start . " 00:00:00", $end . " 23:59:59"]);
+            })->where('status_penawaran', 'deal')->get();
 
-            $m->rp_deal_kemenaker = $ctaDeal->filter(fn($i) => in_array(strtolower($i->sertifikasi), ['kemnaker', 'kemenaker']))->sum(fn($i) => $i->harga_penawaran * ($i->jumlah_peserta ?? 1));
-            $m->rp_deal_bnsp      = $ctaDeal->filter(fn($i) => strtolower($i->sertifikasi) == 'bnsp')->sum(fn($i) => $i->harga_penawaran * ($i->jumlah_peserta ?? 1));
-            $m->rp_deal_internal  = $ctaDeal->filter(fn($i) => strtolower($i->sertifikasi) == 'internal')->sum(fn($i) => $i->harga_penawaran * ($i->jumlah_peserta ?? 1));
-            $m->rp_deal_ppsio     = $ctaDeal->filter(fn($i) => in_array(strtolower($i->sertifikasi), ['sio', 'ppsio']))->sum(fn($i) => $i->harga_penawaran * ($i->jumlah_peserta ?? 1));
-            $m->rp_deal_riksa     = $ctaDeal->filter(fn($i) => strtolower($i->sertifikasi) == 'riksa')->sum(fn($i) => $i->harga_penawaran * ($i->jumlah_peserta ?? 1));
+            $m->rp_deal_kemenaker = $ctaDeal->filter(fn($i) => in_array(strtolower($i->sertifikasi), ['kemnaker', 'kemenaker']))->sum(fn($i) => ($i->harga_penawaran ?? 0) * ($i->jumlah_peserta ?? 1));
+            $m->rp_deal_bnsp      = $ctaDeal->filter(fn($i) => strtolower($i->sertifikasi) == 'bnsp')->sum(fn($i) => ($i->harga_penawaran ?? 0) * ($i->jumlah_peserta ?? 1));
+            $m->rp_deal_internal  = $ctaDeal->filter(fn($i) => strtolower($i->sertifikasi) == 'internal')->sum(fn($i) => ($i->harga_penawaran ?? 0) * ($i->jumlah_peserta ?? 1));
+            $m->rp_deal_ppsio     = $ctaDeal->filter(fn($i) => in_array(strtolower($i->sertifikasi), ['sio', 'ppsio']))->sum(fn($i) => ($i->harga_penawaran ?? 0) * ($i->jumlah_peserta ?? 1));
+            $m->rp_deal_riksa     = $ctaDeal->filter(fn($i) => strtolower($i->sertifikasi) == 'riksa')->sum(fn($i) => ($i->harga_penawaran ?? 0) * ($i->jumlah_peserta ?? 1));
             
-            $m->total_rp_deal     = $ctaDeal->sum(fn($i) => $i->harga_penawaran * ($i->jumlah_peserta ?? 1));
+            $m->total_rp_deal     = $ctaDeal->sum(fn($i) => ($i->harga_penawaran ?? 0) * ($i->jumlah_peserta ?? 1));
 
             // Absensi & Izin
             $countHadir = AbsensiLog::where('user_id', $m->id)

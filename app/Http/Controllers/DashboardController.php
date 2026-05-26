@@ -56,8 +56,8 @@ class DashboardController extends Controller
 
         $stat_total_qty = (clone $statsQuery)->count();
         $stat_deal_qty = (clone $statsQuery)->where('status_penawaran', 'deal')->count();
-        $stat_total_nilai = (clone $statsQuery)->get()->sum(fn ($item) => $item->harga_penawaran * $item->jumlah_peserta);
-        $stat_deal_nilai = (clone $statsQuery)->where('status_penawaran', 'deal')->get()->sum(fn ($item) => $item->harga_penawaran * $item->jumlah_peserta);
+        $stat_total_nilai = (clone $statsQuery)->get()->sum(fn ($item) => ($item->harga_penawaran ?? 0) * ($item->jumlah_peserta ?? 1));
+        $stat_deal_nilai = (clone $statsQuery)->where('status_penawaran', 'deal')->get()->sum(fn ($item) => ($item->harga_penawaran ?? 0) * ($item->jumlah_peserta ?? 1));
         
         // 3. MAPPING DATA UNTUK TABEL PROGRESS & TABEL STATUS AKHIR
         $marketings = $users->map(function ($user) use ($start, $end, $hariEfektif) {
@@ -216,7 +216,7 @@ class DashboardController extends Controller
                 $endStr = now()->subMonths($i)->endOfMonth()->format('Y-m-d 23:59:59');
                 $data6Months[] = \App\Models\Cta::whereHas('prospek', function ($q) use ($user, $startStr, $endStr) {
                     $q->where('marketing_id', $user->id)->whereBetween('tanggal_prospek', [$startStr, $endStr]);
-                })->sum(\Illuminate\Support\Facades\DB::raw('harga_penawaran * jumlah_peserta'));
+                })->sum(\Illuminate\Support\Facades\DB::raw('harga_penawaran * COALESCE(jumlah_peserta, 1)'));
             }
             $lineDatasets6Months[] = [
                 'label' => $user->name, 'borderColor' => $colors[$index] ?? '#000', 'backgroundColor' => 'transparent',
@@ -349,10 +349,13 @@ class DashboardController extends Controller
         $start = $request->query('start');
         $end = $request->query('end');
 
-        // FIX: Tambahkan jam agar akurat saat di-klik detailnya
-        $details = \App\Models\Cta::whereHas('prospek', function ($q) use ($id, $start, $end) {
+        // Gunakan Carbon agar format waktunya presisi 00:00:00 s/d 23:59:59
+        $startDate = \Carbon\Carbon::parse($start)->startOfDay();
+        $endDate = \Carbon\Carbon::parse($end)->endOfDay();
+
+        $details = \App\Models\Cta::whereHas('prospek', function ($q) use ($id, $startDate, $endDate) {
             $q->where('marketing_id', $id)
-              ->whereBetween('tanggal_prospek', [$start . " 00:00:00", $end . " 23:59:59"]);
+              ->whereBetween('tanggal_prospek', [$startDate, $endDate]);
         })
             ->with('prospek')
             ->get();
