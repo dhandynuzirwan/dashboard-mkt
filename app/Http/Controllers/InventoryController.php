@@ -50,6 +50,7 @@ class InventoryController extends Controller
             'tgl_masuk'  => 'required|date',
             'lokasi'     => 'required|string',
             'pic'        => 'nullable|string',
+            'jumlah'     => 'required|integer|min:1',
             'harga_beli' => 'nullable|numeric',
             'kondisi'    => 'required|string',
             'foto_aset'  => 'nullable|image|mimes:jpg,jpeg,png|max:2048',
@@ -78,6 +79,7 @@ class InventoryController extends Controller
             'kondisi'    => $validated['kondisi'],
             'foto'       => $fotoPath,
             'keterangan' => $validated['keterangan'],
+            'jumlah'     => $validated['jumlah'],
         ]);
 
         return redirect()->back()->with('success', 'Aset Tetap baru berhasil ditambahkan!');
@@ -187,5 +189,63 @@ class InventoryController extends Controller
         $item->delete();
 
         return redirect()->back()->with('success', 'Data Barang Persediaan berhasil dihapus!');
+    }
+
+    // ================= 7. EDIT DATA ASET TETAP =================
+    public function updateAset(Request $request, $id)
+    {
+        $aset = Aset::findOrFail($id);
+
+        $validated = $request->validate([
+            'nama'       => 'required|string|max:255',
+            'kategori'   => 'required|string',
+            'tgl_masuk'  => 'required|date',
+            'lokasi'     => 'required|string',
+            'pic'        => 'nullable|string',
+            'jumlah'     => 'required|integer|min:1',
+            'harga_beli' => 'nullable|numeric',
+            'kondisi'    => 'required|string',
+            'foto_aset'  => 'nullable|image|mimes:jpg,jpeg,png|max:2048',
+            'keterangan' => 'nullable|string',
+        ]);
+
+        // Handle Update Foto jika ada file baru
+        if ($request->hasFile('foto_aset')) {
+            // Hapus foto lama jika ada
+            if ($aset->foto) {
+                Storage::disk('public')->delete($aset->foto);
+            }
+            $validated['foto'] = $request->file('foto_aset')->store('foto_aset', 'public');
+        }
+
+        $aset->update([
+            'nama'       => $validated['nama'],
+            'kategori'   => $validated['kategori'],
+            'tgl_masuk'  => $validated['tgl_masuk'],
+            'lokasi'     => $validated['lokasi'],
+            'pic'        => $validated['pic'],
+            'jumlah'     => $validated['jumlah'],
+            'harga'      => $validated['harga_beli'],
+            'kondisi'    => $validated['kondisi'],
+            'foto'       => $validated['foto'] ?? $aset->foto,
+            'keterangan' => $validated['keterangan'],
+        ]);
+
+        return redirect()->back()->with('success', 'Data Aset Tetap berhasil diperbarui!');
+    }
+
+    // ================= 8. HAPUS ASET TETAP =================
+    public function destroyAset($id)
+    {
+        $aset = Aset::findOrFail($id);
+
+        // Hapus file foto dari storage
+        if ($aset->foto) {
+            Storage::disk('public')->delete($aset->foto);
+        }
+
+        $aset->delete();
+
+        return redirect()->back()->with('success', 'Data Aset Tetap berhasil dihapus!');
     }
 }
