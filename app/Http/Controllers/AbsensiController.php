@@ -439,7 +439,9 @@ class AbsensiController extends Controller
     {
         $request->validate([
             'foto_selfie' => 'required',
-            'tipe_absen'  => 'required|in:in,out' // Menggunakan in/out agar konsisten dengan data Fingerspot
+            'tipe_absen'  => 'required|in:in,out', // Menggunakan in/out agar konsisten dengan data Fingerspot
+            'lat'         => 'nullable|numeric',
+            'long'        => 'nullable|numeric',
         ]);
 
         // Decode Gambar Base64
@@ -462,9 +464,11 @@ class AbsensiController extends Controller
             'tipe'      => $request->tipe_absen,
             'source'    => 'web_kamera', // Penanda ini dari kamera, bukan import fingerspot
             'foto_path' => 'absensi/' . $imageName,
+            'latitude'  => $request->lat,
+            'longitude' => $request->long,
         ]);
 
-        return redirect()->back()->with('success', 'Berhasil! Data absensi dan foto Anda telah terekam.');
+        return redirect()->back()->with('success', 'Berhasil! Absensi & lokasi terekam.');
     }
 
     // 3. Eksekusi hapus data absen jika HRD menolak (foto palsu)

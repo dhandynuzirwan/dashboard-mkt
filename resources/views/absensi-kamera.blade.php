@@ -55,6 +55,8 @@
                 <form action="{{ route('pegawai.absensi.store') }}" method="POST" id="formAbsensi">
                     @csrf
                     <input type="hidden" name="foto_selfie" id="foto_selfie" required>
+                    <input type="hidden" name="lat" id="lat">
+                    <input type="hidden" name="long" id="long">
                     
                     {{-- Pilihan Tipe Absen (Diperkecil & Default Masuk) --}}
                     <div class="mb-3 d-flex justify-content-center gap-2">
@@ -112,7 +114,7 @@
                                 <button type="button" id="btn-ulangi" class="btn btn-light border btn-round fw-bold shadow-sm py-2 hover-lift text-muted w-50" style="font-size: 14px;">
                                     <i class="fas fa-sync-alt me-1"></i> Ulangi
                                 </button>
-                                <button type="submit" id="btn-submit" class="btn btn-primary btn-round fw-bold shadow-sm py-2 hover-lift w-50 text-white" style="font-size: 14px;">
+                                <button type="button" id="btn-submit" class="btn btn-primary btn-round fw-bold shadow-sm py-2 hover-lift w-50 text-white" style="font-size: 14px;">
                                     <i class="fas fa-paper-plane me-1"></i> Kirim Absen
                                 </button>
                             </div>
@@ -165,6 +167,7 @@
         const btnJepret = document.getElementById('btn-jepret');
         const actionSubmit = document.getElementById('action-submit');
         const btnUlangi = document.getElementById('btn-ulangi');
+        const btnSubmit = document.getElementById('btn-submit');
         const inputFoto = document.getElementById('foto_selfie');
         const loading = document.getElementById('kamera-loading');
         let streamAccess = null;
@@ -207,6 +210,38 @@
             video.play();
             actionSubmit.style.display = 'none';
             btnJepret.style.display = 'block';
+        });
+
+        btnSubmit.addEventListener('click', function() {
+            // Ubah teks tombol jadi loading agar user tidak klik 2x
+            const originalText = btnSubmit.innerHTML;
+            btnSubmit.innerHTML = '<i class="fas fa-spinner fa-spin me-1"></i> Melacak Lokasi...';
+            btnSubmit.disabled = true;
+
+            if (navigator.geolocation) {
+                // Meminta koordinat GPS ke browser/HP
+                navigator.geolocation.getCurrentPosition(
+                    function(pos) {
+                        // Jika diizinkan, masukkan titik GPS ke input hidden
+                        document.getElementById('lat').value = pos.coords.latitude;
+                        document.getElementById('long').value = pos.coords.longitude;
+                        
+                        // Lanjutkan kirim form ke server
+                        document.getElementById('formAbsensi').submit();
+                    },
+                    function(err) {
+                        // Jika user menolak izin lokasi (Deny)
+                        alert("Gagal! Anda wajib mengizinkan akses lokasi/GPS untuk melakukan absensi.");
+                        btnSubmit.innerHTML = originalText;
+                        btnSubmit.disabled = false;
+                    },
+                    { enableHighAccuracy: true, timeout: 10000, maximumAge: 0 } // Memaksa GPS mencari titik paling akurat
+                );
+            } else {
+                alert("Browser atau perangkat Anda tidak mendukung fitur lokasi GPS.");
+                btnSubmit.innerHTML = originalText;
+                btnSubmit.disabled = false;
+            }
         });
     });
 </script>

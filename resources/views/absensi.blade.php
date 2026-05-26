@@ -180,6 +180,7 @@
                                                 <th class="text-center">FOTO</th>
                                                 <th class="text-start">KARYAWAN</th>
                                                 <th>JAM</th>
+                                                <th>LOKASI</th>
                                                 <th class="text-center">STATUS</th>
                                                 <th class="text-center">VIA</th>
                                                 <th class="text-center pe-4" width="120">AKSI</th>
@@ -214,6 +215,19 @@
                                                 
                                                 <td>
                                                     <div class="fw-bolder text-dark" style="font-size: 14px;">{{ $log->jam }}</div>
+                                                </td>
+
+                                                <td>
+                                                    @if($log->latitude && $log->longitude)
+                                                        <a href="https://www.google.com/maps?q={{ $log->latitude }},{{ $log->longitude }}" target="_blank" class="badge bg-light text-primary border border-primary-subtle text-decoration-none shadow-sm hover-lift px-2 py-1 d-inline-flex align-items-center">
+                                                            <i class="fas fa-map-marker-alt text-danger me-1"></i> Cek Peta
+                                                        </a>
+                                                        <div class="text-muted mt-1" style="font-size: 9px; font-family: monospace;">
+                                                            {{ $log->latitude }},<br>{{ $log->longitude }}
+                                                        </div>
+                                                    @else
+                                                        <span class="text-muted opacity-50 small">-</span>
+                                                    @endif
                                                 </td>
                                                 
                                                 <td class="text-center">
