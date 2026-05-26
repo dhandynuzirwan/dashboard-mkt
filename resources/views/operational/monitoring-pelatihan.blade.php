@@ -103,7 +103,7 @@
                                         <th class="ps-4" width="250">Klien, Program & Marketing</th>
                                         <th width="200">Jadwal Pelaksanaan</th>
                                         <th width="300">Tim Lapangan (Pengajar & Pengawas)</th>
-                                        <th width="220">Kelembagaan & PIC</th>
+                                        <th width="250">Kelembagaan & PIC</th>
                                         <th class="text-center pe-4" width="150">Status Kelas</th>
                                     </tr>
                                 </thead>
@@ -119,10 +119,8 @@
                                             </div>
                                         </td>
                                         
-                                        {{-- KOLOM JADWAL (UPDATE) --}}
                                         {{-- KOLOM JADWAL (UPDATE DENGAN LOKASI) --}}
                                         <td class="cell-relative">
-                                            {{-- Wrapper Konten --}}
                                             <div class="cell-content-wrapper d-flex flex-column gap-1">
                                                 <div class="bg-light p-2 rounded border">
                                                     <small class="text-muted d-block" style="font-size: 9px;">TGL PELATIHAN</small>
@@ -132,22 +130,18 @@
                                                     <small class="text-danger d-block" style="font-size: 9px;">TGL ASESMEN</small>
                                                     <span class="fw-bold text-danger" style="font-size: 11px;">08 Mei 2026</span>
                                                 </div>
-                                                {{-- 🔥 TAMBAHAN BOX LOKASI PELAKSANAAN 🔥 --}}
                                                 <div class="bg-info-subtle p-2 rounded border border-info-subtle mb-1">
                                                     <small class="text-info d-block" style="font-size: 9px;">LOKASI / VENUE</small>
                                                     <span class="fw-bold text-dark" style="font-size: 11px;">
-                                                        <i class="fas fa-video text-muted me-1"></i> Virtual (Zoom Meeting)
-                                                        {{-- Contoh kalau offline: <i class="fas fa-map-marker-alt text-danger me-1"></i> Hotel Grand Rohan --}}
+                                                        <i class="fas fa-video text-muted me-1"></i> Virtual (Zoom)
                                                     </span>
                                                 </div>
                                             </div>
-                                            {{-- Tombol Edit di Pojok Kanan Atas --}}
                                             <button class="btn btn-sm btn-edit-absolute hover-lift" title="Edit Jadwal & Lokasi" data-bs-toggle="modal" data-bs-target="#modalUpdateJadwal"><i class="fas fa-pen"></i></button>
                                         </td>
                                         
                                         {{-- KOLOM TIM (UPDATE) --}}
                                         <td class="cell-relative">
-                                            {{-- Wrapper Konten --}}
                                             <div class="cell-content-wrapper me-2">
                                                 <div class="mb-2">
                                                     <small class="text-muted d-block" style="font-size: 9px; text-transform: uppercase;">Instruktur & Asesor</small>
@@ -160,26 +154,31 @@
                                                     <span class="text-muted fw-medium d-block mt-1" style="font-size: 10px;">Wilker: Disnaker Riau</span>
                                                 </div>
                                             </div>
-                                            {{-- Tombol Edit di Pojok Kanan Atas --}}
                                             <button class="btn btn-sm btn-edit-absolute hover-lift" title="Edit Tim" data-bs-toggle="modal" data-bs-target="#modalUpdateTim"><i class="fas fa-pen"></i></button>
                                         </td>
                                         
-                                        {{-- KOLOM LEMBAGA (UPDATE) --}}
+                                        {{-- KOLOM LEMBAGA & PIC (UPDATE LABEL) --}}
                                         <td class="cell-relative">
-                                            {{-- Wrapper Konten --}}
                                             <div class="cell-content-wrapper me-2">
                                                 <div class="mb-2" style="font-size: 11px;">
                                                     <span class="text-muted d-block" style="font-size: 9px; text-transform: uppercase;">Lembaga & PJK3</span>
                                                     <span class="fw-bold text-dark d-block"><i class="fas fa-building text-info me-1"></i> PT Arsa Safety</span>
                                                 </div>
-                                                <div style="font-size: 11px;">
-                                                    <span class="text-muted d-block" style="font-size: 9px; text-transform: uppercase;">Penanggung Jawab</span>
-                                                    <span class="fw-bold text-dark d-block">Eks: Ibu Vina (HRD)</span>
-                                                    <span class="fw-bold text-dark d-block mt-1">Int: Dimas</span>
+                                                
+                                                {{-- 🔥 PIC SEKARANG MENJADI LABEL/BADGE 🔥 --}}
+                                                <div class="mt-2">
+                                                    <span class="text-muted d-block mb-1" style="font-size: 9px; text-transform: uppercase;">Penanggung Jawab (PIC)</span>
+                                                    <div class="d-flex flex-column gap-1">
+                                                        <span class="badge bg-light text-dark border text-start px-2 py-1 shadow-sm w-100 text-truncate" style="font-size: 10px;">
+                                                            <i class="fas fa-user-tie text-primary me-1"></i> Klien: Ibu Vina (HRD)
+                                                        </span>
+                                                        <span class="badge badge-soft-success border text-start px-2 py-1 shadow-sm w-100 text-truncate" style="font-size: 10px;">
+                                                            <i class="fas fa-headset text-success me-1"></i> Int: Dimas
+                                                        </span>
+                                                    </div>
                                                 </div>
                                             </div>
-                                            {{-- Tombol Edit di Pojok Kanan Atas --}}
-                                            <button class="btn btn-sm btn-edit-absolute hover-lift" title="Edit Lembaga" data-bs-toggle="modal" data-bs-target="#modalUpdateLembaga"><i class="fas fa-pen"></i></button>
+                                            <button class="btn btn-sm btn-edit-absolute hover-lift" title="Edit Lembaga & PIC" data-bs-toggle="modal" data-bs-target="#modalUpdateLembaga"><i class="fas fa-pen"></i></button>
                                         </td>
                                         
                                         <td class="text-center pe-4">
@@ -188,7 +187,7 @@
                                         </td>
                                     </tr>
 
-                                    {{-- BARIS 2: DATA KOSONG (PERSIAPAN) - TIDAK BERUBAH --}}
+                                    {{-- BARIS 2: DATA KOSONG (PERSIAPAN) --}}
                                     <tr>
                                         <td class="ps-4">
                                             <div class="fw-bolder text-dark" style="font-size: 14px;">PT. Wijaya Karya</div>
@@ -210,7 +209,7 @@
                                         </td>
                                         <td>
                                             <button class="btn btn-sm btn-white text-info text-start fw-bold hover-lift w-100 py-3" style="border: 1.5px dashed #a5f3fc;" data-bs-toggle="modal" data-bs-target="#modalUpdateLembaga">
-                                                <i class="fas fa-building me-2"></i> Set Kelembagaan
+                                                <i class="fas fa-building me-2"></i> Set Lembaga & PIC
                                             </button>
                                         </td>
                                         <td class="text-center pe-4">
@@ -228,10 +227,20 @@
             {{-- TAB 2: ADMINISTRASI & EVALUASI --}}
             <div class="tab-pane fade" id="pills-administrasi" role="tabpanel">
                 <div class="card card-modern border-0 shadow-sm mb-4">
-                    <div class="card-header bg-light border-bottom p-3" style="border-radius: 16px 16px 0 0;">
+                    <div class="card-header bg-light border-bottom p-3 d-flex justify-content-between align-items-center" style="border-radius: 16px 16px 0 0;">
                         <h6 class="m-0 fw-bolder text-dark">Pemberkasan Laporan, Validasi & Evaluasi Lapangan</h6>
                     </div>
                     <div class="card-body p-0">
+                        
+                        {{-- 🔥 ALERT SOP GLOBAL 🔥 --}}
+                        <div class="alert bg-warning-subtle border-0 text-warning-dark m-3 py-2 px-3 rounded-3 d-flex align-items-center shadow-sm">
+                            <i class="fas fa-bullhorn fs-5 me-3"></i>
+                            <div>
+                                <h6 class="fw-bold mb-0" style="font-size: 13px;">SOP Upload Laporan Lembaga</h6>
+                                <p class="mb-0 small opacity-75" style="font-size: 11px;">Maksimal <b>H+2</b> setelah pelatihan selesai untuk sertifikasi <b>BNSP</b>, dan maksimal <b>H+7</b> untuk sertifikasi <b>KEMNAKER</b>.</p>
+                            </div>
+                        </div>
+
                         <div class="table-responsive">
                             <table class="table table-modern table-hover align-middle mb-0" style="min-width: 1400px;">
                                 <thead class="bg-light sticky-top">
@@ -243,7 +252,8 @@
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    {{-- BARIS 1: SUDAH DI-ISI LAPORAN --}}
+                                    
+                                    {{-- BARIS 1: SUDAH UPLOAD (AMAN / TEPAT WAKTU) --}}
                                     <tr>
                                         <td class="ps-4">
                                             <div class="fw-bolder text-dark" style="font-size: 14px;">PT. Pertamina Hulu Rokan</div>
@@ -268,23 +278,24 @@
                                             </div>
                                         </td>
                                         <td>
-                                            {{-- Tampilan Laporan Terisi --}}
                                             <div class="d-flex flex-column gap-2">
                                                 <div class="d-flex gap-2">
                                                     <a href="#" class="btn btn-sm btn-light border text-start fw-bold hover-lift flex-grow-1" style="color: #0ea5e9;">
                                                         <i class="fas fa-check-circle me-1"></i> Lap. Internal
                                                     </a>
-                                                    <button class="btn btn-sm btn-white border text-muted hover-lift px-2" title="Ganti File" data-bs-toggle="modal" data-bs-target="#modalUploadLaporan"><i class="fas fa-sync-alt"></i></button>
+                                                    <button class="btn btn-sm btn-white border text-muted hover-lift px-2" title="Ganti File"><i class="fas fa-sync-alt"></i></button>
                                                 </div>
                                                 <div class="d-flex gap-2">
                                                     <a href="#" class="btn btn-sm btn-light border text-start fw-bold hover-lift flex-grow-1 text-success">
                                                         <i class="fas fa-check-circle me-1"></i> Lap. Kemnaker
                                                     </a>
-                                                    <button class="btn btn-sm btn-white border text-muted hover-lift px-2" title="Ganti File" data-bs-toggle="modal" data-bs-target="#modalUploadLaporan"><i class="fas fa-sync-alt"></i></button>
+                                                    <button class="btn btn-sm btn-white border text-muted hover-lift px-2" title="Ganti File"><i class="fas fa-sync-alt"></i></button>
                                                 </div>
-                                                <div class="bg-gray-50 border p-2 rounded mt-1">
-                                                    <small class="text-muted fw-bold d-block" style="font-size: 10px;">KETERANGAN:</small>
-                                                    <small class="text-dark d-block lh-sm" style="font-size: 11px;">Laporan sudah disahkan oleh Pak Fajar. Hardcopy menyusul.</small>
+                                                
+                                                {{-- Status Aman --}}
+                                                <div class="d-flex align-items-center mt-1 text-success bg-success-subtle px-2 py-1 rounded">
+                                                    <i class="fas fa-check-double me-2" style="font-size: 11px;"></i>
+                                                    <small class="fw-bold" style="font-size: 10px;">Laporan Tepat Waktu</small>
                                                 </div>
                                             </div>
                                         </td>
@@ -297,7 +308,7 @@
                                         </td>
                                     </tr>
 
-                                    {{-- BARIS 2: KOSONG / BELUM UPLOAD --}}
+                                    {{-- BARIS 2: KOSONG & TERLAMBAT UPLOAD --}}
                                     <tr>
                                         <td class="ps-4">
                                             <div class="fw-bolder text-dark" style="font-size: 14px;">PT. Wijaya Karya</div>
@@ -322,7 +333,6 @@
                                             </div>
                                         </td>
                                         <td>
-                                            {{-- Tampilan Laporan Kosong (Butuh Upload) --}}
                                             <div class="d-flex flex-column gap-2">
                                                 <button class="btn btn-sm btn-white text-primary text-start fw-bold hover-lift w-100" style="border: 1.5px dashed #bfdbfe;" data-bs-toggle="modal" data-bs-target="#modalUploadLaporan">
                                                     <i class="fas fa-cloud-upload-alt me-2"></i> Upload Lap. Internal
@@ -330,13 +340,71 @@
                                                 <button class="btn btn-sm btn-white text-success text-start fw-bold hover-lift w-100" style="border: 1.5px dashed #bbf7d0;" data-bs-toggle="modal" data-bs-target="#modalUploadLaporan">
                                                     <i class="fas fa-cloud-upload-alt me-2"></i> Upload Lap. BNSP
                                                 </button>
-                                                <div class="d-flex align-items-center mt-1 text-danger opacity-75">
-                                                    <i class="fas fa-info-circle me-1" style="font-size: 10px;"></i>
-                                                    <small class="fw-bold" style="font-size: 10px;">Maksimal ukuran file 5 MB (PDF/DOC/ZIP)</small>
+                                                
+                                                {{-- 🔥 WARNING TERLAMBAT 🔥 --}}
+                                                <div class="d-flex align-items-center mt-1 text-danger bg-danger-subtle px-2 py-1 rounded shadow-sm border border-danger">
+                                                    <i class="fas fa-exclamation-triangle me-2 animate-pulse" style="font-size: 11px;"></i>
+                                                    <div>
+                                                        <small class="fw-bolder d-block lh-1 mt-1" style="font-size: 10px;">TERLAMBAT UPLOAD!</small>
+                                                        <small class="fw-medium" style="font-size: 9px;">Melewati batas H+2 (Telat 3 Hari)</small>
+                                                    </div>
                                                 </div>
                                             </div>
                                         </td>
                                         <td>
+                                            <div class="bg-light border border-dashed p-3 rounded-4 text-center">
+                                                <p class="mb-2 text-muted small fw-bold">Belum ada evaluasi pelaksanaan.</p>
+                                                <button class="btn btn-sm btn-white border btn-round shadow-sm hover-lift text-dark fw-bold px-3">
+                                                    <i class="fas fa-pen me-1"></i> Tulis Evaluasi
+                                                </button>
+                                            </div>
+                                        </td>
+                                    </tr>
+
+                                    {{-- BARIS 3: KOSONG TAPI MASIH AMAN (MENDEKATI DEADLINE) --}}
+                                    <tr>
+                                        <td class="ps-4 border-bottom-0">
+                                            <div class="fw-bolder text-dark" style="font-size: 14px;">PT. Indofood CBP</div>
+                                            <div class="text-muted fw-bold mt-1" style="font-size: 12px;">Auditor SMK3</div>
+                                            <span class="badge badge-soft-info border mt-2">KEMNAKER</span>
+                                        </td>
+                                        <td class="border-bottom-0">
+                                            <div class="d-flex justify-content-between align-items-center mb-1">
+                                                <span class="text-dark fw-bold" style="font-size: 11px;">Progress Checklist</span>
+                                                <span class="text-warning-dark fw-bolder" style="font-size: 11px;">80% (18/21)</span>
+                                            </div>
+                                            <div class="progress bg-light border mb-2 shadow-none" style="height: 8px; border-radius: 10px;">
+                                                <div class="progress-bar bg-warning" style="width: 80%"></div>
+                                            </div>
+                                            <div class="d-flex gap-2 mt-2">
+                                                <button class="btn btn-sm btn-white border btn-round fw-bold text-dark flex-grow-1 shadow-sm hover-lift" data-bs-toggle="modal" data-bs-target="#modalDetailValidasi" style="font-size: 11px;">
+                                                    <i class="fas fa-list-ul me-1 text-muted"></i> Detail
+                                                </button>
+                                                <button class="btn btn-sm btn-primary btn-round fw-bold shadow-sm flex-grow-1 hover-lift" data-bs-toggle="modal" data-bs-target="#modalUpdateValidasi" style="font-size: 11px;">
+                                                    <i class="fas fa-check-square me-1"></i> Update
+                                                </button>
+                                            </div>
+                                        </td>
+                                        <td class="border-bottom-0">
+                                            <div class="d-flex flex-column gap-2">
+                                                <button class="btn btn-sm btn-white text-primary text-start fw-bold hover-lift w-100" style="border: 1.5px dashed #bfdbfe;" data-bs-toggle="modal" data-bs-target="#modalUploadLaporan">
+                                                    <i class="fas fa-cloud-upload-alt me-2"></i> Upload Lap. Internal
+                                                </button>
+                                                <button class="btn btn-sm btn-white text-success text-start fw-bold hover-lift w-100" style="border: 1.5px dashed #bbf7d0;" data-bs-toggle="modal" data-bs-target="#modalUploadLaporan">
+                                                    <i class="fas fa-cloud-upload-alt me-2"></i> Upload Lap. Kemnaker
+                                                </button>
+                                                
+                                                {{-- 🔥 WARNING MENDEKATI DEADLINE 🔥 --}}
+                                                <div class="d-flex align-items-center mt-1 text-warning-dark bg-warning-subtle px-2 py-1 rounded shadow-sm">
+                                                    <i class="fas fa-clock me-2" style="font-size: 11px;"></i>
+                                                    <div>
+                                                        <small class="fw-bolder d-block lh-1 mt-1" style="font-size: 10px;">Batas Upload: Besok</small>
+                                                        <small class="fw-medium" style="font-size: 9px;">Maks H+7 (27 Mei 2026)</small>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </td>
+                                        <td class="border-bottom-0">
                                             <div class="bg-light border border-dashed p-3 rounded-4 text-center">
                                                 <p class="mb-2 text-muted small fw-bold">Belum ada evaluasi pelaksanaan.</p>
                                                 <button class="btn btn-sm btn-white border btn-round shadow-sm hover-lift text-dark fw-bold px-3">
@@ -659,7 +727,8 @@
 
             <div class="modal-body px-4 px-md-5 pt-4 pb-4" style="background-color: #f8fafc;">
                 
-                <form action="#" method="POST">
+                <form action="#" method="POST" enctype="multipart/form-data">
+                    @csrf
                     <div class="row g-4">
                         
                         {{-- Kategori 1: Administrasi --}}
@@ -669,21 +738,44 @@
                                     <h6 class="fw-bolder text-dark mb-0"><i class="fas fa-folder-open text-warning me-2"></i> 1. Administrasi</h6>
                                 </div>
                                 <div class="card-body px-4 py-3">
-                                    <div class="form-check custom-checkbox mb-2">
-                                        <input class="form-check-input" type="checkbox" id="chk_adm_1" checked>
+                                    {{-- Item 1 --}}
+                                    <div class="form-check custom-checkbox mb-1">
+                                        <input class="form-check-input" type="checkbox" id="chk_adm_1" data-bs-toggle="collapse" data-bs-target="#col_adm_1" checked>
                                         <label class="form-check-label text-dark small fw-medium" for="chk_adm_1">Persyaratan Peserta</label>
                                     </div>
-                                    <div class="form-check custom-checkbox mb-2">
-                                        <input class="form-check-input" type="checkbox" id="chk_adm_2" checked>
-                                        <label class="form-check-label text-dark small fw-medium" for="chk_adm_2">Sertifikat</label>
+
+                                    {{-- Item 2 --}}
+                                    <div class="form-check custom-checkbox mb-1">
+                                        <input class="form-check-input" type="checkbox" id="chk_adm_2" data-bs-toggle="collapse" data-bs-target="#col_adm_2" checked>
+                                        <label class="form-check-label text-dark small fw-medium" for="chk_adm_2">E Certificate</label>
                                     </div>
-                                    <div class="form-check custom-checkbox mb-2">
-                                        <input class="form-check-input" type="checkbox" id="chk_adm_3">
+                                    <div class="collapse show mb-3" id="col_adm_2">
+                                        <div class="ps-4 pe-1 mt-1">
+                                            <input type="url" name="link_sertifikat" class="form-control form-control-sm shadow-none" placeholder="Masukkan Link Drive Sertifikat...">
+                                        </div>
+                                    </div>
+
+                                    {{-- Item 3 --}}
+                                    <div class="form-check custom-checkbox mb-1">
+                                        <input class="form-check-input" type="checkbox" id="chk_adm_3" data-bs-toggle="collapse" data-bs-target="#col_adm_3">
                                         <label class="form-check-label text-dark small fw-medium" for="chk_adm_3">Form Evaluasi</label>
                                     </div>
-                                    <div class="form-check custom-checkbox mb-0">
-                                        <input class="form-check-input" type="checkbox" id="chk_adm_4">
+                                    <div class="collapse mb-3" id="col_adm_3">
+                                        <div class="ps-4 pe-1 mt-1">
+                                            <input type="url" name="link_evaluasi" class="form-control form-control-sm shadow-none" placeholder="Masukkan Link Form/Drive Evaluasi...">
+                                        </div>
+                                    </div>
+
+                                    {{-- Item 4 --}}
+                                    <div class="form-check custom-checkbox mb-1">
+                                        <input class="form-check-input" type="checkbox" id="chk_adm_4" data-bs-toggle="collapse" data-bs-target="#col_adm_4">
                                         <label class="form-check-label text-dark small fw-medium" for="chk_adm_4">Review Google</label>
+                                    </div>
+                                    <div class="collapse mb-2" id="col_adm_4">
+                                        <div class="ps-4 pe-1 mt-1">
+                                            <small class="text-muted d-block mb-1" style="font-size: 10px;">Upload Screenshot Review</small>
+                                            <input type="file" class="form-control form-control-sm shadow-none" accept="image/*">
+                                        </div>
                                     </div>
                                 </div>
                             </div>
@@ -696,21 +788,48 @@
                                     <h6 class="fw-bolder text-dark mb-0"><i class="fas fa-laptop-house text-info me-2"></i> 2. Online Support</h6>
                                 </div>
                                 <div class="card-body px-4 py-3">
-                                    <div class="form-check custom-checkbox mb-2">
-                                        <input class="form-check-input" type="checkbox" id="chk_os_1" checked>
+                                    {{-- Item 1 --}}
+                                    <div class="form-check custom-checkbox mb-1">
+                                        <input class="form-check-input" type="checkbox" id="chk_os_1" data-bs-toggle="collapse" data-bs-target="#col_os_1" checked>
                                         <label class="form-check-label text-dark small fw-medium" for="chk_os_1">Link Zoom Materi</label>
                                     </div>
-                                    <div class="form-check custom-checkbox mb-2">
-                                        <input class="form-check-input" type="checkbox" id="chk_os_2">
+                                    <div class="collapse show mb-3" id="col_os_1">
+                                        <div class="ps-4 pe-1 mt-1">
+                                            <input type="url" class="form-control form-control-sm shadow-none" placeholder="https://zoom.us/j/...">
+                                        </div>
+                                    </div>
+
+                                    {{-- Item 2 --}}
+                                    <div class="form-check custom-checkbox mb-1">
+                                        <input class="form-check-input" type="checkbox" id="chk_os_2" data-bs-toggle="collapse" data-bs-target="#col_os_2">
                                         <label class="form-check-label text-dark small fw-medium" for="chk_os_2">Link Zoom Asesment</label>
                                     </div>
-                                    <div class="form-check custom-checkbox mb-2">
-                                        <input class="form-check-input" type="checkbox" id="chk_os_3" checked>
+                                    <div class="collapse mb-3" id="col_os_2">
+                                        <div class="ps-4 pe-1 mt-1">
+                                            <input type="url" class="form-control form-control-sm shadow-none" placeholder="https://zoom.us/j/...">
+                                        </div>
+                                    </div>
+
+                                    {{-- Item 3 --}}
+                                    <div class="form-check custom-checkbox mb-1">
+                                        <input class="form-check-input" type="checkbox" id="chk_os_3" data-bs-toggle="collapse" data-bs-target="#col_os_3" checked>
                                         <label class="form-check-label text-dark small fw-medium" for="chk_os_3">Background Zoom</label>
                                     </div>
-                                    <div class="form-check custom-checkbox mb-0">
-                                        <input class="form-check-input" type="checkbox" id="chk_os_4" checked>
+                                    <div class="collapse show mb-3" id="col_os_3">
+                                        <div class="ps-4 pe-1 mt-1">
+                                            <input type="file" class="form-control form-control-sm shadow-none" accept="image/*">
+                                        </div>
+                                    </div>
+
+                                    {{-- Item 4 --}}
+                                    <div class="form-check custom-checkbox mb-1">
+                                        <input class="form-check-input" type="checkbox" id="chk_os_4" data-bs-toggle="collapse" data-bs-target="#col_os_4" checked>
                                         <label class="form-check-label text-dark small fw-medium" for="chk_os_4">Foto Profil Grup WA</label>
+                                    </div>
+                                    <div class="collapse show mb-2" id="col_os_4">
+                                        <div class="ps-4 pe-1 mt-1">
+                                            <input type="file" class="form-control form-control-sm shadow-none" accept="image/*">
+                                        </div>
                                     </div>
                                 </div>
                             </div>
@@ -723,42 +842,21 @@
                                     <h6 class="fw-bolder text-dark mb-0"><i class="fas fa-comments text-success me-2"></i> 3. Komunikasi</h6>
                                 </div>
                                 <div class="card-body px-4 py-3">
+                                    <div class="alert bg-success-subtle border-0 text-success small py-2 mb-3" style="border-radius: 8px;">
+                                        <i class="fas fa-info-circle me-1"></i> Cukup centang jika komunikasi sudah dilakukan.
+                                    </div>
                                     <div class="row">
                                         <div class="col-sm-6">
-                                            <div class="form-check custom-checkbox mb-2">
-                                                <input class="form-check-input" type="checkbox" id="chk_kom_1" checked>
-                                                <label class="form-check-label text-dark small fw-medium" for="chk_kom_1">Hubungi Peserta</label>
-                                            </div>
-                                            <div class="form-check custom-checkbox mb-2">
-                                                <input class="form-check-input" type="checkbox" id="chk_kom_2" checked>
-                                                <label class="form-check-label text-dark small fw-medium" for="chk_kom_2">Hubungi Instruktur</label>
-                                            </div>
-                                            <div class="form-check custom-checkbox mb-2">
-                                                <input class="form-check-input" type="checkbox" id="chk_kom_3">
-                                                <label class="form-check-label text-dark small fw-medium" for="chk_kom_3">Hubungi Asesor</label>
-                                            </div>
-                                            <div class="form-check custom-checkbox mb-2 mb-sm-0">
-                                                <input class="form-check-input" type="checkbox" id="chk_kom_4" checked>
-                                                <label class="form-check-label text-dark small fw-medium" for="chk_kom_4">Buat Grup WA</label>
-                                            </div>
+                                            <div class="form-check custom-checkbox mb-2"><input class="form-check-input" type="checkbox" id="chk_kom_1" checked><label class="form-check-label text-dark small fw-medium" for="chk_kom_1">Hubungi Peserta</label></div>
+                                            <div class="form-check custom-checkbox mb-2"><input class="form-check-input" type="checkbox" id="chk_kom_2" checked><label class="form-check-label text-dark small fw-medium" for="chk_kom_2">Hubungi Instruktur</label></div>
+                                            <div class="form-check custom-checkbox mb-2"><input class="form-check-input" type="checkbox" id="chk_kom_3"><label class="form-check-label text-dark small fw-medium" for="chk_kom_3">Hubungi Asesor</label></div>
+                                            <div class="form-check custom-checkbox mb-2 mb-sm-0"><input class="form-check-input" type="checkbox" id="chk_kom_4" checked><label class="form-check-label text-dark small fw-medium" for="chk_kom_4">Buat Grup WA</label></div>
                                         </div>
                                         <div class="col-sm-6">
-                                            <div class="form-check custom-checkbox mb-2">
-                                                <input class="form-check-input" type="checkbox" id="chk_kom_5" checked>
-                                                <label class="form-check-label text-dark small fw-medium" for="chk_kom_5">Share Link Zoom Materi</label>
-                                            </div>
-                                            <div class="form-check custom-checkbox mb-2">
-                                                <input class="form-check-input" type="checkbox" id="chk_kom_6">
-                                                <label class="form-check-label text-dark small fw-medium" for="chk_kom_6">Share Link Zoom Asesment</label>
-                                            </div>
-                                            <div class="form-check custom-checkbox mb-2">
-                                                <input class="form-check-input" type="checkbox" id="chk_kom_7">
-                                                <label class="form-check-label text-dark small fw-medium" for="chk_kom_7">Share Form Evaluasi</label>
-                                            </div>
-                                            <div class="form-check custom-checkbox mb-0">
-                                                <input class="form-check-input" type="checkbox" id="chk_kom_8">
-                                                <label class="form-check-label text-dark small fw-medium" for="chk_kom_8">Share Sertifikat</label>
-                                            </div>
+                                            <div class="form-check custom-checkbox mb-2"><input class="form-check-input" type="checkbox" id="chk_kom_5" checked><label class="form-check-label text-dark small fw-medium" for="chk_kom_5">Share Link Zoom Materi</label></div>
+                                            <div class="form-check custom-checkbox mb-2"><input class="form-check-input" type="checkbox" id="chk_kom_6"><label class="form-check-label text-dark small fw-medium" for="chk_kom_6">Share Link Zoom Asesment</label></div>
+                                            <div class="form-check custom-checkbox mb-2"><input class="form-check-input" type="checkbox" id="chk_kom_7"><label class="form-check-label text-dark small fw-medium" for="chk_kom_7">Share Form Evaluasi</label></div>
+                                            <div class="form-check custom-checkbox mb-0"><input class="form-check-input" type="checkbox" id="chk_kom_8"><label class="form-check-label text-dark small fw-medium" for="chk_kom_8">Share Sertifikat</label></div>
                                         </div>
                                     </div>
                                 </div>
@@ -772,25 +870,43 @@
                                     <h6 class="fw-bolder text-dark mb-0"><i class="fas fa-camera text-danger me-2"></i> 4. Dokumentasi</h6>
                                 </div>
                                 <div class="card-body px-4 py-3">
-                                    <div class="form-check custom-checkbox mb-2">
-                                        <input class="form-check-input" type="checkbox" id="chk_dok_1">
-                                        <label class="form-check-label text-dark small fw-medium" for="chk_dok_1">Foto Kompeten</label>
+                                    {{-- Reusable Collapse for Dokumentasi (Using Select Dropdown) --}}
+                                    @php
+                                        $dokItems = [
+                                            ['id' => '1', 'label' => 'Foto Kompeten'],
+                                            ['id' => '2', 'label' => 'Foto K3'],
+                                            ['id' => '3', 'label' => 'Foto Formal'],
+                                            ['id' => '4', 'label' => 'Foto Materi'],
+                                        ];
+                                    @endphp
+
+                                    @foreach($dokItems as $dok)
+                                    <div class="form-check custom-checkbox mb-1">
+                                        <input class="form-check-input" type="checkbox" id="chk_dok_{{ $dok['id'] }}" data-bs-toggle="collapse" data-bs-target="#col_dok_{{ $dok['id'] }}">
+                                        <label class="form-check-label text-dark small fw-medium" for="chk_dok_{{ $dok['id'] }}">{{ $dok['label'] }}</label>
                                     </div>
-                                    <div class="form-check custom-checkbox mb-2">
-                                        <input class="form-check-input" type="checkbox" id="chk_dok_2">
-                                        <label class="form-check-label text-dark small fw-medium" for="chk_dok_2">Foto K3</label>
+                                    <div class="collapse mb-3" id="col_dok_{{ $dok['id'] }}">
+                                        <div class="ps-4 pe-1 mt-1">
+                                            <select class="form-select form-select-sm mb-1 bg-light border-0" onchange="toggleMethod(this, 'dok_{{ $dok['id'] }}')">
+                                                <option value="link">Gunakan Link Drive</option>
+                                                <option value="file">Upload Foto/ZIP</option>
+                                            </select>
+                                            <input type="url" id="dok_{{ $dok['id'] }}_link" class="form-control form-control-sm shadow-none" placeholder="Masukkan Link Drive...">
+                                            <input type="file" id="dok_{{ $dok['id'] }}_file" class="form-control form-control-sm shadow-none d-none" accept=".zip,image/*" multiple>
+                                        </div>
                                     </div>
-                                    <div class="form-check custom-checkbox mb-2">
-                                        <input class="form-check-input" type="checkbox" id="chk_dok_3">
-                                        <label class="form-check-label text-dark small fw-medium" for="chk_dok_3">Foto Formal</label>
-                                    </div>
-                                    <div class="form-check custom-checkbox mb-2">
-                                        <input class="form-check-input" type="checkbox" id="chk_dok_4">
-                                        <label class="form-check-label text-dark small fw-medium" for="chk_dok_4">Foto Materi</label>
-                                    </div>
-                                    <div class="form-check custom-checkbox mb-0">
-                                        <input class="form-check-input" type="checkbox" id="chk_dok_5">
+                                    @endforeach
+
+                                    {{-- Record Zoom (Only Link Drive because video sizes are huge) --}}
+                                    <div class="form-check custom-checkbox mb-1">
+                                        <input class="form-check-input" type="checkbox" id="chk_dok_5" data-bs-toggle="collapse" data-bs-target="#col_dok_5">
                                         <label class="form-check-label text-dark small fw-medium" for="chk_dok_5">Record Zoom</label>
+                                    </div>
+                                    <div class="collapse mb-2" id="col_dok_5">
+                                        <div class="ps-4 pe-1 mt-1">
+                                            <small class="text-muted d-block mb-1" style="font-size: 10px;">Link Drive Rekaman (Wajib Link)</small>
+                                            <input type="url" class="form-control form-control-sm shadow-none" placeholder="Masukkan Link Drive Video...">
+                                        </div>
                                     </div>
                                 </div>
                             </div>
@@ -803,7 +919,7 @@
             {{-- Footer Action --}}
             <div class="modal-footer border-top px-4 px-md-5 py-3 bg-white" style="border-radius: 0 0 20px 20px;">
                 <button type="button" class="btn btn-white border fw-bold px-4 btn-round hover-lift text-dark" data-bs-dismiss="modal">Batal</button>
-                <button type="button" class="btn btn-primary fw-bold px-4 btn-round shadow-sm hover-lift" onclick="alert('Simulasi: Progress checklist berhasil diperbarui!')" data-bs-dismiss="modal">
+                <button type="button" class="btn btn-primary fw-bold px-4 btn-round shadow-sm hover-lift" onclick="alert('Simulasi: Progress checklist & file berhasil disimpan!')" data-bs-dismiss="modal">
                     <i class="fas fa-save me-1"></i> Simpan Progress
                 </button>
             </div>
@@ -1074,4 +1190,20 @@
         padding-right: 25px; /* Beri ruang untuk tombol absolute */
     }
 </style>
+{{-- Skrip Khusus Modal Validasi --}}
+<script>
+    // Fungsi untuk mengganti input Link Drive vs Upload File
+    function toggleMethod(selectElement, idPrefix) {
+        const linkInput = document.getElementById(idPrefix + '_link');
+        const fileInput = document.getElementById(idPrefix + '_file');
+        
+        if (selectElement.value === 'link') {
+            linkInput.classList.remove('d-none');
+            fileInput.classList.add('d-none');
+        } else {
+            linkInput.classList.add('d-none');
+            fileInput.classList.remove('d-none');
+        }
+    }
+</script>
 @endsection
