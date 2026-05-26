@@ -205,70 +205,149 @@
 
             <div class="space-y-4" id="employee-list">
 
-                <div class="emp-item bg-white p-5 rounded-3xl shadow-sm border border-gray-100 flex flex-col md:flex-row md:items-center justify-between gap-4" data-status="verified" data-program="Web Development & SEO">
-                    <div class="flex items-start md:items-center">
-                        <div class="w-12 h-12 bg-blue-50 rounded-full flex items-center justify-center text-blue-600 font-bold text-lg mr-4 flex-shrink-0">
-                            DN
-                        </div>
-                        <div>
-                            <h3 class="text-base font-bold text-gray-900 emp-name leading-tight">Dhandy Nuzirwan</h3>
-                            <p class="text-sm text-blue-600 font-medium mt-0.5">Web Development & SEO</p>
-                            <div class="flex items-center text-gray-400 text-[11px] mt-1">
-                                <svg class="w-3 h-3 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path></svg>
-                                Pelaksanaan: 10 Jan 2026
+                {{-- Karyawan 1 (Disetujui) --}}
+                <div class="emp-item bg-white p-5 rounded-3xl shadow-sm border border-gray-100 flex flex-col" data-status="verified" data-program="Web Development & SEO">
+                    <div class="flex flex-col md:flex-row md:items-center justify-between gap-4">
+                        <div class="flex items-start md:items-center">
+                            <div class="w-12 h-12 bg-blue-50 rounded-full flex items-center justify-center text-blue-600 font-bold text-lg mr-4 flex-shrink-0">
+                                DN
+                            </div>
+                            <div>
+                                <h3 class="text-base font-bold text-gray-900 emp-name leading-tight">Dhandy Nuzirwan</h3>
+                                <p class="text-sm text-blue-600 font-medium mt-0.5">Web Development & SEO</p>
+                                <div class="flex items-center text-gray-400 text-[11px] mt-1">
+                                    <svg class="w-3 h-3 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path></svg>
+                                    Pelaksanaan: 10 Jan 2026
+                                </div>
                             </div>
                         </div>
+                        <div class="flex items-center justify-between md:justify-end w-full md:w-auto border-t border-gray-50 md:border-t-0 pt-3 md:pt-0">
+                            <span class="bg-green-100 text-green-700 px-3 py-1.5 rounded-full text-[10px] font-bold uppercase tracking-wider md:mr-4">Disetujui</span>
+                            <button class="text-xs font-bold text-gray-400 cursor-not-allowed hidden md:block">Lengkap</button>
+                        </div>
                     </div>
-                    <div class="flex items-center justify-between md:justify-end w-full md:w-auto border-t border-gray-50 md:border-t-0 pt-3 md:pt-0">
-                        <span class="bg-green-100 text-green-700 px-3 py-1.5 rounded-full text-[10px] font-bold uppercase tracking-wider md:mr-4">Disetujui</span>
-                        <button class="text-xs font-bold text-gray-400 cursor-not-allowed hidden md:block">Lengkap</button>
-                    </div>
-                </div>
-            
-                <div class="emp-item bg-white p-5 rounded-3xl shadow-sm border-2 border-red-100 flex flex-col md:flex-row md:items-center justify-between gap-4 relative overflow-hidden" data-status="revision" data-program="UI/UX Design">
-                    <div class="absolute left-0 top-0 bottom-0 w-1.5 bg-red-500"></div>
                     
-                    <div class="flex items-start md:items-center pl-2">
-                        <div class="w-12 h-12 bg-red-50 rounded-full flex items-center justify-center text-red-500 font-bold text-lg mr-4 flex-shrink-0">
-                            LP
-                        </div>
-                        <div>
-                            <h3 class="text-base font-bold text-gray-900 emp-name leading-tight">Leo Pratama</h3>
-                            <p class="text-sm text-red-600 font-medium mt-0.5">UI/UX Design Masterclass</p>
-                            <div class="flex items-center text-gray-400 text-[11px] mt-1">
-                                <svg class="w-3 h-3 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path></svg>
-                                Pelaksanaan: 12 Jan 2026
-                            </div>
-                        </div>
-                    </div>
-                    <div class="flex items-center justify-between md:justify-end w-full md:w-auto border-t border-gray-50 md:border-t-0 pt-3 md:pt-0 pl-2">
-                        <div class="flex flex-col md:items-end md:mr-4">
-                            <span class="bg-red-100 text-red-700 px-3 py-1.5 rounded-full text-[10px] font-bold uppercase tracking-wider inline-block w-max mb-1">Revisi Berkas</span>
-                            <p class="text-[10px] text-red-500 hidden md:block">KTP blur/tidak terbaca</p>
-                        </div>
-                        <button onclick="openSheet('sheet-revisi-leo')" class="bg-red-50 text-red-600 border border-red-200 text-xs font-bold px-4 py-2.5 rounded-xl hover:bg-red-600 hover:text-white active:scale-95 transition-all flex items-center shadow-sm">
-                            Perbaiki <svg class="w-3.5 h-3.5 ml-1.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path></svg>
+                    {{-- Action Links (Zoom, BG & Modul) --}}
+                    <div class="w-full mt-4 pt-4 border-t border-gray-50 flex flex-wrap gap-2">
+                        <a href="#" target="_blank" class="inline-flex items-center px-3 py-1.5 bg-blue-50 hover:bg-blue-100 text-blue-600 border border-blue-100 rounded-xl text-[10px] font-bold uppercase tracking-wider transition-colors active:scale-95 shadow-sm">
+                            <svg class="w-3.5 h-3.5 mr-1.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 10l4.553-2.276A1 1 0 0121 8.618v6.764a1 1 0 01-1.447.894L15 14M5 18h8a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z"></path></svg>
+                            Zoom Pelatihan
+                        </a>
+                        <a href="#" target="_blank" class="inline-flex items-center px-3 py-1.5 bg-purple-50 hover:bg-purple-100 text-purple-600 border border-purple-100 rounded-xl text-[10px] font-bold uppercase tracking-wider transition-colors active:scale-95 shadow-sm">
+                            <svg class="w-3.5 h-3.5 mr-1.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 10l4.553-2.276A1 1 0 0121 8.618v6.764a1 1 0 01-1.447.894L15 14M5 18h8a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z"></path></svg>
+                            Zoom Asesmen
+                        </a>
+                        <a href="#" download class="inline-flex items-center px-3 py-1.5 bg-gray-50 hover:bg-gray-100 text-gray-700 border border-gray-200 rounded-xl text-[10px] font-bold uppercase tracking-wider transition-colors active:scale-95 shadow-sm">
+                            <svg class="w-3.5 h-3.5 mr-1.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"></path></svg>
+                            Virtual BG
+                        </a>
+                        {{-- 🔥 Tombol Modul Pelatihan 🔥 --}}
+                        <button type="button" onclick="downloadModul(this, 'Dhandy Nuzirwan')" class="inline-flex items-center px-3 py-1.5 bg-amber-50 hover:bg-amber-100 text-amber-700 border border-amber-200 rounded-xl text-[10px] font-bold uppercase tracking-wider transition-colors active:scale-95 shadow-sm relative group">
+                            <svg class="w-3.5 h-3.5 mr-1.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path></svg>
+                            Modul Materi
+                            {{-- Tooltip Warning --}}
+                            <span class="absolute -top-8 left-1/2 -translate-x-1/2 bg-gray-800 text-white text-[9px] px-2 py-1 rounded-md opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap pointer-events-none">
+                                ⚠️ Cuman 1x Unduh
+                            </span>
                         </button>
                     </div>
                 </div>
             
-                <div class="emp-item bg-white p-5 rounded-3xl shadow-sm border border-gray-100 flex flex-col md:flex-row md:items-center justify-between gap-4 opacity-80" data-status="pending" data-program="Marketing Officer">
-                    <div class="flex items-start md:items-center">
-                        <div class="w-12 h-12 bg-gray-100 rounded-full flex items-center justify-center text-gray-500 font-bold text-lg mr-4 flex-shrink-0">
-                            AS
-                        </div>
-                        <div>
-                            <h3 class="text-base font-bold text-gray-900 emp-name leading-tight">Ahmad Subagyo</h3>
-                            <p class="text-sm text-gray-600 font-medium mt-0.5">Marketing Officer</p>
-                            <div class="flex items-center text-gray-400 text-[11px] mt-1">
-                                <svg class="w-3 h-3 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path></svg>
-                                Pelaksanaan: 15 Jan 2026
+                {{-- Karyawan 2 (Revisi) --}}
+                <div class="emp-item bg-white p-5 rounded-3xl shadow-sm border-2 border-red-100 flex flex-col relative overflow-hidden" data-status="revision" data-program="UI/UX Design">
+                    <div class="absolute left-0 top-0 bottom-0 w-1.5 bg-red-500"></div>
+                    <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 pl-2">
+                        <div class="flex items-start md:items-center">
+                            <div class="w-12 h-12 bg-red-50 rounded-full flex items-center justify-center text-red-500 font-bold text-lg mr-4 flex-shrink-0">
+                                LP
+                            </div>
+                            <div>
+                                <h3 class="text-base font-bold text-gray-900 emp-name leading-tight">Leo Pratama</h3>
+                                <p class="text-sm text-red-600 font-medium mt-0.5">UI/UX Design Masterclass</p>
+                                <div class="flex items-center text-gray-400 text-[11px] mt-1">
+                                    <svg class="w-3 h-3 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path></svg>
+                                    Pelaksanaan: 12 Jan 2026
+                                </div>
                             </div>
                         </div>
+                        <div class="flex items-center justify-between md:justify-end w-full md:w-auto border-t border-gray-50 md:border-t-0 pt-3 md:pt-0 pl-2">
+                            <div class="flex flex-col md:items-end md:mr-4">
+                                <span class="bg-red-100 text-red-700 px-3 py-1.5 rounded-full text-[10px] font-bold uppercase tracking-wider inline-block w-max mb-1">Revisi Berkas</span>
+                                <p class="text-[10px] text-red-500 hidden md:block">KTP blur/tidak terbaca</p>
+                            </div>
+                            <button onclick="openSheet('sheet-revisi-leo')" class="bg-red-50 text-red-600 border border-red-200 text-xs font-bold px-4 py-2.5 rounded-xl hover:bg-red-600 hover:text-white active:scale-95 transition-all flex items-center shadow-sm">
+                                Perbaiki <svg class="w-3.5 h-3.5 ml-1.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path></svg>
+                            </button>
+                        </div>
                     </div>
-                    <div class="flex items-center justify-between md:justify-end w-full md:w-auto border-t border-gray-50 md:border-t-0 pt-3 md:pt-0">
-                        <span class="bg-yellow-100 text-yellow-700 px-3 py-1.5 rounded-full text-[10px] font-bold uppercase tracking-wider md:mr-4">Menunggu</span>
-                        <button class="text-xs font-bold text-gray-400 cursor-not-allowed hidden md:block">Antrean</button>
+
+                    {{-- Action Links --}}
+                    <div class="w-full mt-4 pt-4 border-t border-gray-50 flex flex-wrap gap-2 pl-2">
+                        <a href="#" target="_blank" class="inline-flex items-center px-3 py-1.5 bg-blue-50 hover:bg-blue-100 text-blue-600 border border-blue-100 rounded-xl text-[10px] font-bold uppercase tracking-wider transition-colors active:scale-95 shadow-sm">
+                            <svg class="w-3.5 h-3.5 mr-1.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 10l4.553-2.276A1 1 0 0121 8.618v6.764a1 1 0 01-1.447.894L15 14M5 18h8a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z"></path></svg>
+                            Zoom Pelatihan
+                        </a>
+                        <a href="#" target="_blank" class="inline-flex items-center px-3 py-1.5 bg-purple-50 hover:bg-purple-100 text-purple-600 border border-purple-100 rounded-xl text-[10px] font-bold uppercase tracking-wider transition-colors active:scale-95 shadow-sm">
+                            <svg class="w-3.5 h-3.5 mr-1.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 10l4.553-2.276A1 1 0 0121 8.618v6.764a1 1 0 01-1.447.894L15 14M5 18h8a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z"></path></svg>
+                            Zoom Asesmen
+                        </a>
+                        <a href="#" download class="inline-flex items-center px-3 py-1.5 bg-gray-50 hover:bg-gray-100 text-gray-700 border border-gray-200 rounded-xl text-[10px] font-bold uppercase tracking-wider transition-colors active:scale-95 shadow-sm">
+                            <svg class="w-3.5 h-3.5 mr-1.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"></path></svg>
+                            Virtual BG
+                        </a>
+                        <button type="button" onclick="downloadModul(this, 'Leo Pratama')" class="inline-flex items-center px-3 py-1.5 bg-amber-50 hover:bg-amber-100 text-amber-700 border border-amber-200 rounded-xl text-[10px] font-bold uppercase tracking-wider transition-colors active:scale-95 shadow-sm relative group">
+                            <svg class="w-3.5 h-3.5 mr-1.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path></svg>
+                            Modul Materi
+                            <span class="absolute -top-8 left-1/2 -translate-x-1/2 bg-gray-800 text-white text-[9px] px-2 py-1 rounded-md opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap pointer-events-none">
+                                ⚠️ Cuman 1x Unduh
+                            </span>
+                        </button>
+                    </div>
+                </div>
+            
+                {{-- Karyawan 3 (Pending) --}}
+                <div class="emp-item bg-white p-5 rounded-3xl shadow-sm border border-gray-100 flex flex-col opacity-80" data-status="pending" data-program="Marketing Officer">
+                    <div class="flex flex-col md:flex-row md:items-center justify-between gap-4">
+                        <div class="flex items-start md:items-center">
+                            <div class="w-12 h-12 bg-gray-100 rounded-full flex items-center justify-center text-gray-500 font-bold text-lg mr-4 flex-shrink-0">
+                                AS
+                            </div>
+                            <div>
+                                <h3 class="text-base font-bold text-gray-900 emp-name leading-tight">Ahmad Subagyo</h3>
+                                <p class="text-sm text-gray-600 font-medium mt-0.5">Marketing Officer</p>
+                                <div class="flex items-center text-gray-400 text-[11px] mt-1">
+                                    <svg class="w-3 h-3 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path></svg>
+                                    Pelaksanaan: 15 Jan 2026
+                                </div>
+                            </div>
+                        </div>
+                        <div class="flex items-center justify-between md:justify-end w-full md:w-auto border-t border-gray-50 md:border-t-0 pt-3 md:pt-0">
+                            <span class="bg-yellow-100 text-yellow-700 px-3 py-1.5 rounded-full text-[10px] font-bold uppercase tracking-wider md:mr-4">Menunggu</span>
+                            <button class="text-xs font-bold text-gray-400 cursor-not-allowed hidden md:block">Antrean</button>
+                        </div>
+                    </div>
+
+                    {{-- Action Links --}}
+                    <div class="w-full mt-4 pt-4 border-t border-gray-50 flex flex-wrap gap-2">
+                        <a href="#" target="_blank" class="inline-flex items-center px-3 py-1.5 bg-blue-50 hover:bg-blue-100 text-blue-600 border border-blue-100 rounded-xl text-[10px] font-bold uppercase tracking-wider transition-colors active:scale-95 shadow-sm">
+                            <svg class="w-3.5 h-3.5 mr-1.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 10l4.553-2.276A1 1 0 0121 8.618v6.764a1 1 0 01-1.447.894L15 14M5 18h8a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z"></path></svg>
+                            Zoom Pelatihan
+                        </a>
+                        <a href="#" target="_blank" class="inline-flex items-center px-3 py-1.5 bg-purple-50 hover:bg-purple-100 text-purple-600 border border-purple-100 rounded-xl text-[10px] font-bold uppercase tracking-wider transition-colors active:scale-95 shadow-sm">
+                            <svg class="w-3.5 h-3.5 mr-1.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 10l4.553-2.276A1 1 0 0121 8.618v6.764a1 1 0 01-1.447.894L15 14M5 18h8a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z"></path></svg>
+                            Zoom Asesmen
+                        </a>
+                        <a href="#" download class="inline-flex items-center px-3 py-1.5 bg-gray-50 hover:bg-gray-100 text-gray-700 border border-gray-200 rounded-xl text-[10px] font-bold uppercase tracking-wider transition-colors active:scale-95 shadow-sm">
+                            <svg class="w-3.5 h-3.5 mr-1.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"></path></svg>
+                            Virtual BG
+                        </a>
+                        <button type="button" onclick="downloadModul(this, 'Ahmad Subagyo')" class="inline-flex items-center px-3 py-1.5 bg-amber-50 hover:bg-amber-100 text-amber-700 border border-amber-200 rounded-xl text-[10px] font-bold uppercase tracking-wider transition-colors active:scale-95 shadow-sm relative group">
+                            <svg class="w-3.5 h-3.5 mr-1.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path></svg>
+                            Modul Materi
+                            <span class="absolute -top-8 left-1/2 -translate-x-1/2 bg-gray-800 text-white text-[9px] px-2 py-1 rounded-md opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap pointer-events-none">
+                                ⚠️ Cuman 1x Unduh
+                            </span>
+                        </button>
                     </div>
                 </div>
             
@@ -459,6 +538,34 @@
             closeSheet('sheet-revisi-leo');
             resetUpload();
             document.getElementById('alert-revisi').classList.add('hidden');
+        }
+
+        function downloadModul(btnElement, empName) {
+            // 1. Munculkan konfirmasi peringatan
+            const konfirmasi = confirm(`PERINGATAN!\n\nSesuai dengan SOP dan Hak Cipta, Modul Materi untuk Peserta HANYA DAPAT DIUNDUH 1 KALI.\n\nApakah Anda sudah siap mengunduhnya sekarang?`);
+            
+            if(konfirmasi) {
+                // 2. Simulasi Proses Download (Nantinya ganti dengan trigger file PDF)
+                // window.open('link-file-pdf.pdf', '_blank'); 
+                
+                // 3. Matikan Tombol (Simulasi Disable)
+                btnElement.classList.replace('bg-amber-50', 'bg-gray-100');
+                btnElement.classList.replace('text-amber-700', 'text-gray-400');
+                btnElement.classList.replace('border-amber-200', 'border-gray-200');
+                
+                // Buang class interaksi hover & active
+                btnElement.classList.remove('hover:bg-amber-100', 'active:scale-95');
+                btnElement.classList.add('cursor-not-allowed', 'opacity-80');
+                
+                // Ubah text dan Icon jadi "Check"
+                btnElement.innerHTML = `
+                    <svg class="w-3.5 h-3.5 mr-1.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg>
+                    Telah Diunduh
+                `;
+                
+                // Hilangkan atribut onclick agar tidak jalan jika dipaksa klik lagi
+                btnElement.removeAttribute('onclick');
+            }
         }
     </script>
 </body>

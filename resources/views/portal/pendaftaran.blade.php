@@ -131,7 +131,7 @@
 
                     <div class="flex flex-col md:flex-row md:items-center justify-between bg-gray-50 p-4 rounded-2xl border border-gray-200">
                         <div class="mb-3 md:mb-0">
-                            <h3 class="text-sm font-bold text-gray-800">2. Scan Ijazah <span class="text-red-500">*</span></h3>
+                            <h3 class="text-sm font-bold text-gray-800">2. Scan Ijazah Asli <span class="text-red-500">*</span></h3>
                             <p class="text-[11px] text-gray-500">Format PDF/JPG/PNG. Max 2MB.</p>
                         </div>
                         <div class="w-full md:w-1/2">

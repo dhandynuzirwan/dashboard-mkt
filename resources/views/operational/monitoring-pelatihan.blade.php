@@ -71,6 +71,66 @@
             </div>
         </div>
 
+        {{-- ================= FILTER RENTANG TANGGAL ================= --}}
+        {{-- FILTER TRACKING PROSPEK DEAL --}}
+        <div class="card card-modern mb-4" style="background-color: #f8faff;">
+            <div class="card-body p-3 p-md-4">
+                <div class="d-flex align-items-center mb-3 pb-3 border-bottom border-light">
+                    <div class="icon-sm bg-primary-subtle text-primary rounded-circle d-flex align-items-center justify-content-center me-2" style="width: 32px; height: 32px;">
+                        <i class="fas fa-filter" style="font-size: 13px;"></i>
+                    </div>
+                    <h6 class="fw-bold mb-0 text-dark">Filter Pencarian Prospek Deal</h6>
+                </div>
+
+                <form action="#" method="GET" class="row g-3 align-items-end">
+                    {{-- Kolom 1: Perusahaan --}}
+                    <div class="col-md-6 col-lg-3 col-xl-2">
+                        <label class="label-modern">Cari Perusahaan</label>
+                        <div class="input-group shadow-sm" style="border-radius: 8px; overflow: hidden;">
+                            <span class="input-group-text bg-white border-end-0 text-muted"><i class="fas fa-search"></i></span>
+                            <input type="text" name="search_tracking" class="form-control border-start-0 shadow-none ps-0" style="font-size: 13px; padding: 8px 12px;" placeholder="Nama / PIC...">
+                        </div>
+                    </div>
+
+                    {{-- Kolom 3: Status --}}
+                    <div class="col-md-6 col-lg-3 col-xl-2">
+                        <label class="label-modern">Skema Pelatihan</label>
+                        <select name="status_tracking" class="form-select input-modern shadow-none" style="font-size: 13px;">
+                            <option value="">Semua</option>
+                            <option value="offline">Offline</option>
+                            <option value="online">Online</option>
+                            <option value="inhouse">Inhouse</option>
+                            <option value="blended">Blended</option>
+                        </select>
+                    </div>
+
+                    {{-- Kolom 4: Tanggal Awal --}}
+                    <div class="col-md-6 col-lg-3 col-xl-2">
+                        <label class="label-modern">Dari Tanggal</label>
+                        <input type="date" name="start_date" class="form-control input-modern shadow-none" style="font-size: 13px;">
+                    </div>
+
+                    {{-- Kolom 5: Tanggal Akhir --}}
+                    <div class="col-md-6 col-lg-3 col-xl-2">
+                        <label class="label-modern">Sampai Tanggal</label>
+                        <input type="date" name="end_date" class="form-control input-modern shadow-none" style="font-size: 13px;">
+                    </div>
+
+                    {{-- Kolom 6: Tombol --}}
+                    <div class="col-md-6 col-lg-3 col-xl-2">
+                        <div class="d-flex gap-2">
+                            <button type="submit" class="btn btn-primary btn-round fw-bold shadow-sm flex-fill" style="padding: 8px 12px; font-size: 13px;">
+                                <i class="fas fa-search me-1"></i> Cari
+                            </button>
+                            <a href="#" class="btn btn-white border btn-round fw-bold text-dark shadow-sm flex-fill d-flex align-items-center justify-content-center" style="padding: 8px 12px; font-size: 13px;">
+                                Reset
+                            </a>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+
         {{-- ================= SEGMENTED TABS (MODERN) ================= --}}
         <div class="d-flex justify-content-center mb-4 fade-in">
             <div class="nav-modern p-1 rounded-pill bg-white border shadow-sm d-inline-flex overflow-auto" id="pills-tab" role="tablist" style="max-width: 100%;">

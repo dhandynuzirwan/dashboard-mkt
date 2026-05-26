@@ -128,6 +128,63 @@
             </div>
         </div>
 
+        {{-- FILTER TRACKING PROSPEK DEAL --}}
+        <div class="card card-modern mb-4" style="background-color: #f8faff;">
+            <div class="card-body p-3 p-md-4">
+                <div class="d-flex align-items-center mb-3 pb-3 border-bottom border-light">
+                    <div class="icon-sm bg-primary-subtle text-primary rounded-circle d-flex align-items-center justify-content-center me-2" style="width: 32px; height: 32px;">
+                        <i class="fas fa-filter" style="font-size: 13px;"></i>
+                    </div>
+                    <h6 class="fw-bold mb-0 text-dark">Filter Pencarian Prospek Deal</h6>
+                </div>
+
+                <form action="#" method="GET" class="row g-3 align-items-end">
+                    {{-- Kolom 1: Perusahaan --}}
+                    <div class="col-md-6 col-lg-3 col-xl-2">
+                        <label class="label-modern">Cari Perusahaan</label>
+                        <div class="input-group shadow-sm" style="border-radius: 8px; overflow: hidden;">
+                            <span class="input-group-text bg-white border-end-0 text-muted"><i class="fas fa-search"></i></span>
+                            <input type="text" name="search_tracking" class="form-control border-start-0 shadow-none ps-0" style="font-size: 13px; padding: 8px 12px;" placeholder="Nama / PIC...">
+                        </div>
+                    </div>
+
+                    {{-- Kolom 3: Status --}}
+                    <div class="col-md-6 col-lg-3 col-xl-2">
+                        <label class="label-modern">Status</label>
+                        <select name="status_tracking" class="form-select input-modern shadow-none" style="font-size: 13px;">
+                            <option value="">Semua</option>
+                            <option value="lengkap">🟢 Lengkap</option>
+                            <option value="kurang">🟡 Kurang</option>
+                        </select>
+                    </div>
+
+                    {{-- Kolom 4: Tanggal Awal --}}
+                    <div class="col-md-6 col-lg-3 col-xl-2">
+                        <label class="label-modern">Dari Tanggal</label>
+                        <input type="date" name="start_date" class="form-control input-modern shadow-none" style="font-size: 13px;">
+                    </div>
+
+                    {{-- Kolom 5: Tanggal Akhir --}}
+                    <div class="col-md-6 col-lg-3 col-xl-2">
+                        <label class="label-modern">Sampai Tanggal</label>
+                        <input type="date" name="end_date" class="form-control input-modern shadow-none" style="font-size: 13px;">
+                    </div>
+
+                    {{-- Kolom 6: Tombol --}}
+                    <div class="col-md-6 col-lg-3 col-xl-2">
+                        <div class="d-flex gap-2">
+                            <button type="submit" class="btn btn-primary btn-round fw-bold shadow-sm flex-fill" style="padding: 8px 12px; font-size: 13px;">
+                                <i class="fas fa-search me-1"></i> Cari
+                            </button>
+                            <a href="#" class="btn btn-white border btn-round fw-bold text-dark shadow-sm flex-fill d-flex align-items-center justify-content-center" style="padding: 8px 12px; font-size: 13px;">
+                                Reset
+                            </a>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+
         {{-- ================= SEGMENTED TABS (MODERN) ================= --}}
         <div class="d-flex justify-content-center mb-4 fade-in">
             <div class="nav-modern p-1 rounded-pill bg-white border shadow-sm d-inline-flex" id="pills-tab" role="tablist">
@@ -145,63 +202,6 @@
 
             {{-- TAB 1: TRACKING PROSPEK DEAL --}}
             <div class="tab-pane fade show active" id="pills-tracking" role="tabpanel">
-                
-                {{-- FILTER TRACKING PROSPEK DEAL --}}
-                <div class="card card-modern mb-4" style="background-color: #f8faff;">
-                    <div class="card-body p-3 p-md-4">
-                        <div class="d-flex align-items-center mb-3 pb-3 border-bottom border-light">
-                            <div class="icon-sm bg-primary-subtle text-primary rounded-circle d-flex align-items-center justify-content-center me-2" style="width: 32px; height: 32px;">
-                                <i class="fas fa-filter" style="font-size: 13px;"></i>
-                            </div>
-                            <h6 class="fw-bold mb-0 text-dark">Filter Pencarian Prospek Deal</h6>
-                        </div>
-
-                        <form action="#" method="GET" class="row g-3 align-items-end">
-                            {{-- Kolom 1 --}}
-                            <div class="col-md-6 col-xl-3">
-                                <label class="label-modern">Cari Perusahaan / Klien</label>
-                                <div class="input-group shadow-sm" style="border-radius: 8px; overflow: hidden;">
-                                    <span class="input-group-text bg-white border-end-0 text-muted"><i class="fas fa-search"></i></span>
-                                    <input type="text" name="search_tracking" class="form-control border-start-0 shadow-none ps-0" style="font-size: 13px; padding: 8px 12px;" placeholder="Nama / PIC...">
-                                </div>
-                            </div>
-                            
-                            {{-- Kolom 2 --}}
-                            <div class="col-md-6 col-xl-3">
-                                <label class="label-modern">Program & Sertifikasi</label>
-                                <select name="program_tracking" class="form-select input-modern shadow-none">
-                                    <option value="">Semua Program</option>
-                                    <option value="k3_kemnaker">Ahli K3 Umum (Kemnaker)</option>
-                                    <option value="crane_bnsp">Operator Crane (BNSP)</option>
-                                    <option value="web_internal">Web Development (Internal)</option>
-                                </select>
-                            </div>
-
-                            {{-- Kolom 3 --}}
-                            <div class="col-md-6 col-xl-3">
-                                <label class="label-modern">Status Registrasi</label>
-                                <select name="status_tracking" class="form-select input-modern shadow-none">
-                                    <option value="">Semua Status</option>
-                                    <option value="lengkap">🟢 Kuota Terpenuhi</option>
-                                    <option value="kurang">🟡 Belum Lengkap</option>
-                                    <option value="belum">🔴 Belum Daftar</option>
-                                </select>
-                            </div>
-
-                            {{-- Kolom 4 --}}
-                            <div class="col-md-6 col-xl-3">
-                                <div class="d-flex gap-2">
-                                    <button type="submit" class="btn btn-primary btn-round fw-bold shadow-sm flex-fill" style="padding: 8px 12px; font-size: 13px;">
-                                        <i class="fas fa-search me-1"></i> Terapkan
-                                    </button>
-                                    <a href="#" class="btn btn-white border btn-round fw-bold text-dark shadow-sm flex-fill d-flex align-items-center justify-content-center" style="padding: 8px 12px; font-size: 13px;">
-                                        Reset
-                                    </a>
-                                </div>
-                            </div>
-                        </form>
-                    </div>
-                </div>
 
                 {{-- TABEL TRACKING PROSPEK DEAL --}}
                 <div class="card card-modern border-0 shadow-sm mb-4">
@@ -216,10 +216,10 @@
                                         <th class="text-center" width="90">ID & Tgl</th>
                                         <th class="ps-3" width="250">Perusahaan & PIC</th>
                                         <th width="220">Program & Sertifikasi</th>
-                                        <th width="150">Finansial & Mkt</th>
+                                        <th width="150">Marketing</th>
                                         <th width="220">Progress Pendaftaran</th>
                                         <th class="text-center" width="130">Status Pendaftar</th>
-                                        <th class="text-center pe-4" width="100">Aksi</th>
+                                        {{-- <th class="text-center pe-4" width="100">Aksi</th> --}}
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -250,9 +250,6 @@
                                                     </div>
                                                     <span class="fw-bold text-dark" style="font-size: 11px;">Ayu Lestari</span>
                                                 </div>
-                                                <div class="bg-success-subtle border border-success-subtle rounded px-2 py-1">
-                                                    <span class="text-success fw-bolder" style="font-size: 11px;">Rp 45.000.000</span>
-                                                </div>
                                             </div>
                                         </td>
                                         <td>
@@ -268,11 +265,11 @@
                                         <td class="text-center">
                                             <span class="badge bg-success rounded-pill px-3 py-1 shadow-sm">Lengkap</span>
                                         </td>
-                                        <td class="text-center pe-4">
+                                        {{-- <td class="text-center pe-4">
                                             <button class="btn btn-primary btn-sm w-100 btn-round fw-bold shadow-sm hover-lift" onclick="document.getElementById('pills-registrasi-tab').click()">
                                                 Cek Berkas
                                             </button>
-                                        </td>
+                                        </td> --}}
                                     </tr>
 
                                     {{-- Data Tracking 2: Kurang --}}
@@ -302,9 +299,6 @@
                                                     </div>
                                                     <span class="fw-bold text-dark" style="font-size: 11px;">Dhandy N.</span>
                                                 </div>
-                                                <div class="bg-success-subtle border border-success-subtle rounded px-2 py-1">
-                                                    <span class="text-success fw-bolder" style="font-size: 11px;">Rp 24.000.000</span>
-                                                </div>
                                             </div>
                                         </td>
                                         <td>
@@ -320,11 +314,11 @@
                                         <td class="text-center">
                                             <span class="badge badge-soft-warning text-dark border border-warning rounded-pill px-3 py-1 shadow-sm">Belum Lengkap</span>
                                         </td>
-                                        <td class="text-center pe-4">
+                                        {{-- <td class="text-center pe-4">
                                             <a href="https://wa.me/62812345678" target="_blank" class="btn btn-success btn-sm w-100 btn-round fw-bold shadow-sm hover-lift">
                                                 <i class="fab fa-whatsapp me-1"></i> Follow Up
                                             </a>
-                                        </td>
+                                        </td> --}}
                                     </tr>
 
                                     {{-- Data Tracking 3: Belum Daftar Sama Sekali --}}
@@ -354,9 +348,6 @@
                                                     </div>
                                                     <span class="fw-bold text-dark" style="font-size: 11px;">Sri Nurhayati</span>
                                                 </div>
-                                                <div class="bg-success-subtle border border-success-subtle rounded px-2 py-1">
-                                                    <span class="text-success fw-bolder" style="font-size: 11px;">Rp 2.500.000</span>
-                                                </div>
                                             </div>
                                         </td>
                                         <td>
@@ -372,11 +363,11 @@
                                         <td class="text-center">
                                             <span class="badge badge-soft-danger border border-danger rounded-pill px-3 py-1 shadow-sm">Belum Daftar</span>
                                         </td>
-                                        <td class="text-center pe-4">
+                                        {{-- <td class="text-center pe-4">
                                             <button class="btn btn-warning text-dark btn-sm w-100 btn-round fw-bold shadow-sm hover-lift">
                                                 <i class="fas fa-bell me-1"></i> Reminder
                                             </button>
-                                        </td>
+                                        </td> --}}
                                     </tr>
                                 </tbody>
                             </table>

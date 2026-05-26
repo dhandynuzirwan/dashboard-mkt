@@ -78,8 +78,9 @@
 
         <div id="result-section" class="hidden">
             
+            {{-- BAGIAN PROFIL & AKSI (DI BAWAH H2 NAMA) --}}
             <div class="bg-white p-6 rounded-3xl shadow-sm border border-gray-100 mb-6">
-                <div class="flex justify-between items-start">
+                <div class="flex justify-between items-start mb-6">
                     <div>
                         <h2 class="text-xl font-bold text-gray-900">Halo, Dhandy Nuzirwan</h2>
                         <p class="text-sm text-gray-500 mt-1">ID: <span class="font-bold text-gray-700">PLT-2026-089</span></p>
@@ -91,6 +92,33 @@
                     </div>
                     <button onclick="resetPencarian()" class="text-xs font-bold text-blue-600 bg-blue-50 px-3 py-2 rounded-lg hover:bg-blue-100 active:scale-95 transition">
                         Cari Lain
+                    </button>
+                </div>
+
+                {{-- 🔥 ACTION BUTTONS (ZOOM & BG) 🔥 --}}
+                <div class="flex flex-wrap gap-2 pt-4 border-t border-gray-50">
+                    <a href="#" target="_blank" class="inline-flex items-center px-4 py-2 bg-blue-50 hover:bg-blue-100 text-blue-600 border border-blue-100 rounded-xl text-[11px] font-bold uppercase tracking-wider transition-colors active:scale-95 shadow-sm">
+                        <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 10l4.553-2.276A1 1 0 0121 8.618v6.764a1 1 0 01-1.447.894L15 14M5 18h8a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z"></path></svg>
+                        Zoom Pelatihan
+                    </a>
+                    <a href="#" target="_blank" class="inline-flex items-center px-4 py-2 bg-purple-50 hover:bg-purple-100 text-purple-600 border border-purple-100 rounded-xl text-[11px] font-bold uppercase tracking-wider transition-colors active:scale-95 shadow-sm">
+                        <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 10l4.553-2.276A1 1 0 0121 8.618v6.764a1 1 0 01-1.447.894L15 14M5 18h8a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z"></path></svg>
+                        Zoom Asesmen
+                    </a>
+                    <a href="#" download class="inline-flex items-center px-4 py-2 bg-gray-50 hover:bg-gray-100 text-gray-700 border border-gray-200 rounded-xl text-[11px] font-bold uppercase tracking-wider transition-colors active:scale-95 shadow-sm">
+                        <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"></path></svg>
+                        Virtual BG
+                    </a>
+                    <button type="button" 
+                            id="btn-modul-leo" 
+                            onclick="downloadModul(this, 'Leo Pratama')" 
+                            class="inline-flex items-center px-4 py-2 bg-amber-50 hover:bg-amber-100 text-amber-700 border border-amber-200 rounded-xl text-[11px] font-bold uppercase tracking-wider transition-colors active:scale-95 shadow-sm relative group">
+                        <svg class="w-4 h-4 mr-1.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path></svg>
+                        Modul Materi
+                        {{-- Tooltip Warning --}}
+                        <span class="absolute -top-10 left-1/2 -translate-x-1/2 bg-gray-800 text-white text-[10px] px-3 py-1.5 rounded-lg opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap pointer-events-none">
+                            ⚠️ Hanya bisa diunduh 1x
+                        </span>
                     </button>
                 </div>
 
@@ -327,6 +355,54 @@
             // Sembunyikan alert atas
             document.getElementById('alert-revisi').classList.add('hidden');
         }
+
+        function downloadModul(btnElement, empName) {
+            // 1. Cek apakah sudah pernah didownload dari localStorage
+            const storageKey = 'modul_downloaded_' + empName.replace(/\s+/g, '-').toLowerCase();
+            
+            if (localStorage.getItem(storageKey) === 'true') {
+                alert('Maaf, Anda sudah pernah mengunduh modul ini sebelumnya.');
+                return;
+            }
+
+            // 2. Munculkan konfirmasi peringatan
+            const konfirmasi = confirm(`PERINGATAN!\n\nSesuai SOP, Modul Materi untuk [${empName}] HANYA DAPAT DIUNDUH 1 KALI.\n\nApakah Anda yakin ingin mengunduhnya sekarang?`);
+            
+            if(konfirmasi) {
+                // 3. Tandai sudah didownload di localStorage
+                localStorage.setItem(storageKey, 'true');
+                
+                // 4. Simulasi download file
+                // window.location.href = 'URL_FILE_MODUL_KAMU'; 
+                
+                // 5. Ubah tampilan tombol jadi terkunci
+                btnElement.classList.replace('bg-amber-50', 'bg-gray-100');
+                btnElement.classList.replace('text-amber-700', 'text-gray-400');
+                btnElement.classList.replace('border-amber-200', 'border-gray-200');
+                btnElement.classList.add('cursor-not-allowed', 'opacity-80');
+                btnElement.classList.remove('hover:bg-amber-100', 'active:scale-95', 'group');
+                
+                btnElement.innerHTML = `
+                    <svg class="w-4 h-4 mr-1.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg>
+                    Telah Diunduh
+                `;
+                btnElement.disabled = true;
+            }
+        }
+
+        // Saat halaman dimuat, cek apakah tombol sudah harus dalam posisi terkunci
+        window.onload = function() {
+            const btn = document.getElementById('btn-modul-leo');
+            const empName = 'Leo Pratama'; // Sesuaikan dengan nama karyawan
+            const storageKey = 'modul_downloaded_' + empName.replace(/\s+/g, '-').toLowerCase();
+            
+            if (localStorage.getItem(storageKey) === 'true') {
+                btn.classList.replace('bg-amber-50', 'bg-gray-100');
+                btn.classList.replace('text-amber-700', 'text-gray-400');
+                btn.disabled = true;
+                btn.innerHTML = `<svg class="w-4 h-4 mr-1.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg> Telah Diunduh`;
+            }
+        };
     </script>
 </body>
 </html>
