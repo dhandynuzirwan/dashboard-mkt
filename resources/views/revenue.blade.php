@@ -66,6 +66,39 @@
             </div>
         </div>
 
+        {{-- ================= CHARTS SECTION ================= --}}
+        <div class="row g-4 mb-4 fade-in">
+            {{-- Chart Penawaran --}}
+            <div class="col-md-6">
+                <div class="card card-modern h-100 border-0 shadow-sm">
+                    <div class="card-header bg-transparent border-bottom pt-4 px-4 pb-3">
+                        <h6 class="card-title fw-bolder mb-0 text-dark">Data Penawaran (Ads vs Organik)</h6>
+                    </div>
+                    <div class="card-body px-4 py-3">
+                        {{-- 🔥 BUNGKUS CANVAS DENGAN DIV BERUKURAN TETAP 🔥 --}}
+                        <div style="position: relative; height: 300px; width: 100%;">
+                            <canvas id="chartPenawaran"></canvas>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            {{-- Chart Deal --}}
+            <div class="col-md-6">
+                <div class="card card-modern h-100 border-0 shadow-sm">
+                    <div class="card-header bg-transparent border-bottom pt-4 px-4 pb-3">
+                        <h6 class="card-title fw-bolder mb-0 text-dark">Data Deal / Revenue (Ads vs Organik)</h6>
+                    </div>
+                    <div class="card-body px-4 py-3">
+                        {{-- 🔥 BUNGKUS CANVAS DENGAN DIV BERUKURAN TETAP 🔥 --}}
+                        <div style="position: relative; height: 300px; width: 100%;">
+                            <canvas id="chartDeal"></canvas>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
         {{-- ================= TABEL REVENUE (CLEAN & MODERN) ================= --}}
         <div class="card card-modern border-0 shadow-sm fade-in">
             <div class="card-header bg-transparent border-bottom pt-4 px-4 pb-3">
@@ -291,8 +324,13 @@
 </style>
 
 {{-- ================= SCRIPTS ================= --}}
+
+{{-- 🔥 TAMBAHKAN LIBRARY CHART.JS 🔥 --}}
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
 <script>
     document.addEventListener("DOMContentLoaded", function() {
+        // Skrip Jam (yang sudah ada sebelumnya)
         function updateClock() {
             const now = new Date();
             const options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric', hour: '2-digit', minute: '2-digit', second: '2-digit', hour12: false };
@@ -300,6 +338,99 @@
         }
         setInterval(updateClock, 1000);
         updateClock();
+
+        // ==========================================
+        // DATA DARI PHP UNTUK CHART
+        // ==========================================
+        const chartData = @json($chartData);
+
+        // Format untuk tooltips & sumbu Y (Rupiah)
+        const rpFormatter = function(value) {
+            if (value === 0) return 'Rp 0';
+            // Agar label tidak kepanjangan di axis Y, bisa disingkat (opsional). 
+            // Disini kita format lengkap untuk Tooltip.
+            return 'Rp ' + new Intl.NumberFormat('id-ID').format(value);
+        };
+
+        const chartOptions = {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: {
+                tooltip: {
+                    callbacks: {
+                        label: function(context) {
+                            return context.dataset.label + ': ' + rpFormatter(context.raw);
+                        }
+                    }
+                },
+                legend: {
+                    position: 'bottom',
+                    labels: { boxWidth: 12, usePointStyle: true, font: { size: 11, family: "'Nunito', sans-serif", weight: 'bold' } }
+                }
+            },
+            scales: {
+                x: { stacked: true, grid: { display: false } },
+                y: { 
+                    stacked: true, 
+                    border: { display: false },
+                    ticks: {
+                        callback: function(value) {
+                            // Ringkas angka Miliaran/Jutaan agar label rapi
+                            if(value >= 1000000000) return 'Rp ' + (value / 1000000000).toFixed(1) + 'M';
+                            if(value >= 1000000) return 'Rp ' + (value / 1000000).toFixed(0) + 'Jt';
+                            return rpFormatter(value);
+                        },
+                        font: { size: 10 }
+                    } 
+                }
+            }
+        };
+
+        // 1. INIT CHART PENAWARAN
+        new Chart(document.getElementById('chartPenawaran').getContext('2d'), {
+            type: 'bar',
+            data: {
+                labels: chartData.labels,
+                datasets: [
+                    {
+                        label: 'Sumber Ads',
+                        data: chartData.penawaran_ads,
+                        backgroundColor: '#3b82f6', // Biru
+                        borderRadius: { topLeft: 0, topRight: 0, bottomLeft: 4, bottomRight: 4 }
+                    },
+                    {
+                        label: 'Sumber Organik',
+                        data: chartData.penawaran_organik,
+                        backgroundColor: '#22c55e', // Hijau
+                        borderRadius: { topLeft: 4, topRight: 4, bottomLeft: 0, bottomRight: 0 }
+                    }
+                ]
+            },
+            options: chartOptions
+        });
+
+        // 2. INIT CHART DEAL (REVENUE)
+        new Chart(document.getElementById('chartDeal').getContext('2d'), {
+            type: 'bar',
+            data: {
+                labels: chartData.labels,
+                datasets: [
+                    {
+                        label: 'Sumber Ads',
+                        data: chartData.deal_ads,
+                        backgroundColor: '#0ea5e9', // Cyan
+                        borderRadius: { topLeft: 0, topRight: 0, bottomLeft: 4, bottomRight: 4 }
+                    },
+                    {
+                        label: 'Sumber Organik',
+                        data: chartData.deal_organik,
+                        backgroundColor: '#10b981', // Emerald
+                        borderRadius: { topLeft: 4, topRight: 4, bottomLeft: 0, bottomRight: 0 }
+                    }
+                ]
+            },
+            options: chartOptions
+        });
     });
 </script>
 @endsection

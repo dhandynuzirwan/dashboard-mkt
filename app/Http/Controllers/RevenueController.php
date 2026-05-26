@@ -67,7 +67,15 @@ class RevenueController extends Controller
             $m->rp_pen_ppsio     = $ctaDibuat->filter(fn($i) => in_array(strtolower($i->sertifikasi), ['sio', 'ppsio']))->sum(fn($i) => ($i->harga_penawaran ?? 0) * ($i->jumlah_peserta ?? 1));
             $m->rp_pen_riksa     = $ctaDibuat->filter(fn($i) => strtolower($i->sertifikasi) == 'riksa')->sum(fn($i) => ($i->harga_penawaran ?? 0) * ($i->jumlah_peserta ?? 1));
             
-            $m->total_rp_pen     = $ctaDibuat->sum(fn($i) => ($i->harga_penawaran ?? 0) * ($i->jumlah_peserta ?? 1));
+            $m->total_rp_pen = $ctaDibuat->sum(fn($i) => ($i->harga_penawaran ?? 0) * ($i->jumlah_peserta ?? 1));
+
+            // 🔥 PERHITUNGAN ADS VS ORGANIK PENAWARAN
+            $m->rp_pen_ads = $ctaDibuat->filter(function($i) {
+                $sumber = strtolower($i->prospek->sumber ?? '');
+                return str_contains($sumber, 'ads'); // Anggap yg mengandung kata 'ads' adalah Ads
+            })->sum(fn($i) => ($i->harga_penawaran ?? 0) * ($i->jumlah_peserta ?? 1));
+            
+            $m->rp_pen_organik = $m->total_rp_pen - $m->rp_pen_ads; // Sisanya adalah Organik
 
             // =========================================================
             // 2. DATA DEAL / REVENUE (Acuan disamakan: tanggal_prospek)
@@ -84,6 +92,14 @@ class RevenueController extends Controller
             $m->rp_deal_riksa     = $ctaDeal->filter(fn($i) => strtolower($i->sertifikasi) == 'riksa')->sum(fn($i) => ($i->harga_penawaran ?? 0) * ($i->jumlah_peserta ?? 1));
             
             $m->total_rp_deal     = $ctaDeal->sum(fn($i) => ($i->harga_penawaran ?? 0) * ($i->jumlah_peserta ?? 1));
+
+            // 🔥 PERHITUNGAN ADS VS ORGANIK DEAL
+            $m->rp_deal_ads = $ctaDeal->filter(function($i) {
+                $sumber = strtolower($i->prospek->sumber ?? '');
+                return str_contains($sumber, 'ads');
+            })->sum(fn($i) => ($i->harga_penawaran ?? 0) * ($i->jumlah_peserta ?? 1));
+            
+            $m->rp_deal_organik = $m->total_rp_deal - $m->rp_deal_ads;
 
             // Absensi & Izin
             $countHadir = AbsensiLog::where('user_id', $m->id)
@@ -114,8 +130,17 @@ class RevenueController extends Controller
             return $m;
         });
 
-        $all_marketing = User::where('role', 'marketing')->get();
+        // 🔥 FORMAT DATA UNTUK CHART.JS 🔥
+        $chartData = [
+            'labels' => $marketings->pluck('name')->toArray(),
+            'penawaran_ads' => $marketings->pluck('rp_pen_ads')->toArray(),
+            'penawaran_organik' => $marketings->pluck('rp_pen_organik')->toArray(),
+            'deal_ads' => $marketings->pluck('rp_deal_ads')->toArray(),
+            'deal_organik' => $marketings->pluck('rp_deal_organik')->toArray(),
+        ];
 
-        return view('revenue', compact('marketings', 'start', 'end', 'all_marketing', 'hariEfektif'));
+        $all_marketing = User::where('role', 'marketing')->get();
+        
+        return view('revenue', compact('marketings', 'start', 'end', 'all_marketing', 'hariEfektif', 'chartData'));
     }
 }
