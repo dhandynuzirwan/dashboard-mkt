@@ -80,4 +80,23 @@ class PendaftaranKolektifController extends Controller
             'tipe' => 'kolektif' // 🔥 Tambahkan penanda tipe
         ]);
     }
+
+    public function cekStatusPerusahaan(Request $request)
+    {
+        $kolektif = null;
+        $id = $request->input('id_kolektif');
+
+        if ($id) {
+            // Mencari kolektif berdasarkan ID Registrasi (KLT-...)
+            $kolektif = PendaftaranKolektif::with('pesertas.training')
+                            ->where('id_pendaftaran', $id)
+                            ->first();
+
+            if (!$kolektif) {
+                return back()->with('error', 'ID Registrasi tidak ditemukan.');
+            }
+        }
+
+        return view('portal.cek-status-perusahaan', compact('kolektif'));
+    }
 }

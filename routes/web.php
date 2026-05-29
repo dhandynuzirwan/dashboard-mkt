@@ -78,7 +78,7 @@ Route::prefix('portal')->group(function () {
 
     // Cek Status
     Route::get('/cek-status', [PendaftaranPribadiController::class, 'cekStatus'])->name('portal.cek-status');
-    Route::get('/cek-status-perusahaan', function () { return view('portal.cek-status-perusahaan'); });
+    Route::get('/cek-status-perusahaan', [PendaftaranKolektifController::class, 'cekStatusPerusahaan'])->name('portal.cek-status-perusahaan');
 });
 
 /*
