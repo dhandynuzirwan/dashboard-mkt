@@ -39,7 +39,9 @@
         <div class="text-left mb-6">
             <label class="text-xs font-bold text-gray-500 uppercase tracking-wider ml-1 mb-2 block">ID Pendaftaran Anda</label>
             <div class="flex items-center bg-gray-50 border-2 border-gray-100 rounded-2xl p-2 pl-5 focus-within:border-emerald-500 transition-colors group">
-                <span id="reg-id" class="font-mono font-bold text-lg md:text-xl text-gray-800 tracking-widest flex-1">PLT-2026-089</span>
+                <span id="reg-id" class="font-mono font-bold text-lg md:text-xl text-gray-800 tracking-widest flex-1">
+                    {{ session('id_pendaftaran') }}
+                </span>
                 
                 <button onclick="copyCode()" id="btn-copy" class="bg-white border border-gray-200 text-gray-600 p-3 rounded-xl hover:bg-emerald-50 hover:text-emerald-600 hover:border-emerald-200 active:scale-90 transition-all flex items-center justify-center tooltip-trigger relative">
                     <svg id="icon-copy" class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"></path></svg>

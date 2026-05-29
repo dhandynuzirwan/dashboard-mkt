@@ -50,11 +50,29 @@ class PendaftaranPribadiController extends Controller
             }
         }
 
-        // 3. Simpan ke Database
-        PendaftaranPribadi::create(array_merge($validated, $paths));
+        // 🔥 3. AUTO-GENERATE ID PENDAFTARAN 🔥
+        $tahun = date('Y');
+        // Cari data pendaftaran terakhir di tahun ini
+        $lastRecord = PendaftaranPribadi::whereYear('created_at', $tahun)
+                                        ->orderBy('id', 'desc')
+                                        ->first();
 
-        // 4. Redirect ke halaman sukses
-        return redirect()->route('portal.pendaftaran.sukses')->with('success', 'Data pendaftaran berhasil dikirim dan sedang dalam verifikasi.');
+        // Jika ada, ambil 3 digit terakhir lalu tambah 1. Jika belum ada, mulai dari 1.
+        $urutan = $lastRecord ? intval(substr($lastRecord->id_pendaftaran, -3)) + 1 : 1;
+        
+        // Format: PLT-2026-001
+        $idPendaftaran = 'PRB-' . $tahun . '-' . str_pad($urutan, 3, '0', STR_PAD_LEFT);
+
+        // 4. Simpan ke Database
+        PendaftaranPribadi::create(array_merge($validated, $paths, [
+            'id_pendaftaran' => $idPendaftaran // Masukkan ID yang digenerate
+        ]));
+
+        // 5. Redirect ke halaman sukses dengan membawa ID Pendaftaran
+        return redirect()->route('portal.pendaftaran.sukses')->with([
+            'success' => 'Pendaftaran berhasil!',
+            'id_pendaftaran' => $idPendaftaran // Kirim ID ini ke halaman sukses
+        ]);
     }
 
     public function sukses()
