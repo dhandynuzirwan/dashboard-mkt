@@ -22,7 +22,7 @@ class OperationalPendaftaranController extends Controller
                   ->orWhere('pic', 'like', '%'.$request->search_tracking.'%');
             });
         }
-        $deals = $queryDeals->orderBy('created_at', 'desc')->get();
+        $deals = $queryDeals->orderBy('created_at', 'desc')->paginate(10, ['*'], 'page_deal')->withQueryString();
 
         // ==========================================
         // TAB 2: DATA PENDAFTARAN PRIBADI (Verifikasi)
@@ -37,7 +37,7 @@ class OperationalPendaftaranController extends Controller
         if ($request->filled('status')) {
             $queryPendaftar->where('status', $request->status); // pending, revisi, diterima
         }
-        $pendaftarans = $queryPendaftar->orderBy('created_at', 'desc')->get();
+        $pendaftarans = $queryPendaftar->orderBy('created_at', 'desc')->paginate(10, ['*'], 'page_verifikasi')->withQueryString();
 
         // Hitung statistik untuk cards atas
         $stats = [

@@ -271,6 +271,12 @@
                                 </tbody>
                             </table>
                         </div>
+                        
+                    </div>
+                    <div class="card-footer bg-white border-top-0 pt-4 pb-3">
+                        <div class="d-flex justify-content-center">
+                            {{ $deals->links('partials.pagination') }}
+                        </div>
                     </div>
                 </div>
             </div>
@@ -414,14 +420,7 @@
                     </div>
                     <div class="card-footer bg-white border-top-0 pt-4 pb-3">
                         <div class="d-flex justify-content-center">
-                            <nav aria-label="Page navigation">
-                                <ul class="pagination pagination-sm m-0">
-                                    <li class="page-item disabled"><a class="page-link shadow-none" href="#">Prev</a></li>
-                                    <li class="page-item active"><a class="page-link shadow-none" href="#">1</a></li>
-                                    <li class="page-item"><a class="page-link shadow-none" href="#">2</a></li>
-                                    <li class="page-item"><a class="page-link shadow-none" href="#">Next</a></li>
-                                </ul>
-                            </nav>
+                            {{ $pendaftarans->links('partials.pagination') }}
                         </div>
                     </div>
                 </div>
