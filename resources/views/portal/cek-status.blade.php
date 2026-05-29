@@ -118,11 +118,27 @@
                 </div>
 
                 <div class="flex flex-wrap gap-2 pt-4 border-t border-gray-50">
-                    <button type="button" class="inline-flex items-center px-4 py-2 bg-gray-100 text-gray-400 border border-gray-200 rounded-xl text-[11px] font-bold uppercase tracking-wider cursor-not-allowed shadow-sm">
-                        <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"></path></svg>
-                        Zoom Pelatihan (Terkunci)
-                    </button>
-                    {{-- Sisanya sama, biarkan terkunci karena belum diterima admin --}}
+                    {{-- 🔥 JIKA DISETUJUI, BUKA KUNCI TOMBOL 🔥 --}}
+                    @if($pendaftaran->status == 'diterima')
+                        <a href="#" target="_blank" class="inline-flex items-center px-4 py-2 bg-blue-50 hover:bg-blue-100 text-blue-600 border border-blue-100 rounded-xl text-[11px] font-bold uppercase tracking-wider transition-colors active:scale-95 shadow-sm">
+                            <i class="fas fa-video mr-2"></i> Zoom Pelatihan
+                        </a>
+                        <a href="#" target="_blank" class="inline-flex items-center px-4 py-2 bg-purple-50 hover:bg-purple-100 text-purple-600 border border-purple-100 rounded-xl text-[11px] font-bold uppercase tracking-wider transition-colors active:scale-95 shadow-sm">
+                            <i class="fas fa-video mr-2"></i> Zoom Asesmen
+                        </a>
+                        <button type="button" class="inline-flex items-center px-4 py-2 bg-amber-50 hover:bg-amber-100 text-amber-700 border border-amber-200 rounded-xl text-[11px] font-bold uppercase tracking-wider transition-colors active:scale-95 shadow-sm">
+                            <i class="fas fa-book mr-2"></i> Modul Materi
+                        </button>
+                    @else
+                        <button type="button" class="inline-flex items-center px-4 py-2 bg-gray-100 text-gray-400 border border-gray-200 rounded-xl text-[11px] font-bold uppercase tracking-wider cursor-not-allowed shadow-sm">
+                            <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"></path></svg>
+                            Zoom Pelatihan (Terkunci)
+                        </button>
+                        <button type="button" class="inline-flex items-center px-4 py-2 bg-gray-100 text-gray-400 border border-gray-200 rounded-xl text-[11px] font-bold uppercase tracking-wider cursor-not-allowed shadow-sm">
+                            <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"></path></svg>
+                            Modul Materi (Terkunci)
+                        </button>
+                    @endif
                 </div>
 
                 <hr class="border-gray-100 my-4">
@@ -141,82 +157,126 @@
                 </div>
             </div>
 
+            {{-- 🔥 TAMPILKAN ALERT JIKA ADA REVISI 🔥 --}}
+            @if($pendaftaran->status == 'revisi')
+            <div class="bg-red-50 border border-red-200 p-5 rounded-2xl mb-6 flex items-start" id="alert-revisi">
+                <div class="bg-red-100 p-2 rounded-full mr-4 flex-shrink-0">
+                    <svg class="w-6 h-6 text-red-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"></path></svg>
+                </div>
+                <div>
+                    <h3 class="text-sm font-bold text-red-800">Perhatian: Ada Berkas yang Perlu Direvisi</h3>
+                    <p class="text-xs text-red-600 mt-1 leading-relaxed">Silakan periksa catatan dari Admin pada daftar berkas di bawah ini dan unggah ulang berkas yang sesuai.</p>
+                </div>
+            </div>
+            @endif
+
             <h3 class="text-lg font-bold text-gray-800 mb-4 ml-1">Status Dokumen Persyaratan</h3>
 
-            <div class="space-y-4 pb-8">
-                
-                {{-- KARENA DEFAULT PENDING, KITA BUAT LOOPING TAMPILAN KUNING SEMUA DULU --}}
-                @php
-                    $dokumens = [
-                        '1. Scan KTP Asli', '2. Scan Ijazah', '3. Pas Foto Formal', 
-                        '4. Curriculum Vitae (CV)', '5. Surat Keterangan Kerja', 
-                        '6. Laporan Kerja', '7. Uraian Jobdesk / SOP'
-                    ];
-                @endphp
+            <form action="{{ route('portal.pendaftaran.revisi', $pendaftaran->id) }}" method="POST" enctype="multipart/form-data">
+                @csrf
+                <div class="space-y-4 pb-8">
+                    
+                    @php
+                        $dokMap = [
+                            'ktp'     => '1. Scan KTP Asli',
+                            'ijazah'  => '2. Scan Ijazah Terakhir',
+                            'foto'    => '3. Pas Foto Formal',
+                            'cv'      => '4. Curriculum Vitae (CV)',
+                            'sk'      => '5. Surat Keterangan Kerja',
+                            'laporan' => '6. Laporan Kerja',
+                            'sop'     => '7. Uraian Jobdesk / SOP'
+                        ];
+                    @endphp
 
-                @foreach($dokumens as $dok)
-                <div class="bg-white p-5 rounded-2xl border border-gray-100 shadow-sm flex items-center justify-between opacity-90">
-                    <div class="flex items-center">
-                        <div class="w-10 h-10 bg-yellow-50 rounded-full flex items-center justify-center mr-4 flex-shrink-0">
-                            <svg class="w-5 h-5 text-yellow-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
-                        </div>
-                        <div>
-                            <p class="text-sm font-bold text-gray-800">{{ $dok }}</p>
-                            <p class="text-xs text-gray-400 mt-0.5">Menunggu antrean verifikasi</p>
-                        </div>
-                    </div>
-                    <span class="bg-yellow-100 text-yellow-700 px-3 py-1 rounded-full text-xs font-bold">Menunggu</span>
+                    @foreach($dokMap as $field => $namaDoc)
+                        @php
+                            $statusDoc = $pendaftaran->{'status_' . $field};
+                            $catatanDoc = $pendaftaran->{'catatan_' . $field};
+                        @endphp
+
+                        @if($statusDoc == 'approve')
+                            {{-- TAMPILAN HIJAU (DISETUJUI) --}}
+                            <div class="bg-white p-5 rounded-2xl border border-gray-100 shadow-sm flex items-center justify-between">
+                                <div class="flex items-center">
+                                    <div class="w-10 h-10 bg-green-50 rounded-full flex items-center justify-center mr-4 flex-shrink-0">
+                                        <svg class="w-5 h-5 text-green-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg>
+                                    </div>
+                                    <div>
+                                        <p class="text-sm font-bold text-gray-800">{{ $namaDoc }}</p>
+                                        <p class="text-xs text-gray-400 mt-0.5">Selesai diverifikasi</p>
+                                    </div>
+                                </div>
+                                <span class="bg-green-100 text-green-700 px-3 py-1 rounded-full text-xs font-bold">Diterima</span>
+                            </div>
+
+                        @elseif($statusDoc == 'reject')
+                            {{-- TAMPILAN MERAH (REVISI) DENGAN INPUT FILE --}}
+                            <div class="bg-white p-5 rounded-2xl border-2 border-red-200 shadow-sm relative overflow-hidden">
+                                <div class="absolute left-0 top-0 bottom-0 w-1 bg-red-500"></div>
+                                <div class="flex items-center justify-between mb-4 pl-1">
+                                    <div class="flex items-center">
+                                        <div class="w-10 h-10 bg-red-50 rounded-full flex items-center justify-center mr-4 flex-shrink-0">
+                                            <svg class="w-5 h-5 text-red-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
+                                        </div>
+                                        <div>
+                                            <p class="text-sm font-bold text-gray-800">{{ $namaDoc }}</p>
+                                            <span class="bg-red-100 text-red-700 px-2 py-0.5 rounded text-[10px] font-bold mt-1 inline-block">Wajib Revisi</span>
+                                        </div>
+                                    </div>
+                                </div>
+                                
+                                <div class="bg-red-50 p-3 rounded-xl border border-red-100 mb-4 ml-1">
+                                    <p class="text-xs font-bold text-red-800 mb-1">Catatan Admin:</p>
+                                    <p class="text-xs text-red-600 italic">"{{ $catatanDoc ?? 'Silakan unggah ulang dokumen yang sesuai.' }}"</p>
+                                </div>
+
+                                <div id="upload-area-{{ $field }}" class="ml-1">
+                                    <label class="flex items-center justify-center w-full p-3 border border-dashed border-gray-300 rounded-xl cursor-pointer bg-gray-50 hover:bg-blue-50 hover:border-blue-400 transition-colors">
+                                        <svg class="w-5 h-5 text-gray-400 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12"></path></svg>
+                                        <span class="text-sm text-gray-500 font-medium">Pilih file perbaikan...</span>
+                                        <input type="file" name="file_{{ $field }}" accept=".pdf,.jpg,.jpeg,.png" onchange="prosesRevisi(this, '{{ $field }}')" />
+                                    </label>
+                                </div>
+
+                                <div id="action-area-{{ $field }}" class="hidden items-center justify-between bg-blue-50 p-3 rounded-xl border border-blue-100 ml-1 mt-2">
+                                    <p class="text-xs text-blue-700 font-medium truncate mr-3 flex-1" id="nama-file-{{ $field }}">namafile.jpg</p>
+                                </div>
+                            </div>
+
+                        @else
+                            {{-- TAMPILAN KUNING (PENDING) --}}
+                            <div class="bg-white p-5 rounded-2xl border border-gray-100 shadow-sm flex items-center justify-between opacity-90">
+                                <div class="flex items-center">
+                                    <div class="w-10 h-10 bg-yellow-50 rounded-full flex items-center justify-center mr-4 flex-shrink-0">
+                                        <svg class="w-5 h-5 text-yellow-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+                                    </div>
+                                    <div>
+                                        <p class="text-sm font-bold text-gray-800">{{ $namaDoc }}</p>
+                                        <p class="text-xs text-gray-400 mt-0.5">Menunggu verifikasi</p>
+                                    </div>
+                                </div>
+                                <span class="bg-yellow-100 text-yellow-700 px-3 py-1 rounded-full text-xs font-bold">Menunggu</span>
+                            </div>
+                        @endif
+                    @endforeach
+
+                    {{-- Tombol Kirim Revisi (Hanya muncul jika ada status Reject) --}}
+                    @if($pendaftaran->status == 'revisi')
+                        <button type="submit" class="w-full bg-blue-600 text-white font-bold text-lg py-4 rounded-2xl shadow-lg shadow-blue-600/30 hover:bg-blue-700 active:scale-95 transition-all mt-6">
+                            Kirim Ulang Dokumen Revisi
+                        </button>
+                    @endif
                 </div>
-                @endforeach
-
-            </div>
+            </form>
         </div>
         @endif
     </main>
 
     <script>
-        function simulasikanPencarian() {
-            const btn = document.getElementById('btn-search');
-            const searchSection = document.getElementById('search-section');
-            const resultSection = document.getElementById('result-section');
-
-            btn.innerHTML = 'Mencari Data...';
-            btn.classList.replace('bg-blue-600', 'bg-blue-400');
-            btn.disabled = true;
-
-            setTimeout(() => {
-                searchSection.classList.replace('block', 'hidden');
-                resultSection.classList.remove('hidden');
-                resultSection.classList.add('fade-in');
-
-                btn.innerHTML = 'Cari Status Berkas';
-                btn.classList.replace('bg-blue-400', 'bg-blue-600');
-                btn.disabled = false;
-            }, 800);
-        }
-
-        function resetPencarian() {
-            document.getElementById('result-section').classList.add('hidden');
-            document.getElementById('search-section').classList.replace('hidden', 'block');
-            
-            // Optional: Mengembalikan state ijazah jika sebelumnya disimulasikan sukses
-            const actionArea = document.getElementById('action-area-ijazah');
-            const uploadArea = document.getElementById('upload-area-ijazah');
-            const cardIjazah = document.getElementById('card-ijazah');
-            
-            if(!actionArea.classList.contains('hidden')){
-                 actionArea.classList.remove('flex');
-                 actionArea.classList.add('hidden');
-                 uploadArea.classList.remove('hidden');
-            }
-            
-            document.getElementById('alert-revisi').classList.remove('hidden');
-        }
-
+        // Script untuk menangani tampilan nama file yang dipilih saat revisi
         function prosesRevisi(input, docType) {
             if (input.files && input.files.length > 0) {
-                document.getElementById('upload-area-' + docType).classList.add('hidden');
-                
+                // Tampilkan action area dan nama file
                 const actionArea = document.getElementById('action-area-' + docType);
                 actionArea.classList.remove('hidden');
                 actionArea.classList.add('flex');
@@ -224,85 +284,6 @@
                 document.getElementById('nama-file-' + docType).innerText = input.files[0].name;
             }
         }
-
-        function kirimRevisi(docType) {
-            alert('Simulasi: Berkas perbaikan berhasil diunggah! Status akan kembali menjadi Menunggu (Pending).');
-            
-            // UI Mockup Update setelah diklik "Kirim Ulang"
-            const actionArea = document.getElementById('action-area-' + docType);
-            actionArea.classList.remove('flex');
-            actionArea.classList.add('hidden');
-            
-            const cardIjazah = document.getElementById('card-ijazah');
-            cardIjazah.innerHTML = `
-                <div class="flex items-center justify-between">
-                    <div class="flex items-center">
-                        <div class="w-10 h-10 bg-yellow-50 rounded-full flex items-center justify-center mr-4 flex-shrink-0">
-                            <svg class="w-5 h-5 text-yellow-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
-                        </div>
-                        <div>
-                            <p class="text-sm font-bold text-gray-800">2. Scan Ijazah</p>
-                            <p class="text-xs text-gray-400 mt-0.5">Menunggu verifikasi ulang</p>
-                        </div>
-                    </div>
-                    <span class="bg-yellow-100 text-yellow-700 px-3 py-1 rounded-full text-xs font-bold">Menunggu</span>
-                </div>
-            `;
-            cardIjazah.classList.replace('border-2', 'border');
-            cardIjazah.classList.replace('border-red-200', 'border-gray-100');
-            cardIjazah.classList.add('opacity-80');
-            
-            // Sembunyikan alert atas
-            document.getElementById('alert-revisi').classList.add('hidden');
-        }
-
-        function downloadModul(btnElement, empName) {
-            // 1. Cek apakah sudah pernah didownload dari localStorage
-            const storageKey = 'modul_downloaded_' + empName.replace(/\s+/g, '-').toLowerCase();
-            
-            if (localStorage.getItem(storageKey) === 'true') {
-                alert('Maaf, Anda sudah pernah mengunduh modul ini sebelumnya.');
-                return;
-            }
-
-            // 2. Munculkan konfirmasi peringatan
-            const konfirmasi = confirm(`PERINGATAN!\n\nSesuai SOP, Modul Materi untuk [${empName}] HANYA DAPAT DIUNDUH 1 KALI.\n\nApakah Anda yakin ingin mengunduhnya sekarang?`);
-            
-            if(konfirmasi) {
-                // 3. Tandai sudah didownload di localStorage
-                localStorage.setItem(storageKey, 'true');
-                
-                // 4. Simulasi download file
-                // window.location.href = 'URL_FILE_MODUL_KAMU'; 
-                
-                // 5. Ubah tampilan tombol jadi terkunci
-                btnElement.classList.replace('bg-amber-50', 'bg-gray-100');
-                btnElement.classList.replace('text-amber-700', 'text-gray-400');
-                btnElement.classList.replace('border-amber-200', 'border-gray-200');
-                btnElement.classList.add('cursor-not-allowed', 'opacity-80');
-                btnElement.classList.remove('hover:bg-amber-100', 'active:scale-95', 'group');
-                
-                btnElement.innerHTML = `
-                    <svg class="w-4 h-4 mr-1.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg>
-                    Telah Diunduh
-                `;
-                btnElement.disabled = true;
-            }
-        }
-
-        // Saat halaman dimuat, cek apakah tombol sudah harus dalam posisi terkunci
-        window.onload = function() {
-            const btn = document.getElementById('btn-modul-leo');
-            const empName = 'Leo Pratama'; // Sesuaikan dengan nama karyawan
-            const storageKey = 'modul_downloaded_' + empName.replace(/\s+/g, '-').toLowerCase();
-            
-            if (localStorage.getItem(storageKey) === 'true') {
-                btn.classList.replace('bg-amber-50', 'bg-gray-100');
-                btn.classList.replace('text-amber-700', 'text-gray-400');
-                btn.disabled = true;
-                btn.innerHTML = `<svg class="w-4 h-4 mr-1.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg> Telah Diunduh`;
-            }
-        };
     </script>
 </body>
 </html>

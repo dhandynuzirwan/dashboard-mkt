@@ -71,6 +71,7 @@ Route::prefix('portal')->group(function () {
     Route::post('/pendaftaran-pribadi', [PendaftaranPribadiController::class, 'store'])->name('portal.pendaftaran.store');
     Route::get('/pendaftaran-sukses', [PendaftaranPribadiController::class, 'sukses'])->name('portal.pendaftaran.sukses');
     Route::get('/cek-status', [PendaftaranPribadiController::class, 'cekStatus'])->name('portal.cek-status');
+    Route::post('/pendaftaran-revisi/{id}', [PendaftaranPribadiController::class, 'updateRevisi'])->name('portal.pendaftaran.revisi');
 });
 
 

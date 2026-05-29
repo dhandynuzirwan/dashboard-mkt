@@ -106,4 +106,34 @@ class PendaftaranPribadiController extends Controller
         // Kirim data ke view (jika $pendaftaran kosong, maka akan menampilkan form pencarian)
         return view('portal.cek-status', compact('pendaftaran'));
     }
+
+    public function updateRevisi(Request $request, $id)
+    {
+        $pendaftaran = PendaftaranPribadi::findOrFail($id);
+        $fields = ['ktp', 'ijazah', 'foto', 'cv', 'sk', 'laporan', 'sop'];
+        $updates = [];
+
+        foreach ($fields as $field) {
+            $fileInputName = 'file_' . $field;
+            // Cek apakah user mengupload file baru untuk field ini
+            if ($request->hasFile($fileInputName)) {
+                // Simpan file baru
+                $path = $request->file($fileInputName)->store('berkas_pribadi', 'public');
+                $updates[$fileInputName] = $path;
+                
+                // Ubah statusnya kembali menjadi pending
+                $updates['status_'.$field] = 'pending';
+                $updates['catatan_'.$field] = null;
+            }
+        }
+
+        if (!empty($updates)) {
+            // Ubah status utama menjadi pending lagi
+            $updates['status'] = 'pending';
+            $pendaftaran->update($updates);
+            return redirect()->route('portal.cek-status')->with('success', 'Berkas revisi berhasil diunggah! Silakan tunggu verifikasi admin.');
+        }
+
+        return redirect()->back()->with('error', 'Anda belum memilih berkas revisi apa pun.');
+    }
 }
