@@ -70,8 +70,10 @@ class PendaftaranPribadiController extends Controller
 
         // 5. Redirect ke halaman sukses dengan membawa ID Pendaftaran
         return redirect()->route('portal.pendaftaran.sukses')->with([
-            'success' => 'Pendaftaran berhasil!',
-            'id_pendaftaran' => $idPendaftaran // Kirim ID ini ke halaman sukses
+            'success' => true,
+            'id_reg' => $idPendaftaran, // ID Pribadi
+            'jumlah' => 1,
+            'tipe' => 'individu' // 🔥 Tambahkan penanda tipe
         ]);
     }
 

@@ -12,4 +12,9 @@ class PendaftaranPribadi extends Model
     {
         return $this->belongsTo(MasterTraining::class, 'master_training_id');
     }
+
+    public function kolektif()
+    {
+        return $this->belongsTo(PendaftaranKolektif::class, 'kolektif_id');
+    }
 }

@@ -40,7 +40,7 @@
             <label class="text-xs font-bold text-gray-500 uppercase tracking-wider ml-1 mb-2 block">ID Pendaftaran Anda</label>
             <div class="flex items-center bg-gray-50 border-2 border-gray-100 rounded-2xl p-2 pl-5 focus-within:border-emerald-500 transition-colors group">
                 <span id="reg-id" class="font-mono font-bold text-lg md:text-xl text-gray-800 tracking-widest flex-1">
-                    {{ session('id_pendaftaran') }}
+                    {{ session('id_reg') }}
                 </span>
                 
                 <button onclick="copyCode()" id="btn-copy" class="bg-white border border-gray-200 text-gray-600 p-3 rounded-xl hover:bg-emerald-50 hover:text-emerald-600 hover:border-emerald-200 active:scale-90 transition-all flex items-center justify-center tooltip-trigger relative">
@@ -57,10 +57,17 @@
         </div>
 
         <div class="space-y-3">
-            <a href="{{ url('portal/cek-status') }}" class="block w-full bg-blue-600 text-white font-bold text-base py-4 rounded-xl shadow-lg shadow-blue-600/30 hover:bg-blue-700 active:scale-95 transition-all">
-                Pantau Status Sekarang
-            </a>
-            <a href="{{ url('portal') }}" class="block w-full text-gray-500 text-sm font-bold py-3 hover:text-gray-800 transition-colors">
+            @if(session('tipe') == 'kolektif')
+                <a href="{{ url('portal/cek-status-perusahaan') }}" class="block w-full bg-blue-600 text-white font-bold py-4 rounded-xl shadow-lg hover:bg-blue-700 transition">
+                    Pantau Status Kolektif
+                </a>
+            @else
+                <a href="{{ url('portal/cek-status') }}" class="block w-full bg-blue-600 text-white font-bold py-4 rounded-xl shadow-lg hover:bg-blue-700 transition">
+                    Pantau Status Pendaftaran
+                </a>
+            @endif
+            
+            <a href="{{ url('portal') }}" class="block w-full text-gray-500 text-sm font-bold py-3 hover:text-blue-600">
                 Kembali ke Beranda Utama
             </a>
         </div>
