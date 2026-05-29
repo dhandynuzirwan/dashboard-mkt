@@ -19,6 +19,7 @@ use App\Http\Controllers\OperationalController;
 use App\Http\Controllers\DailyLogController;
 use App\Http\Controllers\PengirimanPaketController;
 use App\Http\Controllers\AkunAksesController;
+use App\Http\Controllers\PendaftaranPribadiController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
@@ -58,12 +59,16 @@ Route::post('/logout', function (Request $request) {
 // Route untuk Mockup Portal Peserta
 Route::prefix('portal')->group(function () {
     Route::get('/', function () { return view('portal.index'); });
-    Route::get('/pendaftaran', function () { return view('portal.pendaftaran'); });
+    // Route::get('/pendaftaran', function () { return view('portal.pendaftaran'); });
     Route::get('/pendaftaran-perusahaan', function () { return view('portal.pendaftaran-perusahaan'); });
-    Route::get('/sukses', function () { return view('portal.sukses'); });
+    // Route::get('/sukses', function () { return view('portal.sukses'); });
     Route::get('/sukses-perusahaan', function () { return view('portal.sukses-perusahaan'); });
     Route::get('/cek-status', function () { return view('portal.cek-status'); });
     Route::get('/cek-status-perusahaan', function () { return view('portal.cek-status-perusahaan'); });
+
+    Route::get('/pendaftaran-pribadi', [PendaftaranPribadiController::class, 'create'])->name('portal.pendaftaran.create');
+    Route::post('/pendaftaran-pribadi', [PendaftaranPribadiController::class, 'store'])->name('portal.pendaftaran.store');
+    Route::get('/pendaftaran-sukses', [PendaftaranPribadiController::class, 'sukses'])->name('portal.pendaftaran.sukses');
 });
 
 
