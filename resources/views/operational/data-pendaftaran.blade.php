@@ -225,23 +225,33 @@
                                 <tbody>
                                     @forelse($deals as $deal)
                                     <tr>
+                                        {{-- 1. ID & Tanggal Deal --}}
                                         <td class="text-center">
                                             <span class="badge badge-soft-secondary border fw-bolder px-2 py-1 mb-1 shadow-sm">#{{ $deal->id }}</span><br>
                                             <small class="text-muted fw-bold" style="font-size: 10px;">{{ $deal->created_at->format('d M Y') }}</small>
                                         </td>
+
+                                        {{-- 2. Perusahaan & PIC --}}
                                         <td class="ps-3">
-                                            <div class="fw-bolder text-dark" style="font-size: 14px;">{{ $deal->prospek->perusahaan ?? '-' }}</div>
+                                            <div class="fw-bolder text-dark" style="font-size: 14px;">{{ $deal->prospek->perusahaan ?? 'Individu / Pribadi' }}</div>
                                             <small class="text-muted d-block text-truncate mb-1" style="max-width: 200px;">
-                                                <i class="fas fa-map-marker-alt text-danger me-1"></i> {{ $deal->prospek->alamat ?? 'Lokasi tidak diketahui' }}
+                                                <i class="fas fa-map-marker-alt text-danger me-1"></i> {{ $deal->prospek->lokasi ?? $deal->prospek->lokasi ?? 'Lokasi tidak diketahui' }}
                                             </small>
                                             <div class="bg-light border rounded px-2 py-1 d-inline-block mt-1">
-                                                <small class="text-dark fw-bold" style="font-size: 10px;"><i class="fas fa-user-tie text-muted me-1"></i> {{ $deal->prospek->pic ?? '-' }}</small>
+                                                <small class="text-dark fw-bold" style="font-size: 10px;"><i class="fas fa-user-tie text-muted me-1"></i> {{ $deal->prospek->nama_pic ?? $deal->prospek->nama_pic ?? '-' }}</small>
                                             </div>
                                         </td>
+
+                                        {{-- 3. Program & Sertifikasi --}}
                                         <td>
-                                            <span class="fw-bolder text-primary d-block mb-1" style="font-size: 13px;">{{ $deal->prospek->program ?? '-' }}</span>
+                                            {{-- 🔥 Menampilkan Judul Pelatihan spesifik dari CTA Deal --}}
+                                            <span class="fw-bolder text-primary d-block mb-1" style="font-size: 13px;">
+                                                {{ $deal->judul_permintaan ?? $deal->prospek->judul_permintaan ?? '-' }}
+                                            </span>
                                             <span class="badge badge-soft-info border px-2 py-1 text-uppercase">{{ $deal->sertifikasi ?? 'Internal' }}</span>
                                         </td>
+
+                                        {{-- 4. Marketing PIC --}}
                                         <td>
                                             <div class="d-flex align-items-center mb-1">
                                                 <div class="icon-sm bg-light border rounded-circle d-flex align-items-center justify-content-center me-2" style="width: 20px; height: 20px; font-size: 9px;">
@@ -250,22 +260,55 @@
                                                 <span class="fw-bold text-dark" style="font-size: 11px;">{{ $deal->prospek->marketing->name ?? '-' }}</span>
                                             </div>
                                         </td>
+
+                                        {{-- 5. Progress Pendaftaran (Otomatis dari Controller) --}}
                                         <td>
                                             <div class="d-flex justify-content-between mb-1" style="font-size: 11px;">
-                                                <span class="text-muted fw-bold">Deal: {{ $deal->jumlah_peserta ?? 1 }} Org</span>
-                                                <span class="text-warning-dark fw-bolder">Terdaftar: Menunggu Data</span>
+                                                <span class="text-muted fw-bold">Deal: {{ $deal->target_peserta ?? 1 }} Org</span>
+                                                
+                                                @if(isset($deal->is_lengkap) && $deal->is_lengkap)
+                                                    <span class="text-success fw-bolder">Terdaftar: {{ $deal->terdaftar ?? 0 }}</span>
+                                                @else
+                                                    <span class="text-warning-dark fw-bolder">Terdaftar: {{ $deal->terdaftar ?? 0 }}</span>
+                                                @endif
                                             </div>
+                                            
                                             <div class="progress mb-1 bg-light border" style="height: 6px; border-radius: 10px;">
-                                                <div class="progress-bar bg-warning" style="width: 50%"></div>
+                                                <div class="progress-bar {{ (isset($deal->is_lengkap) && $deal->is_lengkap) ? 'bg-success' : 'bg-warning' }}" style="width: {{ $deal->persentase ?? 0 }}%"></div>
                                             </div>
+                                            
+                                            @if(isset($deal->is_lengkap) && $deal->is_lengkap)
+                                                <small class="text-success fw-bold d-block mt-1" style="font-size: 10px;">
+                                                    <i class="fas fa-check-circle me-1"></i> Selesai diinput
+                                                </small>
+                                            @else
+                                                @if(isset($deal->terdaftar) && $deal->terdaftar == 0)
+                                                    <small class="text-muted fw-bold d-block mt-1" style="font-size: 10px;">Belum ada peserta daftar</small>
+                                                @else
+                                                    <small class="text-danger fw-bold d-block mt-1" style="font-size: 10px;">
+                                                        *Kurang {{ $deal->kurang ?? 0 }} orang
+                                                    </small>
+                                                @endif
+                                            @endif
                                         </td>
+
+                                        {{-- 6. Status Pendaftar --}}
                                         <td class="text-center">
-                                            <span class="badge badge-soft-warning text-dark border border-warning rounded-pill px-3 py-1 shadow-sm">Belum Lengkap</span>
+                                            @if(isset($deal->is_lengkap) && $deal->is_lengkap)
+                                                <span class="badge bg-success border border-success rounded-pill px-3 py-1 shadow-sm">Lengkap</span>
+                                            @elseif(isset($deal->terdaftar) && $deal->terdaftar > 0)
+                                                <span class="badge badge-soft-warning text-dark border border-warning rounded-pill px-3 py-1 shadow-sm">Belum Lengkap</span>
+                                            @else
+                                                <span class="badge badge-soft-danger border border-danger rounded-pill px-3 py-1 shadow-sm">Belum Daftar</span>
+                                            @endif
                                         </td>
                                     </tr>
                                     @empty
                                     <tr>
-                                        <td colspan="6" class="text-center py-4 text-muted">Belum ada data prospek deal.</td>
+                                        <td colspan="6" class="text-center py-5 text-muted">
+                                            <i class="fas fa-folder-open fs-2 mb-3 text-light"></i><br>
+                                            Belum ada data prospek deal.
+                                        </td>
                                     </tr>
                                     @endforelse
                                 </tbody>

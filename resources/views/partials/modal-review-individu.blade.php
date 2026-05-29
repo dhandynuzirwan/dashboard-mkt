@@ -110,29 +110,6 @@
                         </div>
                         @endforeach
                     </div>
-
-                    {{-- Penetapan Jadwal Pelatihan --}}
-                    <div class="bg-light p-4 rounded-4 border border-light mt-4">
-                        <div class="d-flex align-items-center mb-3">
-                            <div class="icon-sm bg-white text-dark rounded-circle d-flex align-items-center justify-content-center shadow-sm me-2" style="width: 32px; height: 32px;">
-                                <i class="fas fa-calendar-check"></i>
-                            </div>
-                            <h6 class="fw-bolder text-dark mb-0">Penetapan Jadwal Pelatihan</h6>
-                        </div>
-                        <p class="text-muted mb-3" style="font-size: 12px;">Tentukan tanggal jika seluruh dokumen di atas telah diverifikasi dan disetujui (ACC).</p>
-                        
-                        <div class="row g-3">
-                            <div class="col-md-6">
-                                <label class="label-modern">Mulai Pelatihan</label>
-                                <input type="date" name="tgl_mulai_pelatihan" class="form-control form-control-sm input-modern text-dark fw-bold shadow-none">
-                            </div>
-                            <div class="col-md-6">
-                                <label class="label-modern">Estimasi Selesai</label>
-                                <input type="date" name="tgl_selesai_pelatihan" class="form-control form-control-sm input-modern text-dark fw-bold shadow-none">
-                            </div>
-                        </div>
-                    </div>
-
                 </div>
                 
                 {{-- Footer Action --}}

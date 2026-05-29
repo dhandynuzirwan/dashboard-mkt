@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="id">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tabel Perbandingan Metode</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            background-color: #f1f5f9;
+        }
+    </style>
+</head>
+
+<body class="flex items-center justify-center min-h-screen p-8">
+
+    <div class="bg-white rounded-3xl shadow-2xl overflow-hidden max-w-6xl w-full border border-gray-100">
+        <!-- Header -->
+        <div class="bg-slate-900 px-8 py-6 text-white flex justify-between items-center">
+            <div>
+                <h1 class="text-2xl font-extrabold tracking-tight">Analisis Metode Integrasi Pendaftaran & Tracking Deal</h1>
+                <p class="text-slate-400 text-sm mt-1">Rekomendasi teknis untuk sistem operasional Arsa Training</p>
+            </div>
+            <div class="bg-blue-600/20 text-blue-400 p-3 rounded-xl">
+                <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"></path></svg>
+            </div>
+        </div>
+
+        <!-- Table -->
+        <div class="p-8">
+            <div class="overflow-x-auto rounded-2xl border border-gray-200">
+                <table class="w-full text-left border-collapse">
+                    <thead>
+                        <tr>
+                            <th class="bg-slate-50 text-slate-500 font-bold text-sm uppercase tracking-wider p-5 border-b border-gray-200 w-1/4">Kriteria Evaluasi</th>
+                            <th class="bg-blue-50 text-blue-700 font-extrabold text-sm uppercase tracking-wider p-5 border-b border-blue-200 w-1/4 border-x-2 border-x-blue-200 relative">
+                                <div class="absolute -top-3 left-1/2 transform -translate-x-1/2 bg-blue-600 text-white text-[10px] px-3 py-1 rounded-full uppercase tracking-widest shadow-md">⭐ Rekomendasi</div>
+                                1. Magic Link (Pre-filled)
+                            </th>
+                            <th class="bg-slate-50 text-slate-500 font-bold text-sm uppercase tracking-wider p-5 border-b border-gray-200 w-1/4">2. Dropdown Klien</th>
+                            <th class="bg-slate-50 text-slate-500 font-bold text-sm uppercase tracking-wider p-5 border-b border-gray-200 w-1/4">3. String Matching (Teks)</th>
+                        </tr>
+                    </thead>
+                    <tbody class="text-sm text-slate-700 align-top">
+                        <!-- Baris 1 -->
+                        <tr class="hover:bg-slate-50 transition-colors">
+                            <td class="p-5 border-b border-gray-100 font-semibold text-slate-800">Mekanisme Kerja</td>
+                            <td class="p-5 border-b border-blue-100 border-x-2 border-x-blue-100 bg-blue-50/30">Marketing kirim link khusus per kelas. Form otomatis terisi & nama instansi terkunci. Data terhubung via ID tersembunyi.</td>
+                            <td class="p-5 border-b border-gray-100">Peserta buka link umum, mencari dan memilih nama perusahaannya dari daftar dropdown yang tersedia.</td>
+                            <td class="p-5 border-b border-gray-100">Peserta mengetik manual nama perusahaannya. Sistem backend mencari kecocokan teks menggunakan operator LIKE.</td>
+                        </tr>
+                        <!-- Baris 2 -->
+                        <tr class="hover:bg-slate-50 transition-colors">
+                            <td class="p-5 border-b border-gray-100 font-semibold text-slate-800">Tingkat Akurasi Data</td>
+                            <td class="p-5 border-b border-blue-100 border-x-2 border-x-blue-100 bg-blue-50/30 text-green-600 font-bold flex items-center gap-2"><svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg> Sangat Tinggi
+                                (100%)
+                            </td>
+                            <td class="p-5 border-b border-gray-100 text-yellow-600 font-bold">Tinggi (90%)</td>
+                            <td class="p-5 border-b border-gray-100 text-red-500 font-bold">Rendah (Rawan Gagal)</td>
+                        </tr>
+                        <!-- Baris 3 -->
+                        <tr class="hover:bg-slate-50 transition-colors">
+                            <td class="p-5 border-b border-gray-100 font-semibold text-slate-800">Pengalaman Peserta (UX)</td>
+                            <td class="p-5 border-b border-blue-100 border-x-2 border-x-blue-100 bg-blue-50/30">Sangat Praktis. Peserta merasa dilayani secara eksklusif (VIP) karena tidak perlu mengetik nama perusahaan.</td>
+                            <td class="p-5 border-b border-gray-100">Cukup Mudah, namun harus *scroll* mencari nama perusahaannya dengan teliti.</td>
+                            <td class="p-5 border-b border-gray-100">Cukup Merepotkan dan ada risiko data tidak terbaca jika mereka salah ketik (typo).</td>
+                        </tr>
+                        <!-- Baris 4 -->
+                        <tr class="hover:bg-slate-50 transition-colors">
+                            <td class="p-5 border-b border-gray-100 font-semibold text-slate-800">Kelemahan / Risiko</td>
+                            <td class="p-5 border-b border-blue-100 border-x-2 border-x-blue-100 bg-blue-50/30 text-slate-600">Marketing harus cermat saat menyalin (copy) link untuk dibagikan agar tidak tertukar antar grup/kelas.</td>
+                            <td class="p-5 border-b border-gray-100 text-slate-600"><span class="text-red-500 font-bold">Isu Privasi:</span> Seluruh daftar nama klien Arsa Training terekspos ke publik di dalam form dropdown.</td>
+                            <td class="p-5 border-b border-gray-100 text-slate-600">Sistem gagal mendeteksi jika peserta mengetik singkatan (PT/CV), kurang titik, atau beda spasi.</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <!-- Footer Note -->
+            <div class="mt-6 flex items-center justify-between bg-slate-50 p-4 rounded-xl border border-slate-200">
+                <div class="flex items-center gap-3">
+                    <div class="bg-blue-600 rounded-full w-2 h-2 animate-pulse"></div>
+                    <p class="text-sm text-slate-600 font-medium">Kesimpulan: Metode <span class="font-bold text-blue-700">Magic Link</span> sangat ideal untuk sistem B2B karena mengutamakan keamanan data dan kenyamanan klien.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</body>
+
+</html>
