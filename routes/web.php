@@ -63,12 +63,13 @@ Route::prefix('portal')->group(function () {
     Route::get('/pendaftaran-perusahaan', function () { return view('portal.pendaftaran-perusahaan'); });
     // Route::get('/sukses', function () { return view('portal.sukses'); });
     Route::get('/sukses-perusahaan', function () { return view('portal.sukses-perusahaan'); });
-    Route::get('/cek-status', function () { return view('portal.cek-status'); });
+    // Route::get('/cek-status', function () { return view('portal.cek-status'); });
     Route::get('/cek-status-perusahaan', function () { return view('portal.cek-status-perusahaan'); });
 
     Route::get('/pendaftaran-pribadi', [PendaftaranPribadiController::class, 'create'])->name('portal.pendaftaran.create');
     Route::post('/pendaftaran-pribadi', [PendaftaranPribadiController::class, 'store'])->name('portal.pendaftaran.store');
     Route::get('/pendaftaran-sukses', [PendaftaranPribadiController::class, 'sukses'])->name('portal.pendaftaran.sukses');
+    Route::get('/cek-status', [PendaftaranPribadiController::class, 'cekStatus'])->name('portal.cek-status');
 });
 
 

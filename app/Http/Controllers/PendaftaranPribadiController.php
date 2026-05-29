@@ -11,15 +11,15 @@ class PendaftaranPribadiController extends Controller
 {
     public function create()
     {
-        // Tarik data training untuk dropdown
         $trainings = MasterTraining::orderBy('nama_training', 'asc')->get();
         return view('portal.pendaftaran', compact('trainings'));
     }
 
     public function store(Request $request)
     {
-        // 1. Validasi Input
+
         $validated = $request->validate([
+            //data diri
             'nama_lengkap'       => 'required|string|max:255',
             'tanggal_lahir'      => 'required|date',
             'no_wa'              => 'required|string|max:20',
@@ -29,7 +29,7 @@ class PendaftaranPribadiController extends Controller
             'opsi_ppn'           => 'required|in:tanpa_ppn,dengan_ppn',
             'npwp'               => 'required_if:opsi_ppn,dengan_ppn|nullable|string|size:16',
             
-            // Validasi File
+            //data berkas
             'file_ktp'     => 'required|file|mimes:pdf,jpg,jpeg,png|max:2048',
             'file_ijazah'  => 'required|file|mimes:pdf,jpg,jpeg,png|max:2048',
             'file_foto'    => 'required|file|mimes:jpg,jpeg,png|max:2048',
@@ -78,5 +78,32 @@ class PendaftaranPribadiController extends Controller
     public function sukses()
     {
         return view('portal.sukses'); // Buat view sederhana untuk halaman sukses nanti
+    }
+
+    public function cekStatus(Request $request)
+    {
+        $pendaftaran = null;
+
+        // Jika user mencari berdasarkan ID Pendaftaran
+        if ($request->filled('id_pendaftaran')) {
+            $pendaftaran = PendaftaranPribadi::with('training')
+                ->where('id_pendaftaran', $request->id_pendaftaran)
+                ->first();
+        } 
+        // ATAU Jika user mencari berdasarkan Nama & Tanggal Lahir
+        elseif ($request->filled('nama_lengkap') && $request->filled('tanggal_lahir')) {
+            $pendaftaran = PendaftaranPribadi::with('training')
+                ->where('nama_lengkap', 'like', '%' . $request->nama_lengkap . '%')
+                ->where('tanggal_lahir', $request->tanggal_lahir)
+                ->first();
+        }
+
+        // Jika form disubmit tapi data tidak ditemukan
+        if ($request->anyFilled(['id_pendaftaran', 'nama_lengkap']) && !$pendaftaran) {
+            return redirect()->route('portal.cek-status')->with('error', 'Data tidak ditemukan. Pastikan ID Pendaftaran atau Data Diri sesuai.');
+        }
+
+        // Kirim data ke view (jika $pendaftaran kosong, maka akan menampilkan form pencarian)
+        return view('portal.cek-status', compact('pendaftaran'));
     }
 }
