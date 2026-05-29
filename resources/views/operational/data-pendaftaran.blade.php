@@ -75,7 +75,7 @@
                         </div>
                         <div>
                             <p class="text-muted fw-bold mb-1" style="font-size: 11px; text-transform: uppercase; letter-spacing: 0.5px;">Total Pendaftar</p>
-                            <h3 class="fw-bolder text-dark mb-0 lh-1">145</h3>
+                             <h3 class="fw-bolder text-primary-dark mb-0 lh-1">{{ $stats['total_pendaftar'] }}</h3>
                             <p class="text-muted small mb-0 mt-1" style="font-size: 10px;">Peserta aktif</p>
                         </div>
                     </div>
@@ -90,7 +90,7 @@
                         </div>
                         <div>
                             <p class="text-muted fw-bold mb-1" style="font-size: 11px; text-transform: uppercase; letter-spacing: 0.5px;">Antrean Verifikasi</p>
-                            <h3 class="fw-bolder text-warning-dark mb-0 lh-1">28</h3>
+                            <h3 class="fw-bolder text-warning-dark mb-0 lh-1">{{ $stats['menunggu'] }}</h3>
                             <p class="text-warning-dark fw-bold small mb-0 mt-1" style="font-size: 10px;">Perlu di-review</p>
                         </div>
                     </div>
@@ -105,7 +105,7 @@
                         </div>
                         <div>
                             <p class="text-muted fw-bold mb-1" style="font-size: 11px; text-transform: uppercase; letter-spacing: 0.5px;">Menunggu Revisi</p>
-                            <h3 class="fw-bolder text-danger mb-0 lh-1">12</h3>
+                            <h3 class="fw-bolder text-danger mb-0 lh-1">{{ $stats['revisi'] }}</h3>
                             <p class="text-danger fw-bold small mb-0 mt-1" style="font-size: 10px;">Berkas dikembalikan</p>
                         </div>
                     </div>
@@ -120,7 +120,7 @@
                         </div>
                         <div>
                             <p class="text-muted fw-bold mb-1" style="font-size: 11px; text-transform: uppercase; letter-spacing: 0.5px;">Berkas Disetujui</p>
-                            <h3 class="fw-bolder text-success mb-0 lh-1">105</h3>
+                            <h3 class="fw-bolder text-success mb-0 lh-1">{{ $stats['disetujui'] }}</h3>
                             <p class="text-success fw-bold small mb-0 mt-1" style="font-size: 10px;">Siap ikut pelatihan</p>
                         </div>
                     </div>
@@ -223,152 +223,51 @@
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    {{-- Data Tracking 1: Lengkap --}}
+                                    @forelse($deals as $deal)
                                     <tr>
                                         <td class="text-center">
-                                            <span class="badge badge-soft-secondary border fw-bolder px-2 py-1 mb-1 shadow-sm">#1024</span><br>
-                                            <small class="text-muted fw-bold" style="font-size: 10px;">10 Mei 2026</small>
+                                            <span class="badge badge-soft-secondary border fw-bolder px-2 py-1 mb-1 shadow-sm">#{{ $deal->id }}</span><br>
+                                            <small class="text-muted fw-bold" style="font-size: 10px;">{{ $deal->created_at->format('d M Y') }}</small>
                                         </td>
                                         <td class="ps-3">
-                                            <div class="fw-bolder text-dark" style="font-size: 14px;">PT. Pertamina Hulu Rokan</div>
+                                            <div class="fw-bolder text-dark" style="font-size: 14px;">{{ $deal->prospek->perusahaan ?? '-' }}</div>
                                             <small class="text-muted d-block text-truncate mb-1" style="max-width: 200px;">
-                                                <i class="fas fa-map-marker-alt text-danger me-1"></i> Pekanbaru, Riau
+                                                <i class="fas fa-map-marker-alt text-danger me-1"></i> {{ $deal->prospek->alamat ?? 'Lokasi tidak diketahui' }}
                                             </small>
                                             <div class="bg-light border rounded px-2 py-1 d-inline-block mt-1">
-                                                <small class="text-dark fw-bold" style="font-size: 10px;"><i class="fas fa-user-tie text-muted me-1"></i> Bpk. Anton (HRD)</small>
+                                                <small class="text-dark fw-bold" style="font-size: 10px;"><i class="fas fa-user-tie text-muted me-1"></i> {{ $deal->prospek->pic ?? '-' }}</small>
                                             </div>
                                         </td>
                                         <td>
-                                            <span class="fw-bolder text-primary d-block mb-1" style="font-size: 13px;">Ahli K3 Umum</span>
-                                            <span class="badge badge-soft-info border px-2 py-1">KEMNAKER</span>
+                                            <span class="fw-bolder text-primary d-block mb-1" style="font-size: 13px;">{{ $deal->prospek->program ?? '-' }}</span>
+                                            <span class="badge badge-soft-info border px-2 py-1 text-uppercase">{{ $deal->sertifikasi ?? 'Internal' }}</span>
                                         </td>
                                         <td>
-                                            <div class="d-flex flex-column gap-1">
-                                                <div class="d-flex align-items-center mb-1">
-                                                    <div class="icon-sm bg-light border rounded-circle d-flex align-items-center justify-content-center me-2" style="width: 20px; height: 20px; font-size: 9px;">
-                                                        <i class="fas fa-user text-muted"></i>
-                                                    </div>
-                                                    <span class="fw-bold text-dark" style="font-size: 11px;">Ayu Lestari</span>
+                                            <div class="d-flex align-items-center mb-1">
+                                                <div class="icon-sm bg-light border rounded-circle d-flex align-items-center justify-content-center me-2" style="width: 20px; height: 20px; font-size: 9px;">
+                                                    <i class="fas fa-user text-muted"></i>
                                                 </div>
+                                                <span class="fw-bold text-dark" style="font-size: 11px;">{{ $deal->prospek->marketing->name ?? '-' }}</span>
                                             </div>
                                         </td>
                                         <td>
                                             <div class="d-flex justify-content-between mb-1" style="font-size: 11px;">
-                                                <span class="text-muted fw-bold">Deal: 15 Org</span>
-                                                <span class="text-success fw-bolder">Terdaftar: 15</span>
+                                                <span class="text-muted fw-bold">Deal: {{ $deal->jumlah_peserta ?? 1 }} Org</span>
+                                                <span class="text-warning-dark fw-bolder">Terdaftar: Menunggu Data</span>
                                             </div>
                                             <div class="progress mb-1 bg-light border" style="height: 6px; border-radius: 10px;">
-                                                <div class="progress-bar bg-success" style="width: 100%"></div>
+                                                <div class="progress-bar bg-warning" style="width: 50%"></div>
                                             </div>
-                                            <small class="text-success fw-bold d-block mt-1" style="font-size: 10px;"><i class="fas fa-check-circle me-1"></i> Selesai diinput</small>
-                                        </td>
-                                        <td class="text-center">
-                                            <span class="badge bg-success rounded-pill px-3 py-1 shadow-sm">Lengkap</span>
-                                        </td>
-                                        {{-- <td class="text-center pe-4">
-                                            <button class="btn btn-primary btn-sm w-100 btn-round fw-bold shadow-sm hover-lift" onclick="document.getElementById('pills-registrasi-tab').click()">
-                                                Cek Berkas
-                                            </button>
-                                        </td> --}}
-                                    </tr>
-
-                                    {{-- Data Tracking 2: Kurang --}}
-                                    <tr>
-                                        <td class="text-center">
-                                            <span class="badge badge-soft-secondary border fw-bolder px-2 py-1 mb-1 shadow-sm">#1018</span><br>
-                                            <small class="text-muted fw-bold" style="font-size: 10px;">08 Mei 2026</small>
-                                        </td>
-                                        <td class="ps-3">
-                                            <div class="fw-bolder text-dark" style="font-size: 14px;">PT. Wijaya Karya</div>
-                                            <small class="text-muted d-block text-truncate mb-1" style="max-width: 200px;">
-                                                <i class="fas fa-map-marker-alt text-danger me-1"></i> Jakarta Timur
-                                            </small>
-                                            <div class="bg-light border rounded px-2 py-1 d-inline-block mt-1">
-                                                <small class="text-dark fw-bold" style="font-size: 10px;"><i class="fas fa-user-tie text-muted me-1"></i> Ibu Rina (HSE)</small>
-                                            </div>
-                                        </td>
-                                        <td>
-                                            <span class="fw-bolder text-primary d-block mb-1" style="font-size: 13px;">Operator Crane Kelas A</span>
-                                            <span class="badge badge-soft-primary border px-2 py-1">BNSP</span>
-                                        </td>
-                                        <td>
-                                            <div class="d-flex flex-column gap-1">
-                                                <div class="d-flex align-items-center mb-1">
-                                                    <div class="icon-sm bg-light border rounded-circle d-flex align-items-center justify-content-center me-2" style="width: 20px; height: 20px; font-size: 9px;">
-                                                        <i class="fas fa-user text-muted"></i>
-                                                    </div>
-                                                    <span class="fw-bold text-dark" style="font-size: 11px;">Dhandy N.</span>
-                                                </div>
-                                            </div>
-                                        </td>
-                                        <td>
-                                            <div class="d-flex justify-content-between mb-1" style="font-size: 11px;">
-                                                <span class="text-muted fw-bold">Deal: 10 Org</span>
-                                                <span class="text-warning-dark fw-bolder">Terdaftar: 6</span>
-                                            </div>
-                                            <div class="progress mb-1 bg-light border" style="height: 6px; border-radius: 10px;">
-                                                <div class="progress-bar bg-warning" style="width: 60%"></div>
-                                            </div>
-                                            <small class="text-danger fw-bold d-block mt-1" style="font-size: 10px;">*Kurang 4 orang</small>
                                         </td>
                                         <td class="text-center">
                                             <span class="badge badge-soft-warning text-dark border border-warning rounded-pill px-3 py-1 shadow-sm">Belum Lengkap</span>
                                         </td>
-                                        {{-- <td class="text-center pe-4">
-                                            <a href="https://wa.me/62812345678" target="_blank" class="btn btn-success btn-sm w-100 btn-round fw-bold shadow-sm hover-lift">
-                                                <i class="fab fa-whatsapp me-1"></i> Follow Up
-                                            </a>
-                                        </td> --}}
                                     </tr>
-
-                                    {{-- Data Tracking 3: Belum Daftar Sama Sekali --}}
+                                    @empty
                                     <tr>
-                                        <td class="text-center">
-                                            <span class="badge badge-soft-secondary border fw-bolder px-2 py-1 mb-1 shadow-sm">#1015</span><br>
-                                            <small class="text-muted fw-bold" style="font-size: 10px;">02 Mei 2026</small>
-                                        </td>
-                                        <td class="ps-3">
-                                            <div class="fw-bolder text-dark" style="font-size: 14px;">Bpk. Anton Sujarwo</div>
-                                            <small class="text-muted d-block text-truncate mb-1" style="max-width: 200px;">
-                                                <i class="fas fa-map-marker-alt text-danger me-1"></i> Individu / B2C
-                                            </small>
-                                            <div class="bg-light border rounded px-2 py-1 d-inline-block mt-1">
-                                                <small class="text-dark fw-bold" style="font-size: 10px;"><i class="fab fa-whatsapp text-success me-1"></i> 0812xxxxxx</small>
-                                            </div>
-                                        </td>
-                                        <td>
-                                            <span class="fw-bolder text-primary d-block mb-1" style="font-size: 13px;">Web Development</span>
-                                            <span class="badge badge-soft-secondary border px-2 py-1">Internal</span>
-                                        </td>
-                                        <td>
-                                            <div class="d-flex flex-column gap-1">
-                                                <div class="d-flex align-items-center mb-1">
-                                                    <div class="icon-sm bg-light border rounded-circle d-flex align-items-center justify-content-center me-2" style="width: 20px; height: 20px; font-size: 9px;">
-                                                        <i class="fas fa-user text-muted"></i>
-                                                    </div>
-                                                    <span class="fw-bold text-dark" style="font-size: 11px;">Sri Nurhayati</span>
-                                                </div>
-                                            </div>
-                                        </td>
-                                        <td>
-                                            <div class="d-flex justify-content-between mb-1" style="font-size: 11px;">
-                                                <span class="text-muted fw-bold">Deal: 1 Org</span>
-                                                <span class="text-danger fw-bolder">Terdaftar: 0</span>
-                                            </div>
-                                            <div class="progress mb-1 bg-light border" style="height: 6px; border-radius: 10px;">
-                                                <div class="progress-bar bg-danger" style="width: 0%"></div>
-                                            </div>
-                                            <small class="text-muted fw-bold d-block mt-1" style="font-size: 10px;">Belum ada aksi</small>
-                                        </td>
-                                        <td class="text-center">
-                                            <span class="badge badge-soft-danger border border-danger rounded-pill px-3 py-1 shadow-sm">Belum Daftar</span>
-                                        </td>
-                                        {{-- <td class="text-center pe-4">
-                                            <button class="btn btn-warning text-dark btn-sm w-100 btn-round fw-bold shadow-sm hover-lift">
-                                                <i class="fas fa-bell me-1"></i> Reminder
-                                            </button>
-                                        </td> --}}
+                                        <td colspan="6" class="text-center py-4 text-muted">Belum ada data prospek deal.</td>
                                     </tr>
+                                    @endforelse
                                 </tbody>
                             </table>
                         </div>
@@ -455,133 +354,60 @@
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    {{-- Baris 1: Individu (Pending) --}}
+                                    @forelse($pendaftarans as $pendaftar)
+                                    @php
+                                        // Hitung persentase berkas approve
+                                        $berkasArray = [$pendaftar->status_ktp, $pendaftar->status_ijazah, $pendaftar->status_foto, $pendaftar->status_cv, $pendaftar->status_sk, $pendaftar->status_laporan, $pendaftar->status_sop];
+                                        $totalBerkas = count($berkasArray);
+                                        $approved = count(array_filter($berkasArray, fn($v) => $v == 'approve'));
+                                        $persen = round(($approved / $totalBerkas) * 100);
+                                    @endphp
                                     <tr>
                                         <td class="text-center">
-                                            <span class="badge badge-soft-primary border fw-bolder px-2 py-1 shadow-sm">PLT-089</span>
+                                            <span class="badge badge-soft-primary border fw-bolder px-2 py-1 shadow-sm">{{ $pendaftar->id_pendaftaran }}</span>
                                         </td>
                                         <td>
-                                            <div class="fw-bolder text-dark" style="font-size: 14px;">Dhandy Nuzirwan</div>
-                                            <small class="text-muted fw-medium"><i class="fab fa-whatsapp text-success me-1"></i> 08123456789</small>
+                                            <div class="fw-bolder text-dark" style="font-size: 14px;">{{ $pendaftar->nama_lengkap }}</div>
+                                            <small class="text-muted fw-medium"><i class="fab fa-whatsapp text-success me-1"></i> {{ $pendaftar->no_wa }}</small>
                                         </td>
                                         <td>
                                             <span class="badge badge-soft-info border border-info px-2 py-1 mb-1"><i class="fas fa-user me-1"></i> Individu</span><br>
-                                            <small class="text-muted">-</small>
+                                            <small class="text-muted">{{ $pendaftar->perusahaan ?? '-' }}</small>
                                         </td>
                                         <td>
-                                            <span class="fw-bolder text-dark">Web Development</span>
+                                            <span class="fw-bolder text-dark">{{ $pendaftar->training->nama_training ?? '-' }}</span>
                                         </td>
                                         <td>
                                             <div class="d-flex justify-content-between mb-1" style="font-size: 10px;">
                                                 <span class="text-muted fw-bold text-uppercase">Progress Berkas</span>
-                                                <span class="text-muted fw-bold">43%</span>
+                                                <span class="text-muted fw-bold">{{ $persen }}%</span>
                                             </div>
                                             <div class="progress mb-1 bg-light border" style="height: 6px; border-radius: 10px;">
-                                                <div class="progress-bar bg-success rounded-pill" data-bs-toggle="tooltip" title="3 Terverifikasi" style="width: 43%"></div>
-                                                <div class="progress-bar bg-warning progress-bar-striped progress-bar-animated rounded-pill" data-bs-toggle="tooltip" title="4 Menunggu" style="width: 57%"></div>
+                                                <div class="progress-bar bg-success rounded-pill" style="width: {{ $persen }}%"></div>
                                             </div>
-                                            <small class="fw-bold d-block mt-1" style="font-size: 10px;">
-                                                <span class="text-success"><i class="fas fa-check-circle"></i> 3 Terverifikasi</span>, 
-                                                <span class="text-warning-dark"><i class="fas fa-clock"></i> 4 Menunggu</span>
-                                            </small>
                                         </td>
                                         <td>
                                             <span class="text-muted fst-italic small bg-light px-2 py-1 rounded border">Belum ditetapkan</span>
                                         </td>
                                         <td class="text-center">
-                                            <span class="badge badge-soft-warning border border-warning text-dark px-3 py-1 shadow-sm rounded-pill"><i class="fas fa-hourglass-half me-1"></i> Menunggu</span>
+                                            @if($pendaftar->status == 'pending')
+                                                <span class="badge badge-soft-warning border border-warning text-dark px-3 py-1 shadow-sm rounded-pill">Menunggu</span>
+                                            @elseif($pendaftar->status == 'revisi')
+                                                <span class="badge badge-soft-danger border border-danger px-3 py-1 shadow-sm rounded-pill">Revisi</span>
+                                            @else
+                                                <span class="badge badge-soft-success border border-success px-3 py-1 shadow-sm rounded-pill">Disetujui</span>
+                                            @endif
                                         </td>
                                         <td class="text-center pe-4">
-                                            <button class="btn btn-primary btn-sm w-100 btn-round fw-bold shadow-sm" data-bs-toggle="modal" data-bs-target="#modalReviewIndividu">
+                                            <button class="btn btn-primary btn-sm w-100 btn-round fw-bold shadow-sm" data-bs-toggle="modal" data-bs-target="#modalReviewIndividu-{{ $pendaftar->id }}">
                                                 <i class="fas fa-search me-1"></i> Review
                                             </button>
                                         </td>
                                     </tr>
-
-                                    {{-- Baris 2: Kolektif (Butuh Revisi) --}}
-                                    <tr>
-                                        <td class="text-center">
-                                            <span class="badge badge-soft-primary border fw-bolder px-2 py-1 shadow-sm">PLT-088</span>
-                                        </td>
-                                        <td>
-                                            <div class="fw-bolder text-dark" style="font-size: 14px;">Leo Pratama</div>
-                                            <small class="text-muted fw-medium"><i class="fab fa-whatsapp text-success me-1"></i> 08987654321</small>
-                                        </td>
-                                        <td>
-                                            <span class="badge badge-soft-secondary border px-2 py-1 mb-1"><i class="fas fa-building me-1"></i> Kolektif</span><br>
-                                            <small class="fw-bolder text-dark">PT Arsa Jaya Prima</small>
-                                        </td>
-                                        <td>
-                                            <span class="fw-bolder text-dark">UI/UX Design</span>
-                                        </td>
-                                        <td>
-                                            <div class="d-flex justify-content-between mb-1" style="font-size: 10px;">
-                                                <span class="text-muted fw-bold text-uppercase">Progress Berkas</span>
-                                                <span class="text-muted fw-bold">85%</span>
-                                            </div>
-                                            <div class="progress mb-1 bg-light border" style="height: 6px; border-radius: 10px;">
-                                                <div class="progress-bar bg-success rounded-pill" data-bs-toggle="tooltip" title="6 Terverifikasi" style="width: 85%"></div>
-                                                <div class="progress-bar bg-danger rounded-pill" data-bs-toggle="tooltip" title="1 Revisi" style="width: 15%"></div>
-                                            </div>
-                                            <small class="fw-bold d-block mt-1" style="font-size: 10px;">
-                                                <span class="text-success"><i class="fas fa-check-circle"></i> 6 Terverifikasi</span>, 
-                                                <span class="text-danger"><i class="fas fa-exclamation-triangle"></i> 1 Revisi</span>
-                                            </small>
-                                        </td>
-                                        <td>
-                                            <span class="text-muted fst-italic small bg-light px-2 py-1 rounded border">Belum ditetapkan</span>
-                                        </td>
-                                        <td class="text-center">
-                                            <span class="badge badge-soft-danger border border-danger px-3 py-1 shadow-sm rounded-pill"><i class="fas fa-exclamation-triangle me-1"></i> Revisi</span>
-                                        </td>
-                                        <td class="text-center pe-4">
-                                            <button class="btn btn-white text-dark border btn-sm w-100 btn-round fw-bold shadow-sm" data-bs-toggle="modal" data-bs-target="#modalReviewKolektif">
-                                                <i class="fas fa-search me-1 text-primary"></i> Review
-                                            </button>
-                                        </td>
-                                    </tr>
-
-                                    {{-- Baris 3: Individu (Approved) --}}
-                                    <tr>
-                                        <td class="text-center">
-                                            <span class="badge badge-soft-primary border fw-bolder px-2 py-1 shadow-sm">PLT-087</span>
-                                        </td>
-                                        <td>
-                                            <div class="fw-bolder text-dark" style="font-size: 14px;">Siti Aminah</div>
-                                            <small class="text-muted fw-medium"><i class="fab fa-whatsapp text-success me-1"></i> 08561234987</small>
-                                        </td>
-                                        <td>
-                                            <span class="badge badge-soft-info border border-info px-2 py-1 mb-1"><i class="fas fa-user me-1"></i> Individu</span><br>
-                                            <small class="text-muted">-</small>
-                                        </td>
-                                        <td>
-                                            <span class="fw-bolder text-dark">Digital Marketing</span>
-                                        </td>
-                                        <td>
-                                            <div class="d-flex justify-content-between mb-1" style="font-size: 10px;">
-                                                <span class="text-success fw-bold text-uppercase">Progress Berkas</span>
-                                                <span class="text-success fw-bold">100%</span>
-                                            </div>
-                                            <div class="progress mb-1 bg-light border" style="height: 6px; border-radius: 10px;">
-                                                <div class="progress-bar bg-success rounded-pill" data-bs-toggle="tooltip" title="7 Terverifikasi" style="width: 100%"></div>
-                                            </div>
-                                            <small class="text-success fw-bold d-block mt-1" style="font-size: 10px;">
-                                                <i class="fas fa-shield-check"></i> Lengkap Terverifikasi
-                                            </small>
-                                        </td>
-                                        <td>
-                                            <div class="fw-bolder text-dark small">20 Apr 2026</div>
-                                            <small class="text-muted" style="font-size: 10px;">s.d 24 Apr 2026</small>
-                                        </td>
-                                        <td class="text-center">
-                                            <span class="badge badge-soft-success border border-success px-3 py-1 shadow-sm rounded-pill"><i class="fas fa-check-circle me-1"></i> Disetujui</span>
-                                        </td>
-                                        <td class="text-center pe-4">
-                                            <button class="btn btn-white text-dark border btn-sm w-100 btn-round fw-bold shadow-sm">
-                                                <i class="fas fa-eye me-1 text-primary"></i> Detail
-                                            </button>
-                                        </td>
-                                    </tr>
+                                    @include('partials.modal-review-individu')
+                                    @empty
+                                    <tr><td colspan="8" class="text-center py-4 text-muted">Belum ada data pendaftar.</td></tr>
+                                    @endforelse
                                 </tbody>
                             </table>
                         </div>
@@ -604,7 +430,7 @@
         </div>
 
         {{-- Include Modal Review Berkas --}}
-        @include('partials.modal-review-individu')
+        
         @include('partials.modal-review-kolektif')
 
     </div>

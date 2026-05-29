@@ -19,6 +19,7 @@ use App\Http\Controllers\OperationalController;
 use App\Http\Controllers\DailyLogController;
 use App\Http\Controllers\PengirimanPaketController;
 use App\Http\Controllers\AkunAksesController;
+use App\Http\Controllers\OperationalPendaftaranController;
 use App\Http\Controllers\PendaftaranPribadiController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -122,13 +123,10 @@ Route::middleware('auth')->group(function () {
             return view('operational.monitoring-pelatihan');
         })->name('monitoring.pelatihan');
 
-        // Pendaftaran
-        Route::get('/data-pendaftaran', function () {
-            return view('operational.data-pendaftaran'); 
-        })->name('operational.data-pendaftaran');
-        Route::post('/data-pendaftaran/update/{id}', function ($id) {
-            // Logika simpan perubahan status berkas
-        })->name('operational.data-pendaftaran.update');
+        Route::prefix('operational')->group(function () {
+            Route::get('/data-pendaftaran', [OperationalPendaftaranController::class, 'index'])->name('operational.data-pendaftaran');
+            Route::post('/data-pendaftaran/verify/{id}', [OperationalPendaftaranController::class, 'verify'])->name('operational.pendaftaran.verify');
+        });
 
         // Aktivitas Harian
         Route::get('/aktivitas-harian', [DailyLogController::class, 'index'])->name('operational.aktivitas-harian');
