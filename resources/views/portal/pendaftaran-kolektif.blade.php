@@ -10,6 +10,7 @@
     <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 
     <style>
         .input-focus-ring:focus-within { box-shadow: 0 0 0 4px rgba(16, 185, 129, 0.1); }
@@ -128,7 +129,7 @@
         <form action="{{ route('portal.pendaftaran.kolektif.store') }}" method="POST" enctype="multipart/form-data" class="space-y-8" id="formKolektif" onsubmit="submitFormCompany(event)">
             @csrf
             
-            <input type="hidden" name="cta_id" value="{{ request('cta') }}">
+            <input type="hidden" name="cta_id" value="{{ request('cta_id', $cta_id ?? '') }}">
             
             {{-- ================= MASTER: DATA INSTANSI ================= --}}
             <div class="bg-white p-6 md:p-8 rounded-3xl shadow-sm border border-gray-100">
@@ -138,14 +139,15 @@
                 </h2>
                 
                 <div class="space-y-5">
+                    {{-- 🔥 UPDATE 1: Form Instansi sesuai tema Tailwind 🔥 --}}
                     <div class="input-focus-ring transition-shadow rounded-xl">
-                        <label class="form-label font-bold text-gray-700">Nama Instansi / Perusahaan</label>
-                        <input type="text" name="perusahaan" class="form-control" 
+                        <label class="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-2 ml-1">Nama Instansi / Perusahaan <span class="text-red-500">*</span></label>
+                        <input type="text" name="perusahaan" class="w-full px-4 py-3.5 border border-gray-200 rounded-xl focus:border-emerald-500 outline-none transition-colors text-gray-700 {{ $perusahaan_default ? 'bg-gray-100 cursor-not-allowed focus:bg-gray-100' : 'bg-gray-50 focus:bg-white' }}" 
                             placeholder="Masukkan nama perusahaan..."
                             value="{{ old('perusahaan', $perusahaan_default) }}" 
-                            {{ $perusahaan_default ? 'readonly style=background-color:#f1f5f9;' : '' }} required>
+                            {{ $perusahaan_default ? 'readonly' : '' }} required>
                         @if($perusahaan_default)
-                            <small class="text-emerald-600 fw-bold"><i class="fas fa-lock"></i> Terkunci otomatis dari sistem</small>
+                            <small class="text-emerald-600 font-bold mt-1.5 ml-1 block text-xs"><i class="fas fa-lock mr-1"></i> Terkunci otomatis dari sistem</small>
                         @endif
                     </div>
 
@@ -241,19 +243,19 @@
                                 <label class="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-2 ml-1">Alamat Peserta</label>
                                 <input type="text" name="peserta[0][alamat]" class="w-full px-4 py-3 bg-white border border-gray-200 rounded-xl focus:border-emerald-500 outline-none text-sm" placeholder="Sesuai KTP">
                             </div>
-                            <div class="input-focus-ring rounded-xl">
-                                <label class="form-label font-bold text-gray-700">Judul Pelatihan / Sertifikasi</label>
-                                <select name="master_training_id" class="form-select" required>
-                                    @if($selected_training)
-                                        {{-- 🔥 JIKA VIA LINK DEAL: HANYA TAMPILKAN JUDUL PROGRAM PROSPEK INI 🔥 --}}
-                                        <option value="{{ $selected_training->id }}" selected>{{ $selected_training->nama_training }}</option>
-                                    @else
-                                        {{-- Jika akses normal tanpa link --}}
-                                        <option value="">-- Pilih Program Pelatihan --</option>
-                                        @foreach($all_trainings as $t)
-                                            <option value="{{ $t->id }}" {{ old('master_training_id') == $t->id ? 'selected' : '' }}>{{ $t->nama_training }}</option>
-                                        @endforeach
-                                    @endif
+                            
+                            {{-- 🔥 UPDATE 2: Select Pelatihan dengan desain tailwind Select2 🔥 --}}
+                            <div class="input-focus-ring transition-shadow rounded-xl">
+                                <label class="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-2 ml-1">Judul Pelatihan <span class="text-red-500">*</span></label>
+                                <select name="peserta[0][training_id]" class="w-full select2-init" required>
+                                    <option value="" disabled selected>Pilih pelatihan untuk peserta ini...</option>
+                                    
+                                    {{-- Langsung looping $trainings karena isinya sudah difilter di Controller --}}
+                                    @foreach($trainings as $t)
+                                        <option value="{{ $t->id }}" {{ old('peserta.0.training_id') == $t->id ? 'selected' : '' }}>
+                                            {{ $t->nama_training }}
+                                        </option>
+                                    @endforeach
                                 </select>
                             </div>
                         </div>
@@ -359,11 +361,16 @@
     </div>
 
     <script>
-        // Ambil data PHP dan titipkan ke variabel JS
-        const opsiPelatihan = `{!! $trainings->map(function($t) { return '<option value="'.$t->id.'">'.$t->nama_training.'</option>'; })->implode('') !!}`;
+        // 🔥 UPDATE 3: Logika JS untuk mengunci Opsi Pelatihan 🔥
+        @if($selected_training)
+            const opsiPelatihan = `<option value="{{ $selected_training->id }}" selected>{{ $selected_training->nama_training }}</option>`;
+        @else
+            // HANYA GUNAKAN SATU BARIS INI
+            // Karena $trainings sudah difilter otomatis oleh Controller (hanya A, B, dan C)
+            const opsiPelatihan = `{!! $trainings->map(function($t) { return '<option value="'.$t->id.'">'.$t->nama_training.'</option>'; })->implode('') !!}`;
+        @endif
 
         $(document).ready(function() {
-            // Inisialisasi Select2 untuk baris pertama
             $('.select2-init').select2({
                 placeholder: "Ketik untuk mencari pelatihan...",
                 allowClear: true
@@ -440,8 +447,8 @@
                     
                     <div class="input-focus-ring transition-shadow rounded-xl">
                         <label class="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-2 ml-1">Judul Pelatihan <span class="text-red-500">*</span></label>
-                        <select id="select-training-${indexPeserta}" name="peserta[${indexPeserta}][training_id]" class="w-full" required>
-                            <option value="" disabled selected>Ketik untuk mencari pelatihan...</option>
+                        <select id="select-training-${indexPeserta}" name="peserta[${indexPeserta}][training_id]" class="w-full select2-init" required>
+                            <option value="" disabled selected>Pilih pelatihan untuk peserta ini...</option>
                             ${opsiPelatihan}
                         </select>
                     </div>
@@ -451,7 +458,7 @@
             container.appendChild(cardBaru);
             updateNomorPeserta();
 
-            // Inisialisasi ulang Select2 pada elemen baru agar menyamar sempurna
+            // Inisialisasi ulang Select2 pada elemen baru
             $(`#select-training-${indexPeserta}`).select2({
                 placeholder: "Ketik untuk mencari pelatihan...",
                 allowClear: true

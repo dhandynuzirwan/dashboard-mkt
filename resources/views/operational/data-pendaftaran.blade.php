@@ -307,17 +307,17 @@
                                         <td>
                                             @php
                                                 // 1. Logika penentu: Jika perusahaan kosong atau berisi tulisan 'pribadi' (case insensitive)
-                                                $namaPerusahaan = $p->prospek->perusahaan ?? 'Pribadi';
+                                                $namaPerusahaan = $deal->prospek->perusahaan ?? 'Pribadi';
                                                 $isKolektif = ($namaPerusahaan && strtolower($namaPerusahaan) !== 'pribadi');
 
-                                                // 2. Ambil ID Training dari relasi prospek (sesuaikan nama kolom di database Anda)
-                                                $trainingId = $p->prospek->master_training_id ?? ''; 
-                                                $namaTraining = $p->prospek->nama_training_custom ?? ($p->prospek->training->nama_training ?? 'Pelatihan');
+                                                // 2. Ambil ID Training dari relasi prospek
+                                                $trainingId = $deal->prospek->master_training_id ?? ''; 
+                                                $namaTraining = $deal->prospek->nama_training_custom ?? ($deal->prospek->training->nama_training ?? 'Pelatihan');
 
                                                 // 3. Susun URL Registrasi Dinamis
                                                 if ($isKolektif) {
                                                     $urlRegistrasi = route('portal.pendaftaran.kolektif', [
-                                                        'cta_id'      => $p->id,
+                                                        'cta_id'      => $deal->id,
                                                         'training_id' => $trainingId,
                                                         'perusahaan'  => $namaPerusahaan
                                                     ]);
@@ -325,7 +325,7 @@
                                                     $btnText  = 'Link Kolektif';
                                                 } else {
                                                     $urlRegistrasi = route('portal.pendaftaran.create', [
-                                                        'cta_id'      => $p->id,
+                                                        'cta_id'      => $deal->id,
                                                         'training_id' => $trainingId
                                                     ]);
                                                     $btnColor = 'btn-info text-white';
@@ -333,8 +333,9 @@
                                                 }
 
                                                 // 4. Susun template pesan WhatsApp untuk klien
+                                                $noWa = preg_replace('/[^0-9]/', '', $deal->prospek->no_wa ?? $deal->prospek->wa_pic ?? '');
                                                 $pesanWa = "Halo Terima kasih telah memilih Arsa Training.\n\nBerikut adalah link resmi pendaftaran untuk program pelatihan *".$namaTraining."*:\n".$urlRegistrasi."\n\nMohon untuk segera melengkapi formulir pendaftaran di atas. Terima kasih.";
-                                                $linkWa  = "https://wa.me/".preg_replace('/[^0-9]/', '', $p->prospek->no_wa ?? $p->prospek->wa_pic ?? '')."?text=".urlencode($pesanWa);
+                                                $linkWa  = "https://wa.me/".$noWa."?text=".urlencode($pesanWa);
                                             @endphp
 
                                             <div class="d-flex gap-1 justify-content-center">
@@ -343,7 +344,7 @@
                                                     <i class="fas fa-link me-1"></i> {{ $btnText }}
                                                 </button>
 
-                                                <a href="{{ $linkWa }}" target="_blank" class="btn btn-whatsapp-modern btn-sm btn-round fw-bold shadow-sm" title="Kirim via WhatsApp">
+                                                <a href="{{ $linkWa }}" target="_blank" class="btn btn-success btn-sm btn-round fw-bold shadow-sm" title="Kirim via WhatsApp">
                                                     <i class="fab fa-whatsapp"></i>
                                                 </a>
                                             </div>

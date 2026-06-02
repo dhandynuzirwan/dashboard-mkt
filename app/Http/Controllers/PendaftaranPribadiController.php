@@ -19,9 +19,10 @@ class PendaftaranPribadiController extends Controller
             $selected_training = \App\Models\MasterTraining::find($training_id);
         }
         
-        $all_trainings = \App\Models\MasterTraining::all();
+        // 🔥 UBAH NAMA VARIABEL INI JADI $trainings
+        $trainings = \App\Models\MasterTraining::all();
 
-        return view('portal.pendaftaran-pribadi', compact('cta_id', 'selected_training', 'all_trainings'));
+        return view('portal.pendaftaran-pribadi', compact('cta_id', 'selected_training', 'trainings'));
     }
 
     public function store(Request $request)
