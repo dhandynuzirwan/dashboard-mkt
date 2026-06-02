@@ -21,6 +21,7 @@ class PengirimanPaket extends Model
         'isi_paket_lainnya',
         'ekspedisi',
         'no_resi',
+        'foto_resi',
         'biaya_pengiriman',
         'status_pengiriman',
         'tanggal_kirim',

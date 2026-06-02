@@ -73,6 +73,7 @@ class PengirimanPaketController extends Controller
             'isi_paket_lainnya' => 'nullable|string',
             'ekspedisi'         => 'required',
             'no_resi'           => 'nullable',
+            'foto_resi'         => 'nullable|file|mimes:jpg,png,pdf|max:2048',
             'biaya_pengiriman'  => 'required|numeric',
             'status_pengiriman' => 'required',
             'tanggal_kirim'     => 'required|date',
@@ -81,9 +82,16 @@ class PengirimanPaketController extends Controller
             'catatan_file'      => 'nullable|file|mimes:jpg,png,pdf|max:2048',
         ]);
 
+        // Proses Upload Bukti Diterima
         if ($request->hasFile('catatan_file')) {
             $path = $request->file('catatan_file')->store('bukti_pengiriman', 'public');
             $validated['catatan_file'] = $path;
+        }
+
+        // 🔥 Proses Upload Bukti Resi
+        if ($request->hasFile('foto_resi')) {
+            $resiPath = $request->file('foto_resi')->store('bukti_resi', 'public');
+            $validated['foto_resi'] = $resiPath;
         }
 
         PengirimanPaket::create($validated);
@@ -106,6 +114,7 @@ class PengirimanPaketController extends Controller
             'isi_paket_lainnya' => 'nullable|string',
             'ekspedisi'         => 'required',
             'no_resi'           => 'nullable',
+            'foto_resi'         => 'nullable|file|mimes:jpg,png,pdf|max:2048',
             'biaya_pengiriman'  => 'required|numeric',
             'status_pengiriman' => 'required',
             'tanggal_kirim'     => 'required|date',
@@ -122,6 +131,16 @@ class PengirimanPaketController extends Controller
             $validated['catatan_file'] = $path;
         }
 
+        // 🔥 Proses Update Bukti Resi
+        if ($request->hasFile('foto_resi')) {
+            // Hapus resi lama jika ada
+            if ($paket->foto_resi) {
+                Storage::disk('public')->delete($paket->foto_resi);
+            }
+            $resiPath = $request->file('foto_resi')->store('bukti_resi', 'public');
+            $validated['foto_resi'] = $resiPath;
+        }
+
         $paket->update($validated);
         return redirect()->back()->with('success', 'Data pengiriman berhasil diperbarui!');
     }
@@ -134,6 +153,11 @@ class PengirimanPaketController extends Controller
         // Hapus file dari storage jika ada sebelum datanya dihapus
         if ($paket->catatan_file) {
             Storage::disk('public')->delete($paket->catatan_file);
+        }
+
+        // 🔥 Hapus file foto_resi dari storage
+        if ($paket->foto_resi) {
+            Storage::disk('public')->delete($paket->foto_resi);
         }
         
         $paket->delete();

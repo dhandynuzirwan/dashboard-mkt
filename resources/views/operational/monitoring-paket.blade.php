@@ -205,6 +205,13 @@
                                 <td>
                                     <div class="fw-bolder text-dark mb-1">{{ $p->ekspedisi }}</div>
                                     <code class="d-inline-block text-dark bg-light px-2 py-1 rounded border small shadow-sm">{{ $p->no_resi ?? 'Belum ada resi' }}</code>
+
+                                    {{-- 🔥 TAMPILKAN TOMBOL FOTO RESI JIKA ADA 🔥 --}}
+                                    @if($p->foto_resi)
+                                        <a href="{{ asset('storage/' . $p->foto_resi) }}" target="_blank" class="btn bg-info-subtle text-info border-0 btn-sm btn-round fw-bold shadow-sm w-100 mt-2 hover-lift" style="font-size: 10px; padding: 4px;">
+                                            <i class="fas fa-receipt me-1"></i> Lihat Resi
+                                        </a>
+                                    @endif
                                 </td>
                                 <td>
                                     <div class="small mb-1"><span class="text-muted fw-bold">Kirim:</span> <span class="text-dark fw-medium">{{ \Carbon\Carbon::parse($p->tanggal_kirim)->format('d M Y') }}</span></div>
@@ -223,10 +230,11 @@
                                     <span class="badge {{ $badgeClass }} px-3 py-2 rounded-pill d-inline-block shadow-sm w-100">
                                         {{ $p->status_pengiriman }}
                                     </span>
-                                    
+
+                                    {{-- 🔥 TAMPILKAN BUKTI DITERIMA (CATATAN FILE) 🔥 --}}
                                     @if($p->catatan_file)
-                                        <a href="{{ asset('storage/' . $p->catatan_file) }}" target="_blank" class="btn btn-white border text-primary btn-sm btn-round fw-bold shadow-sm w-100 mt-2 hover-lift" style="font-size: 10px; padding: 4px;">
-                                            <i class="fas fa-file-image me-1"></i> Bukti
+                                        <a href="{{ asset('storage/' . $p->catatan_file) }}" target="_blank" class="btn bg-info-subtle text-info border-0 btn-sm btn-round fw-bold shadow-sm w-100 mt-2 hover-lift" style="font-size: 10px; padding: 4px;">
+                                            <i class="fas fa-box-open me-1"></i> Bukti Terima
                                         </a>
                                     @endif
 
@@ -380,6 +388,13 @@
                             <input type="text" class="form-control input-modern shadow-none @error('no_resi') is-invalid @enderror" name="no_resi" value="{{ old('no_resi') }}">
                             @error('no_resi') <div class="invalid-feedback">{{ $message }}</div> @enderror
                         </div>
+
+                        <div class="col-md-3">
+                            <label class="label-modern">Foto Resi (Opsional)</label>
+                            <input type="file" class="form-control input-modern shadow-none @error('foto_resi') is-invalid @enderror" name="foto_resi" accept=".jpg,.png,.jpeg,.pdf">
+                            @error('foto_resi') <div class="invalid-feedback">{{ $message }}</div> @enderror
+                        </div>
+
                         <div class="col-md-4">
                             <label class="label-modern">Biaya Kirim (Rp) <span class="text-danger">*</span></label>
                             <input type="number" class="form-control input-modern shadow-none @error('biaya_pengiriman') is-invalid @enderror" name="biaya_pengiriman" value="{{ old('biaya_pengiriman', 0) }}" required>
@@ -519,6 +534,14 @@
                             <label class="label-modern">No. Resi</label>
                             <input type="text" class="form-control input-modern shadow-none @error('no_resi') is-invalid @enderror" name="no_resi" value="{{ old('no_resi', $p->no_resi) }}">
                             @error('no_resi') <div class="invalid-feedback">{{ $message }}</div> @enderror
+                        </div>
+                        <div class="col-md-3">
+                            <label class="label-modern">Update Resi (Opsional)</label>
+                            <input type="file" class="form-control input-modern shadow-none @error('foto_resi') is-invalid @enderror" name="foto_resi" accept=".jpg,.png,.jpeg,.pdf">
+                            @error('foto_resi') <div class="invalid-feedback">{{ $message }}</div> @enderror
+                            @if($p->foto_resi)
+                                <small class="text-info fw-bold mt-1 d-block"><i class="fas fa-check-circle"></i> File resi tersimpan</small>
+                            @endif
                         </div>
                         <div class="col-md-4">
                             <label class="label-modern">Biaya Kirim (Rp) <span class="text-danger">*</span></label>
