@@ -215,7 +215,11 @@
                                 <td>
                                     <div class="fw-bolder text-dark mb-1">{{ $p->ekspedisi }}</div>
                                     <code class="d-inline-block text-dark bg-light px-2 py-1 rounded border small shadow-sm">{{ $p->no_resi ?? 'Belum ada resi' }}</code>
-
+                                    {{-- Tampilan Biaya Pengiriman di Tabel --}}
+                                    <div class="mt-1 text-success fw-bold" style="font-size: 12px;" title="Biaya Pengiriman">
+                                        <i class="fas fa-money-bill-wave me-1 text-success opacity-75"></i> 
+                                        Rp {{ number_format($p->biaya_pengiriman, 0, ',', '.') }}
+                                    </div>
                                     {{-- 🔥 UPDATE TOMBOL FOTO RESI 🔥 --}}
                                     @if($p->foto_resi)
                                         <button type="button" class="btn bg-info-subtle text-info border-0 btn-sm btn-round fw-bold shadow-sm w-100 mt-2 hover-lift btn-preview" 
@@ -610,18 +614,23 @@
 </div>
 @endforeach
 
-{{-- Modal Preview Gambar (Universal) --}}
+{{-- Modal Preview Gambar dengan Tombol Download --}}
 <div class="modal fade" id="modalPreviewGambar" tabindex="-1" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered modal-lg">
         <div class="modal-content card-modern border-0 shadow-lg bg-transparent">
-            <div class="modal-header bg-white border-bottom-0 pb-3 pt-3 px-4 rounded-top-4">
+            <div class="modal-header bg-white border-bottom-0 pb-3 pt-3 px-4 rounded-top-4 d-flex align-items-center justify-content-between">
                 <h6 class="modal-title fw-bolder text-dark" id="previewTitle">
                     <i class="fas fa-image me-2 text-primary"></i> Preview Dokumen
                 </h6>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                <div class="d-flex align-items-center gap-2">
+                    {{-- 🔥 TOMBOL DOWNLOAD BARU 🔥 --}}
+                    <a id="btnDownloadPreview" href="#" download class="btn btn-success btn-sm btn-round fw-bold shadow-sm text-white" style="font-size: 11px; padding: 4px 12px;">
+                        <i class="fas fa-download me-1"></i> Download
+                    </a>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
             </div>
             <div class="modal-body p-0 text-center bg-dark rounded-bottom-4 overflow-hidden d-flex align-items-center justify-content-center" style="min-height: 300px;">
-                {{-- Gambar akan dimuat di sini oleh JavaScript --}}
                 <img id="previewImage" src="" alt="Preview" class="img-fluid" style="max-height: 80vh; object-fit: contain;">
             </div>
         </div>
@@ -798,22 +807,26 @@
         });
     @endif
 
-    // Script untuk mengatur source gambar pada Modal Preview
+    // Script untuk mengatur source gambar dan link download pada Modal
     document.querySelectorAll('.btn-preview').forEach(button => {
         button.addEventListener('click', function() {
-            // Ambil data dari tombol yang diklik
+            // Ambil data dari tombol tabel yang diklik
             const imgSrc = this.getAttribute('data-img-src');
             const title = this.getAttribute('data-title');
             
-            // Tembakkan ke dalam modal
+            // Tembakkan ke dalam modal gambar & judul
             document.getElementById('previewImage').src = imgSrc;
             document.getElementById('previewTitle').innerHTML = `<i class="fas fa-image me-2 text-primary"></i> ${title}`;
+            
+            // 🔥 TEMBAKKAN URL KE TOMBOL DOWNLOAD 🔥
+            document.getElementById('btnDownloadPreview').href = imgSrc;
         });
     });
 
-    // Menghapus source gambar saat modal ditutup (agar tidak ngelag/berbekas)
+    // Menghapus data saat modal ditutup agar bersih kembali
     document.getElementById('modalPreviewGambar').addEventListener('hidden.bs.modal', function () {
         document.getElementById('previewImage').src = '';
+        document.getElementById('btnDownloadPreview').href = '#'; // Reset link download
     });
 </script>
 @endsection
