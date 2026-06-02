@@ -153,21 +153,21 @@
                         <label class="label-modern">Status</label>
                         <select name="status_tracking" class="form-select input-modern shadow-none" style="font-size: 13px;">
                             <option value="">Semua</option>
-                            <option value="lengkap">🟢 Lengkap</option>
-                            <option value="kurang">🟡 Kurang</option>
+                            <option value="lengkap" {{ request('status_tracking') == 'lengkap' ? 'selected' : '' }}>🟢 Lengkap</option>
+                            <option value="kurang" {{ request('status_tracking') == 'kurang' ? 'selected' : '' }}>🟡 Kurang</option>
                         </select>
                     </div>
 
                     {{-- Kolom 4: Tanggal Awal --}}
                     <div class="col-md-6 col-lg-3 col-xl-2">
                         <label class="label-modern">Dari Tanggal</label>
-                        <input type="date" name="start_date" class="form-control input-modern shadow-none" style="font-size: 13px;">
+                        <input type="date" name="start_date" value="{{ $startDate }}" class="form-control input-modern shadow-none" style="font-size: 13px;">
                     </div>
 
                     {{-- Kolom 5: Tanggal Akhir --}}
                     <div class="col-md-6 col-lg-3 col-xl-2">
                         <label class="label-modern">Sampai Tanggal</label>
-                        <input type="date" name="end_date" class="form-control input-modern shadow-none" style="font-size: 13px;">
+                        <input type="date" name="end_date" value="{{ $endDate }}" class="form-control input-modern shadow-none" style="font-size: 13px;">
                     </div>
 
                     {{-- Kolom 6: Tombol --}}
@@ -176,7 +176,7 @@
                             <button type="submit" class="btn btn-primary btn-round fw-bold shadow-sm flex-fill" style="padding: 8px 12px; font-size: 13px;">
                                 <i class="fas fa-search me-1"></i> Cari
                             </button>
-                            <a href="#" class="btn btn-white border btn-round fw-bold text-dark shadow-sm flex-fill d-flex align-items-center justify-content-center" style="padding: 8px 12px; font-size: 13px;">
+                            <a href="{{ route('operational.data-pendaftaran') }}" class="btn btn-white border btn-round fw-bold text-dark shadow-sm flex-fill d-flex align-items-center justify-content-center" style="padding: 8px 12px; font-size: 13px;">
                                 Reset
                             </a>
                         </div>
@@ -189,10 +189,10 @@
         <div class="d-flex justify-content-center mb-4 fade-in">
             <div class="nav-modern p-1 rounded-pill bg-white border shadow-sm d-inline-flex" id="pills-tab" role="tablist">
                 <button class="nav-link active" id="pills-tracking-tab" data-bs-toggle="pill" data-bs-target="#pills-tracking" type="button" role="tab">
-                    <i class="fas fa-search-dollar me-1"></i> 1. Tracking Prospek Deal
+                    Tracking Prospek Deal
                 </button>
                 <button class="nav-link" id="pills-registrasi-tab" data-bs-toggle="pill" data-bs-target="#pills-registrasi" type="button" role="tab">
-                    <i class="fas fa-clipboard-check me-1"></i> 2. Verifikasi Berkas Peserta
+                    Verifikasi Berkas Peserta
                 </button>
             </div>
         </div>
@@ -206,7 +206,7 @@
                 {{-- TABEL TRACKING PROSPEK DEAL --}}
                 <div class="card card-modern border-0 shadow-sm mb-4">
                     <div class="card-header bg-light border-bottom p-3" style="border-radius: 16px 16px 0 0;">
-                        <h6 class="m-0 fw-bolder text-dark"><i class="fas fa-clipboard-list text-primary me-2"></i>Tracking Progress Pendaftaran dari Prospek Deal</h6>
+                        <h6 class="m-0 fw-bolder text-dark">Tracking Progress Pendaftaran dari Prospek Deal</h6>
                     </div>
                     <div class="card-body p-0">
                         <div class="table-responsive">

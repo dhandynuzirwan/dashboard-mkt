@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Cta;
 use App\Models\PendaftaranPribadi;
 use Illuminate\Http\Request;
+use Illuminate\Support\Carbon; // Pastikan Carbon di-import
 
 class OperationalPendaftaranController extends Controller
 {
@@ -15,39 +16,76 @@ class OperationalPendaftaranController extends Controller
         // ==========================================
         $queryDeals = Cta::with(['prospek.marketing'])->where('status_penawaran', 'deal');
         
-        // Filter Tab 1
+        // 1. Filter Pencarian Teks
         if ($request->filled('search_tracking')) {
-            $queryDeals->whereHas('prospek', function($q) use ($request) {
-                $q->where('perusahaan', 'like', '%'.$request->search_tracking.'%')
-                  ->orWhere('pic', 'like', '%'.$request->search_tracking.'%');
+            $search = $request->search_tracking;
+            $queryDeals->whereHas('prospek', function($q) use ($search) {
+                $q->where('perusahaan', 'like', '%'.$search.'%')
+                  ->orWhere('pic', 'like', '%'.$search.'%');
             });
         }
+
+        // 2. 🔥 PERBAIKAN: Filter Status Kelengkapan (Pakai Subquery SQL)
+        if ($request->filled('status_tracking')) {
+            if ($request->status_tracking == 'lengkap') {
+                // Cari yang jumlah pendaftar (cta_id) >= target peserta
+                $queryDeals->whereRaw('(SELECT COUNT(*) FROM pendaftaran_pribadis WHERE pendaftaran_pribadis.cta_id = ctas.id) >= IFNULL(ctas.jumlah_peserta, 1)');
+            } elseif ($request->status_tracking == 'kurang') {
+                // Cari yang jumlah pendaftar (cta_id) < target peserta
+                $queryDeals->whereRaw('(SELECT COUNT(*) FROM pendaftaran_pribadis WHERE pendaftaran_pribadis.cta_id = ctas.id) < IFNULL(ctas.jumlah_peserta, 1)');
+            }
+        }
+
+        // 3. 🔥 PERBAIKAN: Filter Tanggal (Default: Bulan Ini)
+        $startDate = $request->input('start_date', Carbon::now()->startOfMonth()->toDateString());
+        $endDate = $request->input('end_date', Carbon::now()->endOfMonth()->toDateString());
+
+        $queryDeals->whereDate('created_at', '>=', $startDate)
+                   ->whereDate('created_at', '<=', $endDate);
+
         $deals = $queryDeals->orderBy('created_at', 'desc')->paginate(10, ['*'], 'page_deal')->withQueryString();
+
+        // 4. 🔥 KALKULASI PROGRESS BAR (WAJIB ADA)
+        $deals->getCollection()->transform(function ($deal) {
+            $deal->target_peserta = $deal->jumlah_peserta ?? 1;
+            $deal->terdaftar = \App\Models\PendaftaranPribadi::where('cta_id', $deal->id)->count();
+            $deal->kurang = max(0, $deal->target_peserta - $deal->terdaftar);
+            $deal->is_lengkap = $deal->terdaftar >= $deal->target_peserta;
+
+            $persentase = ($deal->target_peserta > 0) ? round(($deal->terdaftar / $deal->target_peserta) * 100) : 0;
+            $deal->persentase = $persentase > 100 ? 100 : $persentase;
+
+            return $deal;
+        });
 
         // ==========================================
         // TAB 2: DATA PENDAFTARAN PRIBADI (Verifikasi)
         // ==========================================
         $queryPendaftar = PendaftaranPribadi::with('training');
 
-        // Filter Tab 2
         if ($request->filled('search')) {
-            $queryPendaftar->where('nama_lengkap', 'like', '%'.$request->search.'%')
-                           ->orWhere('id_pendaftaran', 'like', '%'.$request->search.'%');
+            $searchTab2 = $request->search;
+            $queryPendaftar->where(function($q) use ($searchTab2) {
+                $q->where('nama_lengkap', 'like', '%'.$searchTab2.'%')
+                  ->orWhere('id_pendaftaran', 'like', '%'.$searchTab2.'%');
+            });
         }
         if ($request->filled('status')) {
-            $queryPendaftar->where('status', $request->status); // pending, revisi, diterima
+            $queryPendaftar->where('status', $request->status);
         }
+        
         $pendaftarans = $queryPendaftar->orderBy('created_at', 'desc')->paginate(10, ['*'], 'page_verifikasi')->withQueryString();
 
-        // Hitung statistik untuk cards atas
+        // Statistik
         $stats = [
-            'total_pendaftar' => $pendaftarans->count(),
-            'menunggu'        => $pendaftarans->where('status', 'pending')->count(),
-            'revisi'          => $pendaftarans->where('status', 'revisi')->count(),
-            'disetujui'       => $pendaftarans->where('status', 'diterima')->count(),
+            'total_pendaftar' => PendaftaranPribadi::count(),
+            'menunggu'        => PendaftaranPribadi::where('status', 'pending')->count(),
+            'revisi'          => PendaftaranPribadi::where('status', 'revisi')->count(),
+            'disetujui'       => PendaftaranPribadi::where('status', 'diterima')->count(),
         ];
 
-        return view('operational.data-pendaftaran', compact('deals', 'pendaftarans', 'stats'));
+        // 🔥 Kirim startDate dan endDate ke view agar tanggal default muncul di form
+        return view('operational.data-pendaftaran', compact('deals', 'pendaftarans', 'stats', 'startDate', 'endDate'));
     }
 
     public function verify(Request $request, $id)
