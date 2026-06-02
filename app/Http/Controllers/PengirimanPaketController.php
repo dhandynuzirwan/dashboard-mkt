@@ -41,22 +41,34 @@ class PengirimanPaketController extends Controller
             $query->whereBetween('tanggal_kirim', [$request->start_date, $request->end_date]);
         }
 
-        $data_pengiriman = $query->orderByRaw("CASE WHEN status_pengiriman = 'Diterima' THEN 1 ELSE 0 END ASC")
-                                 ->orderBy('tanggal_kirim', 'desc')
-                                 ->paginate(10)
-                                 ->withQueryString();
+        // 🔥 PERBAIKAN 1: Filter Tanggal Default Bulan Ini
+        $startDate = $request->input('start_date', Carbon::now()->startOfMonth()->toDateString());
+        $endDate = $request->input('end_date', Carbon::now()->endOfMonth()->toDateString());
 
+        $query->whereDate('tanggal_kirim', '>=', $startDate)
+            ->whereDate('tanggal_kirim', '<=', $endDate);
+
+        $data_pengiriman = $query->orderByRaw("CASE WHEN status_pengiriman = 'Diterima' THEN 1 ELSE 0 END ASC")
+                                ->orderBy('tanggal_kirim', 'desc')
+                                ->paginate(10)
+                                ->withQueryString();
+
+        // Buat base query khusus untuk statistik yang sudah difilter berdasarkan tanggal
+        $baseStatsQuery = PengirimanPaket::whereDate('tanggal_kirim', '>=', $startDate)
+                                        ->whereDate('tanggal_kirim', '<=', $endDate);
+
+        // Gunakan (clone $baseStatsQuery) agar query dasarnya tidak tertimpa/rusak saat dihitung berulang kali
         $stats = [
-            'total'      => PengirimanPaket::count(),
+            'total'      => (clone $baseStatsQuery)->count(),
             'diproses'   => PengirimanPaket::where('status_pengiriman', 'Diproses')->count(),
             'dikirim'    => PengirimanPaket::where('status_pengiriman', 'Dikirim')->count(),
-            'diterima'   => PengirimanPaket::where('status_pengiriman', 'Diterima')->count(),
+            'diterima'   => (clone $baseStatsQuery)->where('status_pengiriman', 'Diterima')->count(),
         ];
 
         // Tarik data user marketing untuk Dropdown Form
         $marketings = User::where('role', 'marketing')->get();
 
-        return view('operational.monitoring-paket', compact('data_pengiriman', 'stats', 'marketings'));
+        return view('operational.monitoring-paket', compact('data_pengiriman', 'stats', 'marketings', 'startDate', 'endDate'));
     }
 
     // ================= STORE DATA BARU =================

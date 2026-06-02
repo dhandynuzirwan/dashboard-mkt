@@ -143,11 +143,11 @@
                     </div>
                     <div class="col-sm-6 col-md-4 col-lg-2">
                         <label class="label-modern">Dari Tanggal</label>
-                        <input type="date" name="start_date" class="form-control form-control-sm input-modern shadow-none" value="{{ request('start_date') }}">
+                        <input type="date" name="start_date" class="form-control form-control-sm input-modern shadow-none" value="{{ $startDate }}">
                     </div>
                     <div class="col-sm-6 col-md-4 col-lg-2">
                         <label class="label-modern">Sampai Tanggal</label>
-                        <input type="date" name="end_date" class="form-control form-control-sm input-modern shadow-none" value="{{ request('end_date') }}">
+                        <input type="date" name="end_date" class="form-control form-control-sm input-modern shadow-none" value="{{ $endDate }}">
                     </div>
                     <div class="col-sm-12 col-md-8 col-lg-3 d-flex gap-2 mt-4 mt-lg-0">
                         <button type="submit" class="btn btn-primary btn-sm btn-round fw-bold px-4 hover-lift w-100 shadow-sm">
@@ -206,11 +206,16 @@
                                     <div class="fw-bolder text-dark mb-1">{{ $p->ekspedisi }}</div>
                                     <code class="d-inline-block text-dark bg-light px-2 py-1 rounded border small shadow-sm">{{ $p->no_resi ?? 'Belum ada resi' }}</code>
 
-                                    {{-- 🔥 TAMPILKAN TOMBOL FOTO RESI JIKA ADA 🔥 --}}
+                                    {{-- 🔥 UPDATE TOMBOL FOTO RESI 🔥 --}}
                                     @if($p->foto_resi)
-                                        <a href="{{ asset('storage/' . $p->foto_resi) }}" target="_blank" class="btn bg-info-subtle text-info border-0 btn-sm btn-round fw-bold shadow-sm w-100 mt-2 hover-lift" style="font-size: 10px; padding: 4px;">
+                                        <button type="button" class="btn bg-info-subtle text-info border-0 btn-sm btn-round fw-bold shadow-sm w-100 mt-2 hover-lift btn-preview" 
+                                            data-bs-toggle="modal" 
+                                            data-bs-target="#modalPreviewGambar" 
+                                            data-img-src="{{ asset('storage/' . $p->foto_resi) }}"
+                                            data-title="Foto Resi - {{ $p->nama_penerima }}"
+                                            style="font-size: 10px; padding: 4px;">
                                             <i class="fas fa-receipt me-1"></i> Lihat Resi
-                                        </a>
+                                        </button>
                                     @endif
                                 </td>
                                 <td>
@@ -231,11 +236,15 @@
                                         {{ $p->status_pengiriman }}
                                     </span>
 
-                                    {{-- 🔥 TAMPILKAN BUKTI DITERIMA (CATATAN FILE) 🔥 --}}
                                     @if($p->catatan_file)
-                                        <a href="{{ asset('storage/' . $p->catatan_file) }}" target="_blank" class="btn bg-info-subtle text-info border-0 btn-sm btn-round fw-bold shadow-sm w-100 mt-2 hover-lift" style="font-size: 10px; padding: 4px;">
+                                        <button type="button" class="btn bg-success-subtle text-success border-0 btn-sm btn-round fw-bold shadow-sm w-100 mt-2 hover-lift btn-preview" 
+                                            data-bs-toggle="modal" 
+                                            data-bs-target="#modalPreviewGambar" 
+                                            data-img-src="{{ asset('storage/' . $p->catatan_file) }}"
+                                            data-title="Bukti Terima - {{ $p->nama_penerima }}"
+                                            style="font-size: 10px; padding: 4px;">
                                             <i class="fas fa-box-open me-1"></i> Bukti Terima
-                                        </a>
+                                        </button>
                                     @endif
 
                                     @if($p->catatan_teks)
@@ -261,7 +270,7 @@
                             @empty
                             <tr>
                                 <td colspan="6" class="text-center py-5 text-muted">
-                                    <i class="fas fa-box-open fs-1 mb-3 text-light opacity-50"></i><br>
+                                    <br>
                                     Data pengiriman tidak ditemukan.
                                 </td>
                             </tr>
@@ -591,6 +600,24 @@
 </div>
 @endforeach
 
+{{-- Modal Preview Gambar (Universal) --}}
+<div class="modal fade" id="modalPreviewGambar" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-lg">
+        <div class="modal-content card-modern border-0 shadow-lg bg-transparent">
+            <div class="modal-header bg-white border-bottom-0 pb-3 pt-3 px-4 rounded-top-4">
+                <h6 class="modal-title fw-bolder text-dark" id="previewTitle">
+                    <i class="fas fa-image me-2 text-primary"></i> Preview Dokumen
+                </h6>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body p-0 text-center bg-dark rounded-bottom-4 overflow-hidden d-flex align-items-center justify-content-center" style="min-height: 300px;">
+                {{-- Gambar akan dimuat di sini oleh JavaScript --}}
+                <img id="previewImage" src="" alt="Preview" class="img-fluid" style="max-height: 80vh; object-fit: contain;">
+            </div>
+        </div>
+    </div>
+</div>
+
 {{-- ================= STYLES ================= --}}
 <style>
     /* CSS MODERNISASI UI TETAP SAMA */
@@ -760,5 +787,23 @@
             }
         });
     @endif
+
+    // Script untuk mengatur source gambar pada Modal Preview
+    document.querySelectorAll('.btn-preview').forEach(button => {
+        button.addEventListener('click', function() {
+            // Ambil data dari tombol yang diklik
+            const imgSrc = this.getAttribute('data-img-src');
+            const title = this.getAttribute('data-title');
+            
+            // Tembakkan ke dalam modal
+            document.getElementById('previewImage').src = imgSrc;
+            document.getElementById('previewTitle').innerHTML = `<i class="fas fa-image me-2 text-primary"></i> ${title}`;
+        });
+    });
+
+    // Menghapus source gambar saat modal ditutup (agar tidak ngelag/berbekas)
+    document.getElementById('modalPreviewGambar').addEventListener('hidden.bs.modal', function () {
+        document.getElementById('previewImage').src = '';
+    });
 </script>
 @endsection
