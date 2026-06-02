@@ -9,10 +9,19 @@ use Illuminate\Support\Facades\Storage;
 
 class PendaftaranPribadiController extends Controller
 {
-    public function create()
+    public function create(Request $request)
     {
-        $trainings = MasterTraining::orderBy('nama_training', 'asc')->get();
-        return view('portal.pendaftaran', compact('trainings'));
+        $cta_id = $request->query('cta_id');
+        $training_id = $request->query('training_id');
+
+        $selected_training = null;
+        if ($training_id) {
+            $selected_training = \App\Models\MasterTraining::find($training_id);
+        }
+        
+        $all_trainings = \App\Models\MasterTraining::all();
+
+        return view('portal.pendaftaran-pribadi', compact('cta_id', 'selected_training', 'all_trainings'));
     }
 
     public function store(Request $request)

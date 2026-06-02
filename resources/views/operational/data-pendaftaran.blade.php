@@ -219,7 +219,7 @@
                                         <th width="150">Marketing</th>
                                         <th width="220">Progress Pendaftaran</th>
                                         <th class="text-center" width="130">Status Pendaftar</th>
-                                        {{-- <th class="text-center pe-4" width="100">Aksi</th> --}}
+                                        <th class="text-center pe-4" width="100">Aksi</th>
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -301,6 +301,52 @@
                                             @else
                                                 <span class="badge badge-soft-danger border border-danger rounded-pill px-3 py-1 shadow-sm">Belum Daftar</span>
                                             @endif
+                                        </td>
+
+                                        {{-- 7. Aksi --}}
+                                        <td>
+                                            @php
+                                                // 1. Logika penentu: Jika perusahaan kosong atau berisi tulisan 'pribadi' (case insensitive)
+                                                $namaPerusahaan = $p->prospek->perusahaan ?? 'Pribadi';
+                                                $isKolektif = ($namaPerusahaan && strtolower($namaPerusahaan) !== 'pribadi');
+
+                                                // 2. Ambil ID Training dari relasi prospek (sesuaikan nama kolom di database Anda)
+                                                $trainingId = $p->prospek->master_training_id ?? ''; 
+                                                $namaTraining = $p->prospek->nama_training_custom ?? ($p->prospek->training->nama_training ?? 'Pelatihan');
+
+                                                // 3. Susun URL Registrasi Dinamis
+                                                if ($isKolektif) {
+                                                    $urlRegistrasi = route('portal.pendaftaran.kolektif', [
+                                                        'cta_id'      => $p->id,
+                                                        'training_id' => $trainingId,
+                                                        'perusahaan'  => $namaPerusahaan
+                                                    ]);
+                                                    $btnColor = 'btn-success';
+                                                    $btnText  = 'Link Kolektif';
+                                                } else {
+                                                    $urlRegistrasi = route('portal.pendaftaran.create', [
+                                                        'cta_id'      => $p->id,
+                                                        'training_id' => $trainingId
+                                                    ]);
+                                                    $btnColor = 'btn-info text-white';
+                                                    $btnText  = 'Link Pribadi';
+                                                }
+
+                                                // 4. Susun template pesan WhatsApp untuk klien
+                                                $pesanWa = "Halo Terima kasih telah memilih Arsa Training.\n\nBerikut adalah link resmi pendaftaran untuk program pelatihan *".$namaTraining."*:\n".$urlRegistrasi."\n\nMohon untuk segera melengkapi formulir pendaftaran di atas. Terima kasih.";
+                                                $linkWa  = "https://wa.me/".preg_replace('/[^0-9]/', '', $p->prospek->no_wa ?? $p->prospek->wa_pic ?? '')."?text=".urlencode($pesanWa);
+                                            @endphp
+
+                                            <div class="d-flex gap-1 justify-content-center">
+                                                <button type="button" class="btn {{ $btnColor }} btn-sm btn-round fw-bold shadow-sm" 
+                                                        onclick="salinLinkRegistrasi('{{ $urlRegistrasi }}')" title="Salin Link Pendaftaran">
+                                                    <i class="fas fa-link me-1"></i> {{ $btnText }}
+                                                </button>
+
+                                                <a href="{{ $linkWa }}" target="_blank" class="btn btn-whatsapp-modern btn-sm btn-round fw-bold shadow-sm" title="Kirim via WhatsApp">
+                                                    <i class="fab fa-whatsapp"></i>
+                                                </a>
+                                            </div>
                                         </td>
                                     </tr>
                                     @empty
@@ -551,5 +597,18 @@
             return new bootstrap.Tooltip(tooltipTriggerEl)
         })
     });
+
+    function salinLinkRegistrasi(url) {
+        navigator.clipboard.writeText(url).then(() => {
+            Swal.fire({
+                icon: 'success',
+                title: 'Link Berhasil Disalin!',
+                text: 'Silakan bagikan link tersebut kepada klien.',
+                timer: 2000,
+                showConfirmButton: false,
+                customClass: { popup: 'card-modern' }
+            });
+        });
+    }
 </script>
 @endsection

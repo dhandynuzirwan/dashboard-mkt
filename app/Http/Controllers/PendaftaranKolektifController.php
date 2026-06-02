@@ -12,9 +12,21 @@ class PendaftaranKolektifController extends Controller
 {
     public function create(Request $request)
     {
-        $trainings = MasterTraining::all();
+        // Tangkap data dari URL
+        $cta_id = $request->query('cta_id');
+        $training_id = $request->query('training_id');
+        $perusahaan_default = $request->query('perusahaan');
+
+        // Mengambil data training spesifik jika dikirim dari link deal
+        $selected_training = null;
+        if ($training_id) {
+            $selected_training = \App\Models\MasterTraining::find($training_id);
+        }
         
-        return view('portal.pendaftaran-kolektif', compact('trainings'));
+        // Ambil semua training untuk kondisi pendaftaran normal tanpa link deal
+        $all_trainings = \App\Models\MasterTraining::all();
+
+        return view('portal.pendaftaran-kolektif', compact('cta_id', 'selected_training', 'all_trainings', 'perusahaan_default'));
     }
 
     public function store(Request $request)
