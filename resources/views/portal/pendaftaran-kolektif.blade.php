@@ -30,13 +30,16 @@
             width: 100% !important;
         }
         .select2-container--default .select2-selection--single {
-            height: 48px !important; /* Menyamakan tinggi py-3.5 */
-            border-radius: 0.75rem !important; /* rounded-xl */
-            border: 1px solid #e5e7eb !important; /* border-gray-200 */
-            background-color: #f9fafb !important; /* bg-gray-50 */
+            height: 48px !important; 
+            border-radius: 0.75rem !important; 
+            border: 1px solid #e5e7eb !important; 
+            
+            /* 🔥 UBAH BARIS INI MENJADI WHITE 🔥 */
+            background-color: #ffffff !important; 
+            
             display: flex !important;
             align-items: center;
-            padding: 0 1rem !important; /* px-4 */
+            padding: 0 1rem !important; 
             outline: none !important;
             transition: all 0.2s ease-in-out;
         }
@@ -245,16 +248,12 @@
                             </div>
                             
                             {{-- 🔥 UPDATE 2: Select Pelatihan dengan desain tailwind Select2 🔥 --}}
-                            <div class="input-focus-ring transition-shadow rounded-xl">
+                            <div class="input-focus-ring rounded-xl">
                                 <label class="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-2 ml-1">Judul Pelatihan <span class="text-red-500">*</span></label>
-                                <select name="peserta[0][training_id]" class="w-full select2-init" required>
-                                    <option value="" disabled selected>Pilih pelatihan untuk peserta ini...</option>
-                                    
-                                    {{-- Langsung looping $trainings karena isinya sudah difilter di Controller --}}
+                                <select name="peserta[0][training_id]" class="w-full select2-init bg-white border border-gray-200" required>
+                                    <option value="" disabled selected>Ketik untuk mencari pelatihan...</option>
                                     @foreach($trainings as $t)
-                                        <option value="{{ $t->id }}" {{ old('peserta.0.training_id') == $t->id ? 'selected' : '' }}>
-                                            {{ $t->nama_training }}
-                                        </option>
+                                        <option value="{{ $t->id }}" {{ old('peserta.0.training_id') == $t->id ? 'selected' : '' }}>{{ $t->nama_training }}</option>
                                     @endforeach
                                 </select>
                             </div>
@@ -362,13 +361,7 @@
 
     <script>
         // 🔥 UPDATE 3: Logika JS untuk mengunci Opsi Pelatihan 🔥
-        @if($selected_training)
-            const opsiPelatihan = `<option value="{{ $selected_training->id }}" selected>{{ $selected_training->nama_training }}</option>`;
-        @else
-            // HANYA GUNAKAN SATU BARIS INI
-            // Karena $trainings sudah difilter otomatis oleh Controller (hanya A, B, dan C)
-            const opsiPelatihan = `{!! $trainings->map(function($t) { return '<option value="'.$t->id.'">'.$t->nama_training.'</option>'; })->implode('') !!}`;
-        @endif
+        const opsiPelatihan = `{!! $trainings->map(function($t) { return '<option value="'.$t->id.'">'.$t->nama_training.'</option>'; })->implode('') !!}`;
 
         $(document).ready(function() {
             $('.select2-init').select2({
@@ -448,7 +441,7 @@
                     <div class="input-focus-ring transition-shadow rounded-xl">
                         <label class="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-2 ml-1">Judul Pelatihan <span class="text-red-500">*</span></label>
                         <select id="select-training-${indexPeserta}" name="peserta[${indexPeserta}][training_id]" class="w-full select2-init" required>
-                            <option value="" disabled selected>Pilih pelatihan untuk peserta ini...</option>
+                            <option value="" disabled selected>Ketik untuk mencari pelatihan...</option>
                             ${opsiPelatihan}
                         </select>
                     </div>

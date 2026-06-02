@@ -15,33 +15,31 @@ class PendaftaranKolektifController extends Controller
         $cta_id = $request->query('cta_id');
         $perusahaan_default = $request->query('perusahaan');
 
-        $trainings = collect(); // Default koleksi kosong
+        $trainings = collect(); // Default koleksi kosong jika tidak lewat link deal
 
         if ($cta_id) {
-            // 1. Cari data CTA berdasarkan ID
-            // (Sesuaikan "Cta" dengan nama Model deal/tracking kamu, misal ProspekDeal / Cta)
+            // 1. Cari data CTA saat ini berdasarkan ID yang dikirim dari URL
             $currentCta = \App\Models\Cta::find($cta_id); 
             
             if ($currentCta && $currentCta->prospek_id) {
-                // 2. Cari semua CTA lain yang dimiliki oleh Perusahaan/Prospek yang sama
-                // lalu ambil master_training_id nya
-                $trainingIds = \App\Models\Cta::where('prospek_id', $currentCta->prospek_id)
-                                            ->whereNotNull('master_training_id')
-                                            ->pluck('master_training_id')
+                // 2. Tarik semua string teks 'judul_permintaan' dari seluruh CTA milik Perusahaan/Prospek yang sama
+                $judulTitles = \App\Models\Cta::where('prospek_id', $currentCta->prospek_id)
+                                            ->whereNotNull('judul_permintaan')
+                                            ->pluck('judul_permintaan')
                                             ->toArray();
                 
-                // 3. Ambil data MasterTraining yang ID-nya ada di dalam array $trainingIds
-                // array_unique digunakan agar tidak ada judul duplikat jika ada 2 CTA dengan judul sama
-                $trainings = \App\Models\MasterTraining::whereIn('id', array_unique($trainingIds))->get();
+                // 3. Cocokkan teks judul tersebut dengan kolom 'nama_training' di tabel master_trainings
+                // array_unique digunakan untuk menyaring agar nama program tidak ganda di dropdown
+                $trainings = \App\Models\MasterTraining::whereIn('nama_training', array_unique($judulTitles))->get();
             } else {
-                // Jika tidak ada prospek, setidaknya tampilkan training bawaan dari URL
+                // Fallback: Jika tidak terikat prospek tetapi ada training_id di URL
                 $training_id = $request->query('training_id');
                 if($training_id) {
                     $trainings = \App\Models\MasterTraining::where('id', $training_id)->get();
                 }
             }
         } else {
-            // Jika form diakses tanpa link khusus (jalur normal), tampilkan semua
+            // Jika form diakses tanpa link khusus (jalur normal), tampilkan semua program pelatihan
             $trainings = \App\Models\MasterTraining::all();
         }
 
