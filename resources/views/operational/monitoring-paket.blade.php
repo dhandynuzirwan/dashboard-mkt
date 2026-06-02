@@ -195,11 +195,21 @@
                                 </td>
                                 <td>
                                     <span class="badge badge-soft-warning mb-2">{{ $p->jenis_paket }}</span>
-                                    <small class="d-block text-muted lh-sm text-wrap" style="max-width: 250px;">
-                                        @if($p->isi_paket)
-                                            {{ is_array($p->isi_paket) ? implode(', ', $p->isi_paket) : implode(', ', json_decode($p->isi_paket, true) ?? []) }}
-                                        @endif
-                                        {{ $p->isi_paket_lainnya ? ', ' . $p->isi_paket_lainnya : '' }}
+                                    <small class="d-block text-dark fw-medium lh-sm text-wrap" style="max-width: 250px;">
+                                        @php
+                                            $gabunganIsi = [];
+                                            // Jika ada isi paket dari checkbox
+                                            if($p->isi_paket) {
+                                                $gabunganIsi = is_array($p->isi_paket) ? $p->isi_paket : (json_decode($p->isi_paket, true) ?? []);
+                                            }
+                                            // Jika ada isi paket tambahan teks
+                                            if($p->isi_paket_lainnya) {
+                                                $gabunganIsi[] = $p->isi_paket_lainnya;
+                                            }
+                                        @endphp
+                                        
+                                        {{-- Gabungkan semua isi dengan koma tanpa ada koma tersesat di depan/belakang --}}
+                                        {{ implode(', ', $gabunganIsi) }}
                                     </small>
                                 </td>
                                 <td>
