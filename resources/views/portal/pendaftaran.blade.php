@@ -55,6 +55,8 @@
         {{-- 🔥 UBAH FORM ACTION & TAMBAH ENCTYPE 🔥 --}}
         <form action="{{ route('portal.pendaftaran.store') }}" method="POST" enctype="multipart/form-data" id="formPendaftaran" class="space-y-8">
             @csrf
+
+            <input type="hidden" name="cta_id" value="{{ $cta_id }}">
             
             <div class="bg-white p-6 md:p-8 rounded-3xl shadow-sm border border-gray-100">
                 <h2 class="text-xl font-bold text-gray-800 mb-6 flex items-center">
@@ -88,16 +90,16 @@
 
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
                         <div class="input-focus-ring transition-shadow rounded-xl">
-                            <label class="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-2 ml-1">Judul Pelatihan <span class="text-red-500">*</span></label>
-                            
-                            {{-- 🔥 GANTI INPUT TEXT MENJADI DROPDOWN SELECT2 🔥 --}}
-                            <select name="master_training_id" class="select2 w-full" required>
-                                <option value="" disabled selected>Ketik untuk mencari pelatihan...</option>
-                                @foreach($trainings as $training)
-                                    <option value="{{ $training->id }}" {{ old('master_training_id') == $training->id ? 'selected' : '' }}>
-                                        {{ $training->nama_training }}
-                                    </option>
-                                @endforeach
+                            <label class="form-label font-bold text-gray-700">Judul Pelatihan / Sertifikasi</label>
+                            <select name="master_training_id" class="form-select" required>
+                                @if($selected_training)
+                                    <option value="{{ $selected_training->id }}" selected>{{ $selected_training->nama_training }}</option>
+                                @else
+                                    <option value="">-- Pilih Program Pelatihan --</option>
+                                    @foreach($all_trainings as $t)
+                                        <option value="{{ $t->id }}" {{ old('master_training_id') == $t->id ? 'selected' : '' }}>{{ $t->nama_training }}</option>
+                                    @endforeach
+                                @endif
                             </select>
                         </div>
                     </div>

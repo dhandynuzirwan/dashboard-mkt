@@ -139,13 +139,14 @@
                 
                 <div class="space-y-5">
                     <div class="input-focus-ring transition-shadow rounded-xl">
-                        <label class="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-2 ml-1">Nama Instansi / Perusahaan <span class="text-red-500">*</span></label>
-                        <div class="relative">
-                            <span class="absolute inset-y-0 left-0 flex items-center pl-4 text-gray-400">
-                                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-10V4m-5 10h.01M15 7h.01M15 11h.01M15 15h.01M11 15h.01M7 15h.01" /></svg>
-                            </span>
-                            <input type="text" name="perusahaan" value="{{ request('perusahaan') ?? old('perusahaan') }}" class="w-full pl-11 pr-4 py-3.5 bg-gray-50 border border-gray-200 rounded-xl focus:bg-white focus:border-emerald-500 outline-none transition-colors {{ request('perusahaan') ? 'bg-gray-200 text-gray-500 cursor-not-allowed' : '' }}" placeholder="Contoh: PT. Arsa Jaya Prima" {{ request('perusahaan') ? 'readonly' : 'required' }}>
-                        </div>
+                        <label class="form-label font-bold text-gray-700">Nama Instansi / Perusahaan</label>
+                        <input type="text" name="perusahaan" class="form-control" 
+                            placeholder="Masukkan nama perusahaan..."
+                            value="{{ old('perusahaan', $perusahaan_default) }}" 
+                            {{ $perusahaan_default ? 'readonly style=background-color:#f1f5f9;' : '' }} required>
+                        @if($perusahaan_default)
+                            <small class="text-emerald-600 fw-bold"><i class="fas fa-lock"></i> Terkunci otomatis dari sistem</small>
+                        @endif
                     </div>
 
                     <div class="input-focus-ring transition-shadow rounded-xl">
@@ -241,12 +242,18 @@
                                 <input type="text" name="peserta[0][alamat]" class="w-full px-4 py-3 bg-white border border-gray-200 rounded-xl focus:border-emerald-500 outline-none text-sm" placeholder="Sesuai KTP">
                             </div>
                             <div class="input-focus-ring rounded-xl">
-                                <label class="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-2 ml-1">Judul Pelatihan <span class="text-red-500">*</span></label>
-                                <select name="peserta[0][training_id]" class="select2-init w-full" required>
-                                    <option value="" disabled selected>Ketik untuk mencari pelatihan...</option>
-                                    @foreach($trainings as $training)
-                                        <option value="{{ $training->id }}">{{ $training->nama_training }}</option>
-                                    @endforeach
+                                <label class="form-label font-bold text-gray-700">Judul Pelatihan / Sertifikasi</label>
+                                <select name="master_training_id" class="form-select" required>
+                                    @if($selected_training)
+                                        {{-- 🔥 JIKA VIA LINK DEAL: HANYA TAMPILKAN JUDUL PROGRAM PROSPEK INI 🔥 --}}
+                                        <option value="{{ $selected_training->id }}" selected>{{ $selected_training->nama_training }}</option>
+                                    @else
+                                        {{-- Jika akses normal tanpa link --}}
+                                        <option value="">-- Pilih Program Pelatihan --</option>
+                                        @foreach($all_trainings as $t)
+                                            <option value="{{ $t->id }}" {{ old('master_training_id') == $t->id ? 'selected' : '' }}>{{ $t->nama_training }}</option>
+                                        @endforeach
+                                    @endif
                                 </select>
                             </div>
                         </div>
