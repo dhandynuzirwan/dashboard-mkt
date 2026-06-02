@@ -45,22 +45,19 @@ class InventoryController extends Controller
     public function storeAset(Request $request)
     {
         $validated = $request->validate([
+            'kode'       => 'required|string|max:50|unique:asets,kode',
             'nama'       => 'required|string|max:255',
             'kategori'   => 'required|string',
-            'tgl_masuk'  => 'required|date',
+            'tgl_masuk'  => 'nullable|date',
             'lokasi'     => 'required|string',
-            'pic'        => 'nullable|string',
+            'pic'        => 'nullable|string', // Ubah ke nullable jika operasional
             'jumlah'     => 'required|integer|min:1',
-            'harga_beli' => 'nullable|numeric',
+            'satuan'     => 'required|string|max:50',
+            'harga_beli' => 'nullable|numeric', // Sesuaikan dengan name di form
             'kondisi'    => 'required|string',
             'foto_aset'  => 'nullable|image|mimes:jpg,jpeg,png|max:2048',
             'keterangan' => 'nullable|string',
         ]);
-
-        // Auto-Generate Kode Aset (Contoh: INV-2404-001)
-        $tahunBulan = date('ym');
-        $urutanTerakhir = Aset::where('kode', 'like', "INV-{$tahunBulan}-%")->count() + 1;
-        $kodeAset = "INV-{$tahunBulan}-" . str_pad($urutanTerakhir, 3, '0', STR_PAD_LEFT);
 
         // Handle Upload Foto
         $fotoPath = null;
@@ -69,17 +66,18 @@ class InventoryController extends Controller
         }
 
         Aset::create([
-            'kode'       => $kodeAset,
+            'kode'       => strtoupper($validated['kode']), // Ambil manual dari input & kapital
             'nama'       => $validated['nama'],
             'kategori'   => $validated['kategori'],
             'tgl_masuk'  => $validated['tgl_masuk'],
             'lokasi'     => $validated['lokasi'],
             'pic'        => $validated['pic'],
-            'harga'      => $validated['harga_beli'],
+            'harga'      => $validated['harga_beli'], // Mapping ke kolom DB 'harga'
             'kondisi'    => $validated['kondisi'],
             'foto'       => $fotoPath,
             'keterangan' => $validated['keterangan'],
             'jumlah'     => $validated['jumlah'],
+            'satuan'     => $validated['satuan'],
         ]);
 
         return redirect()->back()->with('success', 'Aset Tetap baru berhasil ditambahkan!');
@@ -197,12 +195,15 @@ class InventoryController extends Controller
         $aset = Aset::findOrFail($id);
 
         $validated = $request->validate([
+            // Tambahkan validasi kode, abaikan pengecekan unique untuk ID aset ini sendiri
+            'kode'       => 'required|string|max:50|unique:asets,kode,' . $id,
             'nama'       => 'required|string|max:255',
             'kategori'   => 'required|string',
             'tgl_masuk'  => 'required|date',
             'lokasi'     => 'required|string',
             'pic'        => 'nullable|string',
             'jumlah'     => 'required|integer|min:1',
+            'satuan'     => 'required|string|max:50',
             'harga_beli' => 'nullable|numeric',
             'kondisi'    => 'required|string',
             'foto_aset'  => 'nullable|image|mimes:jpg,jpeg,png|max:2048',
@@ -211,7 +212,6 @@ class InventoryController extends Controller
 
         // Handle Update Foto jika ada file baru
         if ($request->hasFile('foto_aset')) {
-            // Hapus foto lama jika ada
             if ($aset->foto) {
                 Storage::disk('public')->delete($aset->foto);
             }
@@ -219,12 +219,14 @@ class InventoryController extends Controller
         }
 
         $aset->update([
+            'kode'       => strtoupper($validated['kode']),
             'nama'       => $validated['nama'],
             'kategori'   => $validated['kategori'],
             'tgl_masuk'  => $validated['tgl_masuk'],
             'lokasi'     => $validated['lokasi'],
             'pic'        => $validated['pic'],
             'jumlah'     => $validated['jumlah'],
+            'satuan'     => $validated['satuan'],
             'harga'      => $validated['harga_beli'],
             'kondisi'    => $validated['kondisi'],
             'foto'       => $validated['foto'] ?? $aset->foto,

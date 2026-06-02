@@ -258,8 +258,11 @@
                             <table class="table table-modern table-hover align-middle mb-0">
                                 <thead class="bg-light sticky-top">
                                     <tr>
-                                        <th class="text-start ps-4" width="150">Kode Aset</th>
-                                        <th>Nama Aset & Kategori</th>
+                                        <th class="text-start ps-4" width="130">Kode Aset</th>
+                                        {{-- 🔥 UBAH NAMA KOLOM INI 🔥 --}}
+                                        <th>Detail Aset (Info & Catatan)</th> 
+                                        <th>Jumlah & Satuan</th>
+                                        <th>Nilai Aset</th>
                                         <th>Lokasi / PIC</th>
                                         <th>Status</th>
                                         <th class="text-center pe-4" width="120">Aksi</th>
@@ -271,13 +274,60 @@
                                             <td class="text-start ps-4">
                                                 <span class="badge badge-soft-secondary border text-dark py-2 px-3 fw-bold shadow-sm" style="letter-spacing: 0.5px;">{{ $aset->kode }}</span>
                                             </td>
+                                            {{-- 🔥 TAMPILAN BARU: FOTO, NAMA, KATEGORI, DAN CATATAN 🔥 --}}
                                             <td>
-                                                <div class="fw-bolder text-dark mb-1" style="font-size: 14px;">{{ $aset->nama }}</div>
-                                                <span class="badge badge-soft-info border" style="font-size: 10px;">{{ $aset->kategori }}</span>
+                                                <div class="d-flex align-items-start">
+                                                    {{-- 1. Kotak Foto --}}
+                                                    <div class="me-3 mt-1 flex-shrink-0">
+                                                        @if($aset->foto)
+                                                            <a href="{{ asset('storage/' . $aset->foto) }}" target="_blank" title="Klik untuk perbesar foto">
+                                                                <img src="{{ asset('storage/' . $aset->foto) }}" alt="Foto Aset" class="rounded border shadow-sm hover-lift" style="width: 52px; height: 52px; object-fit: cover;">
+                                                            </a>
+                                                        @else
+                                                            <div class="rounded border bg-light text-muted d-flex align-items-center justify-content-center shadow-sm" style="width: 52px; height: 52px;" title="Tidak ada foto">
+                                                                <i class="fas fa-laptop text-secondary opacity-50"></i>
+                                                            </div>
+                                                        @endif
+                                                    </div>
+                                                    
+                                                    {{-- 2. Detail Teks & Catatan --}}
+                                                    <div>
+                                                        <div class="fw-bolder text-dark mb-1" style="font-size: 14px;">{{ $aset->nama }}</div>
+                                                        <span class="badge badge-soft-info border mb-1" style="font-size: 10px;">{{ $aset->kategori }}</span>
+                                                        
+                                                        {{-- 3. Area Catatan Tambahan --}}
+                                                        @if($aset->keterangan)
+                                                            <div class="text-muted fst-italic mt-1 lh-sm text-wrap" style="font-size: 11px; max-width: 250px;">
+                                                                <i class="fas fa-info-circle me-1 text-primary opacity-75"></i> {{ $aset->keterangan }}
+                                                            </div>
+                                                        @endif
+                                                    </div>
+                                                </div>
+                                            </td>
+                                            {{-- 🔥 Tampilan Jumlah dan Satuan 🔥 --}}
+                                            <td>
+                                                <h5 class="mb-0 fw-bolder text-dark">{{ $aset->jumlah ?? 1 }}</h5>
+                                                <small class="text-muted fw-bold text-uppercase" style="font-size: 10px;">{{ $aset->satuan ?? 'Unit' }}</small>
+                                            </td>
+                                            <td>
+                                                @php
+                                                    $hargaBeli = $aset->harga ?? 0;
+                                                    $jumlah = $aset->jumlah ?? 1;
+                                                    $totalNilai = $hargaBeli * $jumlah;
+                                                @endphp
+                                                
+                                                {{-- Menampilkan Total Nilai --}}
+                                                <div class="fw-bolder text-success mb-1" style="font-size: 14px;">
+                                                    Rp {{ number_format($totalNilai, 0, ',', '.') }}
+                                                </div>
+                                                {{-- Menampilkan Harga Satuan --}}
+                                                <small class="text-muted fw-medium" style="font-size: 10px;">
+                                                    @ Rp {{ number_format($hargaBeli, 0, ',', '.') }} / {{ $aset->satuan ?? 'Unit' }}
+                                                </small>
                                             </td>
                                             <td>
                                                 <div class="fw-bold text-primary mb-1"><i class="fas fa-map-marker-alt me-1 text-danger"></i>{{ $aset->lokasi }}</div>
-                                                <small class="text-muted fw-medium"><i class="fas fa-user-tie me-1"></i> PIC: {{ $item->pic ?? '-' }}</small>
+                                                <small class="text-muted fw-medium"><i class="fas fa-user-tie me-1"></i> PIC: {{ $aset->pic ?? '-' }}</small>
                                             </td>
                                             <td>
                                                 @php
@@ -288,19 +338,16 @@
                                                 <span class="badge {{ $kondisiClass }} px-3 py-1 rounded-pill border">{{ $aset->kondisi }}</span>
                                             </td>
                                             <td class="text-center pe-4">
-                                                <button class="btn btn-warning btn-sm btn-round fw-bold text-dark shadow-sm hover-lift w-100" title="Edit Data">
+                                                <button class="btn btn-warning btn-sm btn-round fw-bold text-dark shadow-sm hover-lift w-100" 
+                                                        title="Edit Data" 
+                                                        data-bs-toggle="modal" 
+                                                        data-bs-target="#modalEditAset{{ $aset->id }}">
                                                     <i class="fa fa-edit me-1"></i> Edit
                                                 </button>
                                             </td>
                                         </tr>
                                     @empty
-                                        <tr>
-                                            <td colspan="5" class="text-center py-5 text-muted">
-                                                <i class="fas fa-box-open fs-1 mb-3 text-light opacity-50"></i><br>
-                                                Belum ada data aset tetap terdaftar.
-                                            </td>
-                                        </tr>
-                                    @endforelse
+                                        @endforelse
                                 </tbody>
                             </table>
                         </div>
@@ -329,6 +376,11 @@
                 @csrf
                 <div class="modal-body px-4 pt-3">
                     <div class="row g-3">
+                        {{-- //kode aset input manual --}}
+                        <div class="col-md-12">
+                            <label class="label-modern">Kode Aset <span class="text-danger">*</span></label>
+                            <input type="text" class="form-control input-modern shadow-none" name="kode" placeholder="Contoh: AS001" required>
+                        </div>
                         <div class="col-md-12">
                             <label class="label-modern">Nama Aset / Barang <span class="text-danger">*</span></label>
                             <input type="text" class="form-control input-modern shadow-none" name="nama" placeholder="Contoh: Laptop Asus ROG" required>
@@ -354,11 +406,20 @@
                         </div>
                         <div class="col-md-6">
                             <label class="label-modern">Penanggung Jawab (PIC)</label>
-                            <input type="text" class="form-control input-modern shadow-none" name="pic" placeholder="Contoh: Nama Pegawai (Opsional)">
+                            <input type="text" class="form-control input-modern shadow-none" name="pic" placeholder="Contoh: Nama Pegawai (Opsional)" required>
+                        </div>
+                        {{-- Jumlah dan Satuan --}}
+                        <div class="col-md-6">
+                            <label class="label-modern">Jumlah <span class="text-danger">*</span></label>
+                            <input type="number" class="form-control input-modern shadow-none" name="jumlah" placeholder="Contoh: 5" min="1" required>
+                        </div>
+                        <div class="col-md-6">
+                            <label class="label-modern">Satuan <span class="text-danger">*</span></label>
+                            <input type="text" class="form-control input-modern shadow-none" name="satuan" placeholder="Contoh: Buah, Unit, Set" required>
                         </div>
                         <div class="col-md-6">
                             <label class="label-modern">Harga Beli (Rp)</label>
-                            <input type="number" class="form-control input-modern shadow-none" name="harga_beli" placeholder="0">
+                            <input type="number" class="form-control input-modern shadow-none" name="harga" placeholder="0">
                         </div>
                         <div class="col-md-6">
                             <label class="label-modern">Status / Kondisi Awal <span class="text-danger">*</span></label>
@@ -387,6 +448,99 @@
         </div>
     </div>
 </div>
+
+{{-- Modals Looping untuk Edit (Aset Tetap) --}}
+@foreach($asets as $aset)
+    <div class="modal fade" id="modalEditAset{{ $aset->id }}" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered modal-lg">
+            <div class="modal-content card-modern border-0 shadow-lg">
+                <div class="modal-header bg-warning-subtle text-warning-dark border-bottom-0 pb-3 pt-4 px-4">
+                    <h5 class="modal-title fw-bolder">
+                        <i class="fas fa-edit me-2"></i> Edit Data Aset Tetap
+                    </h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                
+                <form action="{{ route('inventaris.aset.update', $aset->id) }}" method="POST" enctype="multipart/form-data">
+                    @csrf
+                    @method('PUT')
+                    <div class="modal-body px-4 pt-3">
+                        <div class="row g-3">
+                            <div class="col-md-4">
+                                <label class="label-modern">Kode Aset <span class="text-danger">*</span></label>
+                                <input type="text" class="form-control input-modern shadow-none text-uppercase" name="kode" value="{{ $aset->kode }}" required>
+                            </div>
+                            <div class="col-md-8">
+                                <label class="label-modern">Nama Aset / Barang <span class="text-danger">*</span></label>
+                                <input type="text" class="form-control input-modern shadow-none" name="nama" value="{{ $aset->nama }}" required>
+                            </div>
+                            
+                            <div class="col-md-6">
+                                <label class="label-modern">Jumlah Aset <span class="text-danger">*</span></label>
+                                <input type="number" class="form-control input-modern shadow-none" name="jumlah" value="{{ $aset->jumlah }}" min="1" required>
+                            </div>
+                            <div class="col-md-6">
+                                <label class="label-modern">Satuan <span class="text-danger">*</span></label>
+                                <input type="text" class="form-control input-modern shadow-none" name="satuan" value="{{ $aset->satuan }}" required>
+                            </div>
+                            
+                            <div class="col-md-6">
+                                <label class="label-modern">Kategori Aset <span class="text-danger">*</span></label>
+                                <select name="kategori" class="form-select input-modern shadow-none" required>
+                                    <option value="Elektronik & IT" {{ $aset->kategori == 'Elektronik & IT' ? 'selected' : '' }}>Elektronik & IT</option>
+                                    <option value="Furnitur" {{ $aset->kategori == 'Furnitur' ? 'selected' : '' }}>Furnitur (Meja, Kursi, dll)</option>
+                                    <option value="Kendaraan" {{ $aset->kategori == 'Kendaraan' ? 'selected' : '' }}>Kendaraan Operasional</option>
+                                    <option value="Perlengkapan Cetak" {{ $aset->kategori == 'Perlengkapan Cetak' ? 'selected' : '' }}>Perlengkapan Cetak / ATK</option>
+                                    <option value="Lainnya" {{ $aset->kategori == 'Lainnya' ? 'selected' : '' }}>Lainnya</option>
+                                </select>
+                            </div>
+                            <div class="col-md-6">
+                                <label class="label-modern">Tanggal Masuk / Pembelian <span class="text-danger">*</span></label>
+                                <input type="date" class="form-control input-modern shadow-none" name="tgl_masuk" value="{{ $aset->tgl_masuk }}" required>
+                            </div>
+                            <div class="col-md-6">
+                                <label class="label-modern">Lokasi Penempatan <span class="text-danger">*</span></label>
+                                <input type="text" class="form-control input-modern shadow-none" name="lokasi" value="{{ $aset->lokasi }}" required>
+                            </div>
+                            <div class="col-md-6">
+                                <label class="label-modern">Penanggung Jawab (PIC)</label>
+                                <input type="text" class="form-control input-modern shadow-none" name="pic" value="{{ $aset->pic }}">
+                            </div>
+                            <div class="col-md-6">
+                                <label class="label-modern">Harga Beli (Rp)</label>
+                                <input type="number" class="form-control input-modern shadow-none" name="harga_beli" value="{{ $aset->harga }}">
+                            </div>
+                            <div class="col-md-6">
+                                <label class="label-modern">Status / Kondisi <span class="text-danger">*</span></label>
+                                <select name="kondisi" class="form-select input-modern shadow-none" required>
+                                    <option value="Baik" {{ $aset->kondisi == 'Baik' ? 'selected' : '' }}>Baik / Baru</option>
+                                    <option value="Bekas - Baik" {{ $aset->kondisi == 'Bekas - Baik' ? 'selected' : '' }}>Bekas - Masih Layak</option>
+                                    <option value="Rusak Ringan" {{ $aset->kondisi == 'Rusak Ringan' ? 'selected' : '' }}>Rusak Ringan</option>
+                                </select>
+                            </div>
+                            <div class="col-md-12">
+                                <label class="label-modern">Update Foto Barang</label>
+                                <input type="file" class="form-control input-modern shadow-none" name="foto_aset" accept="image/*">
+                                @if($aset->foto)
+                                    <small class="text-muted d-block mt-1"><i class="fas fa-check-circle text-success me-1"></i>Aset ini sudah memiliki foto. Upload baru untuk mengganti.</small>
+                                @endif
+                            </div>
+                            <div class="col-md-12">
+                                <label class="label-modern">Catatan Tambahan</label>
+                                <textarea class="form-control input-modern shadow-none" name="keterangan" rows="2">{{ $aset->keterangan }}</textarea>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="modal-footer bg-light border-top-0 pt-3 pb-3 px-4 rounded-bottom-4">
+                        <button type="button" class="btn btn-white btn-round border fw-bold text-dark hover-lift" data-bs-dismiss="modal">Batal</button>
+                        <button type="submit" class="btn btn-warning btn-round fw-bold text-dark shadow-sm hover-lift px-4">Update Data Aset</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+@endforeach
 
 {{-- Modal Tambah Persediaan --}}
 <div class="modal fade" id="modalTambahPersediaan" tabindex="-1" aria-hidden="true">

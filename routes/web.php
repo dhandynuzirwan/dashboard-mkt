@@ -156,8 +156,8 @@ Route::middleware('auth')->group(function () {
         Route::post('/inventaris/mutasi/{id}', [App\Http\Controllers\InventoryController::class, 'updateStok'])->name('inventaris.mutasi');
         Route::put('/inventaris/item/{id}', [App\Http\Controllers\InventoryController::class, 'updateItem'])->name('inventaris.item.update');
         Route::delete('/inventaris/item/{id}', [App\Http\Controllers\InventoryController::class, 'destroyItem'])->name('inventaris.item.destroy');
-        Route::put('/inventaris/aset/{id}', [App\Http\Controllers\InventoryController::class, 'updateAset'])->name('aset.update');
-        Route::delete('/inventaris/aset/{id}', [App\Http\Controllers\InventoryController::class, 'destroyAset'])->name('aset.destroy');
+        Route::put('/inventaris/aset/{id}', [App\Http\Controllers\InventoryController::class, 'updateAset'])->name('inventaris.aset.update');
+        Route::delete('/inventaris/aset/{id}', [App\Http\Controllers\InventoryController::class, 'destroyAset'])->name('inventaris.aset.destroy');
         
         Route::resource('monitoring-paket', PengirimanPaketController::class)->names([
             'index' => 'operational.monitoring-paket',
