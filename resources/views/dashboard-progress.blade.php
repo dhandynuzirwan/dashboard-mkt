@@ -274,6 +274,8 @@
                                     <tr>
                                         <th class="ps-4">Nama Marketing</th>
                                         <th width="15%" class="text-center" title="Total Database yang diterima">Leads Masuk</th>
+                                        <th width="15%" class="text-success" title="Leads yang berasal dari sumber organik">Leads Organik</th>
+                                        <th width="15%" class="text-primary" title="Leads yang berasal dari iklan">Leads Ads</th>
                                         <th width="15%" class="text-center" title="Leads dikurangi Invalid, Tidak Respon, dan Kosong">Leads Valid</th>
                                         <th width="15%" class="text-center" title="Jumlah Form Penawaran Dibuat">Penawaran</th>
                                         <th width="15%" class="text-center" title="Penawaran yang berhasil Deal">Project Deal</th>
@@ -314,6 +316,39 @@
                                                     data-end="{{ $end }}"
                                                     title="Lihat Detail Semua Leads">
                                                         {{ $total_leads }}
+                                                    </a>
+                                                </div>
+                                            </td>
+
+                                            {{-- <td class="text-success fw-bold">{{ $m->count_organik ?? 0 }}</td> --}}
+                                            
+
+                                            {{-- Kolom Leads Organik --}}
+                                            <td class="text-center align-middle">
+                                                <div class="fw-bolder fs-6 mb-1">
+                                                    <a href="javascript:void(0)" 
+                                                    class="btn-detail-status fw-bold text-success text-decoration-none bg-success-subtle px-2 py-1 rounded hover-lift d-inline-block" 
+                                                    data-marketing="{{ $m->id }}" 
+                                                    data-status="organik" 
+                                                    data-start="{{ $start }}" 
+                                                    data-end="{{ $end }}"
+                                                    title="Lihat Detail Leads Organik">
+                                                        {{ $m->count_organik ?? 0 }}
+                                                    </a>
+                                                </div>
+                                            </td>
+
+                                            {{-- Kolom Leads Ads --}}
+                                            <td class="text-center align-middle">
+                                                <div class="fw-bolder fs-6 mb-1">
+                                                    <a href="javascript:void(0)" 
+                                                    class="btn-detail-status fw-bold text-primary text-decoration-none bg-primary-subtle px-2 py-1 rounded hover-lift d-inline-block" 
+                                                    data-marketing="{{ $m->id }}" 
+                                                    data-status="ads" 
+                                                    data-start="{{ $start }}" 
+                                                    data-end="{{ $end }}"
+                                                    title="Lihat Detail Leads Ads">
+                                                        {{ $m->count_ads ?? 0 }}
                                                     </a>
                                                 </div>
                                             </td>

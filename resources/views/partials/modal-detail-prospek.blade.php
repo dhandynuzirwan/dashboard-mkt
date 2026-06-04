@@ -15,7 +15,8 @@
                                 <th class="text-center" width="50">No</th>
                                 <th class="text-center" width="120">Tanggal</th>
                                 <th>Perusahaan</th>
-                                <th>PIC & Jabatan</th>
+                                <th>PIC & Kontak</th>  {{-- Berubah jadi PIC & Kontak --}}
+                                <th>Catatan Prospek</th>
                                 <th class="text-center" width="100">Action</th>
                             </tr>
                         </thead>

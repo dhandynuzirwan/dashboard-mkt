@@ -101,6 +101,16 @@ class DashboardController extends Controller
                     return $jmlCta > 0 ? $jmlCta : 1; 
                 });
             };
+            // 🔥 TAMBAHKAN KODE INI UNTUK MENGHITUNG ORGANIK & ADS 🔥
+            // Catatan: Pastikan nama kolom 'sumber' sesuai dengan nama kolom di database kamu (misal: sumber_data, asal_leads, dll)
+            $user->count_ads = $prospeks->filter(function ($p) {
+                return strtoupper(trim($p->sumber)) === 'ADS';
+            })->count();
+
+            // Organik: Semua data yang sumbernya BUKAN 'ADS' (termasuk kosong/null)
+            $user->count_organik = $prospeks->filter(function ($p) {
+                return strtoupper(trim($p->sumber)) !== 'ADS';
+            })->count();
 
             // ================== 2. HITUNG STATUS AKHIR DATA ==================
             // Urutan variabel disesuaikan dengan urutan visual di foto (atas ke bawah)
@@ -392,11 +402,22 @@ class DashboardController extends Controller
             
         } elseif ($status === 'leads_valid') {
             $title = "Detail Leads Valid";
-            // Kecualikan Invalid & Tidak Respon dari kolom update_terakhir
+            // 🔥 FIX: Gunakan kolom 'status', bukan 'update_terakhir'
             $query->where(function($q) {
-                $q->whereNotIn('update_terakhir', ['DATA TIDAK VALID & TIDAK TERHUBUNG', 'TIDAK RESPON'])
-                ->orWhereNull('update_terakhir');
-            });
+                $q->whereNotIn('status', ['DATA TIDAK VALID & TIDAK TERHUBUNG', 'TIDAK RESPON'])
+                  ->orWhereNull('status'); // Null (Belum Ada Status) tetap dianggap valid untuk difollow up
+            });    
+        // 🔥 TAMBAHAN UNTUK LEADS ADS 🔥
+        } elseif ($status === 'ads') {
+            $title = "Detail Leads Ads";
+            // Filter hanya yang sumbernya 'ADS' (Menggunakan DB::raw agar kebal dari typo/spasi/huruf kecil)
+            $query->whereRaw("UPPER(TRIM(COALESCE(sumber, ''))) = 'ADS'");
+            
+        // 🔥 TAMBAHAN UNTUK LEADS ORGANIK 🔥
+        } elseif ($status === 'organik') {
+            $title = "Detail Leads Organik";
+            // Filter semua data yang sumbernya BUKAN 'ADS' (termasuk yang kosong/null)
+            $query->whereRaw("UPPER(TRIM(COALESCE(sumber, ''))) != 'ADS'");
 
         // ==============================================================
         // 3. LOGIKA UNTUK TABEL STATUS AKHIR (Tabel Bawah)
@@ -412,43 +433,67 @@ class DashboardController extends Controller
             
         } elseif (in_array($status, ['DATA TIDAK VALID & TIDAK TERHUBUNG', 'TIDAK RESPON'])) {
             $title = "Detail Status: " . $status;
-            // Cari di kolom update_terakhir
-            $query->where('update_terakhir', $status);
+            // 🔥 FIX: Gunakan kolom 'status', bukan 'update_terakhir'
+            $query->where('status', $status);
             
         } else {
             $title = "Detail Status: " . strtoupper(str_replace('_', ' ', $status));
-            // Pencarian normal di kolom status
             $query->where('status', $status);
         }
 
         // Eksekusi Query
         $data = $query->orderBy('tanggal_prospek', 'desc')->get();
 
-        // 4. Susun HTML Modal (Tanpa perlu file partial lagi)
+        // 4. Susun HTML Modal
         $html = '';
         if ($data->count() > 0) {
             foreach ($data as $index => $d) {
                 $tgl = \Carbon\Carbon::parse($d->tanggal_prospek)->format('d M Y');
                 
+                // Cek ketersediaan data agar tidak error jika kosong
+                $email   = !empty($d->email) ? $d->email : '-';
+                $telp = !empty($d->telp) ? $d->telp : '-';
+                $catatan = !empty($d->catatan) ? $d->catatan : '<i class="text-muted">Tidak ada catatan</i>';
+                
                 // Tombol WA
-                $wa = $d->wa_pic ? "<a href='https://wa.me/".preg_replace('/[^0-9]/', '', $d->wa_pic)."' target='_blank' class='btn btn-xs btn-success me-1 mb-1'><i class='fab fa-whatsapp'></i> Hubungi</a>" : '';
+                $wa = $d->wa_pic ? "<a href='https://wa.me/".preg_replace('/[^0-9]/', '', $d->wa_pic)."' target='_blank' class='btn btn-xs btn-success me-1 mb-1 shadow-sm'><i class='fab fa-whatsapp'></i> Hubungi</a>" : '';
                 
                 // Tombol CTA
-                $cta = "<a href='".route('form-cta', $d->id)."' class='btn btn-xs btn-primary mb-1'>Lihat CTA</a>";
+                $cta = "<a href='".route('form-cta', $d->id)."' class='btn btn-xs btn-primary mb-1 shadow-sm'>Lihat CTA</a>";
+
+                // 🔥 TOMBOL BARU: Edit Prospek (Buka di Tab Baru) 🔥
+                $edit = "<a href='".route('prospek.edit', $d->id)."' target='_blank' class='btn btn-xs btn-info mb-1 shadow-sm'>Lihat Prospek</a>";
                 
                 $html .= "<tr>
                     <td class='text-center align-middle'>".($index + 1)."</td>
-                    <td class='text-center align-middle'>{$tgl}</td>
-                    <td class='align-middle'>
-                        <div class='fw-bold text-dark'>{$d->perusahaan}</div>
+                    <td class='text-center align-middle'>
+                        <span class='badge badge-soft-secondary'>{$tgl}</span>
                     </td>
                     <td class='align-middle'>
-                        <div class='fw-medium'>".($d->nama_pic ?? '-')."</div>
-                        <small class='text-muted' style='font-size: 11px;'>".($d->jabatan ?? '-')."</small>
+                        <div class='fw-bolder text-dark' style='font-size: 14px;'>{$d->perusahaan}</div>
+                    </td>
+                    <td class='align-middle' style='min-width: 120px;'>
+                        <div class='d-flex mb-1' style='font-size: 12px;'>
+                            <span class='text-muted me-2' style='width: 40px;'>PIC</span>
+                            <span class='fw-bold text-dark'>: ".($d->nama_pic ?? '-')."</span>
+                        </div>
+                        <div class='d-flex mb-1' style='font-size: 12px;'>
+                            <span class='text-muted me-2' style='width: 40px;'>Email</span>
+                            <span class='text-primary'>: {$email}</span>
+                        </div>
+                        <div class='d-flex' style='font-size: 12px;'>
+                            <span class='text-muted me-2' style='width: 40px;'>Telp</span>
+                            <span class='text-success'>: {$telp}</span>
+                        </div>
+                    </td>
+                    <td class='align-middle'>
+                        <div class='text-wrap text-muted bg-light p-2 rounded' style='font-size: 11px; max-width: 250px; line-height: 1.4;'>
+                            {$catatan}
+                        </div>
                     </td>
                     <td class='text-center align-middle'>
-                        <div class='d-flex flex-wrap justify-content-center'>
-                            {$wa} {$cta}
+                        <div class='d-flex flex-wrap justify-content-center gap-1'>
+                            {$wa} {$edit} {$cta}
                         </div>
                     </td>
                 </tr>";
