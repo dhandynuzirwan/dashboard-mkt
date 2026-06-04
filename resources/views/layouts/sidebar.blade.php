@@ -58,7 +58,7 @@
                 </li>
 
                 {{-- ================= MENU PERFORMANCE (KHUSUS) ================= --}}
-                @if(Auth::check() && in_array(Auth::user()->role, ['superadmin', 'webdev', 'spv']))
+                @if(Auth::check() && in_array(Auth::user()->role, ['superadmin', 'web_dev', 'spv_marketing']))
                     @php $isPerformance = request()->routeIs(['dashboard.progress', 'performance.display']); @endphp
                     <li class="nav-item {{ $isPerformance ? 'active' : '' }}">
                         <a data-bs-toggle="collapse" href="#performance" class="{{ $isPerformance ? '' : 'collapsed' }}" aria-expanded="{{ $isPerformance ? 'true' : 'false' }}">
