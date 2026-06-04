@@ -53,7 +53,7 @@ class InventoryController extends Controller
             'pic'        => 'nullable|string', // Ubah ke nullable jika operasional
             'jumlah'     => 'required|integer|min:1',
             'satuan'     => 'required|string|max:50',
-            'harga_beli' => 'nullable|numeric', // Sesuaikan dengan name di form
+            'harga' => 'nullable|numeric', // Sesuaikan dengan name di form
             'kondisi'    => 'required|string',
             'foto_aset'  => 'nullable|image|mimes:jpg,jpeg,png|max:2048',
             'keterangan' => 'nullable|string',
@@ -72,7 +72,7 @@ class InventoryController extends Controller
             'tgl_masuk'  => $validated['tgl_masuk'],
             'lokasi'     => $validated['lokasi'],
             'pic'        => $validated['pic'],
-            'harga'      => $validated['harga_beli'], // Mapping ke kolom DB 'harga'
+            'harga'      => $validated['harga'], // Mapping ke kolom DB 'harga'
             'kondisi'    => $validated['kondisi'],
             'foto'       => $fotoPath,
             'keterangan' => $validated['keterangan'],
@@ -204,7 +204,7 @@ class InventoryController extends Controller
             'pic'        => 'nullable|string',
             'jumlah'     => 'required|integer|min:1',
             'satuan'     => 'required|string|max:50',
-            'harga_beli' => 'nullable|numeric',
+            'harga' => 'nullable|numeric',
             'kondisi'    => 'required|string',
             'foto_aset'  => 'nullable|image|mimes:jpg,jpeg,png|max:2048',
             'keterangan' => 'nullable|string',
@@ -227,7 +227,7 @@ class InventoryController extends Controller
             'pic'        => $validated['pic'],
             'jumlah'     => $validated['jumlah'],
             'satuan'     => $validated['satuan'],
-            'harga'      => $validated['harga_beli'],
+            'harga'      => $validated['harga'],
             'kondisi'    => $validated['kondisi'],
             'foto'       => $validated['foto'] ?? $aset->foto,
             'keterangan' => $validated['keterangan'],

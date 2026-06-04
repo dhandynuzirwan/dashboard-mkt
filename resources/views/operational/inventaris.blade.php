@@ -338,12 +338,24 @@
                                                 <span class="badge {{ $kondisiClass }} px-3 py-1 rounded-pill border">{{ $aset->kondisi }}</span>
                                             </td>
                                             <td class="text-center pe-4">
-                                                <button class="btn btn-warning btn-sm btn-round fw-bold text-dark shadow-sm hover-lift w-100" 
-                                                        title="Edit Data" 
-                                                        data-bs-toggle="modal" 
-                                                        data-bs-target="#modalEditAset{{ $aset->id }}">
-                                                    <i class="fa fa-edit me-1"></i> Edit
-                                                </button>
+                                                <div class="d-flex gap-2 justify-content-center">
+                                                    {{-- Tombol Edit --}}
+                                                    <button class="btn btn-sm btn-light border text-primary btn-round shadow-sm hover-lift px-2" 
+                                                            title="Edit Data Aset" 
+                                                            data-bs-toggle="modal" 
+                                                            data-bs-target="#modalEditAset{{ $aset->id }}">
+                                                        <i class="fas fa-edit"></i>
+                                                    </button>
+
+                                                    {{-- Tombol Hapus --}}
+                                                    <form action="{{ route('inventaris.aset.destroy', $aset->id) }}" method="POST" class="d-inline form-hapus m-0 p-0">
+                                                        @csrf 
+                                                        @method('DELETE')
+                                                        <button type="button" class="btn btn-sm btn-light border text-danger btn-round shadow-sm hover-lift btn-delete px-2" title="Hapus Aset">
+                                                            <i class="fas fa-trash-alt"></i>
+                                                        </button>
+                                                    </form>
+                                                </div>
                                             </td>
                                         </tr>
                                     @empty
@@ -508,7 +520,7 @@
                             </div>
                             <div class="col-md-6">
                                 <label class="label-modern">Harga Beli (Rp)</label>
-                                <input type="number" class="form-control input-modern shadow-none" name="harga_beli" value="{{ $aset->harga }}">
+                                <input type="number" class="form-control input-modern shadow-none" name="harga" value="{{ $aset->harga }}">
                             </div>
                             <div class="col-md-6">
                                 <label class="label-modern">Status / Kondisi <span class="text-danger">*</span></label>
@@ -785,7 +797,10 @@
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 <script>
     document.addEventListener("DOMContentLoaded", function() {
-        // Fungsi Jam Realtime
+        
+        // =========================================================================
+        // 1. FUNGSI JAM REALTIME
+        // =========================================================================
         function updateClock() {
             const now = new Date();
             const options = { weekday: 'long', year: 'numeric', month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit', second: '2-digit', hour12: false };
@@ -794,7 +809,9 @@
         setInterval(updateClock, 1000);
         updateClock();
 
-        // Konfirmasi Hapus SweetAlert
+        // =========================================================================
+        // 2. KONFIRMASI HAPUS SWEETALERT
+        // =========================================================================
         document.querySelectorAll('.btn-delete').forEach(button => {
             button.addEventListener('click', function() {
                 const form = this.closest('.form-hapus');
@@ -821,7 +838,33 @@
                 });
             });
         });
+
+        // =========================================================================
+        // 3. FITUR MEMORI TAB (AGAR TIDAK KEMBALI KE AWAL SETELAH REFRESH)
+        // =========================================================================
+        const tabButtons = document.querySelectorAll('button[data-bs-toggle="pill"]');
+        const activeTab = localStorage.getItem('activeInventoryTab');
+        
+        // Paksa Bootstrap 5 untuk membuka tab yang tersimpan di memori
+        if (activeTab) {
+            const targetButton = document.querySelector(`button[data-bs-target="${activeTab}"]`);
+            if (targetButton) {
+                // Menggunakan getOrCreateInstance agar tidak bentrok dengan inisialisasi bawaan BS5
+                const tabInstance = bootstrap.Tab.getOrCreateInstance(targetButton);
+                tabInstance.show();
+            }
+        }
+
+        // Simpan ID tab setiap kali diklik
+        tabButtons.forEach(button => {
+            button.addEventListener('shown.bs.tab', function (event) {
+                const currentTabId = event.target.getAttribute('data-bs-target');
+                localStorage.setItem('activeInventoryTab', currentTabId);
+            });
+        });
+
     });
 </script>
+
 
 @endsection
