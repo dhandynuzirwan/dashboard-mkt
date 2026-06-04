@@ -22,6 +22,7 @@ use App\Http\Controllers\AkunAksesController;
 use App\Http\Controllers\OperationalPendaftaranController;
 use App\Http\Controllers\PendaftaranKolektifController;
 use App\Http\Controllers\PendaftaranPribadiController;
+use App\Http\Controllers\MonitorController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
@@ -122,7 +123,9 @@ Route::middleware('auth')->group(function () {
     Route::middleware('role:superadmin,web_dev,spv_marketing')->group(function () {
         Route::get('/dashboard-progress', [DashboardController::class, 'index'])->name('dashboard.progress');
         // Placeholder untuk On Display Monitor
-        Route::get('/on-display-monitor', function() { return "Halaman Monitor (Cooming Soon)"; })->name('performance.display'); 
+        // Route On Display Monitor
+        Route::get('/on-display-monitor', [MonitorController::class, 'index'])->name('performance.display');
+        Route::get('/api/monitor-data', [MonitorController::class, 'getData'])->name('api.monitor.data');
     });
 
     // 0. KHUSUS MENU OPERASIONAL (Superadmin, Web Developer, Operasional, Team Leader)
