@@ -36,16 +36,15 @@ Route::get('/login', function () {
     return view('auth.login');
 })->name('login');
 
+// --- PROSES LOGIN ---
 Route::post('/login', function (Illuminate\Http\Request $request) {
     $credentials = $request->only('email', 'password');
     
     if (Auth::attempt($credentials)) {
         $request->session()->regenerate();
         
-        // 🔥 RAHASIANYA ADA DI SINI 🔥
-        // Gunakan intended() agar Laravel tahu harus melempar user ke mana.
-        // Jika tidak ada link sebelumnya, akan diarahkan ke route('dashboard.progress')
-        return redirect()->intended(route('dashboard.progress'));
+        // 🔥 Ubah arah redirect ke halaman Landing Page Pembuka (home) 🔥
+        return redirect()->intended(route('home'));
     }
     
     return back()->with('error', 'Email atau password salah');
@@ -86,12 +85,15 @@ Route::prefix('portal')->group(function () {
 | AUTHENTICATED ROUTES (Wajib Login)
 |--------------------------------------------------------------------------
 */
+Route::get('/', function () {
+    return view('home'); 
+})->name('home')->middleware('auth');
 
 Route::middleware('auth')->group(function () {
 
     // --- DASHBOARD & GLOBAL (Semua yang login bisa akses) ---
-    Route::get('/', [DashboardController::class, 'index'])->name('dashboard.progress');
-    Route::get('/dashboard-progress', [DashboardController::class, 'index']);
+    // Route::get('/', [DashboardController::class, 'index'])->name('dashboard.progress');
+    // Route::get('/dashboard-progress', [DashboardController::class, 'index']);
     Route::get('/marketing-detail/{id}', [DashboardController::class, 'getDetail'])->name('marketing.detail');
     Route::get('/search-global', [SearchController::class, 'globalSearch'])->name('search.global');
     Route::get('/penggajian/slip-preview/{id}', [SalaryController::class, 'previewSlip'])->name('penggajian.preview');
@@ -115,6 +117,13 @@ Route::middleware('auth')->group(function () {
     | AKSES BERDASARKAN ROLE
     |--------------------------------------------------------------------------
     */
+    // --- MENU PERFORMANCE (Khusus Superadmin, Webdev, SPV) ---
+    // Asumsi kamu menggunakan middleware 'role' (sesuaikan jika menggunakan middleware/penamaan lain)
+    Route::middleware('role:superadmin,web_dev,spv_marketing')->group(function () {
+        Route::get('/dashboard-progress', [DashboardController::class, 'index'])->name('dashboard.progress');
+        // Placeholder untuk On Display Monitor
+        Route::get('/on-display-monitor', function() { return "Halaman Monitor (Cooming Soon)"; })->name('performance.display'); 
+    });
 
     // 0. KHUSUS MENU OPERASIONAL (Superadmin, Web Developer, Operasional, Team Leader)
     Route::middleware('role:superadmin,web_dev,operasional,team_leader')->group(function () {

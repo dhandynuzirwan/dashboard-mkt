@@ -1,7 +1,7 @@
 <div class="sidebar" data-background-color="dark">
     <div class="sidebar-logo">
         <div class="logo-header" data-background-color="dark">
-            <a href="{{ route('dashboard.progress') }}" class="logo">
+            <a href="{{ route('home') }}" class="logo">
                 <img src="{{ asset('assets/img/arsa/arsa_logo_white.png') }}" alt="navbar brand" class="navbar-brand" height="20" />
             </a>
             <div class="nav-toggle">
@@ -34,7 +34,7 @@
             <ul class="nav nav-secondary">
                 
                 {{-- ================= MENU DASHBOARD ================= --}}
-                @php $isDashboard = request()->routeIs(['dashboard.*', 'pipeline', 'revenue', 'data-kpi', 'simulasi-gaji', 'pegawai.absensi.index']); @endphp
+                @php $isDashboard = request()->routeIs(['home', 'pegawai.absensi.index']); @endphp
                 <li class="nav-item {{ $isDashboard ? 'active' : '' }}">
                     <a data-bs-toggle="collapse" href="#dashboard" class="{{ $isDashboard ? '' : 'collapsed' }}" aria-expanded="{{ $isDashboard ? 'true' : 'false' }}">
                         <i class="fas fa-home"></i>
@@ -43,29 +43,9 @@
                     </a>
                     <div class="collapse {{ $isDashboard ? 'show' : '' }}" id="dashboard">
                         <ul class="nav nav-collapse">
-                            <li class="{{ request()->routeIs('dashboard.progress') ? 'active' : '' }}">
-                                <a href="{{ route('dashboard.progress') }}">
-                                    <span class="sub-item">Dashboard</span>
-                                </a>
-                            </li>
-                            <li class="{{ request()->routeIs('pipeline') ? 'active' : '' }}">
-                                <a href="{{ route('pipeline') }}">
-                                    <span class="sub-item">Pipeline Marketing</span>
-                                </a>
-                            </li>
-                            <li class="{{ request()->routeIs('revenue') ? 'active' : '' }}">
-                                <a href="{{ route('revenue') }}">
-                                    <span class="sub-item">Revenue</span>
-                                </a>
-                            </li>
-                            <li class="{{ request()->routeIs('data-kpi') ? 'active' : '' }}">
-                                <a href="{{ route('data-kpi') }}">
-                                    <span class="sub-item">Data KPI</span>
-                                </a>
-                            </li>
-                            <li class="{{ request()->routeIs('simulasi-gaji') ? 'active' : '' }}">
-                                <a href="{{ route('simulasi-gaji') }}">
-                                    <span class="sub-item">Simulasi Gaji</span>
+                            <li class="{{ request()->routeIs('home') ? 'active' : '' }}">
+                                <a href="{{ route('home') }}">
+                                    <span class="sub-item">Home</span>
                                 </a>
                             </li>
                             <li class="{{ request()->routeIs('pegawai.absensi.index') ? 'active' : '' }}">
@@ -77,15 +57,33 @@
                     </div>
                 </li>
 
-                {{-- ================= SECTION: MENU ADMIN ================= --}}
-                <li class="nav-section">
-                    <span class="sidebar-mini-icon">
-                        <i class="fa fa-ellipsis-h"></i>
-                    </span>
-                    <h4 class="text-section">Menu Admin</h4>
-                </li>
+                {{-- ================= MENU PERFORMANCE (KHUSUS) ================= --}}
+                @if(Auth::check() && in_array(Auth::user()->role, ['superadmin', 'webdev', 'spv']))
+                    @php $isPerformance = request()->routeIs(['dashboard.progress', 'performance.display']); @endphp
+                    <li class="nav-item {{ $isPerformance ? 'active' : '' }}">
+                        <a data-bs-toggle="collapse" href="#performance" class="{{ $isPerformance ? '' : 'collapsed' }}" aria-expanded="{{ $isPerformance ? 'true' : 'false' }}">
+                            <i class="fas fa-tachometer-alt"></i>
+                            <p>Performance</p>
+                            <span class="caret"></span>
+                        </a>
+                        <div class="collapse {{ $isPerformance ? 'show' : '' }}" id="performance">
+                            <ul class="nav nav-collapse">
+                                <li class="{{ request()->routeIs('dashboard.progress') ? 'active' : '' }}">
+                                    <a href="{{ route('dashboard.progress') }}">
+                                        <span class="sub-item">Dashboard Progress</span>
+                                    </a>
+                                </li>
+                                <li class="{{ request()->routeIs('performance.display') ? 'active' : '' }}">
+                                    <a href="{{ route('performance.display') ?? '#' }}"> 
+                                        <span class="sub-item">On Display Monitor</span>
+                                    </a>
+                                </li>
+                            </ul>
+                        </div>
+                    </li>
+                @endif
 
-                {{-- Menu Human Resources --}}
+                {{-- ================= MENU HUMAN RESOURCES ================= --}}
                 @php $isHR = request()->routeIs(['user', 'penggajian.index', 'absensi']); @endphp
                 <li class="nav-item {{ $isHR ? 'active' : '' }}">
                     <a data-bs-toggle="collapse" href="#human-resources" class="{{ $isHR ? '' : 'collapsed' }}" aria-expanded="{{ $isHR ? 'true' : 'false' }}">
@@ -107,15 +105,15 @@
                             </li>
                             <li class="{{ request()->routeIs('absensi') ? 'active' : '' }}">
                                 <a href="{{ route('absensi') }}">
-                                    <span class="sub-item">Absensi</span>
+                                    <span class="sub-item">Data Absensi Internal</span>
                                 </a>
                             </li>
                         </ul>
                     </div>
                 </li>
 
-                {{-- Menu Marketing & Sales --}}
-                @php $isMarketing = request()->routeIs(['form-prospek', 'form-cta-massal', 'data-masuk.index', 'master-training.index']); @endphp
+                {{-- ================= MENU MARKETING & SALES ================= --}}
+                @php $isMarketing = request()->routeIs(['pipeline', 'revenue', 'data-kpi', 'simulasi-gaji', 'form-prospek', 'form-cta-massal', 'data-masuk.index', 'master-training.index']); @endphp
                 <li class="nav-item {{ $isMarketing ? 'active' : '' }}">
                     <a data-bs-toggle="collapse" href="#marketing-sales" class="{{ $isMarketing ? '' : 'collapsed' }}" aria-expanded="{{ $isMarketing ? 'true' : 'false' }}">
                         <i class="fas fa-chart-line"></i>
@@ -124,6 +122,26 @@
                     </a>
                     <div class="collapse {{ $isMarketing ? 'show' : '' }}" id="marketing-sales">
                         <ul class="nav nav-collapse">
+                            <li class="{{ request()->routeIs('pipeline') ? 'active' : '' }}">
+                                <a href="{{ route('pipeline') }}">
+                                    <span class="sub-item">Pipeline Marketing</span>
+                                </a>
+                            </li>
+                            <li class="{{ request()->routeIs('revenue') ? 'active' : '' }}">
+                                <a href="{{ route('revenue') }}">
+                                    <span class="sub-item">Revenue</span>
+                                </a>
+                            </li>
+                            <li class="{{ request()->routeIs('data-kpi') ? 'active' : '' }}">
+                                <a href="{{ route('data-kpi') }}">
+                                    <span class="sub-item">Data KPI</span>
+                                </a>
+                            </li>
+                            <li class="{{ request()->routeIs('simulasi-gaji') ? 'active' : '' }}">
+                                <a href="{{ route('simulasi-gaji') }}">
+                                    <span class="sub-item">Simulasi Gaji</span>
+                                </a>
+                            </li>
                             <li class="{{ request()->routeIs('form-prospek') ? 'active' : '' }}">
                                 <a href="{{ route('form-prospek') }}">
                                     <span class="sub-item">Tambah Data Prospek</span>
@@ -136,19 +154,19 @@
                             </li>
                             <li class="{{ request()->routeIs('data-masuk.index') ? 'active' : '' }}">
                                 <a href="{{ route('data-masuk.index') }}">
-                                    <span class="sub-item">Data Masuk</span>
+                                    <span class="sub-item">Database Masuk</span>
                                 </a>
                             </li>
                             <li class="{{ request()->routeIs('master-training.index') ? 'active' : '' }}">
                                 <a href="{{ route('master-training.index') }}">
-                                    <span class="sub-item">Data Pelatihan</span>
+                                    <span class="sub-item">Master Pelatihan</span>
                                 </a>
                             </li>
                         </ul>
                     </div>
                 </li>
 
-                {{-- Menu Operasional (Admin & Superadmin Only) --}}
+                {{-- ================= MENU OPERATIONAL ================= --}}
                 @if (in_array($role, ['superadmin','operasional','team_leader','web_dev']))
                     @php $isOperational = request()->routeIs(['operational.aktivitas-harian', 'operational.data-pendaftaran', 'operational.inventaris', 'operational.monitoring-paket', 'monitoring.pelatihan']); @endphp
                     <li class="nav-item {{ $isOperational ? 'active' : '' }}">
@@ -159,15 +177,12 @@
                         </a>
                         <div class="collapse {{ $isOperational ? 'show' : '' }}" id="operasional">
                             <ul class="nav nav-collapse">
-                                {{-- Menu Aktivitas Harian (Bisa diakses semua role operasional) --}}
                                 <li class="{{ request()->routeIs('operational.aktivitas-harian') ? 'active' : '' }}">
                                     <a href="{{ route('operational.aktivitas-harian') }}">
                                         <span class="sub-item">Aktivitas Harian</span>
                                     </a>
                                 </li>
                         
-                                {{-- Menu Registrasi Peserta --}}
-                                {{-- Hanya: admin, pic, team_leader, superadmin, web_dev --}}
                                 @if(in_array(auth()->user()->role, ['admin', 'pic', 'team_leader', 'superadmin', 'web_dev']))
                                     <li class="{{ request()->routeIs('operational.data-pendaftaran') ? 'active' : '' }}">
                                         <a href="{{ route('operational.data-pendaftaran') }}">
@@ -175,6 +190,7 @@
                                         </a>
                                     </li>
                                 @endif
+                                
                                 <li class="{{ request()->routeIs('monitoring.pelatihan') ? 'active' : '' }}">
                                     <a href="{{ route('monitoring.pelatihan') }}">
                                         <span class="sub-item">Monitoring Pelatihan</span>
@@ -182,8 +198,6 @@
                                     </a>
                                 </li>
                         
-                                {{-- Menu Aset & Inventaris DAN Monitoring Paket --}}
-                                {{-- Hanya: team_leader, superadmin, web_dev --}}
                                 @if(in_array(auth()->user()->role, ['team_leader', 'superadmin', 'web_dev']))
                                     <li class="{{ request()->routeIs('operational.inventaris') ? 'active' : '' }}">
                                         <a href="{{ route('operational.inventaris') }}">
@@ -202,12 +216,11 @@
                     </li>
                 @endif
                 
-
-                {{-- Menu Download --}}
+                {{-- ================= MENU DOWNLOAD ================= --}}
                 @php $isDownload = request()->routeIs(['download.approval', 'download.my']); @endphp
                 <li class="nav-item {{ $isDownload ? 'active' : '' }}">
                     <a href="{{ route('download.approval') }}">
-                        <i class="fas fa-download"></i>
+                        <i class="fas fa-file-download"></i>
                         <p>Download Approval</p>
                         @if ($pendingCount > 0)
                             <span class="badge badge-danger">{{ $pendingCount }}</span>
@@ -216,7 +229,6 @@
                 </li>
                 
                 {{-- ================= MENU PORTAL BACK OFFICE ================= --}}
-                {{-- Khusus untuk role: operasional dan team_leader --}}
                 @if(in_array(auth()->user()->role, ['operasional', 'team_leader', 'web_dev', 'superadmin']))
                     <li class="nav-section">
                         <span class="sidebar-mini-icon">
@@ -235,7 +247,6 @@
                 
                 {{-- ================= MENU BRANKAS AKUN (PRIVATE) ================= --}}
                 @php
-                    // Daftar nama yang diizinkan sesuai database kamu
                     $allowedNames = ['Direktur PT Arsa Jaya Prima', 'Desainer Grafis'];
                 @endphp
                 
