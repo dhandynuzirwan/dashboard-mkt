@@ -429,10 +429,166 @@
             </div>
         </div>
 
-        {{-- ================= TABEL UPDATE PENAWARAN ================= --}}
+        {{-- ================= 1. TABEL UPDATE DATA ================= --}}
         <div class="card card-modern border-0 shadow-sm mb-4 fade-in">
             <div class="card-header bg-transparent border-bottom pt-4 px-4 pb-3">
-                <h6 class="card-title fw-bolder mb-0 text-dark">Update Penawaran & Follow Up</h6>
+                <h6 class="card-title fw-bolder mb-0 text-dark">Update Data</h6>
+            </div>
+            <div class="card-body p-0">
+                <div class="table-responsive">
+                    <table class="table table-modern table-hover align-middle text-center mb-0" style="white-space: nowrap;">
+                        <thead class="bg-light text-secondary">
+                            <tr>
+                                <th class="text-start ps-4 bg-light text-dark shadow-sm">Marketing</th>
+                                <th>Belum Ada<br>Kebutuhan</th>
+                                <th>Tidak<br>Respon</th>
+                                <th class="text-danger fw-bolder bg-danger-subtle">Belum Ada<br>Status</th>
+                                <th>Invalid /<br>No Connect</th>
+                                <th class="pe-4 text-success fw-bolder bg-success-subtle">Total<br>Semua</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @php
+                                $t_belum_kebutuhan = $t_tidak_respon = $t_tanpa_status = $t_invalid = $t_semua_update = 0;
+                            @endphp
+        
+                            @foreach ($marketings as $m)
+                                @php
+                                    $total_update = ($m->count_belum_ada_kebutuhan ?? 0) + ($m->count_tidak_respon ?? 0) + ($m->count_tanpa_status ?? 0) + ($m->count_invalid ?? 0);
+                                @endphp
+                                <tr>
+                                    <td class="text-start fw-bold text-dark ps-4 bg-white shadow-sm">{{ $m->name }}</td>
+                                    <td>{!! $renderLink($m->count_belum_ada_kebutuhan ?? 0, $m->id, 'BELUM ADA KEBUTUHAN') !!}</td>
+                                    <td>{!! $renderLink($m->count_tidak_respon ?? 0, $m->id, 'TIDAK RESPON') !!}</td>
+                                    <td class="bg-danger-subtle">{!! $renderLink($m->count_tanpa_status ?? 0, $m->id, 'tanpa_status') !!}</td>
+                                    <td>{!! $renderLink($m->count_invalid ?? 0, $m->id, 'DATA TIDAK VALID & TIDAK TERHUBUNG') !!}</td>
+                                    <td class="pe-4 bg-success-subtle fw-bold">{{ $total_update }}</td>
+                                </tr>
+                                @php
+                                    $t_belum_kebutuhan += ($m->count_belum_ada_kebutuhan ?? 0);
+                                    $t_tidak_respon += ($m->count_tidak_respon ?? 0);
+                                    $t_tanpa_status += ($m->count_tanpa_status ?? 0);
+                                    $t_invalid += ($m->count_invalid ?? 0);
+                                    $t_semua_update += $total_update;
+                                @endphp
+                            @endforeach
+        
+                            <tr class="table-primary fw-bolder text-dark border-top border-2 border-primary">
+                                <td class="text-start ps-4 bg-primary text-white shadow-sm">TOTAL KESELURUHAN</td>
+                                <td>{{ $t_belum_kebutuhan }}</td>
+                                <td>{{ $t_tidak_respon }}</td>
+                                <td class="text-danger bg-white">{{ $t_tanpa_status }}</td>
+                                <td>{{ $t_invalid }}</td>
+                                <td class="pe-4 text-success bg-white">{{ $t_semua_update }}</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        {{-- ================= 2. TABEL STATUS AKHIR PEROLEHAN DATA ================= --}}
+        <div class="card card-modern border-0 shadow-sm mb-4 fade-in">
+            <div class="card-header bg-transparent border-bottom pt-4 px-4 pb-3">
+                <h6 class="card-title fw-bolder mb-0 text-dark">Status Akhir Perolehan Data</h6>
+            </div>
+            <div class="card-body p-0">
+                <div class="table-responsive" style="max-height: 600px; overflow-y: auto; overflow-x: auto;">
+                    <table class="table table-modern table-hover align-middle text-center mb-0" style="white-space: nowrap;">
+                        <thead class="bg-light text-secondary" style="position: sticky; top: 0; z-index: 10;">
+                            <tr>
+                                <th class="text-start ps-4 bg-light text-dark shadow-sm" style="position: sticky; left: 0; z-index: 11; border-right: 1px solid #eef2f7;">Marketing</th>
+                                
+                                <th>Dapat<br>Email</th>
+                                <th>Dapat<br>No Telp</th>
+                                <th>Dapat<br>WA HRD</th>
+                                <th>Hold</th>
+                                <th>Kirim<br>Compro</th>
+                                <th>Manja</th>
+                                <th>Manja<br>Ulang</th>
+                                <th>Penawaran<br>Hardfile</th>
+                                <th>Req.<br>Pelatihan</th>
+                                <th>Tidak Menerima<br>Penawaran</th>
+                                <th>Vendor<br>Kerjasama</th>
+        
+                                <th class="pe-4 text-success fw-bolder bg-success-subtle">Total<br>Semua</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @php
+                                $t_email = $t_dapat_telp = $t_wa = $t_hold = $t_compro = $t_manja = $t_manja_ulang = 0;
+                                $t_hardfile = $t_pelatihan = $t_tidak_menerima = $t_vendor_kerjasama = $t_semua_perolehan = 0;
+                            @endphp
+        
+                            @foreach ($marketings as $m)
+                                @php
+                                    $total_perolehan = 
+                                        ($m->count_email ?? 0) + ($m->count_dapat_telp ?? 0) + ($m->count_wa ?? 0) + 
+                                        ($m->count_hold ?? 0) + ($m->count_compro ?? 0) + ($m->count_manja ?? 0) + 
+                                        ($m->count_manja_ulang ?? 0) + ($m->count_penawaran_hardfile ?? 0) + 
+                                        ($m->count_pelatihan ?? 0) + ($m->count_tidak_menerima_penawaran ?? 0) + 
+                                        ($m->count_sudah_ada_vendor_kerjasama ?? 0);
+                                @endphp
+                                <tr>
+                                    <td class="text-start fw-bold text-dark ps-4 bg-white shadow-sm" style="position: sticky; left: 0; z-index: 5; border-right: 1px solid #eef2f7;">
+                                        {{ $m->name }}
+                                    </td>
+                                    
+                                    <td>{!! $renderLink($m->count_email ?? 0, $m->id, 'DAPAT EMAIL') !!}</td>
+                                    <td>{!! $renderLink($m->count_dapat_telp ?? 0, $m->id, 'DAPAT NO TELP') !!}</td>
+                                    <td>{!! $renderLink($m->count_wa ?? 0, $m->id, 'DAPAT NO WA HRD') !!}</td>
+                                    <td>{!! $renderLink($m->count_hold ?? 0, $m->id, 'HOLD') !!}</td>
+                                    <td>{!! $renderLink($m->count_compro ?? 0, $m->id, 'KIRIM COMPRO') !!}</td>
+                                    <td>{!! $renderLink($m->count_manja ?? 0, $m->id, 'MANJA') !!}</td>
+                                    <td>{!! $renderLink($m->count_manja_ulang ?? 0, $m->id, 'MANJA ULANG') !!}</td>
+                                    <td>{!! $renderLink($m->count_penawaran_hardfile ?? 0, $m->id, 'PENAWARAN HARDFILE') !!}</td>
+                                    <td>{!! $renderLink($m->count_pelatihan ?? 0, $m->id, 'REQUEST PERMINTAAN PELATIHAN') !!}</td>
+                                    <td>{!! $renderLink($m->count_tidak_menerima_penawaran ?? 0, $m->id, 'TIDAK MENERIMA PENAWARAN') !!}</td>
+                                    <td>{!! $renderLink($m->count_sudah_ada_vendor_kerjasama ?? 0, $m->id, 'SUDAH ADA VENDOR KERJASAMA') !!}</td>
+                                    
+                                    <td class="pe-4 bg-success-subtle fw-bold">{{ $total_perolehan }}</td>
+                                </tr>
+                                @php
+                                    $t_email += ($m->count_email ?? 0);
+                                    $t_dapat_telp += ($m->count_dapat_telp ?? 0);
+                                    $t_wa += ($m->count_wa ?? 0);
+                                    $t_hold += ($m->count_hold ?? 0);
+                                    $t_compro += ($m->count_compro ?? 0);
+                                    $t_manja += ($m->count_manja ?? 0);
+                                    $t_manja_ulang += ($m->count_manja_ulang ?? 0);
+                                    $t_hardfile += ($m->count_penawaran_hardfile ?? 0);
+                                    $t_pelatihan += ($m->count_pelatihan ?? 0);
+                                    $t_tidak_menerima += ($m->count_tidak_menerima_penawaran ?? 0);
+                                    $t_vendor_kerjasama += ($m->count_sudah_ada_vendor_kerjasama ?? 0);
+                                    $t_semua_perolehan += $total_perolehan;
+                                @endphp
+                            @endforeach
+        
+                            <tr class="table-primary fw-bolder text-dark border-top border-2 border-primary">
+                                <td class="text-start ps-4 bg-primary text-white shadow-sm" style="position: sticky; left: 0; z-index: 5;">TOTAL KESELURUHAN</td>
+                                <td>{{ $t_email }}</td>
+                                <td>{{ $t_dapat_telp }}</td>
+                                <td>{{ $t_wa }}</td>
+                                <td>{{ $t_hold }}</td>
+                                <td>{{ $t_compro }}</td>
+                                <td>{{ $t_manja }}</td>
+                                <td>{{ $t_manja_ulang }}</td>
+                                <td>{{ $t_hardfile }}</td>
+                                <td>{{ $t_pelatihan }}</td>
+                                <td>{{ $t_tidak_menerima }}</td>
+                                <td>{{ $t_vendor_kerjasama }}</td>
+                                <td class="pe-4 text-success bg-white">{{ $t_semua_perolehan }}</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        {{-- ================= 3. TABEL UPDATE PENAWARAN ================= --}}
+        <div class="card card-modern border-0 shadow-sm mb-4 fade-in">
+            <div class="card-header bg-transparent border-bottom pt-4 px-4 pb-3">
+                <h6 class="card-title fw-bolder mb-0 text-dark">Update Penawaran</h6>
             </div>
             <div class="card-body p-0">
                 <div class="table-responsive">
@@ -440,6 +596,8 @@
                         <thead class="bg-light sticky-top">
                             <tr>
                                 <th class="text-start ps-4">Marketing</th>
+                                <th>Masuk Penawaran</th>
+                                <th>Perpanjang Sertifikat</th>
                                 <th>Under Review</th>
                                 <th>Deal</th>
                                 <th>Hold</th>
@@ -448,9 +606,16 @@
                             </tr>
                         </thead>
                         <tbody>
+                            @php
+                                $t_masuk_penawaran = $t_perpanjangan = 0;
+                                $t_review = $t_deal = $t_hold_penawaran = $t_kalah = $t_total_followup = 0;
+                            @endphp
+
                             @foreach ($marketings as $m)
                                 <tr>
                                     <td class="text-start fw-bold text-dark ps-4">{{ $m->name }}</td>
+                                    <td class="bg-primary-subtle">{!! $renderLink($m->count_penawaran ?? 0, $m->id, 'MASUK PENAWARAN') !!}</td>
+                                    <td>{!! $renderLink($m->count_perpanjangan ?? 0, $m->id, 'REQUES PERPANJANGAN SERTIFIKAT') !!}</td>
                                     <td><span class="badge badge-soft-info px-3 py-2 rounded-pill fw-bold">{{ $m->review }}</span></td>
                                     <td><span class="badge badge-soft-success px-3 py-2 rounded-pill fw-bold">{{ $m->deal }}</span></td>
                                     <td><span class="badge badge-soft-warning text-dark px-3 py-2 rounded-pill fw-bold">{{ $m->hold }}</span></td>
@@ -461,131 +626,26 @@
                                         </button>
                                     </td>
                                 </tr>
-                            @endforeach
-                        </tbody>
-                    </table>
-                </div>
-            </div>
-        </div>
-
-        {{-- ================= TABEL STATUS AKHIR DATA ================= --}}
-        <div class="card card-modern border-0 shadow-sm mb-4 fade-in">
-            <div class="card-header bg-transparent border-bottom pt-4 px-4 pb-3">
-                <h6 class="card-title fw-bolder mb-0 text-dark">Status Akhir Catatan Data (Prospek)</h6>
-            </div>
-            <div class="card-body p-0">
-                <div class="table-responsive" style="max-height: 600px; overflow-y: auto; overflow-x: auto;">
-                    <table class="table table-modern table-hover align-middle text-center mb-0" style="white-space: nowrap;">
-                        <thead class="bg-light text-secondary" style="position: sticky; top: 0; z-index: 10;">
-                            <tr>
-                                <th class="text-start ps-4 bg-light text-dark shadow-sm" style="position: sticky; left: 0; z-index: 11; border-right: 1px solid #eef2f7;">Marketing</th>
-                                
-                                <th>Belum Ada<br>Kebutuhan</th>
-                                <th>Dapat<br>Email</th>
-                                <th>Dapat<br>No Telp</th>
-                                <th>Dapat<br>WA HRD</th>
-                                <th>Hold</th>
-                                <th>Invalid /<br>No Connect</th>
-                                <th>Kirim<br>Compro</th>
-                                <th>Manja</th>
-                                <th>Manja<br>Ulang</th>
-                                <th>Masuk<br>Penawaran</th>
-                                <th>Penawaran<br>Hardfile</th>
-                                <th>Perpanjang<br>Sertifikat</th>
-                                <th>Req.<br>Pelatihan</th>
-                                <th>Tidak Menerima<br>Penawaran</th>
-                                <th>Tidak<br>Respon</th>
-                                <th>Vendor<br>Kerjasama</th>
-        
-                                <th class="text-danger fw-bolder bg-danger-subtle">Belum Ada<br>Status</th>
-                                <th class="pe-4 text-success fw-bolder bg-success-subtle">Total<br>Semua</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            @php
-                                $t_belum_kebutuhan = $t_email = $t_dapat_telp = $t_wa = $t_hold = $t_invalid = 0;
-                                $t_compro = $t_manja = $t_manja_ulang = $t_penawaran = $t_hardfile = $t_perpanjangan = 0;
-                                $t_pelatihan = $t_tidak_menerima = $t_tidak_respon = $t_vendor_kerjasama = 0;
-                                $t_tanpa_status = $t_semua = 0;
-                            @endphp
-        
-                            @foreach ($marketings as $m)
                                 @php
-                                    $total_per_marketing = 
-                                        ($m->count_belum_ada_kebutuhan ?? 0) + ($m->count_email ?? 0) + ($m->count_dapat_telp ?? 0) + 
-                                        ($m->count_wa ?? 0) + ($m->count_hold ?? 0) + ($m->count_invalid ?? 0) + 
-                                        ($m->count_compro ?? 0) + ($m->count_manja ?? 0) + ($m->count_manja_ulang ?? 0) + 
-                                        ($m->count_penawaran ?? 0) + ($m->count_penawaran_hardfile ?? 0) + ($m->count_perpanjangan ?? 0) + 
-                                        ($m->count_pelatihan ?? 0) + ($m->count_tidak_menerima_penawaran ?? 0) + ($m->count_tidak_respon ?? 0) + 
-                                        ($m->count_sudah_ada_vendor_kerjasama ?? 0) + ($m->count_tanpa_status ?? 0);
-                                @endphp
-                                <tr>
-                                    <td class="text-start fw-bold text-dark ps-4 bg-white shadow-sm" style="position: sticky; left: 0; z-index: 5; border-right: 1px solid #eef2f7;">
-                                        {{ $m->name }}
-                                    </td>
-                                    
-                                    <td>{!! $renderLink($m->count_belum_ada_kebutuhan ?? 0, $m->id, 'BELUM ADA KEBUTUHAN') !!}</td>
-                                    <td>{!! $renderLink($m->count_email ?? 0, $m->id, 'DAPAT EMAIL') !!}</td>
-                                    <td>{!! $renderLink($m->count_dapat_telp ?? 0, $m->id, 'DAPAT NO TELP') !!}</td>
-                                    <td>{!! $renderLink($m->count_wa ?? 0, $m->id, 'DAPAT NO WA HRD') !!}</td>
-                                    <td>{!! $renderLink($m->count_hold ?? 0, $m->id, 'HOLD') !!}</td>
-                                    <td>{!! $renderLink($m->count_invalid ?? 0, $m->id, 'DATA TIDAK VALID & TIDAK TERHUBUNG') !!}</td>
-                                    <td>{!! $renderLink($m->count_compro ?? 0, $m->id, 'KIRIM COMPRO') !!}</td>
-                                    <td>{!! $renderLink($m->count_manja ?? 0, $m->id, 'MANJA') !!}</td>
-                                    <td>{!! $renderLink($m->count_manja_ulang ?? 0, $m->id, 'MANJA ULANG') !!}</td>
-                                    <td class="bg-primary-subtle">{!! $renderLink($m->count_penawaran ?? 0, $m->id, 'MASUK PENAWARAN') !!}</td>
-                                    <td>{!! $renderLink($m->count_penawaran_hardfile ?? 0, $m->id, 'PENAWARAN HARDFILE') !!}</td>
-                                    <td>{!! $renderLink($m->count_perpanjangan ?? 0, $m->id, 'REQUES PERPANJANGAN SERTIFIKAT') !!}</td>
-                                    <td>{!! $renderLink($m->count_pelatihan ?? 0, $m->id, 'REQUEST PERMINTAAN PELATIHAN') !!}</td>
-                                    <td>{!! $renderLink($m->count_tidak_menerima_penawaran ?? 0, $m->id, 'TIDAK MENERIMA PENAWARAN') !!}</td>
-                                    <td>{!! $renderLink($m->count_tidak_respon ?? 0, $m->id, 'TIDAK RESPON') !!}</td>
-                                    <td>{!! $renderLink($m->count_sudah_ada_vendor_kerjasama ?? 0, $m->id, 'SUDAH ADA VENDOR KERJASAMA') !!}</td>
-                                    
-                                    <td class="bg-danger-subtle">{!! $renderLink($m->count_tanpa_status ?? 0, $m->id, 'tanpa_status') !!}</td>
-                                    <td class="pe-4 bg-success-subtle">{!! $renderLink($total_per_marketing, $m->id, 'semua') !!}</td>
-                                </tr>
-                                @php
-                                    $t_belum_kebutuhan += ($m->count_belum_ada_kebutuhan ?? 0);
-                                    $t_email += ($m->count_email ?? 0);
-                                    $t_dapat_telp += ($m->count_dapat_telp ?? 0);
-                                    $t_wa += ($m->count_wa ?? 0);
-                                    $t_hold += ($m->count_hold ?? 0);
-                                    $t_invalid += ($m->count_invalid ?? 0);
-                                    $t_compro += ($m->count_compro ?? 0);
-                                    $t_manja += ($m->count_manja ?? 0);
-                                    $t_manja_ulang += ($m->count_manja_ulang ?? 0);
-                                    $t_penawaran += ($m->count_penawaran ?? 0);
-                                    $t_hardfile += ($m->count_penawaran_hardfile ?? 0);
+                                    $t_masuk_penawaran += ($m->count_penawaran ?? 0);
                                     $t_perpanjangan += ($m->count_perpanjangan ?? 0);
-                                    $t_pelatihan += ($m->count_pelatihan ?? 0);
-                                    $t_tidak_menerima += ($m->count_tidak_menerima_penawaran ?? 0);
-                                    $t_tidak_respon += ($m->count_tidak_respon ?? 0);
-                                    $t_vendor_kerjasama += ($m->count_sudah_ada_vendor_kerjasama ?? 0);
-                                    $t_tanpa_status += ($m->count_tanpa_status ?? 0);
-                                    $t_semua += $total_per_marketing;
+                                    $t_review += $m->review;
+                                    $t_deal += $m->deal;
+                                    $t_hold_penawaran += $m->hold;
+                                    $t_kalah += $m->kalah;
+                                    $t_total_followup += $m->total_penawaran;
                                 @endphp
                             @endforeach
-        
+
                             <tr class="table-primary fw-bolder text-dark border-top border-2 border-primary">
-                                <td class="text-start ps-4 bg-primary text-white shadow-sm" style="position: sticky; left: 0; z-index: 5;">TOTAL KESELURUHAN</td>
-                                <td>{{ $t_belum_kebutuhan }}</td>
-                                <td>{{ $t_email }}</td>
-                                <td>{{ $t_dapat_telp }}</td>
-                                <td>{{ $t_wa }}</td>
-                                <td>{{ $t_hold }}</td>
-                                <td>{{ $t_invalid }}</td>
-                                <td>{{ $t_compro }}</td>
-                                <td>{{ $t_manja }}</td>
-                                <td>{{ $t_manja_ulang }}</td>
-                                <td class="text-primary bg-white">{{ $t_penawaran }}</td>
-                                <td>{{ $t_hardfile }}</td>
+                                <td class="text-start ps-4 bg-primary text-white shadow-sm">TOTAL KESELURUHAN</td>
+                                <td class="text-primary bg-white">{{ $t_masuk_penawaran }}</td>
                                 <td>{{ $t_perpanjangan }}</td>
-                                <td>{{ $t_pelatihan }}</td>
-                                <td>{{ $t_tidak_menerima }}</td>
-                                <td>{{ $t_tidak_respon }}</td>
-                                <td>{{ $t_vendor_kerjasama }}</td>
-                                <td class="text-danger bg-white">{{ $t_tanpa_status }}</td>
-                                <td class="pe-4 text-success bg-white">{{ $t_semua }}</td>
+                                <td>{{ $t_review }}</td>
+                                <td>{{ $t_deal }}</td>
+                                <td>{{ $t_hold_penawaran }}</td>
+                                <td>{{ $t_kalah }}</td>
+                                <td class="pe-4">{{ $t_total_followup }} Detail</td>
                             </tr>
                         </tbody>
                     </table>
