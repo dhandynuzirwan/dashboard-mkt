@@ -123,7 +123,7 @@
                                     <div class="progress-fill ${barColor}" style="width: ${item.prosentase > 100 ? 100 : item.prosentase}%;"></div>
                                 </div>
                             </td>
-                            <td class="pe-4 fs-5 text-primary">${item.total_kpi}</td>
+                            <td class="pe-4 fs-5 text-primary">${item.total_kpi}%</td>
                         </tr>
                     `;
                 });
