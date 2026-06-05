@@ -27,9 +27,10 @@
                         <tr>
                             <th class="text-center" width="5%">No</th>
                             <th class="text-start ps-4">Marketing</th>
+                            <th>Target Omset (Rp)</th>
                             <th>Penawaran (Rp)</th>
                             <th class="text-success">Deal (Rp)</th> {{-- 🔥 Warna hijau --}}
-                            <th>Target Omset (Rp)</th>
+                            
                             <th>Achievement</th>
                             <th>Total KPI</th>
                         </tr>
@@ -115,9 +116,9 @@
                     grandDeal += valDeal;
 
                     // Penentuan warna rank 1, 2, 3
-                    let rankBadge = `<span class="badge bg-secondary rounded-circle" style="width: 28px; height: 28px; display: inline-flex; align-items: center; justify-content: center;">${index + 1}</span>`;
+                    let rankBadge = `<span class="badge bg-primary rounded-circle" style="width: 28px; height: 28px; display: inline-flex; align-items: center; justify-content: center;">${index + 1}</span>`;
                     if (index === 0) rankBadge = `<i class="fas fa-medal fs-4 text-warning" title="Peringkat 1"></i>`;
-                    else if (index === 1) rankBadge = `<i class="fas fa-medal fs-4 text-secondary" style="color: #94a3b8 !important;" title="Peringkat 2"></i>`;
+                    else if (index === 1) rankBadge = `<i class="fas fa-medal fs-4 text-primary" style="color: #94a3b8 !important;" title="Peringkat 2"></i>`;
                     else if (index === 2) rankBadge = `<i class="fas fa-medal fs-4" style="color: #b45309 !important;" title="Peringkat 3"></i>`;
 
                     // Penentuan warna progress bar
@@ -135,9 +136,10 @@
                             </td>
                             
                             {{-- Gunakan variabel yang sudah diubah jadi angka murni --}}
+                            <td class="text-muted fw-medium">${formatRp(valTarget)}</td>
                             <td class="text-primary fw-bold">${formatRp(valPenawaran)}</td>
                             <td class="text-success fw-black fs-5">${formatRp(valDeal)}</td>
-                            <td class="text-muted fw-medium">${formatRp(valTarget)}</td>
+                            
                             
                             <td>
                                 <div class="fw-bolder mb-1 ${item.prosentase >= 100 ? 'text-success' : 'text-dark'}">${item.prosentase}%</div>
@@ -145,7 +147,7 @@
                                     <div class="progress-fill ${barColor}" style="width: ${item.prosentase > 100 ? 100 : item.prosentase}%;"></div>
                                 </div>
                             </td>
-                            <td class="pe-4"><span class="badge bg-info text-dark px-3 py-2 fs-6 rounded-pill shadow-sm">${item.total_kpi}</span></td>
+                            <td class="pe-4"><span class="badge bg-info text-white px-3 py-2 fs-6 rounded-pill shadow-sm">${item.total_kpi}</span></td>
                         </tr>
                     `;
                 });
@@ -157,9 +159,10 @@
                 html += `
                     <tr class="bg-light border-top border-3" style="border-color: #dee2e6 !important;">
                         <td colspan="2" class="text-end pe-4 fw-black text-dark fs-5 py-3">TOTAL KESELURUHAN</td>
+                        <td class="fw-bold text-muted fs-5 py-3">${formatRp(grandTarget)}</td>
                         <td class="fw-bold text-primary fs-5 py-3">${formatRp(grandPenawaran)}</td>
                         <td class="fw-black text-success fs-4 py-3">${formatRp(grandDeal)}</td>
-                        <td class="fw-bold text-muted fs-5 py-3">${formatRp(grandTarget)}</td>
+                        
                         <td class="fw-black text-dark fs-5 py-3">${grandAch.toFixed(1)}%</td>
                         <td class="py-3 pe-4">-</td>
                     </tr>
