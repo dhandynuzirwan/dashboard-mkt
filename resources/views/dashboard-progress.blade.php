@@ -303,7 +303,12 @@
                                             $persen_deal = $total_penawaran > 0 ? ($total_deal / $total_penawaran) * 100 : 0;
                                         @endphp
                                         <tr>
-                                            <td class="fw-bold ps-4 text-dark">{{ $m->name }}</td>
+                                            <td class="text-start ps-4">
+                                                <div class="fw-bolder text-dark mb-1" style="font-size: 14px;">{{ $m->nama_lengkap ?? $m->name }}</div>
+                                                <span class="badge badge-soft-secondary px-2 py-1" style="font-size: 10px;">
+                                                    <i class="fas fa-id-badge me-1 opacity-75"></i> {{ $m->name }}
+                                                </span>
+                                            </td>
                                             
                                             {{-- Kolom Leads Masuk --}}
                                             <td class="text-center align-middle">
@@ -421,7 +426,7 @@
         {{-- ================= TABEL PROGRESS MARKETING ================= --}}
         <div class="card card-modern border-0 shadow-sm mb-4 fade-in">
             <div class="card-header bg-transparent border-bottom pt-4 px-4 pb-3">
-                <h6 class="card-title fw-bolder mb-0 text-dark">Progress Pencapaian Target</h6>
+                <h6 class="card-title fw-bolder mb-0 text-dark">Progress Pencapaian Data</h6>
             </div>
             <div class="card-body p-0">
                 <div class="table-responsive">
@@ -429,15 +434,20 @@
                         <thead class="bg-light sticky-top">
                             <tr>
                                 <th class="text-start ps-4">Marketing</th>
-                                <th class="text-center">Target (Form)</th>
+                                <th class="text-center">Target <Datal></Datal></th>
                                 <th class="text-center">Pencapaian</th>
-                                <th class="text-center pe-4">Ach Target (%)</th>
+                                <th class="text-center pe-4">Presentase</th>
                             </tr>
                         </thead>
                         <tbody>
                             @foreach ($marketings as $m)
                                 <tr>
-                                    <td class="text-start fw-bold text-dark ps-4">{{ $m->name }}</td>
+                                    <td class="text-start ps-4">
+                                        <div class="fw-bolder text-dark mb-1" style="font-size: 14px;">{{ $m->nama_lengkap ?? $m->name }}</div>
+                                        <span class="badge badge-soft-secondary px-2 py-1" style="font-size: 10px;">
+                                            <i class="fas fa-id-badge me-1 opacity-75"></i> {{ $m->name }}
+                                        </span>
+                                    </td>
                                     <td class="text-center text-muted fw-medium">{{ $m->target_total }}</td>
                                     <td class="text-center fw-bolder text-primary fs-6">{{ $m->pencapaian }}</td>
                                     <td class="pe-4" style="width: 40%;">
@@ -492,7 +502,12 @@
                                     $total_update = ($m->count_belum_ada_kebutuhan ?? 0) + ($m->count_tidak_respon ?? 0) + ($m->count_tanpa_status ?? 0) + ($m->count_invalid ?? 0);
                                 @endphp
                                 <tr>
-                                    <td class="text-start fw-bold text-dark ps-4">{{ $m->name }}</td>
+                                    <td class="text-start ps-4">
+                                        <div class="fw-bolder text-dark mb-1" style="font-size: 14px;">{{ $m->nama_lengkap ?? $m->name }}</div>
+                                        <span class="badge badge-soft-secondary px-2 py-1" style="font-size: 10px;">
+                                            <i class="fas fa-id-badge me-1 opacity-75"></i> {{ $m->name }}
+                                        </span>
+                                    </td>
                                     <td>{!! $renderLink($m->count_belum_ada_kebutuhan ?? 0, $m->id, 'BELUM ADA KEBUTUHAN') !!}</td>
                                     <td>{!! $renderLink($m->count_tidak_respon ?? 0, $m->id, 'TIDAK RESPON') !!}</td>
                                     <td>{!! $renderLink($m->count_tanpa_status ?? 0, $m->id, 'tanpa_status') !!}</td>
@@ -563,8 +578,11 @@
                                         ($m->count_sudah_ada_vendor_kerjasama ?? 0);
                                 @endphp
                                 <tr>
-                                    <td class="text-start fw-bold text-dark ps-4 bg-white" style="position: sticky; left: 0; z-index: 5;">
-                                        {{ $m->name }}
+                                    <td class="text-start ps-4 bg-white shadow-sm" style="position: sticky; left: 0; z-index: 5;">
+                                        <div class="fw-bolder text-dark mb-1" style="font-size: 14px;">{{ $m->nama_lengkap ?? $m->name }}</div>
+                                        <span class="badge badge-soft-secondary px-2 py-1" style="font-size: 10px;">
+                                            <i class="fas fa-id-badge me-1 opacity-75"></i> {{ $m->name }}
+                                        </span>
                                     </td>
                                     
                                     <td>{!! $renderLink($m->count_email ?? 0, $m->id, 'DAPAT EMAIL') !!}</td>
@@ -646,7 +664,12 @@
 
                             @foreach ($marketings as $m)
                                 <tr>
-                                    <td class="text-start fw-bold text-dark ps-4">{{ $m->name }}</td>
+                                    <td class="text-start ps-4">
+                                        <div class="fw-bolder text-dark mb-1" style="font-size: 14px;">{{ $m->nama_lengkap ?? $m->name }}</div>
+                                        <span class="badge badge-soft-secondary px-2 py-1" style="font-size: 10px;">
+                                            <i class="fas fa-id-badge me-1 opacity-75"></i> {{ $m->name }}
+                                        </span>
+                                    </td>
                                     <td class="fw-bold text-primary">{!! $renderLink($m->count_penawaran ?? 0, $m->id, 'MASUK PENAWARAN') !!}</td>
                                     <td>{!! $renderLink($m->count_perpanjangan ?? 0, $m->id, 'REQUES PERPANJANGAN SERTIFIKAT') !!}</td>
                                     <td><span class="badge badge-soft-info px-3 py-2 rounded-pill fw-bold">{{ $m->review }}</span></td>
