@@ -96,7 +96,7 @@
                                     <option value="{{ $selected_training->id }}" selected>{{ $selected_training->nama_training }}</option>
                                 @else
                                     <option value="">-- Pilih Program Pelatihan --</option>
-                                    @foreach($all_trainings as $t)
+                                    @foreach($trainings as $t)
                                         <option value="{{ $t->id }}" {{ old('master_training_id') == $t->id ? 'selected' : '' }}>{{ $t->nama_training }}</option>
                                     @endforeach
                                 @endif

@@ -89,7 +89,7 @@
             </div>
             
             <div class="p-6 space-y-4">
-                <a href="{{ url('portal/pendaftaran') }}" class="flex items-center p-4 bg-gray-50 border border-gray-200 rounded-2xl active:bg-blue-50 active:border-blue-300 transition">
+                <a href="{{ url('portal/pendaftaran-pribadi') }}" class="flex items-center p-4 bg-gray-50 border border-gray-200 rounded-2xl active:bg-blue-50 active:border-blue-300 transition">
                     <div class="w-12 h-12 bg-blue-100 text-blue-600 rounded-full flex-shrink-0 flex items-center justify-center mr-4">
                         <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"></path></svg>
                     </div>
@@ -102,7 +102,7 @@
                     </div>
                 </a>
 
-                <a href="{{ url('portal/pendaftaran-perusahaan') }}" class="flex items-center p-4 bg-gray-50 border border-gray-200 rounded-2xl active:bg-blue-50 active:border-blue-300 transition">
+                <a href="{{ url('portal/pendaftaran-instansi') }}" class="flex items-center p-4 bg-gray-50 border border-gray-200 rounded-2xl active:bg-blue-50 active:border-blue-300 transition">
                     <div class="w-12 h-12 bg-gray-200 text-gray-600 rounded-full flex-shrink-0 flex items-center justify-center mr-4">
                         <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-10V4m-5 10h.01M15 7h.01M15 11h.01M15 15h.01M11 15h.01M7 15h.01"></path></svg>
                     </div>
