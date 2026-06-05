@@ -19,8 +19,8 @@
         </div>
     </div>
 
-    <div id="podium-container" class="d-flex justify-content-center align-items-end mb-4 fade-in gap-3" style="min-height: 200px;">
-        </div>
+    {{-- <div id="podium-container" class="d-flex justify-content-center align-items-end mb-4 fade-in gap-3" style="min-height: 200px;">
+        </div> --}}
 
     <div class="card card-modern border-0 shadow-lg fade-in" style="border-radius: 16px; overflow: hidden;">
         <div class="card-body p-0">
