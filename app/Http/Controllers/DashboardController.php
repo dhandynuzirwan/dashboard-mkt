@@ -182,13 +182,19 @@ class DashboardController extends Controller
         // ================= 4. LOGIKA PIE CHART & KAMUS WARNA MARKETING =================
         $pieLabels = [];
         $pieData = [];
-        // Daftar warna yang SAMA PERSIS dengan konfigurasi Pie Chart di Blade
-        $warnaPieChart = ['#0d6efd', '#0dcaf0', '#ffc107', '#198754', '#dc3545', '#6610f2', '#fd7e14', '#20c997'];
+        
+        // 🔥 PERLUAS JADI 15 WARNA KONTRAS (SAMA PERSIS DENGAN BLADE) 🔥
+        $warnaPieChart = [
+            '#0d6efd', '#0dcaf0', '#ffc107', '#198754', '#dc3545', 
+            '#6610f2', '#fd7e14', '#20c997', '#d63384', '#6f42c1', 
+            '#adb5bd', '#17a2b8', '#e83e8c', '#28a745', '#343a40'
+        ];
         $kamusWarnaMarketing = [];
 
         foreach ($users as $index => $user) {
             $pieLabels[] = $user->name;
-            // Catat warna per marketing ke dalam kamus
+            
+            // 🔥 Gunakan modulo (%) agar aman jika user lebih banyak daripada jumlah stok warna
             $kamusWarnaMarketing[$user->name] = $warnaPieChart[$index % count($warnaPieChart)];
 
             $totalNominalDeal = \App\Models\Cta::whereHas('prospek', function ($q) use ($user, $start, $end) {
@@ -202,7 +208,8 @@ class DashboardController extends Controller
         }
 
         // ================= 5. LOGIKA LINE CHART (DIBAGI 2 PAKET: 6 BULAN & BULAN INI) =================
-        $colors = ['#0d6efd', '#0dcaf0', '#ffc107', '#198754', '#dc3545', '#6610f2'];
+        // 🔥 Samakan dengan warna pie chart agar identitas warna per marketing konsisten di semua grafik
+        $colors = $warnaPieChart;
 
         // --- PAKET A: DATA 6 BULAN TERAKHIR ---
         $lineLabels6Months = [];
@@ -232,7 +239,10 @@ class DashboardController extends Controller
                 })->sum(\Illuminate\Support\Facades\DB::raw('harga_penawaran * COALESCE(jumlah_peserta, 1)'));
             }
             $lineDatasets6Months[] = [
-                'label' => $user->name, 'borderColor' => $colors[$index] ?? '#000', 'backgroundColor' => 'transparent',
+                'label' => $user->name, 
+                // 🔥 Gunakan modulo agar aman dari error Undefined Offset
+                'borderColor' => $colors[$index % count($colors)] ?? '#000', 
+                'backgroundColor' => 'transparent',
                 'data' => $data6Months, 'fill' => false, 'borderWidth' => 2, 'tension' => 0.3,
             ];
 
@@ -245,7 +255,10 @@ class DashboardController extends Controller
                 })->sum(\Illuminate\Support\Facades\DB::raw('harga_penawaran * jumlah_peserta'));
             }
             $lineDatasetsThisMonth[] = [
-                'label' => $user->name, 'borderColor' => $colors[$index] ?? '#000', 'backgroundColor' => 'transparent',
+                'label' => $user->name, 
+                // 🔥 Gunakan modulo agar aman dari error Undefined Offset
+                'borderColor' => $colors[$index % count($colors)] ?? '#000', 
+                'backgroundColor' => 'transparent',
                 'data' => $dataThisMonth, 'fill' => false, 'borderWidth' => 2, 'tension' => 0.3,
             ];
         }
@@ -313,7 +326,7 @@ class DashboardController extends Controller
                 if(!isset($mapDataMentah[$code])) {
                     $mapDataMentah[$code] = [
                         'total' => 0,
-                        'marketing_counts' => [] // Menyimpan siapa dapat berapa di provinsi ini
+                        'marketing_counts' => [] 
                     ];
                 }
                 
@@ -332,7 +345,7 @@ class DashboardController extends Controller
             // Cari nama marketing dengan angka tertinggi di provinsi tersebut
             $marketingDominan = array_keys($data['marketing_counts'], max($data['marketing_counts']))[0];
             
-            // Ambil warna dari kamus (fallback ke oranye kalau tidak ada)
+            // Ambil warna dari kamus
             $warnaHover = $kamusWarnaMarketing[$marketingDominan] ?? '#ff9e27';
 
             $mapData[$code] = [

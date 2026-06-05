@@ -1002,7 +1002,12 @@
                     labels: @json($pieLabels),
                     datasets: [{
                         data: @json($pieData),
-                        backgroundColor: ['#0d6efd', '#0dcaf0', '#ffc107', '#198754', '#dc3545', '#6610f2', '#fd7e14', '#20c997'],
+                        // 🔥 UBAH BAGIAN INI JADI 15 WARNA 🔥
+                        backgroundColor: [
+                            '#0d6efd', '#0dcaf0', '#ffc107', '#198754', '#dc3545', 
+                            '#6610f2', '#fd7e14', '#20c997', '#d63384', '#6f42c1', 
+                            '#adb5bd', '#17a2b8', '#e83e8c', '#28a745', '#343a40'
+                        ],
                         borderWidth: 2,
                         borderColor: '#fff'
                     }]
