@@ -147,7 +147,7 @@
                                     <div class="progress-fill ${barColor}" style="width: ${item.prosentase > 100 ? 100 : item.prosentase}%;"></div>
                                 </div>
                             </td>
-                            <td class="pe-4"><span class="badge bg-info text-white px-3 py-2 fs-6 rounded-pill shadow-sm">${item.total_kpi}</span></td>
+                            <td class="pe-4"><span class="badge bg-info text-white px-3 py-2 fs-6 rounded-pill shadow-sm">${item.total_kpi}%</span></td>
                         </tr>
                     `;
                 });
