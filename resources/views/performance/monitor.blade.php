@@ -19,6 +19,9 @@
         </div>
     </div>
 
+    <div id="podium-container" class="d-flex justify-content-center align-items-end mb-4 fade-in gap-3" style="min-height: 200px;">
+        </div>
+
     <div class="card card-modern border-0 shadow-lg fade-in" style="border-radius: 16px; overflow: hidden;">
         <div class="card-body p-0">
             <div class="table">
@@ -66,6 +69,66 @@
         overflow: hidden;
     }
     .progress-fill { height: 100%; border-radius: 10px; transition: width 1s ease-in-out; }
+
+    /* 🔥 CSS KHUSUS PODIUM LEADERBOARD 🔥 */
+    .podium-box {
+        transition: transform 0.3s ease, box-shadow 0.3s ease;
+        text-align: center;
+        position: relative;
+    }
+    .podium-box:hover {
+        transform: translateY(-5px);
+    }
+    .podium-img {
+        width: 100px;
+        height: 100px;
+        object-fit: cover;
+        border-radius: 50%;
+        background-color: #f8f9fa;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 2rem;
+        font-weight: bold;
+        color: #fff;
+    }
+    /* Peringkat 1 (Emas) - Lebih besar dan naik sedikit */
+    .podium-1 { transform: translateY(-20px); z-index: 3; }
+    .podium-1 .podium-img { width: 130px; height: 130px; border: 6px solid #fbbf24; box-shadow: 0 0 20px rgba(251, 191, 36, 0.5); }
+    .podium-1 .podium-rank { background-color: #fbbf24; color: #fff; }
+    
+    /* Peringkat 2 (Perak) */
+    .podium-2 { z-index: 2; }
+    .podium-2 .podium-img { border: 5px solid #94a3b8; box-shadow: 0 0 15px rgba(148, 163, 184, 0.4); }
+    .podium-2 .podium-rank { background-color: #94a3b8; color: #fff; }
+    
+    /* Peringkat 3 (Perunggu) */
+    .podium-3 { z-index: 1; }
+    .podium-3 .podium-img { border: 5px solid #b45309; box-shadow: 0 0 15px rgba(180, 83, 9, 0.4); }
+    .podium-3 .podium-rank { background-color: #b45309; color: #fff; }
+
+    .podium-rank {
+        position: absolute;
+        bottom: -16px; /* 🔥 Ubah ke minus agar turun ke tepi bawah foto */
+        left: 50%;
+        transform: translateX(-50%);
+        width: 32px;
+        height: 32px;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-weight: 900;
+        font-size: 14px;
+        border: 3px solid #fff;
+    }
+    .podium-1 .podium-rank { 
+        bottom: -20px; /* 🔥 Turunkan juga untuk peringkat 1 */
+        width: 40px; 
+        height: 40px; 
+        font-size: 18px; 
+    }
+</style>
 </style>
 
 <script>
@@ -84,6 +147,7 @@
                 
                 if (result.status === 'success') {
                     renderTable(result.data);
+                    renderPodium(result.data);
                     document.getElementById('last-update').innerText = result.waktu;
                 }
             } catch (error) {
@@ -169,6 +233,74 @@
                 `;
             }
             tbody.innerHTML = html;
+        };
+
+        // 🔥 FUNGSI BARU: Render Podium Top 3 🔥
+        const renderPodium = (data) => {
+            const podiumContainer = document.getElementById('podium-container');
+            
+            // Jika data kurang dari 3, sembunyikan fitur podium agar tidak aneh
+            if (data.length < 3) {
+                podiumContainer.innerHTML = '';
+                return;
+            }
+
+            // Fungsi untuk membuat elemen gambar atau inisial
+            const getAvatarHtml = (item) => {
+                // 🔥 Debug: cek di Console Browser (F12) apa isi URL-nya
+                console.log("URL Foto:", item.foto); 
+                
+                if (item.foto) {
+                    return `<img src="${item.foto}" alt="${item.nama}" class="podium-img shadow-sm" 
+                            onerror="this.onerror=null; this.src='https://ui-avatars.com/api/?name=${item.nama}';">`;
+                } else {
+                    return `<div class="podium-img shadow-sm bg-primary" style="display:flex; align-items:center; justify-content:center;">${item.nama.charAt(0).toUpperCase()}</div>`;
+                }
+            };
+
+            // Struktur HTML Podium: Rank 2 (Kiri), Rank 1 (Tengah), Rank 3 (Kanan)
+            // Struktur HTML Podium: Dempet tanpa sistem grid
+            // Struktur HTML Podium: Dempet tanpa sistem grid
+            let html = `
+                <div class="px-2">
+                    <div class="podium-box podium-2">
+                        <div class="position-relative d-inline-block">
+                            ${getAvatarHtml(data[1])}
+                            <div class="podium-rank shadow">2</div>
+                        </div>
+                        {{-- 🔥 Ganti mt-2 jadi mt-4 agar namanya turun --}}
+                        <div class="mt-4 fw-bolder text-dark" style="font-size: 15px;">${data[1].nama}</div>
+                        <div class="text-secondary fw-bold" style="font-size: 12px;">${data[1].prosentase}%</div>
+                    </div>
+                </div>
+
+                <div class="px-3">
+                    <div class="podium-box podium-1">
+                        <i class="fas fa-crown text-warning fs-1 position-absolute" style="top: -25px; left: 50%; transform: translateX(-50%); text-shadow: 0 4px 6px rgba(0,0,0,0.1);"></i>
+                        <div class="position-relative d-inline-block">
+                            ${getAvatarHtml(data[0])}
+                            <div class="podium-rank shadow">1</div>
+                        </div>
+                        {{-- 🔥 Ganti mt-2 jadi mt-4 agar namanya turun --}}
+                        <div class="mt-4 fw-bolder text-dark fs-5">${data[0].nama}</div>
+                        <div class="text-warning-dark fw-bolder" style="color: #d97706; font-size: 14px;">${data[0].prosentase}%</div>
+                    </div>
+                </div>
+
+                <div class="px-2">
+                    <div class="podium-box podium-3">
+                        <div class="position-relative d-inline-block">
+                            ${getAvatarHtml(data[2])}
+                            <div class="podium-rank shadow">3</div>
+                        </div>
+                        {{-- 🔥 Ganti mt-2 jadi mt-4 agar namanya turun --}}
+                        <div class="mt-4 fw-bolder text-dark" style="font-size: 15px;">${data[2].nama}</div>
+                        <div class="text-secondary fw-bold" style="font-size: 12px;" style="color: #b45309 !important;">${data[2].prosentase}%</div>
+                    </div>
+                </div>
+            `;
+
+            podiumContainer.innerHTML = html;
         };
 
         // Panggil fungsi pertama kali saat halaman dibuka

@@ -113,6 +113,8 @@ class MonitorController extends Controller
             // ================= TOTAL KPI FINAL =================
             $total_kpi = $absensi_kpi + $progress_kpi + $revenue_kpi;
 
+            // $fotoUrl = $m->foto_profil ? asset('storage/' . $m->foto_profil) : null;
+
             // Mengembalikan format untuk dirender Javascript di Layar
             return [
                 'nama'            => $m->name,
@@ -123,6 +125,7 @@ class MonitorController extends Controller
                 'tercapai_omset'  => $total_deal,
                 'prosentase'      => round($revenue_ach, 1), // Persentase yang tampil di layar adalah pencapaian Revenue
                 'total_kpi'       => round($total_kpi, 2),  // Menampilkan angka desimal 2 di belakang koma (misal: 98.50)
+                'foto'            => $m->foto_profil ? asset('storage/' . $m->foto_profil) : null,
             ];
         });
 
