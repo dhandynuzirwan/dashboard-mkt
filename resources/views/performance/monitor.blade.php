@@ -23,16 +23,15 @@
         <div class="card-body p-0">
             <div class="table">
                 <table class="table table-hover align-middle text-center mb-0" style="min-width: 1000px;">
-                    <thead class="bg-dark text-white" style="font-size: 14px; text-transform: uppercase; letter-spacing: 1px;">
+                    <thead class="bg-light text-primary" style="font-size: 14px;">
                         <tr>
-                            <th class="py-4 text-start ps-4" width="50">Rank</th>
-                            <th class="py-4 text-start">Nama Marketing</th>
-                            <th class="py-4">Target (Rp)</th>
-                            <th class="py-4">Total Penawaran (Rp)</th>
-                            <th class="py-4 text-warning">Total Deal (Rp)</th>
-                            <th class="py-4 text-success">Tercapai Omset</th>
-                            <th class="py-4">% Tercapai</th>
-                            <th class="py-4 pe-4">Total KPI</th>
+                            <th class="text-center" width="5%">No</th>
+                            <th class="text-start ps-4">Marketing</th>
+                            <th>Penawaran (Rp)</th>
+                            <th class="text-success">Deal (Rp)</th> {{-- 🔥 Warna hijau --}}
+                            <th>Target Omset (Rp)</th>
+                            <th>Achievement</th>
+                            <th>Total KPI</th>
                         </tr>
                     </thead>
                     {{-- ID ini penting untuk disuntik data oleh JavaScript --}}
@@ -96,14 +95,25 @@
             const tbody = document.getElementById('monitor-table-body');
             let html = '';
 
+            // 🔥 Variabel Penampung untuk Total Keseluruhan 🔥
+            let grandTarget = 0;
+            let grandPenawaran = 0;
+            let grandDeal = 0;
+
             if(data.length === 0) {
-                html = `<tr><td colspan="8" class="text-center py-4 text-muted">Belum ada data marketing</td></tr>`;
+                // Colspan diubah jadi 7 karena kolom Tercapai Omset dihapus
+                html = `<tr><td colspan="7" class="text-center py-4 text-muted">Belum ada data marketing</td></tr>`;
             } else {
                 data.forEach((item, index) => {
+                    // Hitung Grand Total
+                    grandTarget += item.target;
+                    grandPenawaran += item.total_penawaran;
+                    grandDeal += item.total_deal;
+
                     // Penentuan warna rank 1, 2, 3
-                    let rankBadge = `<span class="badge bg-secondary rounded-circle" style="width: 28px; height: 28px; display: inline-flex; align-items: center; justify-content: center;">${index + 1}</span>`;
+                    let rankBadge = `<span class="badge bg-primary rounded-circle" style="width: 28px; height: 28px; display: inline-flex; align-items: center; justify-content: center;">${index + 1}</span>`;
                     if (index === 0) rankBadge = `<i class="fas fa-medal fs-4 text-warning" title="Peringkat 1"></i>`;
-                    else if (index === 1) rankBadge = `<i class="fas fa-medal fs-4 text-secondary" style="color: #94a3b8 !important;" title="Peringkat 2"></i>`;
+                    else if (index === 1) rankBadge = `<i class="fas fa-medal fs-4 text-primary" style="color: #94a3b8 !important;" title="Peringkat 2"></i>`;
                     else if (index === 2) rankBadge = `<i class="fas fa-medal fs-4" style="color: #b45309 !important;" title="Peringkat 3"></i>`;
 
                     // Penentuan warna progress bar (Merah < 50, Kuning 50-80, Hijau > 80)
@@ -111,22 +121,46 @@
 
                     html += `
                         <tr class="fade-in">
-                            <td class="text-start ps-4">${rankBadge}</td>
-                            <td class="text-start text-dark fs-6">${item.nama}</td>
-                            <td class="text-muted">${formatRp(item.target)}</td>
-                            <td class="text-secondary">${formatRp(item.total_penawaran)}</td>
-                            <td class="text-warning-dark fw-bolder" style="color: #d97706;">${formatRp(item.total_deal)}</td>
-                            <td class="text-success fw-bolder">${formatRp(item.tercapai_omset)}</td>
+                            <td class="text-center">${rankBadge}</td>
+                            
+                            {{-- 🔥 Desain Rapi: Bertumpuk & Tanpa Backslash (Variabel Aktif) 🔥 --}}
+                            <td class="text-start ps-4">
+                                <div class="fw-bolder text-dark mb-1" style="font-size: 14px;">${item.nama_lengkap}</div>
+                                <span class="badge bg-primary px-2 py-1 shadow-sm" style="font-size: 10px;">
+                                    <i class="fas fa-id-badge me-1 opacity-75"></i> ${item.nama}
+                                </span>
+                            </td>
+                            
+                            {{-- 🔥 Format Kolom Nominal 🔥 --}}
+                            <td class="text-primary fw-bold">${formatRp(item.total_penawaran)}</td>
+                            <td class="text-success fw-black fs-5">${formatRp(item.total_deal)}</td>
+                            <td class="text-muted fw-medium">${formatRp(item.target)}</td>
+                            
                             <td>
-                                <div class="fw-bolder ${item.prosentase >= 100 ? 'text-success' : 'text-dark'}">${item.prosentase}%</div>
+                                <div class="fw-bolder mb-1 ${item.prosentase >= 100 ? 'text-success' : 'text-dark'}">${item.prosentase}%</div>
                                 <div class="progress-bar-custom">
                                     <div class="progress-fill ${barColor}" style="width: ${item.prosentase > 100 ? 100 : item.prosentase}%;"></div>
                                 </div>
                             </td>
-                            <td class="pe-4 fs-5 text-primary">${item.total_kpi}%</td>
+                            <td class="pe-4"><span class="badge bg-info text-white px-3 py-2 fs-6 rounded-pill shadow-sm">${item.total_kpi}</span></td>
                         </tr>
                     `;
                 });
+
+                // 🔥 Kalkulasi Persentase Grand Total 🔥
+                let grandAch = grandTarget > 0 ? (grandDeal / grandTarget) * 100 : 0;
+
+                // 🔥 Tambahkan Baris Grand Total di Paling Bawah 🔥
+                html += `
+                    <tr class="bg-light border-top border-3" style="border-color: #dee2e6 !important;">
+                        <td colspan="2" class="text-end pe-4 fw-black text-dark fs-5 py-3">TOTAL KESELURUHAN</td>
+                        <td class="fw-bold text-primary fs-5 py-3">${formatRp(grandPenawaran)}</td>
+                        <td class="fw-black text-success fs-4 py-3">${formatRp(grandDeal)}</td>
+                        <td class="fw-bold text-muted fs-5 py-3">${formatRp(grandTarget)}</td>
+                        <td class="fw-black text-dark fs-5 py-3">${grandAch.toFixed(1)}%</td>
+                        <td class="py-3 pe-4">-</td>
+                    </tr>
+                `;
             }
             tbody.innerHTML = html;
         };
@@ -136,7 +170,7 @@
 
         // 🔥 RAHASIA REALTIME TANPA REFRESH: Polling setiap 10 detik (10000 ms) 🔥
         // Ubah angka 10000 jika ingin lebih cepat/lambat
-        setInterval(fetchMonitorData, 10000); 
+        setInterval(fetchMonitorData, 10000);
     });
 
     // =========================================================================

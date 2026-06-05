@@ -116,6 +116,7 @@ class MonitorController extends Controller
             // Mengembalikan format untuk dirender Javascript di Layar
             return [
                 'nama'            => $m->name,
+                'nama_lengkap'    => $m->nama_lengkap ?? $m->name,
                 'target'          => $target_revenue,
                 'total_penawaran' => $total_penawaran,
                 'total_deal'      => $total_deal,
