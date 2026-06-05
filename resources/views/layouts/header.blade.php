@@ -190,6 +190,14 @@
                             </li>
                             <li>
                                 <div class="dropdown-divider"></div>
+
+                                {{-- 🔥 TAMBAHAN MENU EDIT PROFIL 🔥 --}}
+                                <a class="dropdown-item" href="{{ route('my-profile.edit') }}">
+                                    <i class="fas fa-user-cog me-2 text-primary opacity-75"></i> Edit Profil
+                                </a>
+                                
+                                <div class="dropdown-divider"></div>
+
                                 <form method="POST" action="{{ route('logout') }}">
                                     @csrf
                                     <button type="submit" class="dropdown-item text-danger fw-bold">

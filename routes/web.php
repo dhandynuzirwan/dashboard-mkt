@@ -98,6 +98,10 @@ Route::middleware('auth')->group(function () {
     Route::get('/marketing-detail/{id}', [DashboardController::class, 'getDetail'])->name('marketing.detail');
     Route::get('/search-global', [SearchController::class, 'globalSearch'])->name('search.global');
     Route::get('/penggajian/slip-preview/{id}', [SalaryController::class, 'previewSlip'])->name('penggajian.preview');
+
+    // Route Khusus Edit Profil Sendiri
+    Route::get('/my-profile', [\App\Http\Controllers\ProfileController::class, 'edit'])->name('my-profile.edit');
+    Route::post('/my-profile/update', [\App\Http\Controllers\ProfileController::class, 'update'])->name('my-profile.update');
     
     // ================= RUTE BRANKAS AKUN =================
     // Menggunakan Route::resource agar otomatis membuat rute index, store, dan destroy
