@@ -120,7 +120,7 @@ Route::middleware('auth')->group(function () {
     */
     // --- MENU PERFORMANCE (Khusus Superadmin, Webdev, SPV) ---
     // Asumsi kamu menggunakan middleware 'role' (sesuaikan jika menggunakan middleware/penamaan lain)
-    Route::middleware('role:superadmin,web_dev,spv_marketing')->group(function () {
+    Route::middleware('role:superadmin,web_dev,spv_marketing,admin')->group(function () {
         Route::get('/dashboard-progress', [DashboardController::class, 'index'])->name('dashboard.progress');
         // Placeholder untuk On Display Monitor
         // Route On Display Monitor
