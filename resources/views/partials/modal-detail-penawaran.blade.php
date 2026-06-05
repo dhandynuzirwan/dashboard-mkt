@@ -68,10 +68,10 @@
                     <td class="text-center py-3">
                         @php
                             $status_labels = [
-                                'cancel'       => ['label' => 'Cancel', 'class' => 'bg-dark'],
                                 'under_review' => ['label' => 'Under Review', 'class' => 'bg-info text-white'],
                                 'hold'         => ['label' => 'Hold', 'class' => 'bg-warning text-dark'],
                                 'kalah_harga'  => ['label' => 'Kalah Harga', 'class' => 'bg-danger'],
+                                'cancel'       => ['label' => 'Cancel', 'class' => 'bg-danger'],
                                 'deal'         => ['label' => 'Deal', 'class' => 'bg-success'],
                             ];
                             

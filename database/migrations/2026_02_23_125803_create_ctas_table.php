@@ -23,7 +23,7 @@ return new class extends Migration
             $table->bigInteger('harga_penawaran')->nullable();
             $table->bigInteger('harga_vendor')->nullable();
             $table->string('proposal_link')->nullable();
-            $table->enum('status_penawaran', ['under_review', 'hold', 'kalah_harga', 'deal'])->nullable();
+            $table->enum('status_penawaran', ['under_review', 'hold', 'kalah_harga', 'deal', 'cancel'])->nullable();
             $table->text('keterangan')->nullable();
             $table->timestamps();
         });

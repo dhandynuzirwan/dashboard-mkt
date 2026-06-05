@@ -136,6 +136,7 @@
                                         <option value="under_review" {{ $cta->status_penawaran == 'under_review' ? 'selected' : '' }}>Under Review</option>
                                         <option value="hold" {{ $cta->status_penawaran == 'hold' ? 'selected' : '' }}>Hold</option>
                                         <option value="kalah_harga" {{ $cta->status_penawaran == 'kalah_harga' ? 'selected' : '' }}>Kalah Harga</option>
+                                        <option value="cancel" {{ $cta->status_penawaran == 'cancel' ? 'selected' : '' }}>Cancel</option>
                                         <option value="deal" {{ $cta->status_penawaran == 'deal' ? 'selected' : '' }}>Deal</option>
                                     </select>
                                 </div>

@@ -657,13 +657,14 @@
                         <th>Deal</th>
                         <th>Hold</th>
                         <th>Kalah Harga</th>
+                        <th>Cancel</th>
                         <th class="pe-4 text-primary" style="width: 12%;">Total Follow Up</th>
                     </tr>
                 </thead>
                 <tbody style="font-size: 13px;">
                     @php
                         $t_masuk_penawaran = $t_perpanjangan = 0;
-                        $t_review = $t_deal = $t_hold_penawaran = $t_kalah = $t_total_followup = 0;
+                        $t_review = $t_deal = $t_hold_penawaran = $t_kalah = $t_cancel = $t_total_followup = 0;
                     @endphp
 
                     @foreach ($marketings as $m)
@@ -680,6 +681,7 @@
                             <td><span class="badge badge-soft-success px-2.5 py-1.5 rounded-pill fw-bold">{{ $m->deal }}</span></td>
                             <td><span class="badge badge-soft-warning text-dark px-2.5 py-1.5 rounded-pill fw-bold">{{ $m->hold }}</span></td>
                             <td><span class="badge badge-soft-danger px-2.5 py-1.5 rounded-pill fw-bold">{{ $m->kalah }}</span></td>
+                            <td><span class="badge badge-soft-danger px-2.5 py-1.5 rounded-pill fw-bold">{{ $m->cancel }}</span></td>
                             <td class="pe-4">
                                 <button class="btn btn-sm btn-primary btn-round btn-detail fw-bold px-2 py-1 shadow-sm hover-lift" style="font-size: 11px;" data-id="{{ $m->id }}">
                                     {{ $m->total_penawaran }} Detail
@@ -693,6 +695,7 @@
                             $t_deal += $m->deal;
                             $t_hold_penawaran += $m->hold;
                             $t_kalah += $m->kalah;
+                            $t_cancel += $m->cancel;
                             $t_total_followup += $m->total_penawaran;
                         @endphp
                     @endforeach
@@ -705,6 +708,7 @@
                         <td>{{ $t_deal }}</td>
                         <td>{{ $t_hold_penawaran }}</td>
                         <td>{{ $t_kalah }}</td>
+                        <td>{{ $t_cancel }}</td>
                         <td class="pe-4 text-primary" style="font-size: 12px;">{{ $t_total_followup }} Detail</td>
                     </tr>
                 </tbody>

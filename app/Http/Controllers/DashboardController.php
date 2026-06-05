@@ -174,6 +174,7 @@ class DashboardController extends Controller
             $user->deal = $cta->where('status_penawaran', 'deal')->count();
             $user->hold = $cta->where('status_penawaran', 'hold')->count();
             $user->kalah = $cta->where('status_penawaran', 'kalah_harga')->count();
+            $user->cancel = $cta->where('status_penawaran', 'cancel')->count(); // tambahan cancel
             $user->review = $cta->where('status_penawaran', 'under_review')->count();
 
             return $user;

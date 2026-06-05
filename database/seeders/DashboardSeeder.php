@@ -120,7 +120,7 @@ class DashboardSeeder extends Seeder
                     }
                     $jumlahPeserta = rand(20, 50);
                 } else {
-                    $statusPenawaran = $faker->randomElement(['kalah_harga', 'hold', 'under_review']);
+                    $statusPenawaran = $faker->randomElement(['kalah_harga', 'hold', 'under_review', 'cancel']);
                     $hargaPenawaran = rand(150, 2500) * 1000;
                     $jumlahPeserta = rand(1, 5);
                 }

@@ -145,6 +145,7 @@
                                         <option value="under_review">Under Review</option>
                                         <option value="hold">Hold</option>
                                         <option value="kalah_harga">Kalah Harga</option>
+                                        <option value="cancel">Cancel</option>
                                         <option value="deal">Deal</option>
                                     </select>
                                 </div>

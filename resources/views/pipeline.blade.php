@@ -70,6 +70,9 @@
                             <option value="under_review" {{ request('status') == 'under_review' ? 'selected' : '' }}>Under Review</option>
                             <option value="hold" {{ request('status') == 'hold' ? 'selected' : '' }}>Hold</option>
                             <option value="kalah_harga" {{ request('status') == 'kalah_harga' ? 'selected' : '' }}>Kalah Harga</option>
+                            {{-- tambahkan opsi cancel --}}
+                            <option value="cancel" {{ request('status') == 'cancel' ? 'selected' : '' }}>Cancel</option>
+                            
                             <option value="deal" {{ request('status') == 'deal' ? 'selected' : '' }}>Deal</option>
                         </select>
                     </div>
@@ -630,6 +633,7 @@
                                                             'under_review' => ['label' => 'Under Review', 'class' => 'badge-soft-info'],
                                                             'hold' => ['label' => 'Hold', 'class' => 'badge-soft-warning text-dark'],
                                                             'kalah_harga' => ['label' => 'Kalah Harga', 'class' => 'badge-soft-danger'],
+                                                            'cancel' => ['label' => 'Cancel', 'class' => 'badge-soft-danger'],
                                                             'deal' => ['label' => 'Deal', 'class' => 'badge-soft-success'],
                                                         ];
                                                         $current_status = $status_labels[$itemCta->status_penawaran] ?? ['label' => strtoupper($itemCta->status_penawaran ?? '-'), 'class' => 'bg-light text-dark border'];
