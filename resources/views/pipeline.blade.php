@@ -321,11 +321,6 @@
                 <a href="{{ route('prospek.check') }}" class="btn btn-white btn-sm btn-round border fw-bold text-dark shadow-sm hover-lift">
                     <i class="fas fa-sync-alt text-primary me-1"></i> Cek Sinkronisasi
                 </a>
-                @if (in_array(auth()->user()->role, ['superadmin', 'admin']))
-                    <button class="btn btn-danger btn-sm btn-round fw-bold shadow-sm hover-lift" data-bs-toggle="modal" data-bs-target="#massDeleteDateModal">
-                        <i class="fas fa-calendar-times me-1"></i> Hapus Massal via Tanggal
-                    </button>
-                @endif
             </div>
             
             <div class="col-md-4 col-12">
@@ -902,48 +897,7 @@
     </div>
 </div>
 
-@if (in_array(auth()->user()->role, ['superadmin', 'admin']))
-{{-- ================= MODAL HAPUS MASSAL VIA TANGGAL ================= --}}
-<div class="modal fade" id="massDeleteDateModal" tabindex="-1">
-    <div class="modal-dialog modal-dialog-centered">
-        <form action="{{ route('prospek.massDeleteByDate') }}" method="POST" id="formMassDeleteDate">
-            @csrf
-            @method('DELETE')
-            <div class="modal-content border-0 shadow-lg rounded-4">
-                <div class="modal-header border-bottom-0 pb-0">
-                    <h5 class="modal-title fw-bold text-danger"><i class="fas fa-exclamation-triangle me-2"></i>Hapus Massal via Tanggal</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
-                </div>
-                <div class="modal-body pt-4">
-                    <div class="alert alert-danger border-0 rounded-3 small mb-3">
-                        <i class="fas fa-exclamation-circle me-1"></i> <strong>Peringatan Keras!</strong> Tindakan ini akan menghapus semua data Prospek dan CTA terkait dalam rentang tanggal yang dipilih secara permanen di database lokal Anda.
-                    </div>
-                    
-                    <div class="row g-2 mb-3">
-                        <div class="col-6">
-                            <label class="fw-bold mb-2 small text-muted text-uppercase">Tanggal Mulai <span class="text-danger">*</span></label>
-                            <input type="date" name="start_date" class="form-control bg-light shadow-none border-0" required>
-                        </div>
-                        <div class="col-6">
-                            <label class="fw-bold mb-2 small text-muted text-uppercase">Tanggal Selesai <span class="text-danger">*</span></label>
-                            <input type="date" name="end_date" class="form-control bg-light shadow-none border-0" required>
-                        </div>
-                    </div>
-                    
-                    <div class="mb-2">
-                        <label class="fw-bold mb-2 small text-muted d-block text-uppercase">Ketik <strong>"HAPUS PERMANEN"</strong> untuk konfirmasi <span class="text-danger">*</span></label>
-                        <input type="text" id="confirmDeleteText" name="konfirmasi" class="form-control bg-light shadow-none border-0" placeholder="HAPUS PERMANEN" autocomplete="off" required>
-                    </div>
-                </div>
-                <div class="modal-footer border-top-0 pt-0">
-                    <button type="button" class="btn btn-white border fw-bold btn-round text-dark" data-bs-dismiss="modal">Batal</button>
-                    <button type="submit" id="btnConfirmDeleteDate" class="btn btn-danger fw-bold btn-round shadow-sm px-4" disabled>Hapus Permanen</button>
-                </div>
-            </div>
-        </form>
-    </div>
-</div>
-@endif
+
     
 {{-- ================= STYLES ================= --}}
 <style>
@@ -1091,18 +1045,7 @@ document.addEventListener('DOMContentLoaded', function () {
         }
     }
 
-    // Validasi konfirmasi teks hapus massal tanggal
-    const confirmInput = document.getElementById('confirmDeleteText');
-    const btnSubmitDelete = document.getElementById('btnConfirmDeleteDate');
-    if (confirmInput && btnSubmitDelete) {
-        confirmInput.addEventListener('input', function() {
-            if (this.value === 'HAPUS PERMANEN') {
-                btnSubmitDelete.removeAttribute('disabled');
-            } else {
-                btnSubmitDelete.setAttribute('disabled', 'disabled');
-            }
-        });
-    }
+
 
     // AJAX Upload File Excel dengan Progress Bar
     const uploadForm = document.getElementById('uploadExcelForm');
