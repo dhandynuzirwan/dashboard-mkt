@@ -6,6 +6,9 @@ use App\Models\Prospek;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use App\Imports\ProspekCtaImport;
+use App\Exports\ProspekCtaTemplateExport;
+use Maatwebsite\Excel\Facades\Excel;
 
 class ProspekController extends Controller
 {
@@ -674,4 +677,71 @@ class ProspekController extends Controller
     //         'html' => $html
     //     ]);
     // }
+
+    public function importExcel(Request $request)
+    {
+        $request->validate([
+            'file_excel' => 'required|mimes:xlsx,xls,csv|max:10240',
+        ]);
+
+        try {
+            $import = new ProspekCtaImport;
+            Excel::import($import, $request->file('file_excel'));
+
+            // Simpan ke session untuk tombol Batal (Undo)
+            session([
+                'last_import_prospek_ids' => $import->createdProspekIds,
+                'last_import_cta_ids'     => $import->createdCtaIds,
+            ]);
+
+            $countProspek = count($import->createdProspekIds);
+            $countCta = count($import->createdCtaIds);
+
+            return redirect()->back()->with('success', "Data Prospek dan CTA berhasil di-import dari Excel! Berhasil menambahkan {$countProspek} Prospek baru dan {$countCta} CTA baru.");
+        } catch (\Exception $e) {
+            return redirect()->back()->with('error', 'Gagal meng-import data! Pastikan format kolom sesuai. Error: ' . $e->getMessage());
+        }
+    }
+
+    public function undoImport()
+    {
+        $prospekIds = session('last_import_prospek_ids', []);
+        $ctaIds = session('last_import_cta_ids', []);
+
+        if (empty($prospekIds) && empty($ctaIds)) {
+            return redirect()->back()->with('error', 'Tidak ada data import terbaru yang dapat dibatalkan.');
+        }
+
+        try {
+            DB::beginTransaction();
+
+            // Hapus CTA yang dibuat saat import terbaru
+            if (!empty($ctaIds)) {
+                \App\Models\Cta::whereIn('id', $ctaIds)->delete();
+            }
+
+            // Hapus Prospek yang dibuat saat import terbaru
+            if (!empty($prospekIds)) {
+                \App\Models\Prospek::whereIn('id', $prospekIds)->delete();
+            }
+
+            DB::commit();
+
+            $deletedProspekCount = count($prospekIds);
+            $deletedCtaCount = count($ctaIds);
+
+            // Bersihkan session
+            session()->forget(['last_import_prospek_ids', 'last_import_cta_ids']);
+
+            return redirect()->back()->with('success', "Berhasil membatalkan import terbaru! {$deletedProspekCount} Prospek baru dan {$deletedCtaCount} CTA baru telah dihapus secara permanen.");
+        } catch (\Exception $e) {
+            DB::rollBack();
+            return redirect()->back()->with('error', 'Gagal membatalkan import: ' . $e->getMessage());
+        }
+    }
+
+    public function downloadTemplate()
+    {
+        return Excel::download(new ProspekCtaTemplateExport, 'template_import_prospek_cta.xlsx');
+    }
 }

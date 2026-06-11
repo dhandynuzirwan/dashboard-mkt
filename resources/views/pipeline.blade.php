@@ -4,6 +4,81 @@
 <div class="container">
     <div class="page-inner">
         
+        {{-- Alert Notifikasi Sukses / Gagal --}}
+        @if (session('success'))
+            <div class="alert alert-success alert-dismissible fade show shadow-sm border-0 rounded-4 mb-4" role="alert">
+                <div class="d-flex align-items-center">
+                    <div class="icon-sm bg-success text-white rounded-circle d-flex align-items-center justify-content-center me-3" style="width: 32px; height: 32px;">
+                        <i class="fas fa-check-circle"></i>
+                    </div>
+                    <div>
+                        <strong class="text-dark">Sukses!</strong> <span class="text-muted">{{ session('success') }}</span>
+                    </div>
+                </div>
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            </div>
+        @endif
+
+        @if (session('error'))
+            <div class="alert alert-danger alert-dismissible fade show shadow-sm border-0 rounded-4 mb-4" role="alert">
+                <div class="d-flex align-items-center">
+                    <div class="icon-sm bg-danger text-white rounded-circle d-flex align-items-center justify-content-center me-3" style="width: 32px; height: 32px;">
+                        <i class="fas fa-times-circle"></i>
+                    </div>
+                    <div>
+                        <strong class="text-dark">Gagal!</strong> <span class="text-muted">{{ session('error') }}</span>
+                    </div>
+                </div>
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            </div>
+        @endif
+
+        @if ($errors->any())
+            <div class="alert alert-danger alert-dismissible fade show shadow-sm border-0 rounded-4 mb-4" role="alert">
+                <div class="d-flex align-items-start">
+                    <div class="icon-sm bg-danger text-white rounded-circle d-flex align-items-center justify-content-center me-3 mt-1" style="width: 32px; height: 32px; flex-shrink: 0;">
+                        <i class="fas fa-exclamation-triangle"></i>
+                    </div>
+                    <div>
+                        <strong class="text-dark">Terjadi Kesalahan!</strong>
+                        <ul class="mb-0 mt-1 pl-3 text-muted small">
+                            @foreach ($errors->all() as $error)
+                                <li>{{ $error }}</li>
+                            @endforeach
+                        </ul>
+                    </div>
+                </div>
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            </div>
+        @endif
+
+        {{-- Banner Undo Import --}}
+        @if (session('last_import_prospek_ids') || session('last_import_cta_ids'))
+            @php
+                $importHash = md5(implode(',', (array)session('last_import_prospek_ids', [])) . '|' . implode(',', (array)session('last_import_cta_ids', [])));
+            @endphp
+            <div id="import-banner" data-import-hash="{{ $importHash }}" class="alert alert-modern-warning alert-dismissible fade show shadow-sm border-0 rounded-4 mb-4 d-flex align-items-center justify-content-between p-3" role="alert" style="padding-right: 3.5rem !important;">
+                <div class="d-flex align-items-center">
+                    <div class="icon-sm bg-warning text-dark rounded-circle d-flex align-items-center justify-content-center me-3 shadow-sm" style="width: 32px; height: 32px; background-color: #f59e0b; color: white;">
+                        <i class="fas fa-history"></i>
+                    </div>
+                    <div>
+                        <strong class="text-dark">Sesi Import Terdeteksi:</strong> 
+                        <span class="text-muted ms-1">
+                            Anda baru saja menambahkan <b>{{ count((array)session('last_import_prospek_ids', [])) }}</b> Prospek & <b>{{ count((array)session('last_import_cta_ids', [])) }}</b> CTA baru. Ingin membatalkannya?
+                        </span>
+                    </div>
+                </div>
+                <form action="{{ route('prospek.undo-import') }}" method="POST" class="m-0">
+                    @csrf
+                    <button type="submit" class="btn btn-danger btn-sm btn-round fw-bold px-3 hover-lift shadow-sm" onclick="return confirm('Apakah Anda yakin ingin membatalkan import terbaru? Tindakan ini akan menghapus permanen semua data Prospek & CTA yang baru ditambahkan.')">
+                        <i class="fas fa-undo me-1"></i> Batalkan Import Terbaru
+                    </button>
+                </form>
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close" id="dismiss-import-banner" style="top: 50%; transform: translateY(-50%);"></button>
+            </div>
+        @endif
+        
         {{-- ================= HEADER SECTION ================= --}}
         <div class="d-flex align-items-left align-items-md-center flex-column flex-md-row mb-4 justify-content-between fade-in">
             <div>
@@ -187,6 +262,17 @@
                 <button class="btn btn-success btn-sm btn-round fw-bold shadow-sm hover-lift" data-bs-toggle="modal" data-bs-target="#requestModal">
                     <i class="fas fa-file-excel me-1"></i> Download Excel
                 </button>
+                <button class="btn btn-primary btn-sm btn-round fw-bold shadow-sm hover-lift" data-bs-toggle="modal" data-bs-target="#uploadExcelModal">
+                    <i class="fas fa-file-upload me-1"></i> Upload Excel
+                </button>
+                @if (session('last_import_prospek_ids') || session('last_import_cta_ids'))
+                    <form action="{{ route('prospek.undo-import') }}" method="POST" class="d-inline m-0">
+                        @csrf
+                        <button type="submit" class="btn btn-danger btn-sm btn-round fw-bold shadow-sm hover-lift" onclick="return confirm('Apakah Anda yakin ingin membatalkan import terbaru? Tindakan ini akan menghapus permanen semua data Prospek & CTA yang baru ditambahkan.')">
+                            <i class="fas fa-undo me-1"></i> Batalkan Import Terakhir
+                        </button>
+                    </form>
+                @endif
                 <a href="{{ route('prospek.check') }}" class="btn btn-white btn-sm btn-round border fw-bold text-dark shadow-sm hover-lift">
                     <i class="fas fa-sync-alt text-primary me-1"></i> Cek Sinkronisasi
                 </a>
@@ -712,6 +798,43 @@
         </form>
     </div>
 </div>
+
+{{-- ================= MODAL UPLOAD EXCEL ================= --}}
+<div class="modal fade" id="uploadExcelModal" tabindex="-1">
+    <div class="modal-dialog modal-dialog-centered">
+        <form action="{{ route('prospek.import') }}" method="POST" enctype="multipart/form-data">
+            @csrf
+            <div class="modal-content border-0 shadow-lg rounded-4">
+                <div class="modal-header border-bottom-0 pb-0">
+                    <h5 class="modal-title fw-bold text-dark"><i class="fas fa-file-upload text-primary me-2"></i>Upload Data Excel</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body pt-4">
+                    <div class="alert badge-soft-info border-0 rounded-3 small mb-3">
+                        <i class="fas fa-info-circle me-1"></i> Gunakan template Excel resmi agar format kolom sesuai dan proses import berjalan lancar.
+                    </div>
+                    
+                    <div class="mb-4">
+                        <label class="fw-bold mb-2 small text-muted text-uppercase d-block">1. Unduh Template</label>
+                        <a href="{{ route('prospek.download-template') }}" class="btn btn-white border btn-sm btn-round text-primary fw-bold px-3">
+                            <i class="fas fa-download me-1"></i> Download Template Import (.xlsx)
+                        </a>
+                    </div>
+                    
+                    <div class="mb-2">
+                        <label class="fw-bold mb-2 small text-muted text-uppercase">2. Pilih File Excel <span class="text-danger">*</span></label>
+                        <input type="file" name="file_excel" class="form-control bg-light shadow-none border-0" accept=".xlsx,.xls,.csv" required>
+                        <small class="text-muted d-block mt-1">Maksimal ukuran file: 10 MB (.xlsx, .xls, .csv)</small>
+                    </div>
+                </div>
+                <div class="modal-footer border-top-0 pt-0">
+                    <button type="button" class="btn btn-white border fw-bold btn-round text-dark" data-bs-dismiss="modal">Batal</button>
+                    <button type="submit" class="btn btn-primary fw-bold btn-round shadow-sm px-4">Mulai Import</button>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
     
 {{-- ================= STYLES ================= --}}
 <style>
@@ -842,6 +965,23 @@
 {{-- ================= SCRIPTS ================= --}}
 <script>
 document.addEventListener('DOMContentLoaded', function () {
+    // Persistensi dismiss banner import agar tidak muncul lagi setelah di-close
+    const banner = document.getElementById('import-banner');
+    if (banner) {
+        const hash = banner.getAttribute('data-import-hash');
+        if (localStorage.getItem('dismissed_import_banner') === hash) {
+            banner.classList.add('d-none');
+            banner.classList.remove('show');
+        }
+        
+        const closeBtn = document.getElementById('dismiss-import-banner');
+        if (closeBtn) {
+            closeBtn.addEventListener('click', function() {
+                localStorage.setItem('dismissed_import_banner', hash);
+            });
+        }
+    }
+
     // Logika Master Checkbox Prospek
     const checkAll = document.getElementById('checkAllProspek');
     const checkItems = document.querySelectorAll('.checkItemProspek');

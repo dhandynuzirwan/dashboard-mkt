@@ -253,6 +253,9 @@ Route::middleware('auth')->group(function () {
         Route::delete('/prospek/mass-delete', [ProspekController::class, 'massDelete'])->name('prospek.massDelete');
         Route::get('/prospek/check', [ProspekController::class, 'showCheckData'])->name('prospek.check');
         Route::post('/prospek/check-massal', [ProspekController::class, 'processCheckMassal'])->name('prospek.processCheckMassal');
+        Route::post('/prospek/import-excel', [ProspekController::class, 'importExcel'])->name('prospek.import');
+        Route::get('/prospek/download-template', [ProspekController::class, 'downloadTemplate'])->name('prospek.download-template');
+        Route::post('/prospek/undo-import', [ProspekController::class, 'undoImport'])->name('prospek.undo-import');
      
         Route::get('/dashboard/detail-prospek-ajax', [DashboardController::class, 'getDetailStatusAjax'])->name('prospek.detailAjax');
         Route::get('/prospek/map-detail-ajax', [DashboardController::class, 'getMapDetailAjax'])->name('prospek.mapAjax');
