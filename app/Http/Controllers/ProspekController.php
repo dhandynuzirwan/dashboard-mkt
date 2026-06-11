@@ -694,12 +694,52 @@ class ProspekController extends Controller
                 'last_import_cta_ids'     => $import->createdCtaIds,
             ]);
 
-            $countProspek = count($import->createdProspekIds);
-            $countCta = count($import->createdCtaIds);
+            $countNewProspek = count($import->createdProspekIds);
+            $countUpdatedProspek = $import->updatedProspekCount;
+            $countNewCta = count($import->createdCtaIds);
+            $countUpdatedCta = $import->updatedCtaCount;
+            $countFailures = count($import->failures);
+            $countSkipped = $import->skippedEmptyRowsCount;
 
-            return redirect()->back()->with('success', "Data Prospek dan CTA berhasil di-import dari Excel! Berhasil menambahkan {$countProspek} Prospek baru dan {$countCta} CTA baru.");
+            $totalRows = $countNewProspek + $countUpdatedProspek + $countFailures + $countSkipped;
+
+            $message = "Import data Excel selesai! Berhasil memproses {$totalRows} baris data (berhasil ditambahkan: {$countNewProspek} prospek baru, {$countNewCta} CTA baru).";
+
+            $importStats = [
+                'new_prospek' => $countNewProspek,
+                'updated_prospek' => $countUpdatedProspek,
+                'new_cta' => $countNewCta,
+                'updated_cta' => $countUpdatedCta,
+                'skipped' => $countSkipped,
+                'failures' => $countFailures
+            ];
+
+            if ($request->ajax()) {
+                session()->flash('success', $message);
+                session()->flash('import_stats', $importStats);
+                session()->flash('import_failures', $import->failures);
+                return response()->json([
+                    'success' => true,
+                    'message' => $message,
+                    'redirect' => route('prospek.index')
+                ]);
+            }
+
+            return redirect()->back()
+                ->with('success', $message)
+                ->with('import_stats', $importStats)
+                ->with('import_failures', $import->failures);
         } catch (\Exception $e) {
-            return redirect()->back()->with('error', 'Gagal meng-import data! Pastikan format kolom sesuai. Error: ' . $e->getMessage());
+            $errorMessage = 'Gagal meng-import data! Pastikan format kolom sesuai. Error: ' . $e->getMessage();
+            
+            if ($request->ajax()) {
+                return response()->json([
+                    'success' => false,
+                    'message' => $errorMessage
+                ], 500);
+            }
+            
+            return redirect()->back()->with('error', $errorMessage);
         }
     }
 
@@ -743,5 +783,75 @@ class ProspekController extends Controller
     public function downloadTemplate()
     {
         return Excel::download(new ProspekCtaTemplateExport, 'template_import_prospek_cta.xlsx');
+    }
+
+    public function massDeleteByDate(Request $request)
+    {
+        // 1. Keamanan Ekstra: Pastikan hanya admin/superadmin yang bisa akses
+        if (!in_array(auth()->user()->role, ['superadmin', 'admin'])) {
+            abort(403, 'Unauthorized Access');
+        }
+
+        // 2. Validasi input
+        $request->validate([
+            'start_date' => 'required|date',
+            'end_date' => 'required|date|after_or_equal:start_date',
+            'konfirmasi' => 'required|string',
+        ]);
+
+        if ($request->konfirmasi !== 'HAPUS PERMANEN') {
+            return redirect()->back()->with('error', 'Konfirmasi teks tidak sesuai. Silakan ketik "HAPUS PERMANEN".');
+        }
+
+        // 3. Ambil data prospek pada rentang tanggal
+        $prospeks = \App\Models\Prospek::whereBetween('tanggal_prospek', [$request->start_date, $request->end_date])->get();
+        $prospekCount = $prospeks->count();
+
+        if ($prospekCount === 0) {
+            return redirect()->back()->with('error', 'Tidak ada data prospek ditemukan pada rentang tanggal tersebut.');
+        }
+
+        try {
+            DB::beginTransaction();
+
+            $prospekIds = $prospeks->pluck('id');
+
+            // Hapus file proposal fisik (Jika ada)
+            $fileProposals = \App\Models\Cta::whereIn('prospek_id', $prospekIds)
+                                            ->whereNotNull('file_proposal')
+                                            ->pluck('file_proposal');
+                                            
+            foreach($fileProposals as $file) {
+                if (\Illuminate\Support\Facades\Storage::disk('public')->exists($file)) {
+                    \Illuminate\Support\Facades\Storage::disk('public')->delete($file);
+                }
+            }
+
+            // Hapus CTA yang terhubung
+            $ctaCount = \App\Models\Cta::whereIn('prospek_id', $prospekIds)->count();
+            \App\Models\Cta::whereIn('prospek_id', $prospekIds)->delete();
+            
+            // Hapus Data Prospek Utama
+            \App\Models\Prospek::whereIn('id', $prospekIds)->delete();
+
+            DB::commit();
+
+            // Jika session berisi ID yang dihapus, bersihkan session agar tombol Batal hilang
+            $sessionProspekIds = session('last_import_prospek_ids', []);
+            $sessionCtaIds = session('last_import_cta_ids', []);
+            
+            // Periksa apakah ada irisan
+            if (array_intersect($sessionProspekIds, $prospekIds->toArray())) {
+                session()->forget(['last_import_prospek_ids', 'last_import_cta_ids']);
+            }
+
+            $startDateFormatted = \Carbon\Carbon::parse($request->start_date)->format('d/m/Y');
+            $endDateFormatted = \Carbon\Carbon::parse($request->end_date)->format('d/m/Y');
+
+            return redirect()->back()->with('success', "Berhasil menghapus secara permanen {$prospekCount} data prospek dan {$ctaCount} data penawaran (CTA) terkait dari rentang tanggal {$startDateFormatted} s/d {$endDateFormatted}.");
+        } catch (\Exception $e) {
+            DB::rollBack();
+            return redirect()->back()->with('error', 'Terjadi kesalahan saat menghapus data: ' . $e->getMessage());
+        }
     }
 }

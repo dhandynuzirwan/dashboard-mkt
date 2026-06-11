@@ -7,12 +7,57 @@
         {{-- Alert Notifikasi Sukses / Gagal --}}
         @if (session('success'))
             <div class="alert alert-success alert-dismissible fade show shadow-sm border-0 rounded-4 mb-4" role="alert">
-                <div class="d-flex align-items-center">
-                    <div class="icon-sm bg-success text-white rounded-circle d-flex align-items-center justify-content-center me-3" style="width: 32px; height: 32px;">
+                <div class="d-flex align-items-start">
+                    <div class="icon-sm bg-success text-white rounded-circle d-flex align-items-center justify-content-center me-3 mt-1 shadow-sm" style="width: 32px; height: 32px; flex-shrink: 0;">
                         <i class="fas fa-check-circle"></i>
                     </div>
-                    <div>
+                    <div class="flex-grow-1">
                         <strong class="text-dark">Sukses!</strong> <span class="text-muted">{{ session('success') }}</span>
+                        
+                        @if (session('import_stats'))
+                            @php $importStats = session('import_stats'); @endphp
+                            <div class="mt-2 d-flex flex-wrap gap-2">
+                                <span class="badge badge-soft-success p-2 rounded-2">
+                                    <i class="fas fa-plus-circle me-1"></i> {{ $importStats['new_prospek'] }} Prospek Baru
+                                </span>
+                                <span class="badge badge-soft-info p-2 rounded-2">
+                                    <i class="fas fa-sync-alt me-1"></i> {{ $importStats['updated_prospek'] }} Prospek Diupdate
+                                </span>
+                                @if($importStats['new_cta'] > 0)
+                                <span class="badge badge-soft-primary p-2 rounded-2">
+                                    <i class="fas fa-file-invoice me-1"></i> {{ $importStats['new_cta'] }} CTA Baru
+                                </span>
+                                @endif
+                                @if($importStats['updated_cta'] > 0)
+                                <span class="badge badge-soft-secondary p-2 rounded-2">
+                                    <i class="fas fa-edit me-1"></i> {{ $importStats['updated_cta'] }} CTA Diupdate
+                                </span>
+                                @endif
+                                @if($importStats['skipped'] > 0)
+                                <span class="badge badge-soft-warning p-2 rounded-2 text-dark">
+                                    <i class="fas fa-minus-circle me-1"></i> {{ $importStats['skipped'] }} Baris Kosong Dilewati
+                                </span>
+                                @endif
+                                @if($importStats['failures'] > 0)
+                                <span class="badge badge-soft-danger p-2 rounded-2">
+                                    <i class="fas fa-times-circle me-1"></i> {{ $importStats['failures'] }} Baris Gagal
+                                </span>
+                                @endif
+                            </div>
+                        @endif
+
+                        @if (session('import_failures') && count(session('import_failures')) > 0)
+                            <div class="mt-3 p-3 bg-white rounded-3 border border-warning-subtle shadow-sm">
+                                <strong class="text-danger d-block mb-1 small text-uppercase"><i class="fas fa-exclamation-triangle me-1"></i> Detail Baris yang Gagal di-Import (Total: {{ count(session('import_failures')) }})</strong>
+                                <div style="max-height: 150px; overflow-y: auto;">
+                                    <ul class="mb-0 pl-3 text-muted small">
+                                        @foreach (session('import_failures') as $failure)
+                                            <li>Baris <b>{{ $failure['row'] }}</b> ({{ $failure['perusahaan'] }}): <span class="text-danger">{{ $failure['error'] }}</span></li>
+                                        @endforeach
+                                    </ul>
+                                </div>
+                            </div>
+                        @endif
                     </div>
                 </div>
                 <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
@@ -276,6 +321,11 @@
                 <a href="{{ route('prospek.check') }}" class="btn btn-white btn-sm btn-round border fw-bold text-dark shadow-sm hover-lift">
                     <i class="fas fa-sync-alt text-primary me-1"></i> Cek Sinkronisasi
                 </a>
+                @if (in_array(auth()->user()->role, ['superadmin', 'admin']))
+                    <button class="btn btn-danger btn-sm btn-round fw-bold shadow-sm hover-lift" data-bs-toggle="modal" data-bs-target="#massDeleteDateModal">
+                        <i class="fas fa-calendar-times me-1"></i> Hapus Massal via Tanggal
+                    </button>
+                @endif
             </div>
             
             <div class="col-md-4 col-12">
@@ -800,41 +850,100 @@
 </div>
 
 {{-- ================= MODAL UPLOAD EXCEL ================= --}}
-<div class="modal fade" id="uploadExcelModal" tabindex="-1">
+<div class="modal fade" id="uploadExcelModal" tabindex="-1" data-bs-backdrop="static" data-bs-keyboard="false">
     <div class="modal-dialog modal-dialog-centered">
-        <form action="{{ route('prospek.import') }}" method="POST" enctype="multipart/form-data">
+        <form action="{{ route('prospek.import') }}" method="POST" enctype="multipart/form-data" id="uploadExcelForm">
             @csrf
             <div class="modal-content border-0 shadow-lg rounded-4">
                 <div class="modal-header border-bottom-0 pb-0">
                     <h5 class="modal-title fw-bold text-dark"><i class="fas fa-file-upload text-primary me-2"></i>Upload Data Excel</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" id="modalCloseBtn"></button>
                 </div>
                 <div class="modal-body pt-4">
-                    <div class="alert badge-soft-info border-0 rounded-3 small mb-3">
-                        <i class="fas fa-info-circle me-1"></i> Gunakan template Excel resmi agar format kolom sesuai dan proses import berjalan lancar.
-                    </div>
+                    <div id="uploadErrorMessage" class="alert alert-danger d-none border-0 rounded-3 small mb-3"></div>
                     
-                    <div class="mb-4">
-                        <label class="fw-bold mb-2 small text-muted text-uppercase d-block">1. Unduh Template</label>
-                        <a href="{{ route('prospek.download-template') }}" class="btn btn-white border btn-sm btn-round text-primary fw-bold px-3">
-                            <i class="fas fa-download me-1"></i> Download Template Import (.xlsx)
-                        </a>
+                    <div id="uploadFormInputs">
+                        <div class="alert badge-soft-info border-0 rounded-3 small mb-3">
+                            <i class="fas fa-info-circle me-1"></i> Gunakan template Excel resmi agar format kolom sesuai dan proses import berjalan lancar.
+                        </div>
+                        
+                        <div class="mb-4">
+                            <label class="fw-bold mb-2 small text-muted text-uppercase d-block">1. Unduh Template</label>
+                            <a href="{{ route('prospek.download-template') }}" class="btn btn-white border btn-sm btn-round text-primary fw-bold px-3">
+                                <i class="fas fa-download me-1"></i> Download Template Import (.xlsx)
+                            </a>
+                        </div>
+                        
+                        <div class="mb-2">
+                            <label class="fw-bold mb-2 small text-muted text-uppercase">2. Pilih File Excel <span class="text-danger">*</span></label>
+                            <input type="file" id="file_excel_input" name="file_excel" class="form-control bg-light shadow-none border-0" accept=".xlsx,.xls,.csv" required>
+                            <small class="text-muted d-block mt-1">Maksimal ukuran file: 10 MB (.xlsx, .xls, .csv)</small>
+                        </div>
                     </div>
-                    
-                    <div class="mb-2">
-                        <label class="fw-bold mb-2 small text-muted text-uppercase">2. Pilih File Excel <span class="text-danger">*</span></label>
-                        <input type="file" name="file_excel" class="form-control bg-light shadow-none border-0" accept=".xlsx,.xls,.csv" required>
-                        <small class="text-muted d-block mt-1">Maksimal ukuran file: 10 MB (.xlsx, .xls, .csv)</small>
+
+                    <!-- Progress Bar (Hidden by Default) -->
+                    <div id="uploadProgressContainer" class="d-none py-2">
+                        <div class="d-flex justify-content-between mb-2">
+                            <span class="fw-bold small text-primary" id="uploadStatusText">Mengunggah file...</span>
+                            <span class="fw-bold small text-primary" id="uploadPercentVal">0%</span>
+                        </div>
+                        <div class="progress progress-sm rounded-pill" style="height: 10px;">
+                            <div id="uploadProgressBar" class="progress-bar progress-bar-striped progress-bar-animated bg-primary" role="progressbar" style="width: 0%;"></div>
+                        </div>
+                        <small class="text-muted d-block mt-2 text-center" id="uploadHelperText">Mohon jangan menutup jendela browser Anda.</small>
                     </div>
                 </div>
                 <div class="modal-footer border-top-0 pt-0">
-                    <button type="button" class="btn btn-white border fw-bold btn-round text-dark" data-bs-dismiss="modal">Batal</button>
-                    <button type="submit" class="btn btn-primary fw-bold btn-round shadow-sm px-4">Mulai Import</button>
+                    <button type="button" class="btn btn-white border fw-bold btn-round text-dark" data-bs-dismiss="modal" id="btnCancelUploadExcel">Batal</button>
+                    <button type="submit" class="btn btn-primary fw-bold btn-round shadow-sm px-4" id="btnSubmitUploadExcel">Mulai Import</button>
                 </div>
             </div>
         </form>
     </div>
 </div>
+
+@if (in_array(auth()->user()->role, ['superadmin', 'admin']))
+{{-- ================= MODAL HAPUS MASSAL VIA TANGGAL ================= --}}
+<div class="modal fade" id="massDeleteDateModal" tabindex="-1">
+    <div class="modal-dialog modal-dialog-centered">
+        <form action="{{ route('prospek.massDeleteByDate') }}" method="POST" id="formMassDeleteDate">
+            @csrf
+            @method('DELETE')
+            <div class="modal-content border-0 shadow-lg rounded-4">
+                <div class="modal-header border-bottom-0 pb-0">
+                    <h5 class="modal-title fw-bold text-danger"><i class="fas fa-exclamation-triangle me-2"></i>Hapus Massal via Tanggal</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body pt-4">
+                    <div class="alert alert-danger border-0 rounded-3 small mb-3">
+                        <i class="fas fa-exclamation-circle me-1"></i> <strong>Peringatan Keras!</strong> Tindakan ini akan menghapus semua data Prospek dan CTA terkait dalam rentang tanggal yang dipilih secara permanen di database lokal Anda.
+                    </div>
+                    
+                    <div class="row g-2 mb-3">
+                        <div class="col-6">
+                            <label class="fw-bold mb-2 small text-muted text-uppercase">Tanggal Mulai <span class="text-danger">*</span></label>
+                            <input type="date" name="start_date" class="form-control bg-light shadow-none border-0" required>
+                        </div>
+                        <div class="col-6">
+                            <label class="fw-bold mb-2 small text-muted text-uppercase">Tanggal Selesai <span class="text-danger">*</span></label>
+                            <input type="date" name="end_date" class="form-control bg-light shadow-none border-0" required>
+                        </div>
+                    </div>
+                    
+                    <div class="mb-2">
+                        <label class="fw-bold mb-2 small text-muted d-block text-uppercase">Ketik <strong>"HAPUS PERMANEN"</strong> untuk konfirmasi <span class="text-danger">*</span></label>
+                        <input type="text" id="confirmDeleteText" name="konfirmasi" class="form-control bg-light shadow-none border-0" placeholder="HAPUS PERMANEN" autocomplete="off" required>
+                    </div>
+                </div>
+                <div class="modal-footer border-top-0 pt-0">
+                    <button type="button" class="btn btn-white border fw-bold btn-round text-dark" data-bs-dismiss="modal">Batal</button>
+                    <button type="submit" id="btnConfirmDeleteDate" class="btn btn-danger fw-bold btn-round shadow-sm px-4" disabled>Hapus Permanen</button>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+@endif
     
 {{-- ================= STYLES ================= --}}
 <style>
@@ -979,6 +1088,127 @@ document.addEventListener('DOMContentLoaded', function () {
             closeBtn.addEventListener('click', function() {
                 localStorage.setItem('dismissed_import_banner', hash);
             });
+        }
+    }
+
+    // Validasi konfirmasi teks hapus massal tanggal
+    const confirmInput = document.getElementById('confirmDeleteText');
+    const btnSubmitDelete = document.getElementById('btnConfirmDeleteDate');
+    if (confirmInput && btnSubmitDelete) {
+        confirmInput.addEventListener('input', function() {
+            if (this.value === 'HAPUS PERMANEN') {
+                btnSubmitDelete.removeAttribute('disabled');
+            } else {
+                btnSubmitDelete.setAttribute('disabled', 'disabled');
+            }
+        });
+    }
+
+    // AJAX Upload File Excel dengan Progress Bar
+    const uploadForm = document.getElementById('uploadExcelForm');
+    const uploadInputs = document.getElementById('uploadFormInputs');
+    const progressContainer = document.getElementById('uploadProgressContainer');
+    const progressBar = document.getElementById('uploadProgressBar');
+    const statusText = document.getElementById('uploadStatusText');
+    const percentVal = document.getElementById('uploadPercentVal');
+    const errorMsg = document.getElementById('uploadErrorMessage');
+    const submitBtn = document.getElementById('btnSubmitUploadExcel');
+    const cancelBtn = document.getElementById('btnCancelUploadExcel');
+    const closeBtn = document.getElementById('modalCloseBtn');
+    const helperText = document.getElementById('uploadHelperText');
+
+    if (uploadForm) {
+        uploadForm.addEventListener('submit', function (e) {
+            e.preventDefault();
+
+            // Sembunyikan error message lama
+            errorMsg.classList.add('d-none');
+            errorMsg.innerText = '';
+
+            const formData = new FormData(uploadForm);
+            const xhr = new XMLHttpRequest();
+
+            // Set up listener untuk upload progress
+            xhr.upload.addEventListener('progress', function (event) {
+                if (event.lengthComputable) {
+                    const percent = Math.round((event.loaded / event.total) * 100);
+                    progressBar.style.width = percent + '%';
+                    percentVal.innerText = percent + '%';
+
+                    if (percent === 100) {
+                        statusText.innerText = 'Mengunggah selesai! Sedang memproses data Excel...';
+                        helperText.innerText = 'Server sedang menyimpan data. Silakan tunggu beberapa saat...';
+                        progressBar.classList.add('bg-success');
+                    } else {
+                        statusText.innerText = 'Mengunggah file ke server...';
+                    }
+                }
+            });
+
+            // Set up state UI saat upload dimulai
+            uploadInputs.classList.add('d-none');
+            progressContainer.classList.remove('d-none');
+            submitBtn.setAttribute('disabled', 'disabled');
+            cancelBtn.setAttribute('disabled', 'disabled');
+            closeBtn.setAttribute('disabled', 'disabled');
+            // Menghindari klik backdrop modal untuk menutup modal
+            const modalEl = document.getElementById('uploadExcelModal');
+            modalEl.setAttribute('data-bs-backdrop', 'static');
+            modalEl.setAttribute('data-bs-keyboard', 'false');
+
+            // Handle respons dari server
+            xhr.onreadystatechange = function () {
+                if (xhr.readyState === XMLHttpRequest.DONE) {
+                    if (xhr.status >= 200 && xhr.status < 300) {
+                        try {
+                            const res = JSON.parse(xhr.responseText);
+                            if (res.success) {
+                                statusText.innerText = 'Import Berhasil! Merefresh halaman...';
+                                setTimeout(function () {
+                                    window.location.href = res.redirect;
+                                }, 500);
+                            } else {
+                                throw new Error(res.message || 'Gagal memproses file.');
+                            }
+                        } catch (err) {
+                            showUploadError(err.message);
+                        }
+                    } else {
+                        let errMsg = 'Terjadi kesalahan pada server saat memproses import.';
+                        try {
+                            const res = JSON.parse(xhr.responseText);
+                            if (res.message) errMsg = res.message;
+                        } catch(e) {}
+                        showUploadError(errMsg);
+                    }
+                }
+            };
+
+            xhr.open('POST', uploadForm.action, true);
+            // Tambahkan header X-Requested-With agar Laravel mendeteksi request sebagai AJAX
+            xhr.setRequestHeader('X-Requested-With', 'XMLHttpRequest');
+            xhr.send(formData);
+        });
+
+        function showUploadError(message) {
+            // Tampilkan error
+            errorMsg.innerText = message;
+            errorMsg.classList.remove('d-none');
+
+            // Kembalikan form ke kondisi semula
+            uploadInputs.classList.remove('d-none');
+            progressContainer.classList.add('d-none');
+            progressBar.style.width = '0%';
+            progressBar.classList.remove('bg-success');
+            percentVal.innerText = '0%';
+
+            submitBtn.removeAttribute('disabled');
+            cancelBtn.removeAttribute('disabled');
+            closeBtn.removeAttribute('disabled');
+
+            const modalEl = document.getElementById('uploadExcelModal');
+            modalEl.removeAttribute('data-bs-backdrop');
+            modalEl.removeAttribute('data-bs-keyboard');
         }
     }
 

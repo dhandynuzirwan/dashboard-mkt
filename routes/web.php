@@ -251,6 +251,7 @@ Route::middleware('auth')->group(function () {
         Route::get('/prospek/{id}/edit', [ProspekController::class, 'edit'])->name('prospek.edit');
         Route::put('/prospek/{id}', [ProspekController::class, 'update'])->name('prospek.update');
         Route::delete('/prospek/mass-delete', [ProspekController::class, 'massDelete'])->name('prospek.massDelete');
+        Route::delete('/prospek/mass-delete-by-date', [ProspekController::class, 'massDeleteByDate'])->name('prospek.massDeleteByDate');
         Route::get('/prospek/check', [ProspekController::class, 'showCheckData'])->name('prospek.check');
         Route::post('/prospek/check-massal', [ProspekController::class, 'processCheckMassal'])->name('prospek.processCheckMassal');
         Route::post('/prospek/import-excel', [ProspekController::class, 'importExcel'])->name('prospek.import');
