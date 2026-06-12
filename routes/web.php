@@ -146,7 +146,7 @@ Route::middleware('auth')->group(function () {
             return view('operational.monitoring-pelatihan');
         })->name('monitoring.pelatihan');
 
-        Route::middleware('role:superadmin,web_dev,team_leader')->group(function () {
+        Route::middleware('role:superadmin,web_dev,team_leader,operasional')->group(function () {
             Route::get('/riwayat-pelatihan', [App\Http\Controllers\RiwayatPelatihanController::class, 'index'])->name('riwayat.pelatihan');
             Route::post('/riwayat-pelatihan', [App\Http\Controllers\RiwayatPelatihanController::class, 'store'])->name('riwayat.pelatihan.store');
         });

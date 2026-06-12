@@ -183,7 +183,7 @@
                                     </a>
                                 </li>
                         
-                                @if(in_array(auth()->user()->role, ['admin', 'pic', 'team_leader', 'superadmin', 'web_dev']))
+                                @if(in_array(auth()->user()->role, ['admin', 'operasional', 'team_leader', 'superadmin', 'web_dev']))
                                     <li class="{{ request()->routeIs('operational.data-pendaftaran') ? 'active' : '' }}">
                                         <a href="{{ route('operational.data-pendaftaran') }}">
                                             <span class="sub-item">Registrasi Peserta</span>
@@ -204,7 +204,7 @@
                                     </a>
                                 </li>
                         
-                                @if(in_array(auth()->user()->role, ['team_leader', 'superadmin', 'web_dev']))
+                                @if(in_array(auth()->user()->role, ['team_leader', 'superadmin', 'web_dev', 'operasional']))
                                     <li class="{{ request()->routeIs('operational.inventaris') ? 'active' : '' }}">
                                         <a href="{{ route('operational.inventaris') }}">
                                             <span class="sub-item">Aset & Inventaris</span>
