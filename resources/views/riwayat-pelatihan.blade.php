@@ -179,7 +179,16 @@
                                     
                                     {{-- Kolom Peserta --}}
                                     <td>
-                                        <div class="fw-bold text-dark text-wrap" style="max-width: 200px;">{{ $item->instansi_peserta ?? '-' }}</div>
+                                        @php
+                                            $instansiArr = array_filter(array_map('trim', explode(',', $item->instansi_peserta ?? '')));
+                                            $instansiUnique = array_values(array_unique($instansiArr));
+                                            if (count($instansiUnique) > 2) {
+                                                $instansiDisplay = $instansiUnique[0] . ', ' . $instansiUnique[1] . ' (dan ' . (count($instansiUnique) - 2) . ' lainnya)';
+                                            } else {
+                                                $instansiDisplay = implode(', ', $instansiUnique) ?: '-';
+                                            }
+                                        @endphp
+                                        <div class="fw-bold text-dark text-wrap" style="max-width: 200px;">{{ $instansiDisplay }}</div>
                                         <div class="text-muted small my-1">
                                             <i class="fas fa-users text-warning me-1"></i> <b class="text-dark">{{ $item->jumlah_peserta }}</b> Peserta
                                         </div>
@@ -190,7 +199,18 @@
                                     <td>
                                         <div class="small mb-1"><span class="text-muted">Trainer:</span> <span class="fw-bold text-dark">{{ \Illuminate\Support\Str::limit($item->nama_trainer ?? '-', 15) }}</span></div>
                                         <div class="small mb-1"><span class="text-muted">LSP:</span> <span class="fw-bold text-dark">{{ \Illuminate\Support\Str::limit($item->nama_lsp ?? '-', 15) }}</span></div>
-                                        <div class="small"><span class="text-muted">PIC:</span> <span class="text-primary fw-bold">{{ $item->pic ?? '-' }}</span> <span class="text-muted">| Mkt:</span> {{ $item->marketing ?? '-' }}</div>
+                                        @php
+                                            $mktArr = array_filter(array_map('trim', explode(',', $item->marketing ?? '')));
+                                            $mktUnique = array_unique($mktArr);
+                                            $mktDisplay = implode(', ', $mktUnique) ?: '-';
+
+                                            $picName = '-';
+                                            if ($item->pic) {
+                                                $picUser = $users->where('name', $item->pic)->first();
+                                                $picName = $picUser && $picUser->nama_lengkap ? $picUser->nama_lengkap : $item->pic;
+                                            }
+                                        @endphp
+                                        <div class="small"><span class="text-muted">PIC:</span> <span class="text-primary fw-bold">{{ $picName }}</span> <span class="text-muted">| Mkt:</span> {{ $mktDisplay }}</div>
                                     </td>
                                     
                                     {{-- Kolom Sertifikasi --}}
