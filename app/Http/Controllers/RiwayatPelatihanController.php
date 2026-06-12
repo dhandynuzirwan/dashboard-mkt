@@ -80,6 +80,7 @@ class RiwayatPelatihanController extends Controller
         $listMetode = RiwayatPelatihan::whereNotNull('metode')->where('metode', '!=', '')->distinct()->pluck('metode');
 
         $users = User::all();
+        $marketings = User::where('role', 'marketing')->get();
 
         return view('riwayat-pelatihan', compact(
             'riwayat', 
@@ -90,7 +91,8 @@ class RiwayatPelatihanController extends Controller
             'chartJenisData',
             'listJenis',
             'listMetode',
-            'users'
+            'users',
+            'marketings'
         ));
     }
 

@@ -506,12 +506,27 @@
                               <input type="number" name="jumlah_peserta" class="form-control rounded-3" required min="1">
                           </div>
                           <div class="col-md-6">
-                              <label class="form-label fw-bold small">Jenis (BNSP/KEMNAKER, dll)</label>
-                              <input type="text" name="jenis" class="form-control rounded-3">
+                              <label class="form-label fw-bold small">Jenis Pelatihan</label>
+                              <select name="jenis" class="form-select rounded-3">
+                                  <option value="">Pilih...</option>
+                                  <option value="Sertifikat KEMNAKER">Sertifikat KEMNAKER</option>
+                                  <option value="Sertifikat BNSP">Sertifikat BNSP</option>
+                                  <option value="Sertifikat Internal">Sertifikat Internal</option>
+                                  <option value="Pembuatan & Perpanjangan SIO">Pembuatan & Perpanjangan SIO</option>
+                                  <option value="Riksa Uji Alat">Riksa Uji Alat</option>
+                              </select>
                           </div>
                           <div class="col-md-6">
                               <label class="form-label fw-bold small">Metode</label>
-                              <input type="text" name="metode" class="form-control rounded-3" placeholder="Online / Offline Training">
+                              <select name="metode" class="form-select rounded-3">
+                                  <option value="">Pilih...</option>
+                                  <option value="Online Training">Online Training</option>
+                                  <option value="Offline Training">Offline Training</option>
+                                  <option value="Blended Training">Blended Training</option>
+                                  <option value="Inhouse Training">Inhouse Training</option>
+                                  <option value="Public Training">Public Training</option>
+                                  <option value="Titip Vendor Lain">Titip Vendor Lain</option>
+                              </select>
                           </div>
                           <div class="col-md-6">
                               <label class="form-label fw-bold small">Instansi Peserta</label>
@@ -609,9 +624,9 @@
                               <label class="form-label fw-bold small">Marketing</label>
                               <select name="marketing" class="form-select rounded-3">
                                   <option value="">Pilih...</option>
-                                  <option value="Arsa 1">Arsa 1</option>
-                                  <option value="Arsa 2">Arsa 2</option>
-                                  <option value="Arsa 3">Arsa 3</option>
+                                  @foreach($marketings as $mkt)
+                                      <option value="{{ $mkt->name }}">{{ $mkt->nama_lengkap ?: $mkt->name }}</option>
+                                  @endforeach
                               </select>
                           </div>
                           <div class="col-md-4">
