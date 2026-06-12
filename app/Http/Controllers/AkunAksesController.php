@@ -67,6 +67,15 @@ class AkunAksesController extends Controller implements HasMiddleware
             'catatan' => 'nullable'
         ]);
 
+        // Cek duplikasi: platform dan username_email sama
+        $exists = AkunAkses::where('platform', $request->platform)
+                           ->where('username_email', $request->username_email)
+                           ->exists();
+
+        if ($exists) {
+            return back()->with('error', "Gagal: Akun '{$request->username_email}' untuk platform '{$request->platform}' sudah ada di brankas!")->withInput();
+        }
+
         // Enkripsi password
         $data['password'] = Crypt::encryptString($request->password);
 
@@ -88,6 +97,16 @@ class AkunAksesController extends Controller implements HasMiddleware
             // Password dibuat nullable (tidak wajib) agar bisa pakai password lama jika dikosongkan
             'password'       => 'nullable' 
         ]);
+
+        // Cek duplikasi: platform dan username_email sama tapi ID berbeda
+        $exists = AkunAkses::where('platform', $request->platform)
+                           ->where('username_email', $request->username_email)
+                           ->where('id', '!=', $id)
+                           ->exists();
+
+        if ($exists) {
+            return back()->with('error', "Gagal: Akun '{$request->username_email}' untuk platform '{$request->platform}' sudah digunakan oleh akun lain di brankas!")->withInput();
+        }
 
         // Siapkan data dasar yang akan diupdate
         $updateData = [
