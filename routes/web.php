@@ -149,6 +149,8 @@ Route::middleware('auth')->group(function () {
         Route::middleware('role:superadmin,web_dev,team_leader,operasional')->group(function () {
             Route::get('/riwayat-pelatihan', [App\Http\Controllers\RiwayatPelatihanController::class, 'index'])->name('riwayat.pelatihan');
             Route::post('/riwayat-pelatihan', [App\Http\Controllers\RiwayatPelatihanController::class, 'store'])->name('riwayat.pelatihan.store');
+            Route::put('/riwayat-pelatihan/{id}', [App\Http\Controllers\RiwayatPelatihanController::class, 'update'])->name('riwayat.pelatihan.update');
+            Route::put('/riwayat-pelatihan/{id}/peserta/{index}', [App\Http\Controllers\RiwayatPelatihanController::class, 'updatePeserta'])->name('riwayat.pelatihan.updatePeserta');
         });
 
 

@@ -1,7 +1,7 @@
 @extends('layouts.app')
 
 @section('content')
-<div class="container-fluid py-4 fade-in" style="background-color: #f8fafc00; min-height: 100vh;">
+<div class="container-fluid py-4 fade-in" style="background-color: #f8fafc; min-height: 100vh;">
     <div class="row px-2 px-md-3">
         <div class="col-12">
             
@@ -236,216 +236,6 @@
                                         </button>
                                     </td>
                                 </tr>
-
-                                {{-- ================= MODAL DETAIL SUPER RAPI & MODERN ================= --}}
-                                <div class="modal fade" id="detailModal{{ $item->id }}" tabindex="-1" aria-hidden="true">
-                                    <div class="modal-dialog modal-xl modal-dialog-centered modal-dialog-scrollable">
-                                    <div class="modal-content border-0 shadow-lg rounded-4">
-                                        
-                                        {{-- Header Modal --}}
-                                        <div class="modal-header border-bottom-0 pb-0 px-4 pt-4">
-                                            <h5 class="modal-title fw-black text-dark"><i class="fas fa-file-invoice me-2 text-primary"></i> Detail Informasi Pelatihan</h5>
-                                            <button type="button" class="btn-close shadow-none" data-bs-dismiss="modal" aria-label="Close"></button>
-                                        </div>
-                        
-                                        {{-- Body Modal --}}
-                                        <div class="modal-body p-4">
-                                            
-                                            {{-- 1. Hero / Title Section --}}
-                                            <div class="bg-primary-subtle rounded-4 p-4 mb-4 position-relative overflow-hidden">
-                                                {{-- Decorative Icon Background --}}
-                                                <i class="fas fa-graduation-cap position-absolute text-primary" style="font-size: 8rem; right: -20px; bottom: -20px; opacity: 0.1;"></i>
-                                               <div class="position-relative z-1 text-start"> {{-- 🔥 Ditambahkan text-start agar semua konten di dalam box ini rata kiri murni --}}
-                                                    {{-- 🔥 BADGE DIATAS JUDUL & RATA KIRI RAPAT 🔥 --}}
-                                                        <span class="badge bg-primary px-3 py-1 fs-6 rounded-pill shadow-sm">{{ $item->jenis ?? 'N/A' }}</span>
-                                                        <span class="badge bg-white text-dark px-3 py-1 fs-6 rounded-pill shadow-sm border">{{ $item->metode ?? 'N/A' }}</span>
-                                                    <h4 class="fw-black text-dark mb-1 mt-2">{{ $item->judul_pelatihan }}</h4>
-                                                    
-                                                    <p class="text-primary mb-0 fw-bold">
-                                                        <i class="fas fa-calendar-alt me-1"></i> {{ \Carbon\Carbon::parse($item->tanggal_mulai)->format('d M Y') }} - {{ \Carbon\Carbon::parse($item->tanggal_selesai)->format('d M Y') }}
-                                                    </p>
-                                                </div>
-                                            </div>
-                        
-                                            <div class="row g-4">
-                                                {{-- ================= KOLOM KIRI ================= --}}
-                                                <div class="col-lg-6">
-                                                    
-                                                    {{-- Block: Instansi & Peserta (Paling Atas Kiri) --}}
-                                                    <div class="mb-4">
-                                                        <h6 class="fw-bolder text-dark mb-3 border-bottom border-2 pb-2"><i class="fas fa-building text-primary me-2"></i> Instansi & Peserta</h6>
-                                                        <div class="row g-3">
-                                                            <div class="col-sm-6">
-                                                                <div class="text-muted small fw-bold mb-1">Instansi / Perusahaan</div>
-                                                                <div class="fw-bolder text-dark" style="font-size: 15px;">{{ $item->instansi_peserta ?? '-' }}</div>
-                                                            </div>
-                                                            <div class="col-sm-6">
-                                                                <div class="text-muted small fw-bold mb-1">Jumlah Peserta</div>
-                                                                <div class="fw-bolder text-dark"><span class="badge bg-warning text-dark px-2 py-1 fs-6 me-1">{{ $item->jumlah_peserta ?? 0 }}</span> Orang</div>
-                                                            </div>
-                                                            <div class="col-12">
-                                                                <div class="text-muted small fw-bold mb-1">Daftar Nama Peserta</div>
-                                                                <div class="bg-light p-3 rounded-3 border">
-                                                                    <div class="fw-bold text-dark mb-1">{{ $item->nama_peserta ?? '-' }}</div>
-                                                                    <div class="text-success small fw-bold"><i class="fab fa-whatsapp fs-6 me-1"></i> {{ $item->wa_peserta ?? '-' }}</div>
-                                                                </div>
-                                                            </div>
-                                                            <div class="col-12">
-                                                                <div class="text-muted small fw-bold mb-1">Syarat Kelengkapan</div>
-                                                                <div class="d-flex align-items-center gap-2">
-                                                                    @if($item->syarat_peserta)
-                                                                        <a href="{{ $item->syarat_peserta }}" target="_blank" class="btn btn-sm btn-outline-primary rounded-pill fw-bold px-3"><i class="fas fa-link me-1"></i> Link GDrive</a>
-                                                                    @else
-                                                                        <span class="text-muted fst-italic">Tidak ada link</span>
-                                                                    @endif
-                                                                    <span class="badge {{ $item->ket_syarat == 'Lengkap' ? 'bg-success' : 'bg-danger' }} px-3 py-2 rounded-pill">{{ $item->ket_syarat ?? 'Belum Lengkap' }}</span>
-                                                                </div>
-                                                            </div>
-                                                        </div>
-                                                    </div>
-                        
-                                                    {{-- Block: Tim Eksekutor (Bawah Kiri) --}}
-                                                    <div>
-                                                        <h6 class="fw-bolder text-dark mb-3 border-bottom border-2 pb-2"><i class="fas fa-users-cog text-success me-2"></i> Tim Eksekutor</h6>
-                                                        <div class="bg-light rounded-4 p-4 border">
-                                                            <div class="row g-3">
-                                                                <div class="col-sm-6">
-                                                                    <div class="text-muted small fw-bold mb-1">Nama Trainer</div>
-                                                                    <div class="fw-bold text-dark">{{ $item->nama_trainer ?? '-' }}</div>
-                                                                    <div class="text-success small fw-bold"><i class="fab fa-whatsapp"></i> {{ $item->wa_trainer ?? '-' }}</div>
-                                                                </div>
-                                                                <div class="col-sm-6">
-                                                                    <div class="text-muted small fw-bold mb-1">LSP & Asesor</div>
-                                                                    <div class="fw-bold text-dark">{{ $item->nama_asesor ?? '-' }}</div>
-                                                                    <div class="text-muted small"><i class="fas fa-building"></i> {{ $item->nama_lsp ?? '-' }}</div>
-                                                                </div>
-                                                                <div class="col-12 border-top my-2"></div>
-                                                                <div class="col-sm-6">
-                                                                    <div class="text-muted small fw-bold mb-1">PIC Operasional</div>
-                                                                    <div class="fw-bolder text-primary fs-6">{{ $item->pic ?? '-' }}</div>
-                                                                </div>
-                                                                <div class="col-sm-6">
-                                                                    <div class="text-muted small fw-bold mb-1">Marketing</div>
-                                                                    <div class="fw-bold text-dark">{{ $item->marketing ?? '-' }}</div>
-                                                                </div>
-                                                            </div>
-                                                        </div>
-                                                    </div>
-                                                    
-                                                </div>
-                        
-                                                {{-- ================= KOLOM KANAN ================= --}}
-                                                <div class="col-lg-6">
-                                                    
-                                                    {{-- Block: Sertifikasi & File (Paling Atas Kanan - Sejajar dengan Instansi Kiri) --}}
-                                                    <div class="mb-4">
-                                                        <h6 class="fw-bolder text-dark mb-3 border-bottom border-2 pb-2"><i class="fas fa-award text-warning me-2"></i> Sertifikasi & Berkas Lengkap</h6>
-                                                        <div class="row g-3 mb-3">
-                                                            <div class="col-sm-6">
-                                                                <div class="text-muted small fw-bold mb-2">Status Kompetensi</div>
-                                                                <div>
-                                                                    @if($item->status_kompeten == 'Kompeten')
-                                                                        <span class="badge bg-success-subtle text-success px-3 py-2 fs-6 w-100 text-start shadow-sm"><i class="fas fa-check-circle me-1"></i> Kompeten</span>
-                                                                    @elseif($item->status_kompeten == 'Belum')
-                                                                        <span class="badge bg-danger-subtle text-danger px-3 py-2 fs-6 w-100 text-start shadow-sm"><i class="fas fa-times-circle me-1"></i> Belum Kompeten</span>
-                                                                    @else
-                                                                        <span class="badge bg-secondary-subtle text-secondary px-3 py-2 fs-6 w-100 text-start shadow-sm"><i class="fas fa-minus-circle me-1"></i> Belum Asesmen</span>
-                                                                    @endif
-                                                                </div>
-                                                            </div>
-                                                            <div class="col-sm-6">
-                                                                <div class="text-muted small fw-bold mb-2">Status Sertifikat</div>
-                                                                <div>
-                                                                    @if($item->status_sertif == 'Sudah Terbit')
-                                                                        <span class="badge bg-primary-subtle text-primary px-3 py-2 fs-6 w-100 text-start shadow-sm"><i class="fas fa-certificate me-1"></i> Telah Terbit</span>
-                                                                    @else
-                                                                        <span class="badge bg-warning-subtle text-warning-emphasis px-3 py-2 fs-6 w-100 text-start shadow-sm"><i class="fas fa-clock me-1"></i> Masih Pending</span>
-                                                                    @endif
-                                                                </div>
-                                                            </div>
-                                                        </div>
-                                                        
-                                                        <div class="text-muted small fw-bold mb-2 mt-4">Unduh Berkas Pendukung</div>
-                                                        <div class="d-flex flex-wrap gap-2">
-                                                            @if($item->cv)<a href="{{ asset('storage/'.$item->cv) }}" target="_blank" class="btn btn-sm btn-white border fw-bold hover-lift px-3"><i class="fas fa-file-pdf text-danger me-1"></i> CV</a>@endif
-                                                            @if($item->modul)<a href="{{ asset('storage/'.$item->modul) }}" target="_blank" class="btn btn-sm btn-white border fw-bold hover-lift px-3"><i class="fas fa-book text-primary me-1"></i> Modul</a>@endif
-                                                            @if($item->laporan_pic)<a href="{{ asset('storage/'.$item->laporan_pic) }}" target="_blank" class="btn btn-sm btn-white border fw-bold hover-lift px-3"><i class="fas fa-file-alt text-success me-1"></i> Laporan</a>@endif
-                                                            @if($item->scan_sertif)<a href="{{ asset('storage/'.$item->scan_sertif) }}" target="_blank" class="btn btn-sm btn-white border fw-bold hover-lift px-3"><i class="fas fa-award text-warning me-1"></i> Scan Sertif</a>@endif
-                                                            
-                                                            @if(!$item->cv && !$item->modul && !$item->laporan_pic && !$item->scan_sertif)
-                                                                <span class="text-muted fst-italic bg-light px-3 py-2 rounded-3 w-100 text-center border">Belum ada berkas yang diunggah.</span>
-                                                            @endif
-                                                        </div>
-                                                    </div>
-                        
-                                                    {{-- Block: Pengiriman (Bawah Kanan) --}}
-                                                    <div>
-                                                        <h6 class="fw-bolder text-dark mb-3 border-bottom border-2 pb-2"><i class="fas fa-truck-fast text-info me-2"></i> Logistik & Pengiriman</h6>
-                                                        <div class="bg-info-subtle border border-info border-opacity-25 rounded-4 p-4 position-relative">
-                                                            {{-- Watermark Icon --}}
-                                                            <i class="fas fa-box-open position-absolute text-info opacity-25" style="font-size: 5rem; right: 10px; bottom: 10px;"></i>
-                                                            
-                                                            <div class="d-flex justify-content-between align-items-center mb-3 position-relative z-1">
-                                                                <div>
-                                                                    <div class="text-info-emphasis small fw-bold mb-1">Status Paket</div>
-                                                                    <span class="badge bg-dark px-3 py-2 fs-6 shadow-sm">{{ $item->status_pengiriman ?? 'Belum Info' }}</span>
-                                                                </div>
-                                                                <div class="text-end">
-                                                                    <div class="text-info-emphasis small fw-bold mb-1">Nomor Resi</div>
-                                                                    <div class="fw-black text-dark fs-5 bg-white px-3 py-1 rounded-3 shadow-sm border">{{ $item->no_resi ?? '-' }}</div>
-                                                                </div>
-                                                            </div>
-                                                            
-                                                            <div class="row g-3 small position-relative z-1 mt-1">
-                                                                <div class="col-12">
-                                                                    <div class="text-info-emphasis fw-bold">Penerima & Alamat:</div>
-                                                                    <div class="fw-bold text-dark"><i class="fas fa-user-circle me-1 text-info"></i> {{ $item->nama_penerima ?? '-' }} <span class="text-muted fw-normal">({{ $item->wa_penerima ?? '-' }})</span></div>
-                                                                    <div class="text-dark mt-1"><i class="fas fa-map-marker-alt me-1 text-danger"></i> {{ $item->alamat_pengiriman ?? '-' }}</div>
-                                                                </div>
-                                                                <div class="col-12">
-                                                                    <div class="text-info-emphasis fw-bold">Isi Paket:</div>
-                                                                    <div class="text-dark">{{ $item->isi_paket ?? '-' }}</div>
-                                                                </div>
-                                                                <div class="col-12">
-                                                                    <div class="text-info-emphasis fw-bold">Tanggal Proses:</div>
-                                                                    <div class="text-dark">{{ $item->tanggal_kirim ? \Carbon\Carbon::parse($item->tanggal_kirim)->format('d M Y') : '-' }} <i class="fas fa-arrow-right mx-1 text-muted"></i> {{ $item->tanggal_diterima ? \Carbon\Carbon::parse($item->tanggal_diterima)->format('d M Y') : 'Belum Diterima' }}</div>
-                                                                </div>
-                                                                
-                                                                @if($item->foto)
-                                                                <div class="col-12 mt-3">
-                                                                    <a href="{{ asset('storage/'.$item->foto) }}" target="_blank" class="btn btn-info text-white rounded-pill px-4 fw-bold shadow-sm w-100"><i class="fas fa-image me-2"></i> Lihat Foto Bukti Resi</a>
-                                                                </div>
-                                                                @endif
-                                                            </div>
-                                                        </div>
-                                                    </div>
-                                                    
-                                                </div>
-                                            </div>
-                        
-                                            {{-- Block: Catatan (Full Width di bawah) --}}
-                                            @if($item->catatan || $item->keterangan_tambahan)
-                                            <div class="mt-4 pt-4 border-top">
-                                                <div class="d-flex align-items-start bg-warning-subtle p-3 rounded-4 border border-warning border-opacity-25">
-                                                    <div class="text-warning fs-2 me-3"><i class="fas fa-sticky-note mt-1"></i></div>
-                                                    <div>
-                                                        <h6 class="fw-bolder text-dark mb-2">Catatan Khusus Pelatihan</h6>
-                                                        @if($item->keterangan_tambahan)<p class="small text-dark mb-1"><strong>Sertifikasi:</strong> {{ $item->keterangan_tambahan }}</p>@endif
-                                                        @if($item->catatan)<p class="small text-dark mb-0"><strong>Logistik:</strong> {{ $item->catatan }}</p>@endif
-                                                    </div>
-                                                </div>
-                                            </div>
-                                            @endif
-                        
-                                        </div>
-                                        
-                                        {{-- Footer Modal --}}
-                                        <div class="modal-footer bg-light border-top-0 py-3 px-4 rounded-bottom-4">
-                                            <button type="button" class="btn btn-secondary btn-lg rounded-pill px-5 fw-bold shadow-sm" data-bs-dismiss="modal">Tutup</button>
-                                        </div>
-                                    </div>
-                                    </div>
-                                </div>
                                 @empty
                                 <tr>
                                     <td colspan="7" class="text-center py-5">
@@ -470,7 +260,11 @@
     </div>
 </div>
 
-{{-- ================= MODAL TAMBAH DATA (DI DESAIN ULANG) ================= --}}
+{{-- ========================================================================= --}}
+{{-- BAGIAN MODALS (WAJIB DILUAR TABEL AGAR LAYOUT TIDAK HANCUR) --}}
+{{-- ========================================================================= --}}
+
+{{-- Modal Tambah Data --}}
 <div class="modal fade" id="addRiwayatModal" tabindex="-1" aria-labelledby="addRiwayatModalLabel" aria-hidden="true">
   <div class="modal-dialog modal-xl modal-dialog-centered">
     <div class="modal-content border-0 shadow-lg rounded-4">
@@ -614,15 +408,7 @@
                                   @endforeach
                               </select>
                           </div>
-                          <div class="col-md-4">
-                              <label class="form-label fw-bold small">Marketing</label>
-                              <select name="marketing" class="form-select rounded-3">
-                                  <option value="">Pilih...</option>
-                                  @foreach($marketings as $mkt)
-                                      <option value="{{ $mkt->name }}">{{ $mkt->nama_lengkap ?: $mkt->name }}</option>
-                                  @endforeach
-                              </select>
-                          </div>
+
                           <div class="col-md-4">
                               <label class="form-label fw-bold small">Laporan PIC (File)</label>
                               <input type="file" name="laporan_pic" class="form-control rounded-3">
@@ -720,6 +506,581 @@
     </div>
   </div>
 </div>
+
+{{-- Looping Khusus Untuk Render Modals (Diluar Tabel) --}}
+@foreach($riwayat as $item)
+    {{-- Modal Detail --}}
+    <div class="modal fade" id="detailModal{{ $item->id }}" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog modal-xl modal-dialog-centered modal-dialog-scrollable">
+            <div class="modal-content border-0 shadow-lg rounded-4">
+                
+                {{-- Header Modal --}}
+                <div class="modal-header border-bottom-0 pb-0 px-4 pt-4">
+                    <h5 class="modal-title fw-black text-dark"><i class="fas fa-file-invoice me-2 text-primary"></i> Detail Informasi Pelatihan</h5>
+                    <button type="button" class="btn-close shadow-none" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+
+                {{-- Body Modal --}}
+                <div class="modal-body p-4">
+                    
+                    {{-- 1. Hero / Title Section --}}
+                    <div class="bg-primary-subtle rounded-4 p-4 mb-4 position-relative overflow-hidden">
+                        <button type="button" class="btn btn-sm btn-light border position-absolute rounded-pill px-3 shadow-sm" style="top: 15px; right: 15px; z-index: 2;" data-bs-toggle="modal" data-bs-target="#editInfoUmumModal{{ $item->id }}"><i class="fas fa-edit text-primary"></i> Edit Info</button>
+                        {{-- Decorative Icon Background --}}
+                        <i class="fas fa-graduation-cap position-absolute text-primary" style="font-size: 8rem; right: -20px; bottom: -20px; opacity: 0.1;"></i>
+                        <div class="position-relative z-1 text-start pe-5">
+                            {{-- <div class="d-flex flex-wrap justify-content-start gap-1 mb-2"> --}}
+                                <span class="badge bg-primary px-3 py-1 fs-6 rounded-pill shadow-sm">{{ $item->jenis ?? 'N/A' }}</span>
+                                <span class="badge bg-white text-dark px-3 py-1 fs-6 rounded-pill shadow-sm border">{{ $item->metode ?? 'N/A' }}</span>
+                            {{-- </div> --}}
+                            <h4 class="fw-black text-dark mb-1 mt-2">{{ $item->judul_pelatihan }}</h4>
+                            
+                            <p class="text-primary mb-0 fw-bold">
+                                <i class="fas fa-calendar-alt me-1"></i> {{ \Carbon\Carbon::parse($item->tanggal_mulai)->format('d M Y') }} - {{ \Carbon\Carbon::parse($item->tanggal_selesai)->format('d M Y') }}
+                            </p>
+                        </div>
+                    </div>
+
+                    <div class="row g-4">
+                        {{-- ================= KOLOM KIRI ================= --}}
+                        <div class="col-lg-6">
+                            
+                            {{-- Block: Instansi & Peserta (Paling Atas Kiri) --}}
+                            <div class="mb-4">
+                                <div class="d-flex justify-content-between align-items-center mb-3 border-bottom border-2 pb-2">
+                                    <h6 class="fw-bolder text-dark mb-0"><i class="fas fa-building text-primary me-2"></i> Instansi & Peserta</h6>
+                                    <button type="button" class="btn btn-sm btn-light border py-1 px-2 rounded-3" data-bs-toggle="modal" data-bs-target="#editSyaratModal{{ $item->id }}"><i class="fas fa-edit text-primary"></i> Edit Syarat</button>
+                                </div>
+                                <div class="row g-3">
+                                    <div class="col-sm-6">
+                                        <div class="text-muted small fw-bold mb-1">Jumlah Peserta Terdaftar</div>
+                                        <div class="fw-bolder text-dark"><span class="badge bg-warning text-dark px-2 py-1 fs-6 me-1">{{ $item->jumlah_peserta ?? 0 }}</span> Orang</div>
+                                    </div>
+                                    <div class="col-sm-6">
+                                        <div class="text-muted small fw-bold mb-1">Syarat Kelengkapan</div>
+                                        <div class="d-flex align-items-center gap-2">
+                                            @if($item->syarat_peserta)
+                                                <a href="{{ $item->syarat_peserta }}" target="_blank" class="btn btn-sm btn-outline-primary rounded-pill fw-bold px-3 py-0"><i class="fas fa-link me-1"></i> GDrive</a>
+                                            @else
+                                                <span class="text-muted fst-italic small">Tidak ada link</span>
+                                            @endif
+                                            <span class="badge {{ $item->ket_syarat == 'Lengkap' ? 'bg-success' : 'bg-danger' }} px-2 py-1 rounded-pill">{{ $item->ket_syarat ?? 'Belum Lengkap' }}</span>
+                                        </div>
+                                    </div>
+                                    <div class="col-12 mt-3">
+                                        <div class="table-responsive border rounded-3">
+                                            <table class="table table-sm table-hover align-middle mb-0" style="font-size: 13px;">
+                                                <thead class="bg-light text-muted">
+                                                    <tr>
+                                                        <th width="5%" class="text-center py-2">No</th>
+                                                        <th class="py-2">Peserta</th>
+                                                        <th class="py-2">Perusahaan/Instansi</th>
+                                                        <th class="py-2">Marketing</th>
+                                                        <th width="10%" class="text-center py-2">Aksi</th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody>
+                                                    @php
+                                                        $pesertas = explode(',', $item->nama_peserta ?? '');
+                                                        $instansis = explode(',', $item->instansi_peserta ?? '');
+                                                        $was = explode(',', $item->wa_peserta ?? '');
+                                                        $mkts = explode(',', $item->marketing ?? '');
+                                                    @endphp
+                                                    @forelse(array_filter($pesertas, 'trim') as $i => $peserta)
+                                                    <tr>
+                                                        <td class="text-center text-muted">{{ $i + 1 }}</td>
+                                                        <td>
+                                                            <div class="fw-bold text-dark">{{ trim($peserta) }}</div>
+                                                            @if(!empty(trim($was[$i] ?? '')))
+                                                                <div class="text-success" style="font-size: 11px;"><i class="fab fa-whatsapp me-1"></i>{{ trim($was[$i]) }}</div>
+                                                            @else
+                                                                <div class="text-muted" style="font-size: 11px;"><i class="fab fa-whatsapp me-1"></i>-</div>
+                                                            @endif
+                                                        </td>
+                                                        <td class="text-muted">{{ !empty(trim($instansis[$i] ?? '')) ? trim($instansis[$i]) : '-' }}</td>
+                                                        <td><span class="badge bg-secondary-subtle text-secondary">{{ !empty(trim($mkts[$i] ?? '')) ? trim($mkts[$i]) : '-' }}</span></td>
+                                                        <td class="text-center">
+                                                            <button type="button" class="btn btn-sm btn-light border shadow-sm rounded-3 py-1 px-2" title="Edit Peserta" data-bs-toggle="modal" data-bs-target="#editPesertaModal{{ $item->id }}_{{ $i }}">
+                                                                <i class="fas fa-edit text-primary"></i>
+                                                            </button>
+                                                        </td>
+                                                    </tr>
+                                                    @empty
+                                                    <tr>
+                                                        <td colspan="5" class="text-center text-muted py-3 fst-italic">Belum ada rincian data peserta.</td>
+                                                    </tr>
+                                                    @endforelse
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            {{-- Block: Tim Eksekutor (Bawah Kiri) --}}
+                            <div>
+                                <div class="d-flex justify-content-between align-items-center mb-3 border-bottom border-2 pb-2">
+                                    <h6 class="fw-bolder text-dark mb-0"><i class="fas fa-users-cog text-success me-2"></i> Tim Eksekutor</h6>
+                                    <button type="button" class="btn btn-sm btn-light border py-1 px-2 rounded-3" data-bs-toggle="modal" data-bs-target="#editTimModal{{ $item->id }}"><i class="fas fa-edit text-success"></i> Edit Tim</button>
+                                </div>
+                                <div class="bg-light rounded-4 p-4 border">
+                                    <div class="row g-3">
+                                        <div class="col-sm-6">
+                                            <div class="text-muted small fw-bold mb-1">Nama Trainer</div>
+                                            <div class="fw-bold text-dark">{{ $item->nama_trainer ?? '-' }}</div>
+                                            <div class="text-success small fw-bold"><i class="fab fa-whatsapp"></i> {{ $item->wa_trainer ?? '-' }}</div>
+                                        </div>
+                                        <div class="col-sm-6">
+                                            <div class="text-muted small fw-bold mb-1">LSP & Asesor</div>
+                                            <div class="fw-bold text-dark">{{ $item->nama_asesor ?? '-' }}</div>
+                                            <div class="text-muted small"><i class="fas fa-building"></i> {{ $item->nama_lsp ?? '-' }}</div>
+                                        </div>
+                                        <div class="col-12 border-top my-2"></div>
+                                        <div class="col-sm-6">
+                                            <div class="text-muted small fw-bold mb-1">PIC Operasional</div>
+                                            <div class="fw-bolder text-primary fs-6">{{ $item->pic ?? '-' }}</div>
+                                        </div>
+                                        <div class="col-sm-6">
+                                            <div class="text-muted small fw-bold mb-1">Tanggal Asesmen</div>
+                                            <div class="fw-bold text-dark">{{ $item->tanggal_asesmen ? \Carbon\Carbon::parse($item->tanggal_asesmen)->format('d M Y') : '-' }}</div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                        </div>
+
+                        {{-- ================= KOLOM KANAN ================= --}}
+                        <div class="col-lg-6">
+                            
+                            {{-- Block: Sertifikasi & File --}}
+                            <div class="mb-4">
+                                <div class="d-flex justify-content-between align-items-center mb-3 border-bottom border-2 pb-2">
+                                    <h6 class="fw-bolder text-dark mb-0"><i class="fas fa-award text-warning me-2"></i> Sertifikasi & Berkas Lengkap</h6>
+                                    <button type="button" class="btn btn-sm btn-light border py-1 px-2 rounded-3" data-bs-toggle="modal" data-bs-target="#editSertifikasiModal{{ $item->id }}"><i class="fas fa-edit text-warning"></i> Edit Sertifikasi</button>
+                                </div>
+                                <div class="row g-3 mb-3">
+                                    <div class="col-sm-6">
+                                        <div class="text-muted small fw-bold mb-2">Status Kompetensi</div>
+                                        <div>
+                                            @if($item->status_kompeten == 'Kompeten')
+                                                <span class="badge bg-success-subtle text-success px-3 py-2 fs-6 w-100 text-start shadow-sm"><i class="fas fa-check-circle me-1"></i> Kompeten</span>
+                                            @elseif($item->status_kompeten == 'Belum')
+                                                <span class="badge bg-danger-subtle text-danger px-3 py-2 fs-6 w-100 text-start shadow-sm"><i class="fas fa-times-circle me-1"></i> Belum Kompeten</span>
+                                            @else
+                                                <span class="badge bg-secondary-subtle text-secondary px-3 py-2 fs-6 w-100 text-start shadow-sm"><i class="fas fa-minus-circle me-1"></i> Belum Asesmen</span>
+                                            @endif
+                                        </div>
+                                    </div>
+                                    <div class="col-sm-6">
+                                        <div class="text-muted small fw-bold mb-2">Status Sertifikat</div>
+                                        <div>
+                                            @if($item->status_sertif == 'Sudah Terbit')
+                                                <span class="badge bg-primary-subtle text-primary px-3 py-2 fs-6 w-100 text-start shadow-sm"><i class="fas fa-certificate me-1"></i> Telah Terbit</span>
+                                            @else
+                                                <span class="badge bg-warning-subtle text-warning-emphasis px-3 py-2 fs-6 w-100 text-start shadow-sm"><i class="fas fa-clock me-1"></i> Masih Pending</span>
+                                            @endif
+                                        </div>
+                                    </div>
+                                </div>
+                                
+                                <div class="text-muted small fw-bold mb-2 mt-4">Unduh Berkas Pendukung</div>
+                                <div class="d-flex flex-wrap gap-2">
+                                    @if($item->cv)<a href="{{ asset('storage/'.$item->cv) }}" target="_blank" class="btn btn-sm btn-white border fw-bold hover-lift px-3"><i class="fas fa-file-pdf text-danger me-1"></i> CV</a>@endif
+                                    @if($item->modul)<a href="{{ asset('storage/'.$item->modul) }}" target="_blank" class="btn btn-sm btn-white border fw-bold hover-lift px-3"><i class="fas fa-book text-primary me-1"></i> Modul</a>@endif
+                                    @if($item->laporan_pic)<a href="{{ asset('storage/'.$item->laporan_pic) }}" target="_blank" class="btn btn-sm btn-white border fw-bold hover-lift px-3"><i class="fas fa-file-alt text-success me-1"></i> Laporan</a>@endif
+                                    @if($item->scan_sertif)<a href="{{ asset('storage/'.$item->scan_sertif) }}" target="_blank" class="btn btn-sm btn-white border fw-bold hover-lift px-3"><i class="fas fa-award text-warning me-1"></i> Scan Sertif</a>@endif
+                                    
+                                    @if(!$item->cv && !$item->modul && !$item->laporan_pic && !$item->scan_sertif)
+                                        <span class="text-muted fst-italic bg-light px-3 py-2 rounded-3 w-100 text-center border">Belum ada berkas yang diunggah.</span>
+                                    @endif
+                                </div>
+                            </div>
+
+                            {{-- Block: Pengiriman --}}
+                            <div>
+                                <div class="d-flex justify-content-between align-items-center mb-3 border-bottom border-2 pb-2">
+                                    <h6 class="fw-bolder text-dark mb-0"><i class="fas fa-truck-fast text-info me-2"></i> Logistik & Pengiriman</h6>
+                                    <button type="button" class="btn btn-sm btn-light border py-1 px-2 rounded-3" data-bs-toggle="modal" data-bs-target="#editLogistikModal{{ $item->id }}"><i class="fas fa-edit text-info"></i> Edit Logistik</button>
+                                </div>
+                                <div class="bg-info-subtle border border-info border-opacity-25 rounded-4 p-4 position-relative">
+                                    <i class="fas fa-box-open position-absolute text-info opacity-25" style="font-size: 5rem; right: 10px; bottom: 10px;"></i>
+                                    
+                                    <div class="d-flex justify-content-between align-items-center mb-3 position-relative z-1">
+                                        <div>
+                                            <div class="text-info-emphasis small fw-bold mb-1">Status Paket</div>
+                                            <span class="badge bg-dark px-3 py-2 fs-6 shadow-sm">{{ $item->status_pengiriman ?? 'Belum Info' }}</span>
+                                        </div>
+                                        <div class="text-end">
+                                            <div class="text-info-emphasis small fw-bold mb-1">Nomor Resi</div>
+                                            <div class="fw-black text-dark fs-5 bg-white px-3 py-1 rounded-3 shadow-sm border">{{ $item->no_resi ?? '-' }}</div>
+                                        </div>
+                                    </div>
+                                    
+                                    <div class="row g-3 small position-relative z-1 mt-1">
+                                        <div class="col-12">
+                                            <div class="text-info-emphasis fw-bold">Penerima & Alamat:</div>
+                                            <div class="fw-bold text-dark"><i class="fas fa-user-circle me-1 text-info"></i> {{ $item->nama_penerima ?? '-' }} <span class="text-muted fw-normal">({{ $item->wa_penerima ?? '-' }})</span></div>
+                                            <div class="text-dark mt-1"><i class="fas fa-map-marker-alt me-1 text-danger"></i> {{ $item->alamat_pengiriman ?? '-' }}</div>
+                                        </div>
+                                        <div class="col-12">
+                                            <div class="text-info-emphasis fw-bold">Isi Paket:</div>
+                                            <div class="text-dark">{{ $item->isi_paket ?? '-' }}</div>
+                                        </div>
+                                        <div class="col-12">
+                                            <div class="text-info-emphasis fw-bold">Tanggal Proses:</div>
+                                            <div class="text-dark">{{ $item->tanggal_kirim ? \Carbon\Carbon::parse($item->tanggal_kirim)->format('d M Y') : '-' }} <i class="fas fa-arrow-right mx-1 text-muted"></i> {{ $item->tanggal_diterima ? \Carbon\Carbon::parse($item->tanggal_diterima)->format('d M Y') : 'Belum Diterima' }}</div>
+                                        </div>
+                                        
+                                        @if($item->foto)
+                                        <div class="col-12 mt-3">
+                                            <a href="{{ asset('storage/'.$item->foto) }}" target="_blank" class="btn btn-info text-white rounded-pill px-4 fw-bold shadow-sm w-100"><i class="fas fa-image me-2"></i> Lihat Foto Bukti Resi</a>
+                                        </div>
+                                        @endif
+                                    </div>
+                                </div>
+                            </div>
+                            
+                        </div>
+                    </div>
+
+                    {{-- Block: Catatan (Full Width di bawah) --}}
+                    @if($item->catatan || $item->keterangan_tambahan)
+                    <div class="mt-4 pt-4 border-top">
+                        <div class="d-flex align-items-start bg-warning-subtle p-3 rounded-4 border border-warning border-opacity-25">
+                            <div class="text-warning fs-2 me-3"><i class="fas fa-sticky-note mt-1"></i></div>
+                            <div>
+                                <h6 class="fw-bolder text-dark mb-2">Catatan Khusus Pelatihan</h6>
+                                @if($item->keterangan_tambahan)<p class="small text-dark mb-1"><strong>Sertifikasi:</strong> {{ $item->keterangan_tambahan }}</p>@endif
+                                @if($item->catatan)<p class="small text-dark mb-0"><strong>Logistik:</strong> {{ $item->catatan }}</p>@endif
+                            </div>
+                        </div>
+                    </div>
+                    @endif
+
+                </div>
+                
+                {{-- Footer Modal --}}
+                <div class="modal-footer bg-light border-top-0 py-3 px-4 rounded-bottom-4">
+                    <button type="button" class="btn btn-secondary btn-lg rounded-pill px-5 fw-bold shadow-sm" data-bs-dismiss="modal">Tutup</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    {{-- Edit Info Umum --}}
+    <div class="modal fade" id="editInfoUmumModal{{ $item->id }}" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content rounded-4 border-0 shadow">
+                <div class="modal-header border-bottom-0 pb-0 px-4 pt-4">
+                    <h5 class="modal-title fw-bold text-dark"><i class="fas fa-edit text-primary me-2"></i> Edit Info Umum</h5>
+                    <button type="button" class="btn-close shadow-none" data-bs-dismiss="modal"></button>
+                </div>
+                <form action="{{ route('riwayat.pelatihan.update', $item->id) }}" method="POST">
+                    @csrf @method('PUT')
+                    <input type="hidden" name="block" value="info_umum">
+                    <div class="modal-body p-4">
+                        <div class="mb-3">
+                            <label class="form-label small fw-bold">Judul Pelatihan</label>
+                            <input type="text" name="judul_pelatihan" class="form-control rounded-3" value="{{ $item->judul_pelatihan }}" required>
+                        </div>
+                        <div class="row g-2 mb-3">
+                            <div class="col-6">
+                                <label class="form-label small fw-bold">Tanggal Mulai</label>
+                                <input type="date" name="tanggal_mulai" class="form-control rounded-3" value="{{ $item->tanggal_mulai }}" required>
+                            </div>
+                            <div class="col-6">
+                                <label class="form-label small fw-bold">Tanggal Selesai</label>
+                                <input type="date" name="tanggal_selesai" class="form-control rounded-3" value="{{ $item->tanggal_selesai }}" required>
+                            </div>
+                        </div>
+                        <div class="row g-2">
+                            <div class="col-6">
+                                <label class="form-label small fw-bold">Jenis</label>
+                                <select name="jenis" class="form-select rounded-3">
+                                    <option value="Sertifikat KEMNAKER" {{ $item->jenis == 'Sertifikat KEMNAKER' ? 'selected' : '' }}>Sertifikat KEMNAKER</option>
+                                    <option value="Sertifikat BNSP" {{ $item->jenis == 'Sertifikat BNSP' ? 'selected' : '' }}>Sertifikat BNSP</option>
+                                    <option value="Sertifikat Internal" {{ $item->jenis == 'Sertifikat Internal' ? 'selected' : '' }}>Sertifikat Internal</option>
+                                    <option value="Pembuatan & Perpanjangan SIO" {{ $item->jenis == 'Pembuatan & Perpanjangan SIO' ? 'selected' : '' }}>Pembuatan & Perpanjangan SIO</option>
+                                    <option value="Riksa Uji Alat" {{ $item->jenis == 'Riksa Uji Alat' ? 'selected' : '' }}>Riksa Uji Alat</option>
+                                </select>
+                            </div>
+                            <div class="col-6">
+                                <label class="form-label small fw-bold">Metode</label>
+                                <select name="metode" class="form-select rounded-3">
+                                    <option value="Online Training" {{ $item->metode == 'Online Training' ? 'selected' : '' }}>Online Training</option>
+                                    <option value="Offline Training" {{ $item->metode == 'Offline Training' ? 'selected' : '' }}>Offline Training</option>
+                                    <option value="Blended Training" {{ $item->metode == 'Blended Training' ? 'selected' : '' }}>Blended Training</option>
+                                    <option value="Inhouse Training" {{ $item->metode == 'Inhouse Training' ? 'selected' : '' }}>Inhouse Training</option>
+                                    <option value="Public Training" {{ $item->metode == 'Public Training' ? 'selected' : '' }}>Public Training</option>
+                                    <option value="Titip Vendor Lain" {{ $item->metode == 'Titip Vendor Lain' ? 'selected' : '' }}>Titip Vendor Lain</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="modal-footer border-top-0 px-4 pb-4 pt-0">
+                        <button type="button" class="btn btn-light rounded-pill px-4" data-bs-dismiss="modal">Batal</button>
+                        <button type="submit" class="btn btn-primary rounded-pill px-4 shadow-sm">Simpan</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    {{-- Edit Syarat --}}
+    <div class="modal fade" id="editSyaratModal{{ $item->id }}" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content rounded-4 border-0 shadow">
+                <div class="modal-header border-bottom-0 pb-0 px-4 pt-4">
+                    <h5 class="modal-title fw-bold text-dark"><i class="fas fa-edit text-primary me-2"></i> Edit Syarat Kelengkapan</h5>
+                    <button type="button" class="btn-close shadow-none" data-bs-dismiss="modal"></button>
+                </div>
+                <form action="{{ route('riwayat.pelatihan.update', $item->id) }}" method="POST">
+                    @csrf @method('PUT')
+                    <input type="hidden" name="block" value="syarat">
+                    <div class="modal-body p-4">
+                        <div class="mb-3">
+                            <label class="form-label small fw-bold">Link Syarat Peserta (GDrive)</label>
+                            <input type="url" name="syarat_peserta" class="form-control rounded-3" value="{{ $item->syarat_peserta }}">
+                        </div>
+                        <div class="mb-0">
+                            <label class="form-label small fw-bold">Keterangan Syarat</label>
+                            <select name="ket_syarat" class="form-select rounded-3">
+                                <option value="Lengkap" {{ $item->ket_syarat == 'Lengkap' ? 'selected' : '' }}>Lengkap</option>
+                                <option value="Belum" {{ $item->ket_syarat == 'Belum' ? 'selected' : '' }}>Belum Lengkap</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="modal-footer border-top-0 px-4 pb-4 pt-0">
+                        <button type="button" class="btn btn-light rounded-pill px-4" data-bs-dismiss="modal">Batal</button>
+                        <button type="submit" class="btn btn-primary rounded-pill px-4 shadow-sm">Simpan</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    {{-- Edit Tim --}}
+    <div class="modal fade" id="editTimModal{{ $item->id }}" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog modal-lg modal-dialog-centered">
+            <div class="modal-content rounded-4 border-0 shadow">
+                <div class="modal-header border-bottom-0 pb-0 px-4 pt-4">
+                    <h5 class="modal-title fw-bold text-dark"><i class="fas fa-edit text-success me-2"></i> Edit Tim Eksekutor</h5>
+                    <button type="button" class="btn-close shadow-none" data-bs-dismiss="modal"></button>
+                </div>
+                <form action="{{ route('riwayat.pelatihan.update', $item->id) }}" method="POST">
+                    @csrf @method('PUT')
+                    <input type="hidden" name="block" value="tim">
+                    <div class="modal-body p-4">
+                        <div class="row g-3">
+                            <div class="col-md-6">
+                                <label class="form-label small fw-bold">Nama Trainer</label>
+                                <input type="text" name="nama_trainer" class="form-control rounded-3" value="{{ $item->nama_trainer }}">
+                            </div>
+                            <div class="col-md-6">
+                                <label class="form-label small fw-bold">WA Trainer</label>
+                                <input type="text" name="wa_trainer" class="form-control rounded-3" value="{{ $item->wa_trainer }}">
+                            </div>
+                            <div class="col-md-6">
+                                <label class="form-label small fw-bold">Nama LSP</label>
+                                <input type="text" name="nama_lsp" class="form-control rounded-3" value="{{ $item->nama_lsp }}">
+                            </div>
+                            <div class="col-md-6">
+                                <label class="form-label small fw-bold">Nama Asesor</label>
+                                <input type="text" name="nama_asesor" class="form-control rounded-3" value="{{ $item->nama_asesor }}">
+                            </div>
+                            <div class="col-md-6">
+                                <label class="form-label small fw-bold">PIC Operasional</label>
+                                <select name="pic" class="form-select rounded-3">
+                                    <option value="">Pilih...</option>
+                                    @foreach($users as $usr)
+                                        <option value="{{ $usr->name }}" {{ $item->pic == $usr->name ? 'selected' : '' }}>{{ $usr->nama_lengkap ?: $usr->name }}</option>
+                                    @endforeach
+                                </select>
+                            </div>
+                            <div class="col-md-6">
+                                <label class="form-label small fw-bold">Tanggal Asesmen</label>
+                                <input type="date" name="tanggal_asesmen" class="form-control rounded-3" value="{{ $item->tanggal_asesmen }}">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="modal-footer border-top-0 px-4 pb-4 pt-0">
+                        <button type="button" class="btn btn-light rounded-pill px-4" data-bs-dismiss="modal">Batal</button>
+                        <button type="submit" class="btn btn-primary rounded-pill px-4 shadow-sm">Simpan</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    {{-- Edit Sertifikasi --}}
+    <div class="modal fade" id="editSertifikasiModal{{ $item->id }}" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content rounded-4 border-0 shadow">
+                <div class="modal-header border-bottom-0 pb-0 px-4 pt-4">
+                    <h5 class="modal-title fw-bold text-dark"><i class="fas fa-edit text-warning me-2"></i> Edit Sertifikasi</h5>
+                    <button type="button" class="btn-close shadow-none" data-bs-dismiss="modal"></button>
+                </div>
+                <form action="{{ route('riwayat.pelatihan.update', $item->id) }}" method="POST" enctype="multipart/form-data">
+                    @csrf @method('PUT')
+                    <input type="hidden" name="block" value="sertifikasi">
+                    <div class="modal-body p-4">
+                        <div class="mb-3">
+                            <label class="form-label small fw-bold">Status Kompeten</label>
+                            <select name="status_kompeten" class="form-select rounded-3">
+                                <option value="" {{ empty($item->status_kompeten) ? 'selected' : '' }}>Pilih...</option>
+                                <option value="Kompeten" {{ $item->status_kompeten == 'Kompeten' ? 'selected' : '' }}>Kompeten</option>
+                                <option value="Belum" {{ $item->status_kompeten == 'Belum' ? 'selected' : '' }}>Belum Kompeten</option>
+                            </select>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label small fw-bold">Status Sertifikat</label>
+                            <select name="status_sertif" class="form-select rounded-3">
+                                <option value="" {{ empty($item->status_sertif) ? 'selected' : '' }}>Pilih...</option>
+                                <option value="Sudah Terbit" {{ $item->status_sertif == 'Sudah Terbit' ? 'selected' : '' }}>Sudah Terbit</option>
+                                <option value="Belum Terbit" {{ $item->status_sertif == 'Belum Terbit' ? 'selected' : '' }}>Belum Terbit</option>
+                            </select>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label small fw-bold">Upload Berkas Tambahan</label>
+                            <div class="mb-2">
+                                <label class="small text-muted">Scan Sertifikat</label>
+                                <input type="file" name="scan_sertif" class="form-control form-control-sm">
+                            </div>
+                            <div class="mb-2">
+                                <label class="small text-muted">Laporan PIC</label>
+                                <input type="file" name="laporan_pic" class="form-control form-control-sm">
+                            </div>
+                        </div>
+                        <div class="mb-0">
+                            <label class="form-label small fw-bold">Keterangan Tambahan</label>
+                            <textarea name="keterangan_tambahan" class="form-control rounded-3" rows="2">{{ $item->keterangan_tambahan }}</textarea>
+                        </div>
+                    </div>
+                    <div class="modal-footer border-top-0 px-4 pb-4 pt-0">
+                        <button type="button" class="btn btn-light rounded-pill px-4" data-bs-dismiss="modal">Batal</button>
+                        <button type="submit" class="btn btn-primary rounded-pill px-4 shadow-sm">Simpan</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    {{-- Edit Logistik --}}
+    <div class="modal fade" id="editLogistikModal{{ $item->id }}" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog modal-lg modal-dialog-centered">
+            <div class="modal-content rounded-4 border-0 shadow">
+                <div class="modal-header border-bottom-0 pb-0 px-4 pt-4">
+                    <h5 class="modal-title fw-bold text-dark"><i class="fas fa-edit text-info me-2"></i> Edit Logistik & Pengiriman</h5>
+                    <button type="button" class="btn-close shadow-none" data-bs-dismiss="modal"></button>
+                </div>
+                <form action="{{ route('riwayat.pelatihan.update', $item->id) }}" method="POST" enctype="multipart/form-data">
+                    @csrf @method('PUT')
+                    <input type="hidden" name="block" value="logistik">
+                    <div class="modal-body p-4">
+                        <div class="row g-3">
+                            <div class="col-md-6">
+                                <label class="form-label small fw-bold">Nama Penerima</label>
+                                <input type="text" name="nama_penerima" class="form-control rounded-3" value="{{ $item->nama_penerima }}">
+                            </div>
+                            <div class="col-md-6">
+                                <label class="form-label small fw-bold">WA Penerima</label>
+                                <input type="text" name="wa_penerima" class="form-control rounded-3" value="{{ $item->wa_penerima }}">
+                            </div>
+                            <div class="col-12">
+                                <label class="form-label small fw-bold">Alamat Lengkap</label>
+                                <textarea name="alamat_pengiriman" class="form-control rounded-3" rows="2">{{ $item->alamat_pengiriman }}</textarea>
+                            </div>
+                            <div class="col-12">
+                                <label class="form-label small fw-bold">Isi Paket</label>
+                                <textarea name="isi_paket" class="form-control rounded-3" rows="2">{{ $item->isi_paket }}</textarea>
+                            </div>
+                            <div class="col-md-4">
+                                <label class="form-label small fw-bold">Status Pengiriman</label>
+                                <input type="text" name="status_pengiriman" class="form-control rounded-3" value="{{ $item->status_pengiriman }}" placeholder="Misal: Sedang Dikirim">
+                            </div>
+                            <div class="col-md-4">
+                                <label class="form-label small fw-bold">Tanggal Kirim</label>
+                                <input type="date" name="tanggal_kirim" class="form-control rounded-3" value="{{ $item->tanggal_kirim }}">
+                            </div>
+                            <div class="col-md-4">
+                                <label class="form-label small fw-bold">Tanggal Diterima</label>
+                                <input type="date" name="tanggal_diterima" class="form-control rounded-3" value="{{ $item->tanggal_diterima }}">
+                            </div>
+                            <div class="col-md-6">
+                                <label class="form-label small fw-bold">No Resi</label>
+                                <input type="text" name="no_resi" class="form-control rounded-3" value="{{ $item->no_resi }}">
+                            </div>
+                            <div class="col-md-6">
+                                <label class="form-label small fw-bold">Foto Bukti / Resi</label>
+                                <input type="file" name="foto" class="form-control rounded-3">
+                            </div>
+                            <div class="col-md-12">
+                                <label class="form-label small fw-bold">Catatan Logistik</label>
+                                <textarea name="catatan" class="form-control rounded-3" rows="1">{{ $item->catatan }}</textarea>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="modal-footer border-top-0 px-4 pb-4 pt-0">
+                        <button type="button" class="btn btn-light rounded-pill px-4" data-bs-dismiss="modal">Batal</button>
+                        <button type="submit" class="btn btn-primary rounded-pill px-4 shadow-sm">Simpan</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    {{-- Edit Peserta (Inner Loop) --}}
+    @php
+        $pesertas = explode(',', $item->nama_peserta ?? '');
+        $instansis = explode(',', $item->instansi_peserta ?? '');
+        $was = explode(',', $item->wa_peserta ?? '');
+        $mkts = explode(',', $item->marketing ?? '');
+    @endphp
+    @foreach(array_filter($pesertas, 'trim') as $i => $peserta)
+    <div class="modal fade" id="editPesertaModal{{ $item->id }}_{{ $i }}" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content rounded-4 border-0 shadow">
+                <div class="modal-header border-bottom-0 pb-0 px-4 pt-4">
+                    <h5 class="modal-title fw-bold text-dark"><i class="fas fa-user-edit text-primary me-2"></i> Edit Data Peserta</h5>
+                    <button type="button" class="btn-close shadow-none" data-bs-dismiss="modal"></button>
+                </div>
+                <form action="{{ route('riwayat.pelatihan.updatePeserta', ['id' => $item->id, 'index' => $i]) }}" method="POST">
+                    @csrf @method('PUT')
+                    <div class="modal-body p-4">
+                        <div class="mb-3">
+                            <label class="form-label small fw-bold">Nama Peserta</label>
+                            <input type="text" name="nama_peserta" class="form-control rounded-3" value="{{ trim($peserta) }}" required>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label small fw-bold">Perusahaan / Instansi</label>
+                            <input type="text" name="instansi_peserta" class="form-control rounded-3" value="{{ trim($instansis[$i] ?? '') }}">
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label small fw-bold">WA Peserta</label>
+                            <input type="text" name="wa_peserta" class="form-control rounded-3" value="{{ trim($was[$i] ?? '') }}">
+                        </div>
+                        <div class="mb-0">
+                            <label class="form-label small fw-bold">Marketing</label>
+                            <select name="marketing" class="form-select rounded-3">
+                                <option value="">Pilih...</option>
+                                @foreach($marketings as $mkt)
+                                    <option value="{{ $mkt->name }}" {{ trim($mkts[$i] ?? '') == $mkt->name ? 'selected' : '' }}>{{ $mkt->nama_lengkap ?: $mkt->name }}</option>
+                                @endforeach
+                            </select>
+                        </div>
+                    </div>
+                    <div class="modal-footer border-top-0 px-4 pb-4 pt-0">
+                        <button type="button" class="btn btn-light rounded-pill px-4" data-bs-dismiss="modal">Batal</button>
+                        <button type="submit" class="btn btn-primary rounded-pill px-4 shadow-sm">Simpan</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+    @endforeach
+
+@endforeach
 
 <style>
     /* UTILITIES */
@@ -837,6 +1198,12 @@
             });
         }
 
+        // Prepare marketing options string
+        let marketingOptions = `<option value="">Pilih...</option>`;
+        @foreach($marketings as $mkt)
+            marketingOptions += `<option value="{{ $mkt->name }}">{{ $mkt->nama_lengkap ?: $mkt->name }}</option>`;
+        @endforeach
+
         // Auto generate dynamic inputs for participants
         document.getElementById('inputJumlahPeserta').addEventListener('input', function() {
             let num = parseInt(this.value) || 0;
@@ -848,17 +1215,23 @@
                         <div class="col-12 border p-3 rounded-3 mb-2 bg-white shadow-sm">
                             <h6 class="fw-bold mb-2 small text-secondary">Peserta ${i}</h6>
                             <div class="row g-2">
-                                <div class="col-md-4">
+                                <div class="col-md-3">
                                     <label class="small fw-bold">Nama Peserta <span class="text-danger">*</span></label>
                                     <input type="text" name="nama_peserta[]" class="form-control form-control-sm" required>
                                 </div>
-                                <div class="col-md-4">
+                                <div class="col-md-3">
                                     <label class="small fw-bold">Instansi</label>
                                     <input type="text" name="instansi_peserta[]" class="form-control form-control-sm">
                                 </div>
-                                <div class="col-md-4">
+                                <div class="col-md-3">
                                     <label class="small fw-bold">WA Peserta</label>
                                     <input type="text" name="wa_peserta[]" class="form-control form-control-sm">
+                                </div>
+                                <div class="col-md-3">
+                                    <label class="small fw-bold">Marketing</label>
+                                    <select name="marketing[]" class="form-select form-control-sm">
+                                        ${marketingOptions}
+                                    </select>
                                 </div>
                             </div>
                         </div>

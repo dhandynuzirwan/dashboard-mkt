@@ -121,9 +121,72 @@ class RiwayatPelatihanController extends Controller
         if (is_array($request->wa_peserta)) {
             $data['wa_peserta'] = implode(", ", array_filter($request->wa_peserta));
         }
+        if (is_array($request->marketing)) {
+            $data['marketing'] = implode(", ", array_filter($request->marketing));
+        }
 
         RiwayatPelatihan::create($data);
 
         return redirect()->route('riwayat.pelatihan')->with('success', 'Data Riwayat Pelatihan berhasil ditambahkan.');
+    }
+
+    public function update(Request $request, $id)
+    {
+        $riwayat = RiwayatPelatihan::findOrFail($id);
+        $data = $request->except(['_token', '_method', 'block']);
+
+        // Handle file uploads if any
+        $fileFields = ['cv', 'modul', 'laporan_pic', 'scan_sertif', 'foto'];
+        foreach ($fileFields as $field) {
+            if ($request->hasFile($field)) {
+                $file = $request->file($field);
+                $path = $file->store('uploads/riwayat_pelatihan', 'public');
+                $data[$field] = $path;
+            }
+        }
+
+        $riwayat->update($data);
+
+        return redirect()->back()->with('success', 'Data berhasil diperbarui.');
+    }
+
+    public function updatePeserta(Request $request, $id, $index)
+    {
+        $riwayat = RiwayatPelatihan::findOrFail($id);
+
+        $pesertas = explode(',', $riwayat->nama_peserta ?? '');
+        $instansis = explode(',', $riwayat->instansi_peserta ?? '');
+        $was = explode(',', $riwayat->wa_peserta ?? '');
+        $mkts = explode(',', $riwayat->marketing ?? '');
+
+        // Trim string untuk membersihkan whitespace berlebih
+        $pesertas = array_map('trim', $pesertas);
+        $instansis = array_map('trim', $instansis);
+        $was = array_map('trim', $was);
+        $mkts = array_map('trim', $mkts);
+
+        // Pastikan index ada sebelum diupdate
+        if (isset($pesertas[$index])) {
+            $pesertas[$index] = $request->nama_peserta ?? '';
+            
+            // Untuk array lain jika ukurannya tidak sama, pad dengan string kosong sampai $index
+            if (!isset($instansis[$index])) $instansis = array_pad($instansis, $index + 1, '');
+            if (!isset($was[$index])) $was = array_pad($was, $index + 1, '');
+            if (!isset($mkts[$index])) $mkts = array_pad($mkts, $index + 1, '');
+
+            $instansis[$index] = $request->instansi_peserta ?? '';
+            $was[$index] = $request->wa_peserta ?? '';
+            $mkts[$index] = $request->marketing ?? '';
+
+            // Update model & simpan
+            $riwayat->nama_peserta = implode(', ', $pesertas);
+            $riwayat->instansi_peserta = implode(', ', $instansis);
+            $riwayat->wa_peserta = implode(', ', $was);
+            $riwayat->marketing = implode(', ', $mkts);
+            
+            $riwayat->save();
+        }
+
+        return redirect()->back()->with('success', 'Data peserta berhasil diperbarui.');
     }
 }
