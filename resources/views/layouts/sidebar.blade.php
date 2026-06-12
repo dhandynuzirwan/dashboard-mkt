@@ -168,7 +168,7 @@
 
                 {{-- ================= MENU OPERATIONAL ================= --}}
                 @if (in_array($role, ['superadmin','operasional','team_leader','web_dev']))
-                    @php $isOperational = request()->routeIs(['operational.aktivitas-harian', 'operational.data-pendaftaran', 'operational.inventaris', 'operational.monitoring-paket', 'monitoring.pelatihan']); @endphp
+                    @php $isOperational = request()->routeIs(['operational.aktivitas-harian', 'operational.data-pendaftaran', 'operational.inventaris', 'operational.monitoring-paket', 'monitoring.pelatihan', 'riwayat.pelatihan']); @endphp
                     <li class="nav-item {{ $isOperational ? 'active' : '' }}">
                         <a data-bs-toggle="collapse" href="#operasional" class="{{ $isOperational ? '' : 'collapsed' }}" aria-expanded="{{ $isOperational ? 'true' : 'false' }}">
                             <i class="fas fa-tasks"></i>
@@ -193,7 +193,13 @@
                                 
                                 <li class="{{ request()->routeIs('monitoring.pelatihan') ? 'active' : '' }}">
                                     <a href="{{ route('monitoring.pelatihan') }}">
-                                        <span class="sub-item">Monitoring Pelatihan</span>
+                                        <span class="sub-item">Pelatihan Berjalan</span>
+                                        <span class="badge badge-dark">Beta</span>
+                                    </a>
+                                </li>
+                                <li class="{{ request()->routeIs('riwayat.pelatihan') ? 'active' : '' }}">
+                                    <a href="{{ Route::has('riwayat.pelatihan') ? route('riwayat.pelatihan') : '#' }}">
+                                        <span class="sub-item">Riwayat Pelatihan</span>
                                         <span class="badge badge-dark">Beta</span>
                                     </a>
                                 </li>
