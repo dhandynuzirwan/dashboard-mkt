@@ -503,7 +503,7 @@
                           </div>
                           <div class="col-md-4">
                               <label class="form-label fw-bold small">Jum. Peserta <span class="text-danger">*</span></label>
-                              <input type="number" name="jumlah_peserta" class="form-control rounded-3" required min="1">
+                              <input type="number" name="jumlah_peserta" id="inputJumlahPeserta" class="form-control rounded-3" required min="1">
                           </div>
                           <div class="col-md-6">
                               <label class="form-label fw-bold small">Jenis Pelatihan</label>
@@ -528,23 +528,17 @@
                                   <option value="Titip Vendor Lain">Titip Vendor Lain</option>
                               </select>
                           </div>
-                          <div class="col-md-6">
-                              <label class="form-label fw-bold small">Instansi Peserta</label>
-                              <textarea name="instansi_peserta" class="form-control rounded-3" rows="2"></textarea>
+                          <div class="col-12 mt-4">
+                              <label class="form-label fw-bold small text-primary"><i class="fas fa-users me-1"></i> Data Peserta (Otomatis dari Jum. Peserta)</label>
+                              <div id="pesertaContainer" class="row g-2">
+                                  <div class="col-12 text-muted small fst-italic">Silakan isi Jumlah Peserta di atas terlebih dahulu.</div>
+                              </div>
                           </div>
-                          <div class="col-md-6">
-                              <label class="form-label fw-bold small">Daftar Nama Peserta</label>
-                              <textarea name="nama_peserta" class="form-control rounded-3" rows="2"></textarea>
-                          </div>
-                          <div class="col-md-4">
-                              <label class="form-label fw-bold small">WA Peserta</label>
-                              <input type="text" name="wa_peserta" class="form-control rounded-3">
-                          </div>
-                          <div class="col-md-5">
+                          <div class="col-md-5 mt-3">
                               <label class="form-label fw-bold small">Syarat Peserta (Link Drive)</label>
                               <input type="url" name="syarat_peserta" class="form-control rounded-3" placeholder="https://drive.google.com/...">
                           </div>
-                          <div class="col-md-3">
+                          <div class="col-md-3 mt-3">
                               <label class="form-label fw-bold small">Status Syarat</label>
                               <select name="ket_syarat" class="form-select rounded-3">
                                   <option value="">Pilih...</option>
@@ -842,6 +836,38 @@
                 }
             });
         }
+
+        // Auto generate dynamic inputs for participants
+        document.getElementById('inputJumlahPeserta').addEventListener('input', function() {
+            let num = parseInt(this.value) || 0;
+            let container = document.getElementById('pesertaContainer');
+            container.innerHTML = '';
+            if(num > 0) {
+                for(let i=1; i<=num; i++) {
+                    container.innerHTML += `
+                        <div class="col-12 border p-3 rounded-3 mb-2 bg-white shadow-sm">
+                            <h6 class="fw-bold mb-2 small text-secondary">Peserta ${i}</h6>
+                            <div class="row g-2">
+                                <div class="col-md-4">
+                                    <label class="small fw-bold">Nama Peserta <span class="text-danger">*</span></label>
+                                    <input type="text" name="nama_peserta[]" class="form-control form-control-sm" required>
+                                </div>
+                                <div class="col-md-4">
+                                    <label class="small fw-bold">Instansi</label>
+                                    <input type="text" name="instansi_peserta[]" class="form-control form-control-sm">
+                                </div>
+                                <div class="col-md-4">
+                                    <label class="small fw-bold">WA Peserta</label>
+                                    <input type="text" name="wa_peserta[]" class="form-control form-control-sm">
+                                </div>
+                            </div>
+                        </div>
+                    `;
+                }
+            } else {
+                container.innerHTML = '<div class="col-12 text-muted small fst-italic">Silakan isi Jumlah Peserta di atas terlebih dahulu.</div>';
+            }
+        });
 
     });
 </script>

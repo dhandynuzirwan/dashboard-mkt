@@ -111,6 +111,17 @@ class RiwayatPelatihanController extends Controller
             }
         }
 
+        // Process array inputs for dynamic participant fields
+        if (is_array($request->nama_peserta)) {
+            $data['nama_peserta'] = implode(", ", array_filter($request->nama_peserta));
+        }
+        if (is_array($request->instansi_peserta)) {
+            $data['instansi_peserta'] = implode(", ", array_filter($request->instansi_peserta));
+        }
+        if (is_array($request->wa_peserta)) {
+            $data['wa_peserta'] = implode(", ", array_filter($request->wa_peserta));
+        }
+
         RiwayatPelatihan::create($data);
 
         return redirect()->route('riwayat.pelatihan')->with('success', 'Data Riwayat Pelatihan berhasil ditambahkan.');
