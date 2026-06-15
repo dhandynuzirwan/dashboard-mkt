@@ -79,6 +79,7 @@ Route::prefix('portal')->group(function () {
 
     // Cek Status
     Route::get('/cek-status', [PendaftaranPribadiController::class, 'cekStatus'])->name('portal.cek-status');
+    Route::post('/cek-status/{id}/revisi', [PendaftaranPribadiController::class, 'updateRevisi'])->name('portal.pendaftaran.revisi');
     Route::get('/cek-status-perusahaan', [PendaftaranKolektifController::class, 'cekStatusPerusahaan'])->name('portal.cek-status-perusahaan');
 });
 
@@ -150,6 +151,7 @@ Route::middleware('auth')->group(function () {
             Route::get('/riwayat-pelatihan', [RiwayatPelatihanController::class, 'index'])->name('riwayat.pelatihan');
             Route::post('/riwayat-pelatihan', [RiwayatPelatihanController::class, 'store'])->name('riwayat.pelatihan.store');
             Route::put('/riwayat-pelatihan/{id}', [RiwayatPelatihanController::class, 'update'])->name('riwayat.pelatihan.update');
+
             Route::put('/riwayat-pelatihan/{id}/peserta/{index}', [RiwayatPelatihanController::class, 'updatePeserta'])->name('riwayat.pelatihan.updatePeserta');
             Route::post('/riwayat-pelatihan/{id}/tambah-peserta-massal', [RiwayatPelatihanController::class, 'tambahPesertaMassal'])->name('riwayat.pelatihan.tambahPesertaMassal');
             Route::delete('/riwayat-pelatihan/{id}/peserta/{index}', [RiwayatPelatihanController::class, 'hapusPeserta'])->name('riwayat.pelatihan.hapusPeserta');
@@ -159,6 +161,7 @@ Route::middleware('auth')->group(function () {
         Route::prefix('operational')->group(function () {
             Route::get('/data-pendaftaran', [OperationalPendaftaranController::class, 'index'])->name('operational.data-pendaftaran');
             Route::post('/data-pendaftaran/verify/{id}', [OperationalPendaftaranController::class, 'verify'])->name('operational.pendaftaran.verify');
+            Route::delete('/data-pendaftaran/{id}', [OperationalPendaftaranController::class, 'destroy'])->name('operational.pendaftaran.destroy');
         });
 
         // Aktivitas Harian

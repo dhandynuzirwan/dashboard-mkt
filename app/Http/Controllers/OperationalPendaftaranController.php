@@ -147,4 +147,22 @@ class OperationalPendaftaranController extends Controller
 
         return redirect()->back()->with('success', 'Verifikasi berkas atas nama '.$pendaftaran->nama_lengkap.' berhasil disimpan.');
     }
+
+    public function destroy($id)
+    {
+        $pendaftaran = PendaftaranPribadi::findOrFail($id);
+        
+        // Hapus file-file terkait jika ada
+        $files = ['file_ktp', 'file_ijazah', 'file_foto', 'file_cv', 'file_sk', 'file_laporan', 'file_sop'];
+        foreach ($files as $fileKey) {
+            if ($pendaftaran->$fileKey) {
+                \Illuminate\Support\Facades\Storage::disk('public')->delete($pendaftaran->$fileKey);
+            }
+        }
+
+        $nama = $pendaftaran->nama_lengkap;
+        $pendaftaran->delete();
+
+        return redirect()->back()->with('success', "Data pendaftaran atas nama $nama berhasil dihapus.");
+    }
 }

@@ -467,7 +467,11 @@
                                             <small class="text-muted fw-medium"><i class="fab fa-whatsapp text-success me-1"></i> {{ $pendaftar->no_wa }}</small>
                                         </td>
                                         <td>
-                                            <span class="badge badge-soft-info border border-info px-2 py-1 mb-1"><i class="fas fa-user me-1"></i> Individu</span><br>
+                                            @if($pendaftar->tipe_pendaftaran == 'kolektif')
+                                                <span class="badge badge-soft-warning border border-warning text-warning-emphasis px-2 py-1 mb-1"><i class="fas fa-users me-1"></i> Kolektif</span><br>
+                                            @else
+                                                <span class="badge badge-soft-info border border-info px-2 py-1 mb-1"><i class="fas fa-user me-1"></i> Individu</span><br>
+                                            @endif
                                             <small class="text-muted">{{ $pendaftar->perusahaan ?? '-' }}</small>
                                         </td>
                                         <td>
@@ -495,9 +499,18 @@
                                             @endif
                                         </td>
                                         <td class="text-center pe-4">
-                                            <button class="btn btn-primary btn-sm w-100 btn-round fw-bold shadow-sm" data-bs-toggle="modal" data-bs-target="#modalReviewIndividu-{{ $pendaftar->id }}">
-                                                <i class="fas fa-search me-1"></i> Review
-                                            </button>
+                                            <div class="d-flex flex-column gap-1">
+                                                <button class="btn btn-primary btn-sm w-100 btn-round fw-bold shadow-sm" data-bs-toggle="modal" data-bs-target="#modalReviewIndividu-{{ $pendaftar->id }}">
+                                                    <i class="fas fa-search me-1"></i> Review
+                                                </button>
+                                                <form action="{{ route('operational.pendaftaran.destroy', $pendaftar->id) }}" method="POST" class="m-0" onsubmit="return confirm('Yakin ingin menghapus data pendaftaran ini beserta berkasnya? Data yang dihapus tidak dapat dikembalikan.');">
+                                                    @csrf
+                                                    @method('DELETE')
+                                                    <button type="submit" class="btn btn-outline-danger btn-sm w-100 btn-round fw-bold shadow-sm">
+                                                        <i class="fas fa-trash me-1"></i> Hapus
+                                                    </button>
+                                                </form>
+                                            </div>
                                         </td>
                                     </tr>
                                     @include('partials.modal-review-individu')
