@@ -460,7 +460,10 @@
                                     @endphp
                                     <tr>
                                         <td class="text-center">
-                                            <span class="badge badge-soft-primary border fw-bolder px-2 py-1 shadow-sm">{{ $pendaftar->id_pendaftaran }}</span>
+                                            <span class="badge badge-soft-primary border fw-bolder px-2 py-1 shadow-sm" title="ID Pendaftaran">{{ $pendaftar->tipe_pendaftaran == 'kolektif' ? ($pendaftar->kolektif->id_pendaftaran ?? $pendaftar->id_pendaftaran) : $pendaftar->id_pendaftaran }}</span>
+                                            @if($pendaftar->tipe_pendaftaran == 'kolektif')
+                                                <div class="mt-1"><small class="text-muted fw-bold" style="font-size: 10px;" title="ID Peserta"><i class="fas fa-id-badge text-primary me-1"></i> {{ $pendaftar->id_pendaftaran }}</small></div>
+                                            @endif
                                         </td>
                                         <td>
                                             <div class="fw-bolder text-dark" style="font-size: 14px;">{{ $pendaftar->nama_lengkap }}</div>
@@ -472,7 +475,7 @@
                                             @else
                                                 <span class="badge badge-soft-info border border-info px-2 py-1 mb-1"><i class="fas fa-user me-1"></i> Individu</span><br>
                                             @endif
-                                            <small class="text-muted">{{ $pendaftar->perusahaan ?? '-' }}</small>
+                                            <small class="text-muted fw-bold">{{ $pendaftar->tipe_pendaftaran == 'kolektif' ? ($pendaftar->kolektif->perusahaan ?? '-') : ($pendaftar->perusahaan ?? '-') }}</small>
                                         </td>
                                         <td>
                                             <span class="fw-bolder text-dark">{{ $pendaftar->training->nama_training ?? '-' }}</span>
@@ -503,6 +506,11 @@
                                                 <button class="btn btn-primary btn-sm w-100 btn-round fw-bold shadow-sm" data-bs-toggle="modal" data-bs-target="#modalReviewIndividu-{{ $pendaftar->id }}">
                                                     <i class="fas fa-search me-1"></i> Review
                                                 </button>
+                                                @if($pendaftar->tipe_pendaftaran == 'kolektif' && $pendaftar->kolektif && $pendaftar->kolektif->file_zip)
+                                                <a href="{{ asset('storage/' . $pendaftar->kolektif->file_zip) }}" target="_blank" class="btn btn-success btn-sm w-100 btn-round fw-bold shadow-sm">
+                                                    <i class="fas fa-file-archive me-1"></i> Berkas ZIP
+                                                </a>
+                                                @endif
                                                 <form action="{{ route('operational.pendaftaran.destroy', $pendaftar->id) }}" method="POST" class="m-0" onsubmit="return confirm('Yakin ingin menghapus data pendaftaran ini beserta berkasnya? Data yang dihapus tidak dapat dikembalikan.');">
                                                     @csrf
                                                     @method('DELETE')
