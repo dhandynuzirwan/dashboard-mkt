@@ -228,7 +228,7 @@
                                         {{-- 1. ID & Tanggal Deal --}}
                                         <td class="text-center">
                                             <span class="badge badge-soft-secondary border fw-bolder px-2 py-1 mb-1 shadow-sm">#{{ $deal->id }}</span><br>
-                                            <small class="text-muted fw-bold" style="font-size: 10px;">{{ $deal->created_at->format('d M Y') }}</small>
+                                            <small class="text-muted fw-bold" style="font-size: 10px;">{{ \Carbon\Carbon::parse($deal->prospek->tanggal_prospek)->format('d M Y') }}</small>
                                         </td>
 
                                         {{-- 2. Perusahaan & PIC --}}

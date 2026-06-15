@@ -40,8 +40,10 @@ class OperationalPendaftaranController extends Controller
         $startDate = $request->input('start_date', Carbon::now()->startOfMonth()->toDateString());
         $endDate = $request->input('end_date', Carbon::now()->endOfMonth()->toDateString());
 
-        $queryDeals->whereDate('created_at', '>=', $startDate)
-                   ->whereDate('created_at', '<=', $endDate);
+        $queryDeals->whereHas('prospek', function($q) use ($startDate, $endDate) {
+            $q->whereDate('tanggal_prospek', '>=', $startDate)
+              ->whereDate('tanggal_prospek', '<=', $endDate);
+        });
 
         $deals = $queryDeals->orderBy('created_at', 'desc')->paginate(10, ['*'], 'page_deal')->withQueryString();
 
