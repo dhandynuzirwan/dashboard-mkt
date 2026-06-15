@@ -16,26 +16,33 @@ class PendaftaranKolektifController extends Controller
         $perusahaan_default = $request->query('perusahaan');
 
         $trainings = collect(); // Default koleksi kosong jika tidak lewat link deal
+        $jumlah_peserta = 1; // Default 1
 
         if ($cta_id) {
             // 1. Cari data CTA saat ini berdasarkan ID yang dikirim dari URL
             $currentCta = \App\Models\Cta::find($cta_id); 
             
-            if ($currentCta && $currentCta->prospek_id) {
-                // 2. Tarik semua string teks 'judul_permintaan' dari seluruh CTA milik Perusahaan/Prospek yang sama
-                $judulTitles = \App\Models\Cta::where('prospek_id', $currentCta->prospek_id)
-                                            ->whereNotNull('judul_permintaan')
-                                            ->pluck('judul_permintaan')
-                                            ->toArray();
+            if ($currentCta) {
+                if ($currentCta->jumlah_peserta) {
+                    $jumlah_peserta = $currentCta->jumlah_peserta;
+                }
                 
-                // 3. Cocokkan teks judul tersebut dengan kolom 'nama_training' di tabel master_trainings
-                // array_unique digunakan untuk menyaring agar nama program tidak ganda di dropdown
-                $trainings = \App\Models\MasterTraining::whereIn('nama_training', array_unique($judulTitles))->get();
-            } else {
-                // Fallback: Jika tidak terikat prospek tetapi ada training_id di URL
-                $training_id = $request->query('training_id');
-                if($training_id) {
-                    $trainings = \App\Models\MasterTraining::where('id', $training_id)->get();
+                if ($currentCta->prospek_id) {
+                    // 2. Tarik semua string teks 'judul_permintaan' dari seluruh CTA milik Perusahaan/Prospek yang sama
+                    $judulTitles = \App\Models\Cta::where('prospek_id', $currentCta->prospek_id)
+                                                ->whereNotNull('judul_permintaan')
+                                                ->pluck('judul_permintaan')
+                                                ->toArray();
+                    
+                    // 3. Cocokkan teks judul tersebut dengan kolom 'nama_training' di tabel master_trainings
+                    // array_unique digunakan untuk menyaring agar nama program tidak ganda di dropdown
+                    $trainings = \App\Models\MasterTraining::whereIn('nama_training', array_unique($judulTitles))->get();
+                } else {
+                    // Fallback: Jika tidak terikat prospek tetapi ada training_id di URL
+                    $training_id = $request->query('training_id');
+                    if($training_id) {
+                        $trainings = \App\Models\MasterTraining::where('id', $training_id)->get();
+                    }
                 }
             }
         } else {
@@ -43,7 +50,7 @@ class PendaftaranKolektifController extends Controller
             $trainings = \App\Models\MasterTraining::all();
         }
 
-        return view('portal.pendaftaran-kolektif', compact('cta_id', 'trainings', 'perusahaan_default'));
+        return view('portal.pendaftaran-kolektif', compact('cta_id', 'trainings', 'perusahaan_default', 'jumlah_peserta'));
     }
 
     public function store(Request $request)

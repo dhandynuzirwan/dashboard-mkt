@@ -17,4 +17,14 @@ class PendaftaranPribadi extends Model
     {
         return $this->belongsTo(PendaftaranKolektif::class, 'kolektif_id');
     }
+
+    public function pelatihanBerjalan()
+    {
+        return $this->belongsTo(PelatihanBerjalan::class, 'pelatihan_berjalan_id');
+    }
+
+    public function cta()
+    {
+        return $this->belongsTo(Cta::class, 'cta_id');
+    }
 }

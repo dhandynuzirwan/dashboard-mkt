@@ -113,16 +113,16 @@ class RiwayatPelatihanController extends Controller
 
         // Process array inputs for dynamic participant fields
         if (is_array($request->nama_peserta)) {
-            $data['nama_peserta'] = implode(", ", array_filter($request->nama_peserta));
+            $data['nama_peserta'] = json_encode(array_values($request->nama_peserta));
         }
         if (is_array($request->instansi_peserta)) {
-            $data['instansi_peserta'] = implode(", ", array_filter($request->instansi_peserta));
+            $data['instansi_peserta'] = json_encode(array_values($request->instansi_peserta));
         }
         if (is_array($request->wa_peserta)) {
-            $data['wa_peserta'] = implode(", ", array_filter($request->wa_peserta));
+            $data['wa_peserta'] = json_encode(array_values($request->wa_peserta));
         }
         if (is_array($request->marketing)) {
-            $data['marketing'] = implode(", ", array_filter($request->marketing));
+            $data['marketing'] = json_encode(array_values($request->marketing));
         }
 
         RiwayatPelatihan::create($data);
@@ -150,20 +150,25 @@ class RiwayatPelatihanController extends Controller
         return redirect()->back()->with('success', 'Data berhasil diperbarui.');
     }
 
+    private function getJsonArray($value)
+    {
+        if (empty($value)) return [];
+        $decoded = json_decode($value, true);
+        if (json_last_error() === JSON_ERROR_NONE && is_array($decoded)) {
+            return $decoded;
+        }
+        // Fallback for old comma separated data
+        return array_map('trim', explode(',', $value));
+    }
+
     public function updatePeserta(Request $request, $id, $index)
     {
         $riwayat = RiwayatPelatihan::findOrFail($id);
 
-        $pesertas = explode(',', $riwayat->nama_peserta ?? '');
-        $instansis = explode(',', $riwayat->instansi_peserta ?? '');
-        $was = explode(',', $riwayat->wa_peserta ?? '');
-        $mkts = explode(',', $riwayat->marketing ?? '');
-
-        // Trim string untuk membersihkan whitespace berlebih
-        $pesertas = array_map('trim', $pesertas);
-        $instansis = array_map('trim', $instansis);
-        $was = array_map('trim', $was);
-        $mkts = array_map('trim', $mkts);
+        $pesertas = $this->getJsonArray($riwayat->nama_peserta);
+        $instansis = $this->getJsonArray($riwayat->instansi_peserta);
+        $was = $this->getJsonArray($riwayat->wa_peserta);
+        $mkts = $this->getJsonArray($riwayat->marketing);
 
         // Pastikan index ada sebelum diupdate
         if (isset($pesertas[$index])) {
@@ -179,10 +184,10 @@ class RiwayatPelatihanController extends Controller
             $mkts[$index] = $request->marketing ?? '';
 
             // Update model & simpan
-            $riwayat->nama_peserta = implode(', ', $pesertas);
-            $riwayat->instansi_peserta = implode(', ', $instansis);
-            $riwayat->wa_peserta = implode(', ', $was);
-            $riwayat->marketing = implode(', ', $mkts);
+            $riwayat->nama_peserta = json_encode(array_values($pesertas));
+            $riwayat->instansi_peserta = json_encode(array_values($instansis));
+            $riwayat->wa_peserta = json_encode(array_values($was));
+            $riwayat->marketing = json_encode(array_values($mkts));
             
             $riwayat->save();
         }
@@ -190,41 +195,33 @@ class RiwayatPelatihanController extends Controller
         return redirect()->back()->with('success', 'Data peserta berhasil diperbarui.');
     }
 
-    public function tambahPeserta(Request $request, $id)
+    public function tambahPesertaMassal(Request $request, $id)
     {
         $riwayat = RiwayatPelatihan::findOrFail($id);
 
-        $pesertas = explode(',', $riwayat->nama_peserta ?? '');
-        $instansis = explode(',', $riwayat->instansi_peserta ?? '');
-        $was = explode(',', $riwayat->wa_peserta ?? '');
-        $mkts = explode(',', $riwayat->marketing ?? '');
+        $pesertas = $this->getJsonArray($riwayat->nama_peserta);
+        $instansis = $this->getJsonArray($riwayat->instansi_peserta);
+        $was = $this->getJsonArray($riwayat->wa_peserta);
+        $mkts = $this->getJsonArray($riwayat->marketing);
 
-        // Bersihkan data dari elemen kosong
-        $pesertas = array_filter(array_map('trim', $pesertas));
-        $instansis = array_map('trim', $instansis);
-        $was = array_map('trim', $was);
-        $mkts = array_map('trim', $mkts);
+        // Append new items
+        if ($request->has('nama_peserta') && is_array($request->nama_peserta)) {
+            foreach ($request->nama_peserta as $i => $nama) {
+                if (trim($nama) === '') continue;
+                
+                $pesertas[] = trim($nama);
+                $instansis[] = trim($request->instansi_peserta[$i] ?? '');
+                $was[] = trim($request->wa_peserta[$i] ?? '');
+                $mkts[] = trim($request->marketing[$i] ?? '');
+            }
+        }
 
-        // Tambahkan ke akhir array
-        $pesertas[] = $request->nama_peserta ?? '';
+        $riwayat->nama_peserta = json_encode(array_values($pesertas));
+        $riwayat->instansi_peserta = json_encode(array_values($instansis));
+        $riwayat->wa_peserta = json_encode(array_values($was));
+        $riwayat->marketing = json_encode(array_values($mkts));
         
-        $newIndex = count($pesertas) - 1;
-        
-        // Sesuaikan ukuran array jika kosong
-        if (count($instansis) < $newIndex) $instansis = array_pad($instansis, $newIndex, '');
-        if (count($was) < $newIndex) $was = array_pad($was, $newIndex, '');
-        if (count($mkts) < $newIndex) $mkts = array_pad($mkts, $newIndex, '');
-
-        $instansis[$newIndex] = $request->instansi_peserta ?? '';
-        $was[$newIndex] = $request->wa_peserta ?? '';
-        $mkts[$newIndex] = $request->marketing ?? '';
-
-        $riwayat->nama_peserta = implode(', ', $pesertas);
-        $riwayat->instansi_peserta = implode(', ', $instansis);
-        $riwayat->wa_peserta = implode(', ', $was);
-        $riwayat->marketing = implode(', ', $mkts);
-        
-        // Update jumlah_peserta if it reflects the real count
+        // Update jumlah_peserta
         $riwayat->jumlah_peserta = count($pesertas);
 
         $riwayat->save();
@@ -236,10 +233,10 @@ class RiwayatPelatihanController extends Controller
     {
         $riwayat = RiwayatPelatihan::findOrFail($id);
 
-        $pesertas = explode(',', $riwayat->nama_peserta ?? '');
-        $instansis = explode(',', $riwayat->instansi_peserta ?? '');
-        $was = explode(',', $riwayat->wa_peserta ?? '');
-        $mkts = explode(',', $riwayat->marketing ?? '');
+        $pesertas = $this->getJsonArray($riwayat->nama_peserta);
+        $instansis = $this->getJsonArray($riwayat->instansi_peserta);
+        $was = $this->getJsonArray($riwayat->wa_peserta);
+        $mkts = $this->getJsonArray($riwayat->marketing);
 
         // Hapus elemen jika index ada
         if (isset($pesertas[$index])) {
@@ -250,13 +247,13 @@ class RiwayatPelatihanController extends Controller
             if (isset($mkts[$index])) unset($mkts[$index]);
 
             // Re-index dan implode kembali
-            $riwayat->nama_peserta = implode(', ', array_values($pesertas));
-            $riwayat->instansi_peserta = implode(', ', array_values($instansis));
-            $riwayat->wa_peserta = implode(', ', array_values($was));
-            $riwayat->marketing = implode(', ', array_values($mkts));
+            $riwayat->nama_peserta = json_encode(array_values($pesertas));
+            $riwayat->instansi_peserta = json_encode(array_values($instansis));
+            $riwayat->wa_peserta = json_encode(array_values($was));
+            $riwayat->marketing = json_encode(array_values($mkts));
             
             // Update jumlah_peserta
-            $riwayat->jumlah_peserta = count(array_filter($pesertas, function($val) { return trim($val) !== ''; }));
+            $riwayat->jumlah_peserta = count($pesertas);
 
             $riwayat->save();
         }

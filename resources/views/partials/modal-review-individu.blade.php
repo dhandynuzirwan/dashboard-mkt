@@ -110,6 +110,13 @@
                         </div>
                         @endforeach
                     </div>
+                    
+                    {{-- Input Tanggal Pelatihan (Opsional) --}}
+                    <div class="bg-light p-3 rounded-4 border border-light">
+                        <label class="fw-bold text-dark mb-2" style="font-size: 12px;">Penetapan Tanggal Pelatihan (Opsional)</label>
+                        <p class="text-muted mb-2" style="font-size: 11px;">Jika Anda mengisi tanggal pelatihan ini, sistem akan otomatis mendaftarkan peserta ini ke dalam kelas "Pelatihan Berjalan". Kosongkan jika belum ada jadwal pasti.</p>
+                        <input type="date" name="tanggal_pelatihan" value="{{ $pendaftar->tanggal_pelatihan }}" class="form-control form-control-sm border-light shadow-none" style="border-radius: 8px;">
+                    </div>
                 </div>
                 
                 {{-- Footer Action --}}

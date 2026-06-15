@@ -106,4 +106,72 @@ class OperationalController extends Controller
 
         return redirect()->back()->with('success', 'Resource Link berhasil dihapus!');
     }
+
+    // Menampilkan Halaman Monitoring Pelatihan
+    public function monitoringPelatihan()
+    {
+        $pelatihans = \App\Models\PelatihanBerjalan::with(['training', 'pendaftaranPribadis.cta.prospek.marketing'])
+            ->orderBy('tanggal_pelatihan', 'desc')
+            ->get();
+            
+        return view('operational.monitoring-pelatihan', compact('pelatihans'));
+    }
+
+    // Update Data Pelatihan Berjalan
+    public function updatePelatihanBerjalan(Request $request, $id)
+    {
+        $pelatihan = \App\Models\PelatihanBerjalan::findOrFail($id);
+        
+        $request->validate([
+            'tanggal_pelatihan' => 'nullable|date',
+            'tanggal_asesmen'   => 'nullable|date',
+            'lokasi'            => 'nullable|string',
+            'instruktur'        => 'nullable|string',
+            'asesor'            => 'nullable|string',
+            'pengawas'          => 'nullable|string',
+            'pjk3'              => 'nullable|string',
+            'pic_klien'         => 'nullable|string',
+            'status_kelas'      => 'required|in:persiapan,running,selesai,batal',
+        ]);
+        
+        $pelatihan->update($request->except(['_token', '_method']));
+        
+        // Trigger if Selesai
+        if ($pelatihan->status_kelas === 'selesai' && $pelatihan->wasChanged('status_kelas')) {
+            $pesertas = $pelatihan->pendaftaranPribadis()->with('cta.prospek.marketing')->get();
+            $nama_peserta = [];
+            $instansi_peserta = [];
+            $wa_peserta = [];
+            $marketing = [];
+
+            foreach ($pesertas as $peserta) {
+                $nama_peserta[] = $peserta->nama_lengkap;
+                $instansi_peserta[] = $peserta->perusahaan ?? 'Pribadi';
+                $wa_peserta[] = $peserta->no_wa;
+                $marketing[] = ($peserta->cta && $peserta->cta->prospek && $peserta->cta->prospek->marketing) 
+                                ? $peserta->cta->prospek->marketing->name 
+                                : '-';
+            }
+
+            \App\Models\RiwayatPelatihan::create([
+                'judul_pelatihan' => $pelatihan->training->name ?? null,
+                'jenis' => $pelatihan->training->sertifikasi ?? null,
+                'metode' => $pelatihan->lokasi ?? null,
+                'tanggal_mulai' => $pelatihan->tanggal_pelatihan,
+                'tanggal_asesmen' => $pelatihan->tanggal_asesmen,
+                'nama_trainer' => $pelatihan->instruktur,
+                'nama_asesor' => $pelatihan->asesor,
+                'nama_lsp' => $pelatihan->pjk3,
+                'jumlah_peserta' => $pesertas->count(),
+                'nama_peserta' => json_encode($nama_peserta),
+                'instansi_peserta' => json_encode($instansi_peserta),
+                'wa_peserta' => json_encode($wa_peserta),
+                'marketing' => json_encode($marketing),
+                'status_sertif' => 'Belum Terbit',
+                'status_kompeten' => 'Belum',
+            ]);
+        }
+        
+        return redirect()->back()->with('success', 'Data Pelatihan Berjalan berhasil diperbarui!');
+    }
 }

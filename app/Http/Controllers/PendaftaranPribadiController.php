@@ -13,10 +13,13 @@ class PendaftaranPribadiController extends Controller
     {
         $cta_id = $request->query('cta_id');
         $training_id = $request->query('training_id');
+        $judul_pelatihan = $request->query('judul_pelatihan');
 
         $selected_training = null;
         if ($training_id) {
             $selected_training = \App\Models\MasterTraining::find($training_id);
+        } elseif ($judul_pelatihan) {
+            $selected_training = \App\Models\MasterTraining::where('nama_training', $judul_pelatihan)->first();
         }
         
         // 🔥 UBAH NAMA VARIABEL INI JADI $trainings

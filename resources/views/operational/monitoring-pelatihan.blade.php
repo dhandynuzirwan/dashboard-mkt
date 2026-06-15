@@ -168,14 +168,28 @@
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    {{-- BARIS 1: DATA TERISI LENGKAP (RUNNING) --}}
+                                    @forelse($pelatihans as $pelatihan)
+                                        @php
+                                            $firstPendaftaran = $pelatihan->pendaftaranPribadis->first();
+                                            $klien = $firstPendaftaran ? ($firstPendaftaran->perusahaan ?? 'Pribadi') : 'Belum Ada Data';
+                                            $marketingName = ($firstPendaftaran && $firstPendaftaran->cta) ? $firstPendaftaran->cta->prospek->marketing->name : '-';
+                                            
+                                            // Badge Status Kelas
+                                            $statusBadgeMap = [
+                                                'persiapan' => ['class' => 'bg-warning text-dark', 'text' => 'Persiapan'],
+                                                'running' => ['class' => 'bg-primary', 'text' => 'Running'],
+                                                'selesai' => ['class' => 'bg-success', 'text' => 'Selesai'],
+                                                'batal' => ['class' => 'bg-danger', 'text' => 'Batal'],
+                                            ];
+                                            $badgeInfo = $statusBadgeMap[$pelatihan->status_kelas] ?? $statusBadgeMap['persiapan'];
+                                        @endphp
                                     <tr>
                                         <td class="ps-4">
-                                            <div class="fw-bolder text-dark" style="font-size: 14px;">PT. Pertamina Hulu Rokan</div>
-                                            <div class="fw-bold text-primary mt-1" style="font-size: 13px;">Ahli K3 Umum</div>
+                                            <div class="fw-bolder text-dark" style="font-size: 14px;">{{ $klien }}</div>
+                                            <div class="fw-bold text-primary mt-1" style="font-size: 13px;">{{ optional($pelatihan->training)->name ?? '-' }}</div>
                                             <div class="d-flex gap-2 mt-2 align-items-center">
-                                                <span class="badge badge-soft-info border">KEMNAKER</span>
-                                                <span class="text-muted" style="font-size: 10px;"><i class="fas fa-user-tie me-1"></i> Mkt: Ayu</span>
+                                                <span class="badge badge-soft-info border">{{ optional($pelatihan->training)->sertifikasi ?? 'Lainnya' }}</span>
+                                                <span class="text-muted" style="font-size: 10px;"><i class="fas fa-user-tie me-1"></i> Mkt: {{ $marketingName }}</span>
                                             </div>
                                         </td>
                                         
@@ -184,20 +198,24 @@
                                             <div class="cell-content-wrapper d-flex flex-column gap-1">
                                                 <div class="bg-light p-2 rounded border">
                                                     <small class="text-muted d-block" style="font-size: 9px;">TGL PELATIHAN</small>
-                                                    <span class="fw-bold text-dark" style="font-size: 11px;">05 - 07 Mei 2026</span>
+                                                    <span class="fw-bold text-dark" style="font-size: 11px;">
+                                                        {{ $pelatihan->tanggal_pelatihan ? \Carbon\Carbon::parse($pelatihan->tanggal_pelatihan)->translatedFormat('d M Y') : 'Belum Diset' }}
+                                                    </span>
                                                 </div>
                                                 <div class="bg-danger-subtle p-2 rounded border border-danger-subtle">
                                                     <small class="text-danger d-block" style="font-size: 9px;">TGL ASESMEN</small>
-                                                    <span class="fw-bold text-danger" style="font-size: 11px;">08 Mei 2026</span>
+                                                    <span class="fw-bold text-danger" style="font-size: 11px;">
+                                                        {{ $pelatihan->tanggal_asesmen ? \Carbon\Carbon::parse($pelatihan->tanggal_asesmen)->translatedFormat('d M Y') : 'Belum Diset' }}
+                                                    </span>
                                                 </div>
                                                 <div class="bg-info-subtle p-2 rounded border border-info-subtle mb-1">
                                                     <small class="text-info d-block" style="font-size: 9px;">LOKASI / VENUE</small>
                                                     <span class="fw-bold text-dark" style="font-size: 11px;">
-                                                        <i class="fas fa-video text-muted me-1"></i> Virtual (Zoom)
+                                                        <i class="fas fa-map-marker-alt text-muted me-1"></i> {{ $pelatihan->lokasi ?? 'Belum Diset' }}
                                                     </span>
                                                 </div>
                                             </div>
-                                            <button class="btn btn-sm btn-edit-absolute hover-lift" title="Edit Jadwal & Lokasi" data-bs-toggle="modal" data-bs-target="#modalUpdateJadwal"><i class="fas fa-pen"></i></button>
+                                            <button class="btn btn-sm btn-edit-absolute hover-lift" title="Edit Jadwal & Lokasi" data-bs-toggle="modal" data-bs-target="#modalUpdateJadwal-{{ $pelatihan->id }}"><i class="fas fa-pen"></i></button>
                                         </td>
                                         
                                         {{-- KOLOM TIM (UPDATE) --}}
@@ -205,16 +223,15 @@
                                             <div class="cell-content-wrapper me-2">
                                                 <div class="mb-2">
                                                     <small class="text-muted d-block" style="font-size: 9px; text-transform: uppercase;">Instruktur & Asesor</small>
-                                                    <span class="text-dark fw-bold d-block" style="font-size: 12px;"><i class="fas fa-chalkboard-teacher text-primary me-1"></i> Bpk. Ahmad Fauzi</span>
-                                                    <span class="text-dark fw-bold d-block mt-1" style="font-size: 12px;"><i class="fas fa-user-check text-success me-1"></i> Bpk. Ridwan R.</span>
+                                                    <span class="text-dark fw-bold d-block" style="font-size: 12px;"><i class="fas fa-chalkboard-teacher text-primary me-1"></i> Inst: {{ $pelatihan->instruktur ?? '-' }}</span>
+                                                    <span class="text-dark fw-bold d-block mt-1" style="font-size: 12px;"><i class="fas fa-user-check text-success me-1"></i> Asr: {{ $pelatihan->asesor ?? '-' }}</span>
                                                 </div>
                                                 <div class="bg-gray-50 p-2 rounded border mb-0">
                                                     <small class="text-muted d-block mb-1" style="font-size: 9px; text-transform: uppercase;">Pengawas (Wasnaker)</small>
-                                                    <span class="text-dark fw-bold d-block" style="font-size: 11px;">Bpk. Sudarsono (198012122005)</span>
-                                                    <span class="text-muted fw-medium d-block mt-1" style="font-size: 10px;">Wilker: Disnaker Riau</span>
+                                                    <span class="text-dark fw-bold d-block" style="font-size: 11px;">{{ $pelatihan->pengawas ?? 'Belum Diset' }}</span>
                                                 </div>
                                             </div>
-                                            <button class="btn btn-sm btn-edit-absolute hover-lift" title="Edit Tim" data-bs-toggle="modal" data-bs-target="#modalUpdateTim"><i class="fas fa-pen"></i></button>
+                                            <button class="btn btn-sm btn-edit-absolute hover-lift" title="Edit Tim" data-bs-toggle="modal" data-bs-target="#modalUpdateTim-{{ $pelatihan->id }}"><i class="fas fa-pen"></i></button>
                                         </td>
                                         
                                         {{-- KOLOM LEMBAGA & PIC (UPDATE LABEL) --}}
@@ -222,61 +239,31 @@
                                             <div class="cell-content-wrapper me-2">
                                                 <div class="mb-2" style="font-size: 11px;">
                                                     <span class="text-muted d-block" style="font-size: 9px; text-transform: uppercase;">Lembaga & PJK3</span>
-                                                    <span class="fw-bold text-dark d-block"><i class="fas fa-building text-info me-1"></i> PT Arsa Safety</span>
+                                                    <span class="fw-bold text-dark d-block"><i class="fas fa-building text-info me-1"></i> {{ $pelatihan->pjk3 ?? 'Belum Diset' }}</span>
                                                 </div>
                                                 
-                                                {{-- 🔥 PIC SEKARANG MENJADI LABEL/BADGE 🔥 --}}
                                                 <div class="mt-2">
                                                     <span class="text-muted d-block mb-1" style="font-size: 9px; text-transform: uppercase;">Penanggung Jawab (PIC)</span>
                                                     <div class="d-flex flex-column gap-1">
                                                         <span class="badge bg-light text-dark border text-start px-2 py-1 shadow-sm w-100 text-truncate" style="font-size: 10px;">
-                                                            <i class="fas fa-user-tie text-primary me-1"></i> Klien: Ibu Vina (HRD)
-                                                        </span>
-                                                        <span class="badge badge-soft-success border text-start px-2 py-1 shadow-sm w-100 text-truncate" style="font-size: 10px;">
-                                                            <i class="fas fa-headset text-success me-1"></i> Int: Dimas
+                                                            <i class="fas fa-user-tie text-primary me-1"></i> Klien: {{ $pelatihan->pic_klien ?? 'Belum Diset' }}
                                                         </span>
                                                     </div>
                                                 </div>
                                             </div>
-                                            <button class="btn btn-sm btn-edit-absolute hover-lift" title="Edit Lembaga & PIC" data-bs-toggle="modal" data-bs-target="#modalUpdateLembaga"><i class="fas fa-pen"></i></button>
+                                            <button class="btn btn-sm btn-edit-absolute hover-lift" title="Edit Lembaga & PIC" data-bs-toggle="modal" data-bs-target="#modalUpdateLembaga-{{ $pelatihan->id }}"><i class="fas fa-pen"></i></button>
                                         </td>
                                         
                                         <td class="text-center pe-4">
-                                            <span class="badge bg-primary rounded-pill px-3 py-2 shadow-sm d-block mb-2 w-100">Running</span>
-                                            <button class="btn btn-sm btn-white border btn-round text-muted d-block w-100 hover-lift px-3" style="font-size: 10px;" data-bs-toggle="modal" data-bs-target="#modalUpdateStatusKelas">Ubah Status</button>
+                                            <span class="badge {{ $badgeInfo['class'] }} rounded-pill px-3 py-2 shadow-sm d-block mb-2 w-100">{{ $badgeInfo['text'] }}</span>
+                                            <button class="btn btn-sm btn-white border btn-round text-muted d-block w-100 hover-lift px-3" style="font-size: 10px;" data-bs-toggle="modal" data-bs-target="#modalUpdateStatusKelas-{{ $pelatihan->id }}">Ubah Status</button>
                                         </td>
                                     </tr>
-
-                                    {{-- BARIS 2: DATA KOSONG (PERSIAPAN) --}}
+                                    @empty
                                     <tr>
-                                        <td class="ps-4">
-                                            <div class="fw-bolder text-dark" style="font-size: 14px;">PT. Wijaya Karya</div>
-                                            <div class="fw-bold text-primary mt-1" style="font-size: 13px;">Operator Crane Kelas A</div>
-                                            <div class="d-flex gap-2 mt-2 align-items-center">
-                                                <span class="badge badge-soft-primary border">BNSP</span>
-                                                <span class="text-muted" style="font-size: 10px;"><i class="fas fa-user-tie me-1"></i> Mkt: Dhandy</span>
-                                            </div>
-                                        </td>
-                                        <td>
-                                            <button class="btn btn-sm btn-white text-primary text-start fw-bold hover-lift w-100 py-3" style="border: 1.5px dashed #bfdbfe;" data-bs-toggle="modal" data-bs-target="#modalUpdateJadwal">
-                                                <i class="fas fa-calendar-plus me-2"></i> Set Jadwal
-                                            </button>
-                                        </td>
-                                        <td>
-                                            <button class="btn btn-sm btn-white text-success text-start fw-bold hover-lift w-100 py-3" style="border: 1.5px dashed #bbf7d0;" data-bs-toggle="modal" data-bs-target="#modalUpdateTim">
-                                                <i class="fas fa-users-cog me-2"></i> Set Tim Lapangan
-                                            </button>
-                                        </td>
-                                        <td>
-                                            <button class="btn btn-sm btn-white text-info text-start fw-bold hover-lift w-100 py-3" style="border: 1.5px dashed #a5f3fc;" data-bs-toggle="modal" data-bs-target="#modalUpdateLembaga">
-                                                <i class="fas fa-building me-2"></i> Set Lembaga & PIC
-                                            </button>
-                                        </td>
-                                        <td class="text-center pe-4">
-                                            <span class="badge bg-warning text-dark rounded-pill px-3 py-2 shadow-sm d-block mb-2 w-100">Persiapan</span>
-                                            <button class="btn btn-sm btn-white border btn-round text-muted d-block w-100 hover-lift px-3" style="font-size: 10px;" data-bs-toggle="modal" data-bs-target="#modalUpdateStatusKelas">Ubah Status</button>
-                                        </td>
+                                        <td colspan="5" class="text-center py-4 text-muted">Belum ada data pelatihan berjalan.</td>
                                     </tr>
+                                    @endforelse
                                 </tbody>
                             </table>
                         </div>
@@ -623,47 +610,51 @@
 {{-- ================= KUMPULAN MODAL TAB 1 (PELAKSANAAN) ================= --}}
 
 {{-- Modal 1: Update Jadwal & Lokasi Pelaksanaan --}}
-<div class="modal fade" id="modalUpdateJadwal" tabindex="-1" aria-hidden="true">
+@foreach($pelatihans as $pelatihan)
+{{-- Modal 1: Update Jadwal & Lokasi --}}
+<div class="modal fade" id="modalUpdateJadwal-{{ $pelatihan->id }}" tabindex="-1" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered">
-        <div class="modal-content border-0 shadow-lg" style="border-radius: 20px;">
+        <form method="POST" action="{{ route('monitoring.pelatihan.update', $pelatihan->id) }}" class="modal-content border-0 shadow-lg" style="border-radius: 20px;">
+            @csrf
+            @method('PUT')
+            <input type="hidden" name="status_kelas" value="{{ $pelatihan->status_kelas }}">
             <div class="modal-header border-bottom pb-3 pt-4 px-4 bg-light" style="border-radius: 20px 20px 0 0;">
                 <h5 class="modal-title fw-bolder text-dark"><i class="fas fa-calendar-alt text-primary me-2"></i> Set Jadwal & Lokasi Kelas</h5>
                 <button type="button" class="btn-close shadow-none" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body px-4 pt-4 pb-4">
                 <div class="row g-3">
-                    <div class="col-6">
+                    <div class="col-12 mt-3">
                         <label class="label-modern">Mulai Pelatihan <span class="text-danger">*</span></label>
-                        <input type="date" class="form-control input-modern shadow-none">
-                    </div>
-                    <div class="col-6">
-                        <label class="label-modern">Selesai Pelatihan <span class="text-danger">*</span></label>
-                        <input type="date" class="form-control input-modern shadow-none">
+                        <input type="date" name="tanggal_pelatihan" value="{{ $pelatihan->tanggal_pelatihan }}" class="form-control input-modern shadow-none" required>
                     </div>
                     <div class="col-12 mt-3">
-                        <label class="label-modern text-danger">Tanggal Asesmen / Ujian <span class="text-danger">*</span></label>
-                        <input type="date" class="form-control input-modern shadow-none border-danger text-danger">
+                        <label class="label-modern text-danger">Tanggal Asesmen / Ujian</label>
+                        <input type="date" name="tanggal_asesmen" value="{{ $pelatihan->tanggal_asesmen }}" class="form-control input-modern shadow-none border-danger text-danger">
                     </div>
                     
-                    {{-- 🔥 TAMBAHAN INPUT LOKASI / VIRTUAL 🔥 --}}
                     <div class="col-12 mt-3">
-                        <label class="label-modern">Lokasi Pelaksanaan <span class="text-danger">*</span></label>
-                        <input type="text" class="form-control input-modern shadow-none" placeholder="Contoh: Virtual (Zoom) / Hotel Grand Rohan Jogja">
+                        <label class="label-modern">Lokasi Pelaksanaan</label>
+                        <input type="text" name="lokasi" value="{{ $pelatihan->lokasi }}" class="form-control input-modern shadow-none" placeholder="Contoh: Virtual (Zoom) / Hotel Grand Rohan Jogja">
                     </div>
                 </div>
             </div>
             <div class="modal-footer border-top bg-light py-3 px-4" style="border-radius: 0 0 20px 20px;">
                 <button type="button" class="btn btn-white border btn-round fw-bold text-dark px-4 shadow-none" data-bs-dismiss="modal">Batal</button>
-                <button type="button" class="btn btn-primary btn-round fw-bold px-4 shadow-sm hover-lift" data-bs-dismiss="modal">Simpan Data</button>
+                <button type="submit" class="btn btn-primary btn-round fw-bold px-4 shadow-sm hover-lift">Simpan Data</button>
             </div>
-        </div>
+        </form>
     </div>
 </div>
 
 {{-- Modal 2: Update Tim Lapangan --}}
-<div class="modal fade" id="modalUpdateTim" tabindex="-1" aria-hidden="true">
+<div class="modal fade" id="modalUpdateTim-{{ $pelatihan->id }}" tabindex="-1" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered">
-        <div class="modal-content border-0 shadow-lg" style="border-radius: 20px;">
+        <form method="POST" action="{{ route('monitoring.pelatihan.update', $pelatihan->id) }}" class="modal-content border-0 shadow-lg" style="border-radius: 20px;">
+            @csrf
+            @method('PUT')
+            <input type="hidden" name="status_kelas" value="{{ $pelatihan->status_kelas }}">
+            <input type="hidden" name="tanggal_pelatihan" value="{{ $pelatihan->tanggal_pelatihan }}">
             <div class="modal-header border-bottom pb-3 pt-4 px-4 bg-light" style="border-radius: 20px 20px 0 0;">
                 <h5 class="modal-title fw-bolder text-dark"><i class="fas fa-users-cog text-success me-2"></i> Set Tim Pengajar & Pengawas</h5>
                 <button type="button" class="btn-close shadow-none" data-bs-dismiss="modal" aria-label="Close"></button>
@@ -671,11 +662,11 @@
             <div class="modal-body px-4 pt-4 pb-4">
                 <div class="mb-3">
                     <label class="label-modern">Nama Instruktur / Trainer</label>
-                    <input type="text" class="form-control input-modern shadow-none" placeholder="Contoh: Bpk. Ahmad Fauzi">
+                    <input type="text" name="instruktur" value="{{ $pelatihan->instruktur }}" class="form-control input-modern shadow-none" placeholder="Contoh: Bpk. Ahmad Fauzi">
                 </div>
                 <div class="mb-3">
                     <label class="label-modern">Nama Asesor / Evaluator</label>
-                    <input type="text" class="form-control input-modern shadow-none" placeholder="Contoh: Bpk. Ridwan R.">
+                    <input type="text" name="asesor" value="{{ $pelatihan->asesor }}" class="form-control input-modern shadow-none" placeholder="Contoh: Bpk. Ridwan R.">
                 </div>
                 
                 <hr class="border-light my-4">
@@ -683,88 +674,78 @@
                 
                 <div class="mb-3">
                     <label class="label-modern">Nama Wasnaker</label>
-                    <input type="text" class="form-control input-modern shadow-none" placeholder="Contoh: Bpk. Sudarsono">
-                </div>
-                <div class="row g-3">
-                    <div class="col-6">
-                        <label class="label-modern">NIP Wasnaker</label>
-                        <input type="text" class="form-control input-modern shadow-none" placeholder="19801212...">
-                    </div>
-                    <div class="col-6">
-                        <label class="label-modern">Wilayah Kerja</label>
-                        <input type="text" class="form-control input-modern shadow-none" placeholder="Disnaker Prov...">
-                    </div>
+                    <input type="text" name="pengawas" value="{{ $pelatihan->pengawas }}" class="form-control input-modern shadow-none" placeholder="Contoh: Bpk. Sudarsono">
                 </div>
             </div>
             <div class="modal-footer border-top bg-light py-3 px-4" style="border-radius: 0 0 20px 20px;">
                 <button type="button" class="btn btn-white border btn-round fw-bold text-dark px-4 shadow-none" data-bs-dismiss="modal">Batal</button>
-                <button type="button" class="btn btn-success text-white btn-round fw-bold px-4 shadow-sm hover-lift" data-bs-dismiss="modal">Simpan Tim</button>
+                <button type="submit" class="btn btn-success text-white btn-round fw-bold px-4 shadow-sm hover-lift">Simpan Tim</button>
             </div>
-        </div>
+        </form>
     </div>
 </div>
 
 {{-- Modal 3: Update Kelembagaan & PIC --}}
-<div class="modal fade" id="modalUpdateLembaga" tabindex="-1" aria-hidden="true">
+<div class="modal fade" id="modalUpdateLembaga-{{ $pelatihan->id }}" tabindex="-1" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered">
-        <div class="modal-content border-0 shadow-lg" style="border-radius: 20px;">
+        <form method="POST" action="{{ route('monitoring.pelatihan.update', $pelatihan->id) }}" class="modal-content border-0 shadow-lg" style="border-radius: 20px;">
+            @csrf
+            @method('PUT')
+            <input type="hidden" name="status_kelas" value="{{ $pelatihan->status_kelas }}">
+            <input type="hidden" name="tanggal_pelatihan" value="{{ $pelatihan->tanggal_pelatihan }}">
             <div class="modal-header border-bottom pb-3 pt-4 px-4 bg-light" style="border-radius: 20px 20px 0 0;">
                 <h5 class="modal-title fw-bolder text-dark"><i class="fas fa-building text-info me-2"></i> Set Kelembagaan & PIC</h5>
                 <button type="button" class="btn-close shadow-none" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body px-4 pt-4 pb-4">
                 <div class="row g-3 mb-3">
-                    <div class="col-6">
+                    <div class="col-12">
                         <label class="label-modern">PJK3 / Lembaga Penyelenggara</label>
-                        <input type="text" class="form-control input-modern shadow-none" placeholder="Contoh: PT Arsa Safety">
-                    </div>
-                    <div class="col-6">
-                        <label class="label-modern">LSP (Lembaga Sertifikasi)</label>
-                        <input type="text" class="form-control input-modern shadow-none" placeholder="Contoh: LSP K3 Konstruksi">
+                        <input type="text" name="pjk3" value="{{ $pelatihan->pjk3 }}" class="form-control input-modern shadow-none" placeholder="Contoh: PT Arsa Safety">
                     </div>
                 </div>
                 <div class="row g-3">
-                    <div class="col-6">
+                    <div class="col-12">
                         <label class="label-modern">PIC Eksternal (Klien)</label>
-                        <input type="text" class="form-control input-modern shadow-none" placeholder="Contoh: Ibu Vina (HRD)">
-                    </div>
-                    <div class="col-6">
-                        <label class="label-modern">PIC Internal (Operasional)</label>
-                        <input type="text" class="form-control input-modern shadow-none" placeholder="Contoh: Dimas">
+                        <input type="text" name="pic_klien" value="{{ $pelatihan->pic_klien }}" class="form-control input-modern shadow-none" placeholder="Contoh: Ibu Vina (HRD)">
                     </div>
                 </div>
             </div>
             <div class="modal-footer border-top bg-light py-3 px-4" style="border-radius: 0 0 20px 20px;">
                 <button type="button" class="btn btn-white border btn-round fw-bold text-dark px-4 shadow-none" data-bs-dismiss="modal">Batal</button>
-                <button type="button" class="btn btn-info text-white btn-round fw-bold px-4 shadow-sm hover-lift" data-bs-dismiss="modal">Simpan Data</button>
+                <button type="submit" class="btn btn-info text-white btn-round fw-bold px-4 shadow-sm hover-lift">Simpan Data</button>
             </div>
-        </div>
+        </form>
     </div>
 </div>
 
 {{-- Modal 4: Update Status Kelas --}}
-<div class="modal fade" id="modalUpdateStatusKelas" tabindex="-1" aria-hidden="true">
+<div class="modal fade" id="modalUpdateStatusKelas-{{ $pelatihan->id }}" tabindex="-1" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered modal-sm">
-        <div class="modal-content border-0 shadow-lg" style="border-radius: 20px;">
+        <form method="POST" action="{{ route('monitoring.pelatihan.update', $pelatihan->id) }}" class="modal-content border-0 shadow-lg" style="border-radius: 20px;">
+            @csrf
+            @method('PUT')
+            <input type="hidden" name="tanggal_pelatihan" value="{{ $pelatihan->tanggal_pelatihan }}">
             <div class="modal-header border-bottom pb-3 pt-4 px-4 bg-light" style="border-radius: 20px 20px 0 0;">
                 <h5 class="modal-title fw-bolder text-dark"><i class="fas fa-flag text-warning me-2"></i> Update Status Kelas</h5>
                 <button type="button" class="btn-close shadow-none" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body px-4 pt-4 pb-4">
                 <label class="label-modern">Pilih Status Baru</label>
-                <select class="form-select input-modern shadow-none" style="height: 45px;">
-                    <option value="Persiapan">🟡 Persiapan (Setup Kelas)</option>
-                    <option value="Running" selected>🔵 Running (Sedang Berjalan)</option>
-                    <option value="Selesai">🟢 Selesai (Menunggu Sertifikat)</option>
-                    <option value="Pending">🔴 Pending / Tertunda</option>
+                <select name="status_kelas" class="form-select input-modern shadow-none" style="height: 45px;">
+                    <option value="persiapan" {{ $pelatihan->status_kelas == 'persiapan' ? 'selected' : '' }}>🟡 Persiapan (Setup Kelas)</option>
+                    <option value="running" {{ $pelatihan->status_kelas == 'running' ? 'selected' : '' }}>🔵 Running (Sedang Berjalan)</option>
+                    <option value="selesai" {{ $pelatihan->status_kelas == 'selesai' ? 'selected' : '' }}>🟢 Selesai (Menunggu Sertifikat)</option>
+                    <option value="batal" {{ $pelatihan->status_kelas == 'batal' ? 'selected' : '' }}>🔴 Batal</option>
                 </select>
             </div>
             <div class="modal-footer border-top bg-light py-3 px-4" style="border-radius: 0 0 20px 20px;">
-                <button type="button" class="btn btn-primary btn-round fw-bold w-100 shadow-sm hover-lift" data-bs-dismiss="modal">Simpan Status</button>
+                <button type="submit" class="btn btn-primary btn-round fw-bold w-100 shadow-sm hover-lift">Simpan Status</button>
             </div>
-        </div>
+        </form>
     </div>
 </div>
+@endforeach
 
 {{-- ================= MODAL UPDATE VALIDASI CHECKLIST ================= --}}
 <div class="modal fade" id="modalUpdateValidasi" tabindex="-1" aria-hidden="true">

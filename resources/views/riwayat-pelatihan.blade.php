@@ -180,7 +180,7 @@
                                     {{-- Kolom Peserta --}}
                                     <td>
                                         @php
-                                            $instansiArr = array_filter(array_map('trim', explode(',', $item->instansi_peserta ?? '')));
+                                            $instansiArr = array_filter($item->instansi_peserta_array);
                                             $instansiUnique = array_values(array_unique($instansiArr));
                                             if (count($instansiUnique) > 2) {
                                                 $instansiDisplay = $instansiUnique[0] . ', ' . $instansiUnique[1] . ' (dan ' . (count($instansiUnique) - 2) . ' lainnya)';
@@ -192,7 +192,7 @@
                                         <div class="text-muted small my-1">
                                             <i class="fas fa-users text-warning me-1"></i> <b class="text-dark">{{ $item->jumlah_peserta }}</b> Peserta
                                         </div>
-                                        <div class="text-muted small text-truncate" style="max-width: 200px;" title="{{ $item->nama_peserta }}">{{ $item->nama_peserta }}</div>
+                                        <div class="text-muted small text-truncate" style="max-width: 200px;" title="{{ implode(', ', $item->nama_peserta_array) }}">{{ implode(', ', $item->nama_peserta_array) }}</div>
                                     </td>
                                     
                                     {{-- Kolom Tim & PIC --}}
@@ -200,7 +200,7 @@
                                         <div class="small mb-1"><span class="text-muted">Trainer:</span> <span class="fw-bold text-dark">{{ \Illuminate\Support\Str::limit($item->nama_trainer ?? '-', 15) }}</span></div>
                                         <div class="small mb-1"><span class="text-muted">LSP:</span> <span class="fw-bold text-dark">{{ \Illuminate\Support\Str::limit($item->nama_lsp ?? '-', 15) }}</span></div>
                                         @php
-                                            $mktArr = array_filter(array_map('trim', explode(',', $item->marketing ?? '')));
+                                            $mktArr = array_filter($item->marketing_array);
                                             $mktUnique = array_unique($mktArr);
                                             $mktDisplay = implode(', ', $mktUnique) ?: '-';
 
@@ -604,10 +604,10 @@
                                                 </thead>
                                                 <tbody>
                                                     @php
-                                                        $pesertas = explode(',', $item->nama_peserta ?? '');
-                                                        $instansis = explode(',', $item->instansi_peserta ?? '');
-                                                        $was = explode(',', $item->wa_peserta ?? '');
-                                                        $mkts = explode(',', $item->marketing ?? '');
+                                                        $pesertas = $item->nama_peserta_array;
+                                                        $instansis = $item->instansi_peserta_array;
+                                                        $was = $item->wa_peserta_array;
+                                                        $mkts = $item->marketing_array;
                                                     @endphp
                                                     @forelse(array_filter($pesertas, 'trim') as $i => $peserta)
                                                     <tr>
@@ -1069,48 +1069,101 @@
         $mkts = explode(',', $item->marketing ?? '');
     @endphp
 
-    {{-- Modal Tambah Peserta Baru --}}
+    {{-- Modal Tambah Peserta Baru (Bisa Massal) --}}
     <div class="modal fade" id="tambahPesertaModal{{ $item->id }}" tabindex="-1" aria-hidden="true">
-        <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-dialog modal-lg modal-dialog-centered">
             <div class="modal-content rounded-4 border-0 shadow">
                 <div class="modal-header border-bottom-0 pb-0 px-4 pt-4">
                     <h5 class="modal-title fw-bold text-dark"><i class="fas fa-user-plus text-primary me-2"></i> Tambah Peserta Baru</h5>
                     <button type="button" class="btn-close shadow-none" data-bs-dismiss="modal"></button>
                 </div>
-                <form action="{{ route('riwayat.pelatihan.tambahPeserta', $item->id) }}" method="POST">
+                <form action="{{ route('riwayat.pelatihan.tambahPesertaMassal', $item->id) }}" method="POST">
                     @csrf
-                    <div class="modal-body p-4">
-                        <div class="mb-3">
-                            <label class="form-label small fw-bold">Nama Peserta</label>
-                            <input type="text" name="nama_peserta" class="form-control rounded-3" required>
+                    <div class="modal-body p-4" style="max-height: 60vh; overflow-y: auto;">
+                        <div class="mb-3 d-flex align-items-center gap-3 bg-light p-3 rounded-3 border">
+                            <label class="form-label fw-bold mb-0">Jumlah Peserta Ditambahkan:</label>
+                            <input type="number" id="inputTambahPeserta{{ $item->id }}" class="form-control text-center rounded-3 fw-bold" style="width: 80px;" value="1" min="1" max="50">
                         </div>
-                        <div class="mb-3">
-                            <label class="form-label small fw-bold">Perusahaan / Instansi</label>
-                            <input type="text" name="instansi_peserta" class="form-control rounded-3">
+                        <div id="tambahPesertaContainer{{ $item->id }}">
+                            <div class="border p-3 rounded-3 mb-2 bg-white shadow-sm">
+                                <h6 class="fw-bold mb-2 small text-secondary">Peserta Tambahan 1</h6>
+                                <div class="row g-2">
+                                    <div class="col-md-3">
+                                        <input type="text" name="nama_peserta[]" class="form-control rounded-3 form-control-sm" placeholder="Nama" required>
+                                    </div>
+                                    <div class="col-md-3">
+                                        <input type="text" name="instansi_peserta[]" class="form-control rounded-3 form-control-sm" placeholder="Instansi">
+                                    </div>
+                                    <div class="col-md-3">
+                                        <input type="text" name="wa_peserta[]" class="form-control rounded-3 form-control-sm" placeholder="WA">
+                                    </div>
+                                    <div class="col-md-3">
+                                        <select name="marketing[]" class="form-select rounded-3 form-control-sm">
+                                            <option value="">Marketing...</option>
+                                            @foreach($marketings as $mkt)
+                                                <option value="{{ $mkt->name }}">{{ $mkt->nama_lengkap ?: $mkt->name }}</option>
+                                            @endforeach
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
                         </div>
-                        <div class="mb-3">
-                            <label class="form-label small fw-bold">WA Peserta</label>
-                            <input type="text" name="wa_peserta" class="form-control rounded-3">
-                        </div>
-                        <div class="mb-0">
-                            <label class="form-label small fw-bold">Marketing</label>
-                            <select name="marketing" class="form-select rounded-3">
-                                <option value="">Pilih...</option>
-                                @foreach($marketings as $mkt)
-                                    <option value="{{ $mkt->name }}">{{ $mkt->nama_lengkap ?: $mkt->name }}</option>
-                                @endforeach
-                            </select>
-                        </div>
+                        <script>
+                            document.addEventListener('DOMContentLoaded', function() {
+                                document.getElementById('inputTambahPeserta{{ $item->id }}').addEventListener('input', function() {
+                                    let num = parseInt(this.value) || 0;
+                                    if(num > 50) num = 50; // max 50 for safety
+                                    let container = document.getElementById('tambahPesertaContainer{{ $item->id }}');
+                                    container.innerHTML = '';
+                                    let marketingOpts = `<option value="">Marketing...</option>`;
+                                    @foreach($marketings as $mkt)
+                                        marketingOpts += `<option value="{{ $mkt->name }}">{{ $mkt->nama_lengkap ?: $mkt->name }}</option>`;
+                                    @endforeach
+
+                                    if(num > 0) {
+                                        for(let i=1; i<=num; i++) {
+                                            container.innerHTML += `
+                                                <div class="border p-3 rounded-3 mb-2 bg-white shadow-sm">
+                                                    <h6 class="fw-bold mb-2 small text-secondary">Peserta Tambahan ${i}</h6>
+                                                    <div class="row g-2">
+                                                        <div class="col-md-3">
+                                                            <input type="text" name="nama_peserta[]" class="form-control rounded-3 form-control-sm" placeholder="Nama" required>
+                                                        </div>
+                                                        <div class="col-md-3">
+                                                            <input type="text" name="instansi_peserta[]" class="form-control rounded-3 form-control-sm" placeholder="Instansi">
+                                                        </div>
+                                                        <div class="col-md-3">
+                                                            <input type="text" name="wa_peserta[]" class="form-control rounded-3 form-control-sm" placeholder="WA">
+                                                        </div>
+                                                        <div class="col-md-3">
+                                                            <select name="marketing[]" class="form-select rounded-3 form-control-sm">
+                                                                ${marketingOpts}
+                                                            </select>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            `;
+                                        }
+                                    }
+                                });
+                            });
+                        </script>
                     </div>
                     <div class="modal-footer border-top-0 px-4 pb-4 pt-0">
                         <button type="button" class="btn btn-light rounded-pill px-4" data-bs-dismiss="modal">Batal</button>
-                        <button type="submit" class="btn btn-primary rounded-pill px-4 shadow-sm">Simpan</button>
+                        <button type="submit" class="btn btn-primary rounded-pill px-4 shadow-sm">Simpan Tambahan</button>
                     </div>
                 </form>
             </div>
         </div>
     </div>
 
+    @php
+        $pesertas = $item->nama_peserta_array;
+        $instansis = $item->instansi_peserta_array;
+        $was = $item->wa_peserta_array;
+        $mkts = $item->marketing_array;
+    @endphp
     @foreach(array_filter($pesertas, 'trim') as $i => $peserta)
     <div class="modal fade" id="editPesertaModal{{ $item->id }}_{{ $i }}" tabindex="-1" aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered">

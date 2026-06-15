@@ -215,56 +215,60 @@
                 </div>
 
                 <div id="peserta-container" class="space-y-6 mb-6">
-                    {{-- Card Peserta #1 --}}
+                    @for ($i = 0; $i < $jumlah_peserta; $i++)
+                    {{-- Card Peserta #{{ $i + 1 }} --}}
                     <div class="peserta-card bg-gray-50 border border-gray-200 rounded-2xl p-5 relative">
                         <h3 class="text-sm font-bold text-emerald-700 mb-4 flex items-center">
-                            <span class="bg-emerald-100 px-2 py-0.5 rounded mr-2 nomor-peserta">#1</span> Data Karyawan
+                            <span class="bg-emerald-100 px-2 py-0.5 rounded mr-2 nomor-peserta">#{{ $i + 1 }}</span> Data Karyawan
                         </h3>
                         
                         <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
                             <div class="input-focus-ring rounded-xl">
                                 <label class="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-2 ml-1">Nama Lengkap <span class="text-red-500">*</span></label>
-                                <input type="text" name="peserta[0][nama_lengkap]" class="w-full px-4 py-3 bg-white border border-gray-200 rounded-xl focus:border-emerald-500 outline-none text-sm" placeholder="Sesuai KTP" required>
+                                <input type="text" name="peserta[{{ $i }}][nama_lengkap]" class="w-full px-4 py-3 bg-white border border-gray-200 rounded-xl focus:border-emerald-500 outline-none text-sm" placeholder="Sesuai KTP" required>
                             </div>
                             <div class="input-focus-ring rounded-xl">
                                 <label class="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-2 ml-1">NIK <span class="text-red-500">*</span></label>
-                                <input type="text" name="peserta[0][nik]" class="w-full px-4 py-3 bg-white border border-gray-200 rounded-xl focus:border-emerald-500 outline-none text-sm" placeholder="16 Digit NIK" required>
+                                <input type="text" name="peserta[{{ $i }}][nik]" class="w-full px-4 py-3 bg-white border border-gray-200 rounded-xl focus:border-emerald-500 outline-none text-sm" placeholder="16 Digit NIK" required>
                             </div>
                             <div class="input-focus-ring rounded-xl">
                                 <label class="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-2 ml-1">Tempat Lahir</label>
-                                <input type="text" name="peserta[0][tempat_lahir]" class="w-full px-4 py-3 bg-white border border-gray-200 rounded-xl focus:border-emerald-500 outline-none text-sm" placeholder="Sesuai KTP">
+                                <input type="text" name="peserta[{{ $i }}][tempat_lahir]" class="w-full px-4 py-3 bg-white border border-gray-200 rounded-xl focus:border-emerald-500 outline-none text-sm" placeholder="Sesuai KTP">
                             </div>
                             <div class="input-focus-ring rounded-xl">
                                 <label class="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-2 ml-1">Tanggal Lahir</label>
-                                <input type="date" name="peserta[0][tanggal_lahir]" class="w-full px-4 py-3 bg-white border border-gray-200 rounded-xl focus:border-emerald-500 outline-none text-sm">
+                                <input type="date" name="peserta[{{ $i }}][tanggal_lahir]" class="w-full px-4 py-3 bg-white border border-gray-200 rounded-xl focus:border-emerald-500 outline-none text-sm">
                             </div>
                             <div class="input-focus-ring rounded-xl">
                                 <label class="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-2 ml-1">No. WhatsApp</label>
-                                <input type="tel" name="peserta[0][no_wa]" class="w-full px-4 py-3 bg-white border border-gray-200 rounded-xl focus:border-emerald-500 outline-none text-sm" placeholder="0812xxxx">
+                                <input type="tel" name="peserta[{{ $i }}][no_wa]" class="w-full px-4 py-3 bg-white border border-gray-200 rounded-xl focus:border-emerald-500 outline-none text-sm" placeholder="0812xxxx">
                             </div>
                             <div class="input-focus-ring rounded-xl">
                                 <label class="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-2 ml-1">Alamat Peserta</label>
-                                <input type="text" name="peserta[0][alamat]" class="w-full px-4 py-3 bg-white border border-gray-200 rounded-xl focus:border-emerald-500 outline-none text-sm" placeholder="Sesuai KTP">
+                                <input type="text" name="peserta[{{ $i }}][alamat]" class="w-full px-4 py-3 bg-white border border-gray-200 rounded-xl focus:border-emerald-500 outline-none text-sm" placeholder="Sesuai KTP">
                             </div>
                             
                             {{-- 🔥 UPDATE 2: Select Pelatihan dengan desain tailwind Select2 🔥 --}}
                             <div class="input-focus-ring rounded-xl">
                                 <label class="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-2 ml-1">Judul Pelatihan <span class="text-red-500">*</span></label>
-                                <select name="peserta[0][training_id]" class="w-full select2-init bg-white border border-gray-200" required>
+                                <select name="peserta[{{ $i }}][training_id]" class="w-full select2-init bg-white border border-gray-200" required>
                                     <option value="" disabled selected>Ketik untuk mencari pelatihan...</option>
                                     @foreach($trainings as $t)
-                                        <option value="{{ $t->id }}" {{ old('peserta.0.training_id') == $t->id ? 'selected' : '' }}>{{ $t->nama_training }}</option>
+                                        <option value="{{ $t->id }}" {{ old('peserta.'.$i.'.training_id') == $t->id ? 'selected' : (count($trainings) == 1 ? 'selected' : '') }}>{{ $t->nama_training }}</option>
                                     @endforeach
                                 </select>
                             </div>
                         </div>
                     </div>
+                    @endfor
                 </div>
 
+                @if(!request('cta_id'))
                 <button type="button" onclick="tambahPeserta()" class="w-full bg-emerald-50 border border-emerald-200 text-emerald-700 font-bold py-3 rounded-xl hover:bg-emerald-100 transition-colors flex items-center justify-center mb-8 border-dashed">
                     <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" /></svg>
                     Tambah Peserta Lainnya
                 </button>
+                @endif
 
                 <hr class="border-gray-200 mb-8">
 
@@ -386,8 +390,8 @@
             }
         }
 
-        let indexPeserta = 0; 
-        let nomorTampil = 1;  
+        let indexPeserta = {{ $jumlah_peserta - 1 }}; 
+        let nomorTampil = {{ $jumlah_peserta }};  
 
         function tambahPeserta() {
             indexPeserta++;

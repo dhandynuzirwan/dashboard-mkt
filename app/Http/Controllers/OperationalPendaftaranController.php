@@ -125,6 +125,24 @@ class OperationalPendaftaranController extends Controller
             $updates['status'] = 'diterima'; 
         }
 
+        // Tanggal Pelatihan & Auto-Create PelatihanBerjalan
+        if ($request->filled('tanggal_pelatihan')) {
+            $updates['tanggal_pelatihan'] = $request->tanggal_pelatihan;
+            
+            // Cek apakah ada PelatihanBerjalan dengan training & tanggal yang sama
+            $pelatihanBerjalan = \App\Models\PelatihanBerjalan::firstOrCreate(
+                [
+                    'master_training_id' => $pendaftaran->master_training_id,
+                    'tanggal_pelatihan' => $request->tanggal_pelatihan,
+                ],
+                [
+                    'status_kelas' => 'persiapan'
+                ]
+            );
+
+            $updates['pelatihan_berjalan_id'] = $pelatihanBerjalan->id;
+        }
+
         $pendaftaran->update($updates);
 
         return redirect()->back()->with('success', 'Verifikasi berkas atas nama '.$pendaftaran->nama_lengkap.' berhasil disimpan.');

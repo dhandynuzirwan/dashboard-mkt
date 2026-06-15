@@ -18,6 +18,7 @@ use App\Http\Controllers\UserController;
 use App\Http\Controllers\OperationalController;
 use App\Http\Controllers\DailyLogController;
 use App\Http\Controllers\PengirimanPaketController;
+use App\Http\Controllers\RiwayatPelatihanController;
 use App\Http\Controllers\AkunAksesController;
 use App\Http\Controllers\OperationalPendaftaranController;
 use App\Http\Controllers\PendaftaranKolektifController;
@@ -142,17 +143,16 @@ Route::middleware('auth')->group(function () {
         Route::delete('/operational/destroy-link/{id}', [OperationalController::class, 'destroyResource'])->name('operational.destroy-link');
         Route::post('/operational/kontak', [OperationalController::class, 'storeKontak'])->name('operational.store-kontak');
         Route::delete('/operational/kontak/{id}', [OperationalController::class, 'destroyKontak'])->name('operational.destroy-kontak');
-        Route::get('/monitoring-pelatihan', function () {
-            return view('operational.monitoring-pelatihan');
-        })->name('monitoring.pelatihan');
+        Route::get('/monitoring-pelatihan', [OperationalController::class, 'monitoringPelatihan'])->name('monitoring.pelatihan');
+        Route::put('/monitoring-pelatihan/{id}', [OperationalController::class, 'updatePelatihanBerjalan'])->name('monitoring.pelatihan.update');
 
         Route::middleware('role:superadmin,web_dev,team_leader,operasional')->group(function () {
-            Route::get('/riwayat-pelatihan', [App\Http\Controllers\RiwayatPelatihanController::class, 'index'])->name('riwayat.pelatihan');
-            Route::post('/riwayat-pelatihan', [App\Http\Controllers\RiwayatPelatihanController::class, 'store'])->name('riwayat.pelatihan.store');
-            Route::put('/riwayat-pelatihan/{id}', [App\Http\Controllers\RiwayatPelatihanController::class, 'update'])->name('riwayat.pelatihan.update');
-            Route::put('/riwayat-pelatihan/{id}/peserta/{index}', [App\Http\Controllers\RiwayatPelatihanController::class, 'updatePeserta'])->name('riwayat.pelatihan.updatePeserta');
-            Route::post('/riwayat-pelatihan/{id}/peserta', [App\Http\Controllers\RiwayatPelatihanController::class, 'tambahPeserta'])->name('riwayat.pelatihan.tambahPeserta');
-            Route::delete('/riwayat-pelatihan/{id}/peserta/{index}', [App\Http\Controllers\RiwayatPelatihanController::class, 'hapusPeserta'])->name('riwayat.pelatihan.hapusPeserta');
+            Route::get('/riwayat-pelatihan', [RiwayatPelatihanController::class, 'index'])->name('riwayat.pelatihan');
+            Route::post('/riwayat-pelatihan', [RiwayatPelatihanController::class, 'store'])->name('riwayat.pelatihan.store');
+            Route::put('/riwayat-pelatihan/{id}', [RiwayatPelatihanController::class, 'update'])->name('riwayat.pelatihan.update');
+            Route::put('/riwayat-pelatihan/{id}/peserta/{index}', [RiwayatPelatihanController::class, 'updatePeserta'])->name('riwayat.pelatihan.updatePeserta');
+            Route::post('/riwayat-pelatihan/{id}/tambah-peserta-massal', [RiwayatPelatihanController::class, 'tambahPesertaMassal'])->name('riwayat.pelatihan.tambahPesertaMassal');
+            Route::delete('/riwayat-pelatihan/{id}/peserta/{index}', [RiwayatPelatihanController::class, 'hapusPeserta'])->name('riwayat.pelatihan.hapusPeserta');
         });
 
 

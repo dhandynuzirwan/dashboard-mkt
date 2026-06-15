@@ -50,4 +50,34 @@ class RiwayatPelatihan extends Model
         'foto',
         'catatan'
     ];
+
+    public function getNamaPesertaArrayAttribute()
+    {
+        return $this->decodeArray($this->nama_peserta);
+    }
+
+    public function getInstansiPesertaArrayAttribute()
+    {
+        return $this->decodeArray($this->instansi_peserta);
+    }
+
+    public function getWaPesertaArrayAttribute()
+    {
+        return $this->decodeArray($this->wa_peserta);
+    }
+
+    public function getMarketingArrayAttribute()
+    {
+        return $this->decodeArray($this->marketing);
+    }
+
+    private function decodeArray($value)
+    {
+        if (empty($value)) return [];
+        $decoded = json_decode($value, true);
+        if (json_last_error() === JSON_ERROR_NONE && is_array($decoded)) {
+            return $decoded;
+        }
+        return array_map('trim', explode(',', $value));
+    }
 }
