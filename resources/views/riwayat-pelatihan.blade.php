@@ -112,7 +112,7 @@
                 <div class="col-md-8">
                     <div class="card border-0 shadow-sm rounded-4 h-100 bg-white">
                         <div class="card-header bg-transparent border-bottom-0 pt-4 pb-0 px-4">
-                            <h6 class="fw-bolder mb-0"><i class="fas fa-chart-bar text-primary me-2"></i> Grafik Trend (6 Bulan Terakhir)</h6>
+                            <h6 class="fw-bolder mb-0"><i class="fas fa-chart-line text-primary me-2"></i> Grafik Trend (12 Bulan Terakhir)</h6>
                         </div>
                         <div class="card-body px-4 pb-4 pt-3">
                             <div class="chart-container" style="position: relative; height: 300px; width: 100%;">
@@ -1182,32 +1182,34 @@
 <script>
     document.addEventListener("DOMContentLoaded", function() {
         
-        // Chart 1: Bar Chart (Trend 6 Bulan)
+        // Chart 1: Line Chart (Trend 12 Bulan)
         var ctx1 = document.getElementById('riwayatChart').getContext('2d');
         var chartData = @json($chartData);
         
         new Chart(ctx1, {
-            type: 'bar',
+            type: 'line',
             data: {
                 labels: chartData.labels,
                 datasets: [
                     {
                         label: 'Total Peserta',
                         data: chartData.dataPeserta,
-                        backgroundColor: 'rgba(59, 130, 246, 0.8)', // Primary Blue
+                        backgroundColor: 'rgba(59, 130, 246, 0.1)', // Primary Blue
                         borderColor: 'rgba(37, 99, 235, 1)',
-                        borderWidth: 0,
-                        borderRadius: 6,
-                        barPercentage: 0.6
+                        borderWidth: 3,
+                        pointBackgroundColor: 'rgba(37, 99, 235, 1)',
+                        tension: 0.4,
+                        fill: true
                     },
                     {
                         label: 'Jumlah Pelatihan',
                         data: chartData.dataPelatihan,
-                        backgroundColor: 'rgba(16, 185, 129, 0.8)', // Success Green
+                        backgroundColor: 'rgba(16, 185, 129, 0.1)', // Success Green
                         borderColor: 'rgba(5, 150, 105, 1)',
-                        borderWidth: 0,
-                        borderRadius: 6,
-                        barPercentage: 0.6
+                        borderWidth: 3,
+                        pointBackgroundColor: 'rgba(5, 150, 105, 1)',
+                        tension: 0.4,
+                        fill: true
                     }
                 ]
             },

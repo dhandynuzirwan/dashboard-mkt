@@ -39,7 +39,7 @@ class RiwayatPelatihanController extends Controller
         $totalSertifikatPending = (clone $query)->where('status_sertif', 'Belum Terbit')->sum('jumlah_peserta');
         $totalPelatihan = (clone $query)->count();
 
-        // Data for Chart 1: 6 months history
+        // Data for Chart 1: 12 months history
         $chartData = [
             'labels' => [],
             'dataPeserta' => [],
@@ -48,7 +48,7 @@ class RiwayatPelatihanController extends Controller
         
         $baseDate = $request->filled('month_year') ? Carbon::createFromFormat('Y-m', $request->month_year)->endOfMonth() : Carbon::now()->endOfMonth();
 
-        for ($i = 5; $i >= 0; $i--) {
+        for ($i = 11; $i >= 0; $i--) {
             $monthStart = (clone $baseDate)->startOfMonth()->subMonths($i);
             $monthEnd = (clone $baseDate)->endOfMonth()->subMonths($i);
             
