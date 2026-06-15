@@ -145,6 +145,21 @@ class RiwayatPelatihanController extends Controller
             }
         }
 
+        // Process array inputs for dynamic participant fields (if updating bulk)
+        if ($request->has('nama_peserta') && is_array($request->nama_peserta)) {
+            $data['nama_peserta'] = json_encode(array_values($request->nama_peserta));
+            $data['jumlah_peserta'] = count($request->nama_peserta);
+        }
+        if ($request->has('instansi_peserta') && is_array($request->instansi_peserta)) {
+            $data['instansi_peserta'] = json_encode(array_values($request->instansi_peserta));
+        }
+        if ($request->has('wa_peserta') && is_array($request->wa_peserta)) {
+            $data['wa_peserta'] = json_encode(array_values($request->wa_peserta));
+        }
+        if ($request->has('marketing') && is_array($request->marketing)) {
+            $data['marketing'] = json_encode(array_values($request->marketing));
+        }
+
         $riwayat->update($data);
 
         return redirect()->back()->with('success', 'Data berhasil diperbarui.');

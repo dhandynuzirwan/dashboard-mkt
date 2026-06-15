@@ -24,7 +24,30 @@ class PelatihanBerjalan extends Model
         'file_laporan_kemnaker',
         'resi_pengiriman',
         'foto_resi',
-        'foto_tanda_terima'
+        'foto_tanda_terima',
+        'checklist_validasi',
+        'status_sertifikat',
+        'estimasi_terbit',
+        'tgl_terima_lembaga',
+        'tgl_kirim_klien',
+        'file_scan_sertifikat',
+        'nama_penerima',
+        'wa_penerima',
+        'isi_paket',
+        'alamat_pengiriman',
+        'tanggal_kirim',
+        'status_pengiriman',
+        'tanggal_diterima',
+        'ekspedisi',
+        'catatan_pengiriman',
+        'tanggal_selesai',
+        'wa_trainer',
+        'cv',
+        'modul',
+        'nama_lsp',
+        'kontak_lsp',
+        'wa_asesor',
+        'keterangan_tambahan'
     ];
 
     public function training()

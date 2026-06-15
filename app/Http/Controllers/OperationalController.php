@@ -134,7 +134,31 @@ class OperationalController extends Controller
             'status_kelas'      => 'required|in:persiapan,running,selesai,batal',
         ]);
         
-        $pelatihan->update($request->except(['_token', '_method']));
+        $data = $request->except(['_token', '_method']);
+
+        // Handle File Uploads
+        $fileFields = [
+            'file_laporan_internal',
+            'file_laporan_kemnaker',
+            'file_scan_sertifikat',
+            'foto_resi',
+            'foto_tanda_terima'
+        ];
+
+        foreach ($fileFields as $field) {
+            if ($request->hasFile($field)) {
+                $file = $request->file($field);
+                $filename = time() . '_' . $field . '.' . $file->getClientOriginalExtension();
+                $file->move(public_path('uploads/operasional'), $filename);
+                $data[$field] = 'uploads/operasional/' . $filename;
+            }
+        }
+
+        if (isset($data['checklist_validasi']) && is_array($data['checklist_validasi'])) {
+            $data['checklist_validasi'] = json_encode($data['checklist_validasi']);
+        }
+
+        $pelatihan->update($data);
         
         // Trigger if Selesai
         if ($pelatihan->status_kelas === 'selesai' && $pelatihan->wasChanged('status_kelas')) {
@@ -158,10 +182,16 @@ class OperationalController extends Controller
                 'jenis' => $pelatihan->training->sertifikasi ?? null,
                 'metode' => $pelatihan->lokasi ?? null,
                 'tanggal_mulai' => $pelatihan->tanggal_pelatihan,
+                'tanggal_selesai' => $pelatihan->tanggal_selesai,
                 'tanggal_asesmen' => $pelatihan->tanggal_asesmen,
                 'nama_trainer' => $pelatihan->instruktur,
+                'wa_trainer' => $pelatihan->wa_trainer,
+                'cv' => $pelatihan->cv,
+                'modul' => $pelatihan->modul,
                 'nama_asesor' => $pelatihan->asesor,
+                'wa_asesor' => $pelatihan->wa_asesor,
                 'nama_lsp' => $pelatihan->pjk3,
+                'kontak_lsp' => $pelatihan->kontak_lsp,
                 'jumlah_peserta' => $pesertas->count(),
                 'nama_peserta' => json_encode($nama_peserta),
                 'instansi_peserta' => json_encode($instansi_peserta),
@@ -169,6 +199,7 @@ class OperationalController extends Controller
                 'marketing' => json_encode($marketing),
                 'status_sertif' => 'Belum Terbit',
                 'status_kompeten' => 'Belum',
+                'keterangan_tambahan' => $pelatihan->keterangan_tambahan,
             ]);
         }
         

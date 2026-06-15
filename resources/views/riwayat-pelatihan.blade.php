@@ -571,6 +571,7 @@
                                     <h6 class="fw-bolder text-dark mb-0"><i class="fas fa-building text-primary me-2"></i> Instansi & Peserta</h6>
                                     <div>
                                         <button type="button" class="btn btn-sm btn-primary py-1 px-2 rounded-3 me-1" data-bs-toggle="modal" data-bs-target="#tambahPesertaModal{{ $item->id }}"><i class="fas fa-plus"></i> Tambah</button>
+                                        <button type="button" class="btn btn-sm btn-warning py-1 px-2 rounded-3 me-1" data-bs-toggle="modal" data-bs-target="#editSemuaPesertaModal{{ $item->id }}"><i class="fas fa-edit"></i> Edit Semua</button>
                                         <button type="button" class="btn btn-sm btn-light border py-1 px-2 rounded-3" data-bs-toggle="modal" data-bs-target="#editSyaratModal{{ $item->id }}"><i class="fas fa-edit text-primary"></i> Edit Syarat</button>
                                     </div>
                                 </div>
@@ -1158,6 +1159,133 @@
         </div>
     </div>
 
+    {{-- Modal Edit Semua Peserta --}}
+    <div class="modal fade" id="editSemuaPesertaModal{{ $item->id }}" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog modal-xl modal-dialog-centered">
+            <div class="modal-content rounded-4 border-0 shadow">
+                <div class="modal-header border-bottom-0 pb-0 px-4 pt-4">
+                    <h5 class="modal-title fw-bold text-dark"><i class="fas fa-users-cog text-warning me-2"></i> Edit Semua Peserta</h5>
+                    <button type="button" class="btn-close shadow-none" data-bs-dismiss="modal"></button>
+                </div>
+                <form action="{{ route('riwayat.pelatihan.update', $item->id) }}" method="POST">
+                    @csrf @method('PUT')
+                    <input type="hidden" name="block" value="peserta">
+                    <div class="modal-body p-4" style="max-height: 65vh; overflow-y: auto;">
+                        <div class="alert alert-warning border-0 rounded-3 small">
+                            <i class="fas fa-exclamation-triangle me-2"></i> <strong>Perhatian:</strong> Perubahan di sini akan menimpa seluruh data peserta yang ada. Anda bisa menambah, mengubah, atau menghapus baris di bawah ini.
+                        </div>
+                        
+                        <div class="table-responsive border rounded-3 mb-3">
+                            <table class="table table-sm table-borderless align-middle mb-0" id="editSemuaTable{{ $item->id }}">
+                                <thead class="bg-light text-muted" style="font-size: 13px;">
+                                    <tr>
+                                        <th width="30%" class="py-2 px-3">Nama Peserta</th>
+                                        <th width="25%" class="py-2 px-3">Perusahaan/Instansi</th>
+                                        <th width="20%" class="py-2 px-3">WhatsApp</th>
+                                        <th width="20%" class="py-2 px-3">Marketing</th>
+                                        <th width="5%" class="text-center py-2 px-3">Aksi</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="editSemuaTbody{{ $item->id }}">
+                                    @php
+                                        $editPesertas = $item->nama_peserta_array;
+                                        $editInstansis = $item->instansi_peserta_array;
+                                        $editWas = $item->wa_peserta_array;
+                                        $editMkts = $item->marketing_array;
+                                        
+                                        $validPesertas = [];
+                                        foreach($editPesertas as $idx => $p) {
+                                            if(trim($p) !== '') {
+                                                $validPesertas[] = [
+                                                    'nama' => trim($p),
+                                                    'instansi' => trim($editInstansis[$idx] ?? ''),
+                                                    'wa' => trim($editWas[$idx] ?? ''),
+                                                    'marketing' => trim($editMkts[$idx] ?? ''),
+                                                ];
+                                            }
+                                        }
+                                        if(count($validPesertas) == 0) {
+                                            $validPesertas[] = ['nama' => '', 'instansi' => '', 'wa' => '', 'marketing' => ''];
+                                        }
+                                    @endphp
+                                    
+                                    @foreach($validPesertas as $idx => $p)
+                                    <tr class="peserta-row">
+                                        <td class="px-3 py-2"><input type="text" name="nama_peserta[]" class="form-control rounded-3 form-control-sm" value="{{ $p['nama'] }}" required></td>
+                                        <td class="px-3 py-2"><input type="text" name="instansi_peserta[]" class="form-control rounded-3 form-control-sm" value="{{ $p['instansi'] }}"></td>
+                                        <td class="px-3 py-2"><input type="text" name="wa_peserta[]" class="form-control rounded-3 form-control-sm" value="{{ $p['wa'] }}"></td>
+                                        <td class="px-3 py-2">
+                                            <select name="marketing[]" class="form-select rounded-3 form-control-sm">
+                                                <option value="">Pilih...</option>
+                                                @foreach($marketings as $mkt)
+                                                    <option value="{{ $mkt->name }}" {{ $p['marketing'] == $mkt->name ? 'selected' : '' }}>{{ $mkt->nama_lengkap ?: $mkt->name }}</option>
+                                                @endforeach
+                                            </select>
+                                        </td>
+                                        <td class="px-3 py-2 text-center">
+                                            <button type="button" class="btn btn-sm btn-light border text-danger rounded-3 btn-remove-row" title="Hapus Baris"><i class="fas fa-times"></i></button>
+                                        </td>
+                                    </tr>
+                                    @endforeach
+                                </tbody>
+                            </table>
+                        </div>
+                        <button type="button" class="btn btn-sm btn-outline-primary rounded-pill px-3" id="btnTambahBaris{{ $item->id }}">
+                            <i class="fas fa-plus me-1"></i> Tambah Baris
+                        </button>
+                    </div>
+                    <div class="modal-footer border-top-0 px-4 pb-4 pt-0">
+                        <button type="button" class="btn btn-light rounded-pill px-4" data-bs-dismiss="modal">Batal</button>
+                        <button type="submit" class="btn btn-warning text-dark fw-bold rounded-pill px-4 shadow-sm">Simpan Perubahan</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const btnTambah = document.getElementById('btnTambahBaris{{ $item->id }}');
+            if (btnTambah) {
+                btnTambah.addEventListener('click', function() {
+                    const tbody = document.getElementById('editSemuaTbody{{ $item->id }}');
+                    const tr = document.createElement('tr');
+                    tr.className = 'peserta-row';
+                    tr.innerHTML = `
+                        <td class="px-3 py-2"><input type="text" name="nama_peserta[]" class="form-control rounded-3 form-control-sm" required></td>
+                        <td class="px-3 py-2"><input type="text" name="instansi_peserta[]" class="form-control rounded-3 form-control-sm"></td>
+                        <td class="px-3 py-2"><input type="text" name="wa_peserta[]" class="form-control rounded-3 form-control-sm"></td>
+                        <td class="px-3 py-2">
+                            <select name="marketing[]" class="form-select rounded-3 form-control-sm">
+                                <option value="">Pilih...</option>
+                                @foreach($marketings as $mkt)
+                                    <option value="{{ $mkt->name }}">{{ $mkt->nama_lengkap ?: $mkt->name }}</option>
+                                @endforeach
+                            </select>
+                        </td>
+                        <td class="px-3 py-2 text-center">
+                            <button type="button" class="btn btn-sm btn-light border text-danger rounded-3 btn-remove-row" title="Hapus Baris"><i class="fas fa-times"></i></button>
+                        </td>
+                    `;
+                    tbody.appendChild(tr);
+                });
+            }
+
+            document.addEventListener('click', function(e) {
+                const btn = e.target.closest('.btn-remove-row');
+                if (btn) {
+                    const tbody = btn.closest('tbody');
+                    if (tbody && tbody.id === 'editSemuaTbody{{ $item->id }}') {
+                        if (tbody.querySelectorAll('.peserta-row').length > 1) {
+                            btn.closest('tr').remove();
+                        } else {
+                            alert('Minimal harus ada 1 baris peserta.');
+                        }
+                    }
+                }
+            });
+        });
+    </script>
+
     @php
         $pesertas = $item->nama_peserta_array;
         $instansis = $item->instansi_peserta_array;
@@ -1245,24 +1373,26 @@
                 labels: chartData.labels,
                 datasets: [
                     {
+                        type: 'line',
                         label: 'Total Peserta',
                         data: chartData.dataPeserta,
-                        backgroundColor: 'rgba(59, 130, 246, 0.1)', // Primary Blue
+                        backgroundColor: 'rgba(37, 99, 235, 0.1)',
                         borderColor: 'rgba(37, 99, 235, 1)',
                         borderWidth: 3,
                         pointBackgroundColor: 'rgba(37, 99, 235, 1)',
                         tension: 0.4,
-                        fill: true
+                        fill: true,
+                        yAxisID: 'y'
                     },
                     {
+                        type: 'bar',
                         label: 'Jumlah Pelatihan',
                         data: chartData.dataPelatihan,
-                        backgroundColor: 'rgba(16, 185, 129, 0.1)', // Success Green
+                        backgroundColor: 'rgba(16, 185, 129, 0.7)',
                         borderColor: 'rgba(5, 150, 105, 1)',
-                        borderWidth: 3,
-                        pointBackgroundColor: 'rgba(5, 150, 105, 1)',
-                        tension: 0.4,
-                        fill: true
+                        borderWidth: 1,
+                        borderRadius: 4,
+                        yAxisID: 'y1'
                     }
                 ]
             },
@@ -1275,13 +1405,26 @@
                 },
                 scales: {
                     y: {
+                        type: 'linear',
+                        display: true,
+                        position: 'left',
                         beginAtZero: true,
+                        title: { display: true, text: 'Total Peserta', color: '#3b82f6', font: {weight: 'bold'} },
                         grid: { borderDash: [4, 4], color: '#e2e8f0' },
-                        ticks: { precision: 0, color: '#64748b' }
+                        ticks: { precision: 0, color: '#3b82f6' }
+                    },
+                    y1: {
+                        type: 'linear',
+                        display: true,
+                        position: 'right',
+                        beginAtZero: true,
+                        title: { display: true, text: 'Jumlah Pelatihan', color: '#10b981', font: {weight: 'bold'} },
+                        grid: { drawOnChartArea: false }, // only want the grid lines for one axis
+                        ticks: { precision: 0, color: '#10b981' }
                     },
                     x: {
                         grid: { display: false },
-                        ticks: { color: '#64748b', font: { weight: 'bold' } }
+                        ticks: { color: '#64748b', maxRotation: 45, minRotation: 45 }
                     }
                 }
             }
