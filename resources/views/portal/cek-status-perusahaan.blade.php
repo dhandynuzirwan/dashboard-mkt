@@ -39,7 +39,7 @@
 
     <main class="flex-grow px-5 py-8 w-full max-w-4xl mx-auto">
 
-        <div id="login-section" class="w-full max-w-md mx-auto fade-in">
+        <div id="login-section" class="w-full max-w-md mx-auto fade-in {{ $kolektif ? 'hidden' : '' }}">
             <div class="text-center mb-8">
                 <div class="inline-flex items-center justify-center w-20 h-20 bg-emerald-100 text-emerald-600 rounded-3xl mb-5 shadow-inner transform rotate-3">
                     <svg class="w-10 h-10 transform -rotate-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-10V4m-5 10h.01M15 7h.01M15 11h.01M15 15h.01M11 15h.01M7 15h.01"></path></svg>
@@ -55,7 +55,7 @@
                     <button type="button" onclick="switchLogin('data')" id="tab-login-data" class="flex-1 text-gray-500 font-bold text-xs py-2.5 rounded-xl hover:text-gray-700 transition-all relative z-10">Via Data Perusahaan</button>
                 </div>
 
-                <form onsubmit="event.preventDefault(); prosesLogin();" class="space-y-6">
+                <form action="{{ route('portal.cek-status-perusahaan') }}" method="GET" class="space-y-6">
                     
                     <div id="form-login-id" class="space-y-6">
                         <div class="space-y-2">
@@ -64,7 +64,7 @@
                                 <span class="absolute inset-y-0 left-0 flex items-center pl-4 text-gray-400">
                                     <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 20l4-16m4 4l4 4-4 4M6 16l-4-4 4-4"></path></svg>
                                 </span>
-                                <input type="text" class="w-full pl-11 pr-4 py-3.5 bg-gray-50 border border-gray-200 rounded-xl focus:bg-white focus:border-emerald-500 outline-none transition-colors text-gray-800 font-mono font-bold tracking-widest uppercase" placeholder="CORP-XXXX-XXX">
+                                <input type="text" name="id_kolektif" class="w-full pl-11 pr-4 py-3.5 bg-gray-50 border border-gray-200 rounded-xl focus:bg-white focus:border-emerald-500 outline-none transition-colors text-gray-800 font-mono font-bold tracking-widest uppercase" placeholder="CORP-XXXX-XXX" value="{{ request('id_kolektif') }}" required>
                             </div>
                         </div>
                     </div>
@@ -98,7 +98,7 @@
             </div>
         </div>
 
-        <div id="dashboard-section" class="hidden w-full">
+        <div id="dashboard-section" class="w-full {{ $kolektif ? '' : 'hidden' }}">
 
             @if($kolektif)
                 <div class="flex justify-between items-center mb-4 bg-emerald-600 p-5 rounded-3xl text-white shadow-lg">
@@ -119,12 +119,40 @@
                         <p class="text-[10px] uppercase font-bold text-gray-500">Total Karyawan</p>
                     </div>
                     <div class="bg-white p-4 rounded-2xl shadow-sm border text-center">
-                        <h3 class="text-2xl font-bold text-green-600">{{ $kolektif->pesertas->where('status', 'approve')->count() }}</h3>
+                        <h3 class="text-2xl font-bold text-green-600">{{ $kolektif->pesertas->whereIn('status', ['approve', 'diterima'])->count() }}</h3>
                         <p class="text-[10px] uppercase font-bold text-gray-500">Terverifikasi</p>
                     </div>
                     <div class="bg-red-50 p-4 rounded-2xl border border-red-100 text-center">
                         <h3 class="text-2xl font-bold text-red-600">{{ $kolektif->pesertas->where('status', 'revisi')->count() }}</h3>
                         <p class="text-[10px] uppercase font-bold text-red-500">Butuh Revisi</p>
+                    </div>
+                </div>
+
+                <!-- Participant List -->
+                <div class="mt-8">
+                    <div class="flex justify-between items-center mb-4">
+                        <h3 class="text-lg font-bold text-gray-800">Daftar Karyawan</h3>
+                    </div>
+                    <div class="space-y-3">
+                        @forelse($kolektif->pesertas as $peserta)
+                        <div class="bg-white p-4 rounded-2xl shadow-sm border border-gray-100 flex justify-between items-center emp-item" data-status="{{ $peserta->status }}" data-program="{{ $peserta->training->nama_training ?? '' }}">
+                            <div>
+                                <h4 class="font-bold text-gray-800 emp-name">{{ $peserta->nama_lengkap }}</h4>
+                                <p class="text-xs text-gray-500">{{ $peserta->training->nama_training ?? 'Belum ditentukan' }}</p>
+                            </div>
+                            <div>
+                                @if(in_array($peserta->status, ['approve', 'diterima']))
+                                    <span class="bg-green-100 text-green-700 px-3 py-1 rounded-full text-xs font-bold">Terverifikasi</span>
+                                @elseif($peserta->status == 'revisi')
+                                    <span class="bg-red-100 text-red-700 px-3 py-1 rounded-full text-xs font-bold">Revisi</span>
+                                @else
+                                    <span class="bg-yellow-100 text-yellow-700 px-3 py-1 rounded-full text-xs font-bold">Menunggu</span>
+                                @endif
+                            </div>
+                        </div>
+                        @empty
+                        <div class="text-center py-8 text-gray-500 text-sm">Belum ada data karyawan.</div>
+                        @endforelse
                     </div>
                 </div>
             @endif
