@@ -1081,6 +1081,11 @@
                 <form action="{{ route('riwayat.pelatihan.tambahPesertaMassal', $item->id) }}" method="POST">
                     @csrf
                     <div class="modal-body p-4" style="max-height: 60vh; overflow-y: auto;">
+                        <div class="mb-3">
+                            <label class="form-label fw-bold small text-success"><i class="fas fa-file-excel me-1"></i> Auto-Fill dari Excel (Opsional)</label>
+                            <textarea id="pasteExcel{{ $item->id }}" class="form-control rounded-3" rows="2" placeholder="Copy baris dari Excel lalu Paste di sini...&#10;Urutan Kolom: [Nama] [Instansi] [No WA] [Marketing]"></textarea>
+                            <small class="text-muted" style="font-size: 11px;">*Maksimal 50 baris sekaligus. Data akan otomatis terisi ke bawah.</small>
+                        </div>
                         <div class="mb-3 d-flex align-items-center gap-3 bg-light p-3 rounded-3 border">
                             <label class="form-label fw-bold mb-0">Jumlah Peserta Ditambahkan:</label>
                             <input type="number" id="inputTambahPeserta{{ $item->id }}" class="form-control text-center rounded-3 fw-bold" style="width: 80px;" value="1" min="1" max="50">
@@ -1111,7 +1116,45 @@
                         </div>
                         <script>
                             document.addEventListener('DOMContentLoaded', function() {
-                                document.getElementById('inputTambahPeserta{{ $item->id }}').addEventListener('input', function() {
+                                const inputPeserta = document.getElementById('inputTambahPeserta{{ $item->id }}');
+                                const pasteExcel = document.getElementById('pasteExcel{{ $item->id }}');
+                                
+                                pasteExcel.addEventListener('paste', function(e) {
+                                    e.preventDefault();
+                                    let pasteData = (e.clipboardData || window.clipboardData).getData('text');
+                                    let rows = pasteData.trim().split('\n');
+                                    if(rows.length > 0) {
+                                        let num = rows.length > 50 ? 50 : rows.length;
+                                        inputPeserta.value = num;
+                                        inputPeserta.dispatchEvent(new Event('input'));
+                                        
+                                        setTimeout(() => {
+                                            let container = document.getElementById('tambahPesertaContainer{{ $item->id }}');
+                                            let namaInputs = container.querySelectorAll('input[name="nama_peserta[]"]');
+                                            let instansiInputs = container.querySelectorAll('input[name="instansi_peserta[]"]');
+                                            let waInputs = container.querySelectorAll('input[name="wa_peserta[]"]');
+                                            let mktInputs = container.querySelectorAll('select[name="marketing[]"]');
+
+                                            for(let i=0; i<num; i++) {
+                                                let cols = rows[i].split('\t');
+                                                if(namaInputs[i]) namaInputs[i].value = cols[0] ? cols[0].trim() : '';
+                                                if(instansiInputs[i]) instansiInputs[i].value = cols[1] ? cols[1].trim() : '';
+                                                if(waInputs[i]) waInputs[i].value = cols[2] ? cols[2].trim() : '';
+                                                if(mktInputs[i] && cols[3]) {
+                                                    let mktName = cols[3].trim().toLowerCase();
+                                                    for(let opt of mktInputs[i].options) {
+                                                        if(opt.text.toLowerCase().includes(mktName) || opt.value.toLowerCase() === mktName) {
+                                                            mktInputs[i].value = opt.value;
+                                                            break;
+                                                        }
+                                                    }
+                                                }
+                                            }
+                                        }, 100);
+                                    }
+                                });
+
+                                inputPeserta.addEventListener('input', function() {
                                     let num = parseInt(this.value) || 0;
                                     if(num > 50) num = 50; // max 50 for safety
                                     let container = document.getElementById('tambahPesertaContainer{{ $item->id }}');
