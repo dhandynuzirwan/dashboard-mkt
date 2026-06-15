@@ -310,9 +310,15 @@
                                                 $namaPerusahaan = $deal->prospek->perusahaan ?? 'Pribadi';
                                                 $isKolektif = ($namaPerusahaan && strtolower($namaPerusahaan) !== 'pribadi');
 
-                                                // 2. Ambil ID Training dari relasi prospek
-                                                $trainingId = $deal->prospek->master_training_id ?? ''; 
-                                                $namaTraining = $deal->prospek->nama_training_custom ?? ($deal->prospek->training->nama_training ?? 'Pelatihan');
+                                                // 2. Ambil ID Training dari judul_permintaan di CTA
+                                                $namaTraining = $deal->judul_permintaan ?? 'Pelatihan';
+                                                $trainingModel = \App\Models\MasterTraining::where('nama_training', $namaTraining)->first();
+                                                if (!$trainingModel && $namaTraining !== 'Pelatihan' && $namaTraining !== '-') {
+                                                    $trainingModel = \App\Models\MasterTraining::where('nama_training', 'LIKE', '%' . $namaTraining . '%')
+                                                                        ->orWhereRaw('? LIKE CONCAT("%", nama_training, "%")', [$namaTraining])
+                                                                        ->first();
+                                                }
+                                                $trainingId = $trainingModel ? $trainingModel->id : '';
 
                                                 // 3. Susun URL Registrasi Dinamis
                                                 if ($isKolektif) {
@@ -385,42 +391,54 @@
 
                         <form action="#" method="GET" class="row g-3 align-items-end">
                             {{-- Kolom 1 --}}
-                            <div class="col-md-6 col-xl-3">
-                                <label class="label-modern">Cari Peserta / Instansi</label>
+                            <div class="col-md-6 col-lg-3 col-xl-2">
+                                <label class="label-modern">Cari Pendaftar</label>
                                 <div class="input-group shadow-sm" style="border-radius: 8px; overflow: hidden;">
                                     <span class="input-group-text bg-white border-end-0 text-muted"><i class="fas fa-search"></i></span>
-                                    <input type="text" name="search" class="form-control border-start-0 shadow-none ps-0" style="font-size: 13px; padding: 8px 12px;" placeholder="Nama / ID / Instansi...">
+                                    <input type="text" name="search" class="form-control border-start-0 shadow-none ps-0" style="font-size: 13px; padding: 8px 12px;" placeholder="Nama / ID...">
                                 </div>
                             </div>
                             
                             {{-- Kolom 2 --}}
-                            <div class="col-md-6 col-xl-3">
+                            <div class="col-md-6 col-lg-3 col-xl-2">
                                 <label class="label-modern">Status Berkas</label>
                                 <select name="status" class="form-select input-modern shadow-none">
                                     <option value="">Semua Status</option>
-                                    <option value="pending">🟡 Menunggu Verifikasi</option>
-                                    <option value="revision">🔴 Butuh Revisi</option>
-                                    <option value="approved">🟢 Disetujui (Lengkap)</option>
+                                    <option value="pending" {{ request('status') == 'pending' ? 'selected' : '' }}>🟡 Menunggu Verifikasi</option>
+                                    <option value="revisi" {{ request('status') == 'revisi' ? 'selected' : '' }}>🔴 Butuh Revisi</option>
+                                    <option value="diterima" {{ request('status') == 'diterima' ? 'selected' : '' }}>🟢 Disetujui</option>
                                 </select>
                             </div>
 
                             {{-- Kolom 3 --}}
-                            <div class="col-md-6 col-xl-3">
+                            <div class="col-md-6 col-lg-3 col-xl-2">
                                 <label class="label-modern">Jalur Pendaftaran</label>
                                 <select name="jalur" class="form-select input-modern shadow-none">
                                     <option value="">Semua Jalur</option>
-                                    <option value="individu">Individu / Pribadi</option>
-                                    <option value="kolektif">Kolektif / Instansi</option>
+                                    <option value="individu" {{ request('jalur') == 'individu' ? 'selected' : '' }}>Individu / Pribadi</option>
+                                    <option value="kolektif" {{ request('jalur') == 'kolektif' ? 'selected' : '' }}>Kolektif / Instansi</option>
                                 </select>
                             </div>
 
-                            {{-- Kolom 4 --}}
-                            <div class="col-md-6 col-xl-3">
+                            {{-- Kolom 4: Tanggal Awal --}}
+                            <div class="col-md-6 col-lg-3 col-xl-2">
+                                <label class="label-modern">Dari Tanggal</label>
+                                <input type="date" name="start_date_verifikasi" value="{{ $startDateVerifikasi ?? '' }}" class="form-control input-modern shadow-none" style="font-size: 13px;">
+                            </div>
+
+                            {{-- Kolom 5: Tanggal Akhir --}}
+                            <div class="col-md-6 col-lg-3 col-xl-2">
+                                <label class="label-modern">Sampai Tanggal</label>
+                                <input type="date" name="end_date_verifikasi" value="{{ $endDateVerifikasi ?? '' }}" class="form-control input-modern shadow-none" style="font-size: 13px;">
+                            </div>
+
+                            {{-- Kolom 6 --}}
+                            <div class="col-md-6 col-lg-3 col-xl-2">
                                 <div class="d-flex gap-2">
                                     <button type="submit" class="btn btn-primary btn-round fw-bold shadow-sm flex-fill" style="padding: 8px 12px; font-size: 13px;">
-                                        <i class="fas fa-search me-1"></i> Terapkan
+                                        <i class="fas fa-search me-1"></i> Cari
                                     </button>
-                                    <a href="#" class="btn btn-white border btn-round fw-bold text-dark shadow-sm flex-fill d-flex align-items-center justify-content-center" style="padding: 8px 12px; font-size: 13px;">
+                                    <a href="{{ route('operational.data-pendaftaran') }}" class="btn btn-white border btn-round fw-bold text-dark shadow-sm flex-fill d-flex align-items-center justify-content-center" style="padding: 8px 12px; font-size: 13px;">
                                         Reset
                                     </a>
                                 </div>

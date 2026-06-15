@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Pantau Status Pribadi - Arsa Training</title>
     <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
     <style>
         .input-focus-ring:focus-within { box-shadow: 0 0 0 4px rgba(37, 99, 235, 0.1); }
         input[type="file"] { display: none; }
@@ -118,17 +119,42 @@
                 </div>
 
                 <div class="flex flex-wrap gap-2 pt-4 border-t border-gray-50">
-                    {{-- 🔥 JIKA DISETUJUI, BUKA KUNCI TOMBOL 🔥 --}}
-                    @if($pendaftaran->status == 'diterima')
-                        <a href="#" target="_blank" class="inline-flex items-center px-4 py-2 bg-blue-50 hover:bg-blue-100 text-blue-600 border border-blue-100 rounded-xl text-[11px] font-bold uppercase tracking-wider transition-colors active:scale-95 shadow-sm">
+                    {{-- 🔥 JIKA DISETUJUI ATAU REVISI, BUKA KUNCI TOMBOL 🔥 --}}
+                    @if(in_array($pendaftaran->status, ['diterima', 'revisi']))
+                        @if($pendaftaran->pelatihanBerjalan && $pendaftaran->pelatihanBerjalan->link_zoom_pelatihan)
+                        <a href="{{ $pendaftaran->pelatihanBerjalan->link_zoom_pelatihan }}" target="_blank" class="inline-flex items-center px-4 py-2 bg-blue-50 hover:bg-blue-100 text-blue-600 border border-blue-100 rounded-xl text-[11px] font-bold uppercase tracking-wider transition-colors active:scale-95 shadow-sm">
                             <i class="fas fa-video mr-2"></i> Zoom Pelatihan
                         </a>
-                        <a href="#" target="_blank" class="inline-flex items-center px-4 py-2 bg-purple-50 hover:bg-purple-100 text-purple-600 border border-purple-100 rounded-xl text-[11px] font-bold uppercase tracking-wider transition-colors active:scale-95 shadow-sm">
+                        @endif
+                        @if($pendaftaran->pelatihanBerjalan && $pendaftaran->pelatihanBerjalan->link_zoom_asesmen)
+                        <a href="{{ $pendaftaran->pelatihanBerjalan->link_zoom_asesmen }}" target="_blank" class="inline-flex items-center px-4 py-2 bg-purple-50 hover:bg-purple-100 text-purple-600 border border-purple-100 rounded-xl text-[11px] font-bold uppercase tracking-wider transition-colors active:scale-95 shadow-sm">
                             <i class="fas fa-video mr-2"></i> Zoom Asesmen
                         </a>
-                        <button type="button" class="inline-flex items-center px-4 py-2 bg-amber-50 hover:bg-amber-100 text-amber-700 border border-amber-200 rounded-xl text-[11px] font-bold uppercase tracking-wider transition-colors active:scale-95 shadow-sm">
-                            <i class="fas fa-book mr-2"></i> Modul Materi
-                        </button>
+                        @endif
+                        @if($pendaftaran->pelatihanBerjalan && $pendaftaran->pelatihanBerjalan->modul)
+                            @if($pendaftaran->is_modul_downloaded)
+                            <span class="inline-flex items-center px-4 py-2 bg-gray-100 text-gray-400 border border-gray-200 rounded-xl text-[11px] font-bold uppercase tracking-wider cursor-not-allowed shadow-none opacity-80">
+                                <i class="fas fa-check-circle mr-2"></i> Telah Diunduh
+                            </span>
+                            @else
+                            <a href="{{ route('portal.download-modul', $pendaftaran->id) }}" onclick="return confirm('PERINGATAN!\n\nSesuai dengan SOP dan Hak Cipta, Modul Materi untuk Peserta HANYA DAPAT DIUNDUH 1 KALI.\n\nApakah Anda yakin ingin mengunduhnya sekarang?');" class="inline-flex items-center px-4 py-2 bg-amber-50 hover:bg-amber-100 text-amber-700 border border-amber-200 rounded-xl text-[11px] font-bold uppercase tracking-wider transition-colors active:scale-95 shadow-sm">
+                                <i class="fas fa-book mr-2"></i> Unduh Modul
+                            </a>
+                            @endif
+                        @endif
+                        @if($pendaftaran->pelatihanBerjalan && $pendaftaran->pelatihanBerjalan->rundown_pelatihan)
+                        <a href="{{ asset($pendaftaran->pelatihanBerjalan->rundown_pelatihan) }}" target="_blank" class="inline-flex items-center px-4 py-2 bg-green-50 hover:bg-green-100 text-green-700 border border-green-200 rounded-xl text-[11px] font-bold uppercase tracking-wider transition-colors active:scale-95 shadow-sm">
+                            <i class="fas fa-list mr-2"></i> Rundown Acara
+                        </a>
+                        @endif
+                        @if($pendaftaran->pelatihanBerjalan && $pendaftaran->pelatihanBerjalan->background_zoom)
+                        <a href="{{ asset($pendaftaran->pelatihanBerjalan->background_zoom) }}" target="_blank" class="inline-flex items-center px-4 py-2 bg-teal-50 hover:bg-teal-100 text-teal-700 border border-teal-200 rounded-xl text-[11px] font-bold uppercase tracking-wider transition-colors active:scale-95 shadow-sm">
+                            <i class="fas fa-image mr-2"></i> Background Zoom
+                        </a>
+                        @endif
+                        @if(!$pendaftaran->pelatihanBerjalan || (!$pendaftaran->pelatihanBerjalan->link_zoom_pelatihan && !$pendaftaran->pelatihanBerjalan->link_zoom_asesmen && !$pendaftaran->pelatihanBerjalan->modul))
+                        <p class="text-xs font-bold text-gray-500 mt-2">Menunggu Tautan dari Tim Operasional.</p>
+                        @endif
                     @else
                         <button type="button" class="inline-flex items-center px-4 py-2 bg-gray-100 text-gray-400 border border-gray-200 rounded-xl text-[11px] font-bold uppercase tracking-wider cursor-not-allowed shadow-sm">
                             <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"></path></svg>
@@ -142,16 +168,53 @@
                 </div>
 
                 <hr class="border-gray-100 my-4">
-                <div class="bg-blue-50/50 p-3.5 rounded-xl border border-blue-100 flex items-center justify-between">
-                    <div class="flex items-center">
-                        <div class="w-10 h-10 bg-white border border-blue-100 text-blue-500 rounded-full flex items-center justify-center mr-3 shadow-sm">
-                            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-                                <path stroke-linecap="round" stroke-linejoin="round" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
-                            </svg>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    @php
+                        $marketingName = 'Menunggu Admin';
+                        $marketingWa = '#';
+                        if ($pendaftaran->cta && $pendaftaran->cta->prospek && $pendaftaran->cta->prospek->marketing) {
+                            $marketingName = $pendaftaran->cta->prospek->marketing->name;
+                            if ($pendaftaran->cta->prospek->marketing->no_hp) {
+                                $marketingWa = 'https://wa.me/' . preg_replace('/[^0-9]/', '', $pendaftaran->cta->prospek->marketing->no_hp);
+                            }
+                        }
+                    @endphp
+                    <div class="bg-blue-50/50 p-3.5 rounded-xl border border-blue-100 flex items-center justify-between">
+                        <div class="flex items-center">
+                            <div class="w-10 h-10 bg-white border border-blue-100 text-blue-500 rounded-full flex items-center justify-center mr-3 shadow-sm">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                                    <path stroke-linecap="round" stroke-linejoin="round" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
+                                </svg>
+                            </div>
+                            <div>
+                                <p class="text-[10px] font-bold text-gray-400 uppercase tracking-wider mb-0.5">Marketing PIC</p>
+                                <p class="text-sm font-bold text-gray-800">{{ $marketingName }}</p>
+                            </div>
                         </div>
-                        <div>
-                            <p class="text-[10px] font-bold text-gray-400 uppercase tracking-wider mb-0.5">Marketing PIC</p>
-                            <p class="text-sm font-bold text-gray-800">Menunggu Admin</p>
+                        @if($marketingWa != '#')
+                        <a href="{{ $marketingWa }}" target="_blank" class="w-8 h-8 bg-green-500 text-white rounded-full flex items-center justify-center hover:bg-green-600 transition shadow-sm">
+                            <i class="fab fa-whatsapp"></i>
+                        </a>
+                        @endif
+                    </div>
+
+                    <div class="bg-indigo-50/50 p-3.5 rounded-xl border border-indigo-100 flex items-center justify-between">
+                        <div class="flex items-center">
+                            <div class="w-10 h-10 bg-white border border-indigo-100 text-indigo-500 rounded-full flex items-center justify-center mr-3 shadow-sm">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                                    <path stroke-linecap="round" stroke-linejoin="round" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                                </svg>
+                            </div>
+                            <div>
+                                <p class="text-[10px] font-bold text-gray-400 uppercase tracking-wider mb-0.5">Tanggal Pelatihan</p>
+                                <p class="text-sm font-bold text-gray-800">
+                                    @if($pendaftaran->pelatihanBerjalan && $pendaftaran->pelatihanBerjalan->tanggal_pelatihan)
+                                        {{ \Carbon\Carbon::parse($pendaftaran->pelatihanBerjalan->tanggal_pelatihan)->format('d M Y') }}
+                                    @else
+                                        Menunggu Penjadwalan
+                                    @endif
+                                </p>
+                            </div>
                         </div>
                     </div>
                 </div>

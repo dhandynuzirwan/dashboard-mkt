@@ -81,6 +81,8 @@ Route::prefix('portal')->group(function () {
     Route::get('/cek-status', [PendaftaranPribadiController::class, 'cekStatus'])->name('portal.cek-status');
     Route::post('/cek-status/{id}/revisi', [PendaftaranPribadiController::class, 'updateRevisi'])->name('portal.pendaftaran.revisi');
     Route::get('/cek-status-perusahaan', [PendaftaranKolektifController::class, 'cekStatusPerusahaan'])->name('portal.cek-status-perusahaan');
+    Route::post('/cek-status-perusahaan/{id}/revisi', [PendaftaranKolektifController::class, 'updateRevisi'])->name('portal.kolektif.revisi');
+    Route::get('/download-modul/{id}', [PendaftaranPribadiController::class, 'downloadModul'])->name('portal.download-modul');
 });
 
 /*
@@ -146,6 +148,7 @@ Route::middleware('auth')->group(function () {
         Route::delete('/operational/kontak/{id}', [OperationalController::class, 'destroyKontak'])->name('operational.destroy-kontak');
         Route::get('/monitoring-pelatihan', [OperationalController::class, 'monitoringPelatihan'])->name('monitoring.pelatihan');
         Route::put('/monitoring-pelatihan/{id}', [OperationalController::class, 'updatePelatihanBerjalan'])->name('monitoring.pelatihan.update');
+        Route::delete('/monitoring-pelatihan/{id}', [OperationalController::class, 'destroyPelatihanBerjalan'])->name('operational.pelatihan-berjalan.destroy');
 
         Route::middleware('role:superadmin,web_dev,team_leader,operasional')->group(function () {
             Route::get('/riwayat-pelatihan', [RiwayatPelatihanController::class, 'index'])->name('riwayat.pelatihan');

@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Pantau Kolektif - Arsa Training</title>
     <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
     <style>
         .input-focus-ring:focus-within { box-shadow: 0 0 0 4px rgba(16, 185, 129, 0.1); }
         body.modal-open { overflow: hidden; }
@@ -128,27 +129,156 @@
                     </div>
                 </div>
 
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-8">
+                    @php
+                        $marketingName = 'Menunggu Admin';
+                        $marketingWa = '#';
+                        if ($kolektif->cta && $kolektif->cta->prospek && $kolektif->cta->prospek->marketing) {
+                            $marketingName = $kolektif->cta->prospek->marketing->name;
+                            if ($kolektif->cta->prospek->marketing->no_hp) {
+                                $marketingWa = 'https://wa.me/' . preg_replace('/[^0-9]/', '', $kolektif->cta->prospek->marketing->no_hp);
+                            }
+                        }
+                        
+                    @endphp
+                    <div class="bg-blue-50/50 p-3.5 rounded-xl border border-blue-100 flex items-center justify-between">
+                        <div class="flex items-center">
+                            <div class="w-10 h-10 bg-white border border-blue-100 text-blue-500 rounded-full flex items-center justify-center mr-3 shadow-sm">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                                    <path stroke-linecap="round" stroke-linejoin="round" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
+                                </svg>
+                            </div>
+                            <div>
+                                <p class="text-[10px] font-bold text-gray-400 uppercase tracking-wider mb-0.5">Marketing PIC</p>
+                                <p class="text-sm font-bold text-gray-800">{{ $marketingName }}</p>
+                            </div>
+                        </div>
+                        @if($marketingWa != '#')
+                        <a href="{{ $marketingWa }}" target="_blank" class="w-8 h-8 bg-green-500 text-white rounded-full flex items-center justify-center hover:bg-green-600 transition shadow-sm">
+                            <i class="fab fa-whatsapp"></i>
+                        </a>
+                        @endif
+                    </div>
+
+                    </div>
+                </div>
+
+
                 <!-- Participant List -->
                 <div class="mt-8">
                     <div class="flex justify-between items-center mb-4">
                         <h3 class="text-lg font-bold text-gray-800">Daftar Karyawan</h3>
                     </div>
+
+                    {{-- 🔥 TAMPILKAN ALERT JIKA ADA REVISI 🔥 --}}
+                    @if($kolektif->pesertas->where('status', 'revisi')->count() > 0)
+                    <div class="bg-red-50 border border-red-200 p-5 rounded-2xl mb-6">
+                        <div class="flex items-start mb-4">
+                            <div class="bg-red-100 p-2 rounded-full mr-4 flex-shrink-0">
+                                <svg class="w-6 h-6 text-red-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"></path></svg>
+                            </div>
+                            <div>
+                                <h3 class="text-sm font-bold text-red-800">Perhatian: Ada Berkas Karyawan yang Perlu Direvisi</h3>
+                                <p class="text-xs text-red-600 mt-1 leading-relaxed">Silakan periksa catatan revisi di daftar karyawan di bawah ini. Gabungkan semua berkas perbaikan ke dalam 1 file <b>ZIP/RAR</b> dan unggah ulang di sini.</p>
+                            </div>
+                        </div>
+                        <form action="{{ route('portal.kolektif.revisi', $kolektif->id) }}" method="POST" enctype="multipart/form-data" class="bg-white p-4 rounded-xl border border-red-100 flex flex-col md:flex-row items-center gap-3">
+                            @csrf
+                            <input type="file" name="file_zip" accept=".zip,.rar" class="block w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-red-50 file:text-red-700 hover:file:bg-red-100" required>
+                            <button type="submit" class="w-full md:w-auto px-5 py-2.5 bg-red-600 text-white text-sm font-bold rounded-xl hover:bg-red-700 transition whitespace-nowrap shadow-sm">
+                                <i class="fas fa-upload mr-2"></i> Unggah Revisi
+                            </button>
+                        </form>
+                    </div>
+                    @endif
+
                     <div class="space-y-3">
                         @forelse($kolektif->pesertas as $peserta)
-                        <div class="bg-white p-4 rounded-2xl shadow-sm border border-gray-100 flex justify-between items-center emp-item" data-status="{{ $peserta->status }}" data-program="{{ $peserta->training->nama_training ?? '' }}">
-                            <div>
-                                <h4 class="font-bold text-gray-800 emp-name">{{ $peserta->nama_lengkap }}</h4>
-                                <p class="text-xs text-gray-500">{{ $peserta->training->nama_training ?? 'Belum ditentukan' }}</p>
+                        @php
+                            $pb = $peserta->pelatihanBerjalan;
+                        @endphp
+                        <div class="bg-white p-4 rounded-2xl shadow-sm border border-gray-100 flex flex-col mb-3 emp-item" data-status="{{ $peserta->status }}" data-program="{{ $peserta->training->nama_training ?? '' }}">
+                            <div class="flex justify-between items-start mb-2">
+                                <div>
+                                    <h4 class="font-bold text-gray-800 emp-name">{{ $peserta->nama_lengkap }}</h4>
+                                    <p class="text-xs text-gray-500">{{ $peserta->training->nama_training ?? 'Belum ditentukan' }}</p>
+                                </div>
+                                <div>
+                                    @if(in_array($peserta->status, ['approve', 'diterima']))
+                                        <span class="bg-green-100 text-green-700 px-3 py-1 rounded-full text-xs font-bold">Terverifikasi</span>
+                                    @elseif($peserta->status == 'revisi')
+                                        <span class="bg-red-100 text-red-700 px-3 py-1 rounded-full text-xs font-bold">Revisi</span>
+                                    @else
+                                        <span class="bg-yellow-100 text-yellow-700 px-3 py-1 rounded-full text-xs font-bold">Menunggu</span>
+                                    @endif
+                                </div>
                             </div>
-                            <div>
-                                @if(in_array($peserta->status, ['approve', 'diterima']))
-                                    <span class="bg-green-100 text-green-700 px-3 py-1 rounded-full text-xs font-bold">Terverifikasi</span>
-                                @elseif($peserta->status == 'revisi')
-                                    <span class="bg-red-100 text-red-700 px-3 py-1 rounded-full text-xs font-bold">Revisi</span>
-                                @else
-                                    <span class="bg-yellow-100 text-yellow-700 px-3 py-1 rounded-full text-xs font-bold">Menunggu</span>
-                                @endif
-                            </div>
+                            
+                            @if(in_array($peserta->status, ['approve', 'diterima', 'revisi']))
+                                <div class="mt-2 pt-3 border-t border-gray-50">
+                                    
+                                    @if($peserta->status == 'revisi')
+                                        <div class="mb-3 bg-red-50 p-3 rounded-xl border border-red-100">
+                                            <p class="text-xs font-bold text-red-800 mb-2">Catatan Revisi Dokumen:</p>
+                                            <ul class="text-[11px] text-red-600 space-y-1 list-disc list-inside">
+                                                @php
+                                                    $dokMap = [
+                                                        'ktp' => 'KTP', 'ijazah' => 'Ijazah', 'foto' => 'Foto', 
+                                                        'cv' => 'CV', 'sk' => 'Surat Keterangan', 'laporan' => 'Laporan', 'sop' => 'SOP'
+                                                    ];
+                                                @endphp
+                                                @foreach($dokMap as $field => $label)
+                                                    @if($peserta->{'status_'.$field} == 'reject')
+                                                        <li><b>{{ $label }}:</b> {{ $peserta->{'catatan_'.$field} ?? 'Perbaiki dokumen ini' }}</li>
+                                                    @endif
+                                                @endforeach
+                                            </ul>
+                                        </div>
+                                    @endif
+
+                                    @if($pb)
+                                        <p class="text-[11px] font-bold text-gray-500 mb-2"><i class="fas fa-calendar-alt text-indigo-400 mr-1"></i> Jadwal: <span class="text-gray-700">{{ $pb->tanggal_pelatihan ? \Carbon\Carbon::parse($pb->tanggal_pelatihan)->format('d M Y') : 'Menunggu Penjadwalan' }}</span></p>
+                                        <div class="flex flex-wrap gap-2">
+                                            @if($pb->link_zoom_pelatihan)
+                                            <a href="{{ $pb->link_zoom_pelatihan }}" target="_blank" class="inline-flex items-center px-3 py-1.5 bg-blue-50 hover:bg-blue-100 text-blue-600 rounded-lg text-[10px] font-bold uppercase tracking-wider transition-colors">
+                                                <i class="fas fa-video mr-1"></i> Zoom
+                                            </a>
+                                            @endif
+                                            @if($pb->link_zoom_asesmen)
+                                            <a href="{{ $pb->link_zoom_asesmen }}" target="_blank" class="inline-flex items-center px-3 py-1.5 bg-purple-50 hover:bg-purple-100 text-purple-600 rounded-lg text-[10px] font-bold uppercase tracking-wider transition-colors">
+                                                <i class="fas fa-video mr-1"></i> Asesmen
+                                            </a>
+                                            @endif
+                                            @if($pb->modul)
+                                                @if($peserta->is_modul_downloaded)
+                                                <span class="inline-flex items-center px-3 py-1.5 bg-gray-100 text-gray-400 border border-gray-200 rounded-lg text-[10px] font-bold uppercase tracking-wider cursor-not-allowed shadow-none opacity-80">
+                                                    <i class="fas fa-check-circle mr-1"></i> Telah Diunduh
+                                                </span>
+                                                @else
+                                                <a href="{{ route('portal.download-modul', $peserta->id) }}" onclick="return confirm('PERINGATAN!\n\nSesuai dengan SOP dan Hak Cipta, Modul Materi untuk Peserta HANYA DAPAT DIUNDUH 1 KALI.\n\nApakah Anda yakin ingin mengunduhnya sekarang?');" class="inline-flex items-center px-3 py-1.5 bg-amber-50 hover:bg-amber-100 text-amber-700 border border-amber-200 rounded-lg text-[10px] font-bold uppercase tracking-wider transition-colors active:scale-95 shadow-sm">
+                                                    <i class="fas fa-book mr-1"></i> Modul Materi
+                                                </a>
+                                                @endif
+                                            @endif
+                                            @if($pb->rundown_pelatihan)
+                                            <a href="{{ asset($pb->rundown_pelatihan) }}" target="_blank" class="inline-flex items-center px-3 py-1.5 bg-green-50 hover:bg-green-100 text-green-700 rounded-lg text-[10px] font-bold uppercase tracking-wider transition-colors">
+                                                <i class="fas fa-list mr-1"></i> Rundown
+                                            </a>
+                                            @endif
+                                            @if($pb->background_zoom)
+                                            <a href="{{ asset($pb->background_zoom) }}" target="_blank" class="inline-flex items-center px-3 py-1.5 bg-teal-50 hover:bg-teal-100 text-teal-700 rounded-lg text-[10px] font-bold uppercase tracking-wider transition-colors">
+                                                <i class="fas fa-image mr-1"></i> BG Zoom
+                                            </a>
+                                            @endif
+                                        </div>
+                                        @if(!$pb->link_zoom_pelatihan && !$pb->link_zoom_asesmen && !$pb->modul)
+                                        <p class="text-[10px] italic text-gray-400 mt-1">Tautan kelas/dokumen belum tersedia.</p>
+                                        @endif
+                                    @else
+                                        <p class="text-[11px] font-bold text-gray-400"><i class="fas fa-clock mr-1"></i> Belum masuk ke kelas pelatihan (Menunggu Operasional)</p>
+                                    @endif
+                                </div>
+                            @endif
                         </div>
                         @empty
                         <div class="text-center py-8 text-gray-500 text-sm">Belum ada data karyawan.</div>
@@ -161,8 +291,25 @@
 
 
 
+    <!-- SWEETALERT 2 -->
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <script>
-        // Logika Tab Login
+        @if(session('error'))
+        Swal.fire({
+            icon: 'error',
+            title: 'Gagal',
+            text: '{{ session("error") }}'
+        });
+        @endif
+        @if(session('success'))
+        Swal.fire({
+            icon: 'success',
+            title: 'Berhasil',
+            text: '{{ session("success") }}'
+        });
+        @endif
+
+        // Simple Tab Logic
         function switchLogin(method) {
             const tabId = document.getElementById('tab-login-id');
             const tabData = document.getElementById('tab-login-data');
@@ -301,33 +448,6 @@
             document.getElementById('alert-revisi').classList.add('hidden');
         }
 
-        function downloadModul(btnElement, empName) {
-            // 1. Munculkan konfirmasi peringatan
-            const konfirmasi = confirm(`PERINGATAN!\n\nSesuai dengan SOP dan Hak Cipta, Modul Materi untuk Peserta HANYA DAPAT DIUNDUH 1 KALI.\n\nApakah Anda sudah siap mengunduhnya sekarang?`);
-            
-            if(konfirmasi) {
-                // 2. Simulasi Proses Download (Nantinya ganti dengan trigger file PDF)
-                // window.open('link-file-pdf.pdf', '_blank'); 
-                
-                // 3. Matikan Tombol (Simulasi Disable)
-                btnElement.classList.replace('bg-amber-50', 'bg-gray-100');
-                btnElement.classList.replace('text-amber-700', 'text-gray-400');
-                btnElement.classList.replace('border-amber-200', 'border-gray-200');
-                
-                // Buang class interaksi hover & active
-                btnElement.classList.remove('hover:bg-amber-100', 'active:scale-95');
-                btnElement.classList.add('cursor-not-allowed', 'opacity-80');
-                
-                // Ubah text dan Icon jadi "Check"
-                btnElement.innerHTML = `
-                    <svg class="w-3.5 h-3.5 mr-1.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg>
-                    Telah Diunduh
-                `;
-                
-                // Hilangkan atribut onclick agar tidak jalan jika dipaksa klik lagi
-                btnElement.removeAttribute('onclick');
-            }
-        }
     </script>
 </body>
 </html>

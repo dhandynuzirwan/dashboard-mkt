@@ -71,76 +71,17 @@
             </div>
         </div>
 
-        {{-- ================= FILTER RENTANG TANGGAL ================= --}}
-        {{-- FILTER TRACKING PROSPEK DEAL --}}
-        <div class="card card-modern mb-4" style="background-color: #f8faff;">
-            <div class="card-body p-3 p-md-4">
-                <div class="d-flex align-items-center mb-3 pb-3 border-bottom border-light">
-                    <div class="icon-sm bg-primary-subtle text-primary rounded-circle d-flex align-items-center justify-content-center me-2" style="width: 32px; height: 32px;">
-                        <i class="fas fa-filter" style="font-size: 13px;"></i>
-                    </div>
-                    <h6 class="fw-bold mb-0 text-dark">Filter Pencarian Prospek Deal</h6>
-                </div>
-
-                <form action="#" method="GET" class="row g-3 align-items-end">
-                    {{-- Kolom 1: Perusahaan --}}
-                    <div class="col-md-6 col-lg-3 col-xl-2">
-                        <label class="label-modern">Cari Perusahaan</label>
-                        <div class="input-group shadow-sm" style="border-radius: 8px; overflow: hidden;">
-                            <span class="input-group-text bg-white border-end-0 text-muted"><i class="fas fa-search"></i></span>
-                            <input type="text" name="search_tracking" class="form-control border-start-0 shadow-none ps-0" style="font-size: 13px; padding: 8px 12px;" placeholder="Nama / PIC...">
-                        </div>
-                    </div>
-
-                    {{-- Kolom 3: Status --}}
-                    <div class="col-md-6 col-lg-3 col-xl-2">
-                        <label class="label-modern">Skema Pelatihan</label>
-                        <select name="status_tracking" class="form-select input-modern shadow-none" style="font-size: 13px;">
-                            <option value="">Semua</option>
-                            <option value="offline">Offline</option>
-                            <option value="online">Online</option>
-                            <option value="inhouse">Inhouse</option>
-                            <option value="blended">Blended</option>
-                        </select>
-                    </div>
-
-                    {{-- Kolom 4: Tanggal Awal --}}
-                    <div class="col-md-6 col-lg-3 col-xl-2">
-                        <label class="label-modern">Dari Tanggal</label>
-                        <input type="date" name="start_date" class="form-control input-modern shadow-none" style="font-size: 13px;">
-                    </div>
-
-                    {{-- Kolom 5: Tanggal Akhir --}}
-                    <div class="col-md-6 col-lg-3 col-xl-2">
-                        <label class="label-modern">Sampai Tanggal</label>
-                        <input type="date" name="end_date" class="form-control input-modern shadow-none" style="font-size: 13px;">
-                    </div>
-
-                    {{-- Kolom 6: Tombol --}}
-                    <div class="col-md-6 col-lg-3 col-xl-2">
-                        <div class="d-flex gap-2">
-                            <button type="submit" class="btn btn-primary btn-round fw-bold shadow-sm flex-fill" style="padding: 8px 12px; font-size: 13px;">
-                                <i class="fas fa-search me-1"></i> Cari
-                            </button>
-                            <a href="#" class="btn btn-white border btn-round fw-bold text-dark shadow-sm flex-fill d-flex align-items-center justify-content-center" style="padding: 8px 12px; font-size: 13px;">
-                                Reset
-                            </a>
-                        </div>
-                    </div>
-                </form>
-            </div>
-        </div>
 
         {{-- ================= SEGMENTED TABS (MODERN) ================= --}}
         <div class="d-flex justify-content-center mb-4 fade-in">
-            <div class="nav-modern p-1 rounded-pill bg-white border shadow-sm d-inline-flex overflow-auto" id="pills-tab" role="tablist" style="max-width: 100%;">
-                <button class="nav-link active text-nowrap" id="pills-pelaksanaan-tab" data-bs-toggle="pill" data-bs-target="#pills-pelaksanaan" type="button" role="tab">
+            <div class="nav nav-pills nav-modern p-1 rounded-pill bg-white border shadow-sm d-inline-flex overflow-auto" id="pills-tab" role="tablist" style="max-width: 100%;">
+                <button class="nav-link active text-nowrap" id="pills-pelaksanaan-tab" data-bs-toggle="tab" data-bs-target="#pills-pelaksanaan" type="button" role="tab">
                     <i class="fas fa-chalkboard-teacher me-1"></i> 1. Pelaksanaan & Jadwal
                 </button>
-                <button class="nav-link text-nowrap" id="pills-administrasi-tab" data-bs-toggle="pill" data-bs-target="#pills-administrasi" type="button" role="tab">
+                <button class="nav-link text-nowrap" id="pills-administrasi-tab" data-bs-toggle="tab" data-bs-target="#pills-administrasi" type="button" role="tab">
                     <i class="fas fa-file-signature me-1"></i> 2. Administrasi & Evaluasi
                 </button>
-                <button class="nav-link text-nowrap" id="pills-sertifikat-tab" data-bs-toggle="pill" data-bs-target="#pills-sertifikat" type="button" role="tab">
+                <button class="nav-link text-nowrap" id="pills-sertifikat-tab" data-bs-toggle="tab" data-bs-target="#pills-sertifikat" type="button" role="tab">
                     <i class="fas fa-award me-1"></i> 3. Monitoring Sertifikat
                 </button>
             </div>
@@ -153,14 +94,14 @@
             <div class="tab-pane fade show active" id="pills-pelaksanaan" role="tabpanel">
                 <div class="card card-modern border-0 shadow-sm mb-4">
                     <div class="card-header bg-light border-bottom p-3" style="border-radius: 16px 16px 0 0;">
-                        <h6 class="m-0 fw-bolder text-dark">Data Kelas (Klien, Jadwal, Tim Pengajar, Kelembagaan)</h6>
+                        <h6 class="m-0 fw-bolder text-dark">Data Kelas (Sertifikasi, Jadwal, Tim Pengajar, Kelembagaan)</h6>
                     </div>
                     <div class="card-body p-0">
                         <div class="table-responsive">
                             <table class="table table-modern table-hover align-middle mb-0">
                                 <thead class="bg-light sticky-top">
                                     <tr>
-                                        <th class="ps-4" width="250">Klien, Program & Marketing</th>
+                                        <th class="ps-4" width="250">Program Pelatihan & Sertifikasi</th>
                                         <th width="200">Jadwal Pelaksanaan</th>
                                         <th width="300">Tim Lapangan (Pengajar & Pengawas)</th>
                                         <th width="250">Kelembagaan & PIC</th>
@@ -171,7 +112,7 @@
                                     @forelse($pelatihans as $pelatihan)
                                         @php
                                             $firstPendaftaran = $pelatihan->pendaftaranPribadis->first();
-                                            $klien = $firstPendaftaran ? ($firstPendaftaran->perusahaan ?? 'Pribadi') : 'Belum Ada Data';
+                                            $sertifikasi = ($firstPendaftaran && $firstPendaftaran->cta) ? strtoupper($firstPendaftaran->cta->sertifikasi) : 'Lainnya';
                                             $marketingName = ($firstPendaftaran && $firstPendaftaran->cta) ? $firstPendaftaran->cta->prospek->marketing->name : '-';
                                             
                                             // Badge Status Kelas
@@ -185,10 +126,9 @@
                                         @endphp
                                     <tr>
                                         <td class="ps-4">
-                                            <div class="fw-bolder text-dark" style="font-size: 14px;">{{ $klien }}</div>
-                                            <div class="fw-bold text-primary mt-1" style="font-size: 13px;">{{ optional($pelatihan->training)->name ?? '-' }}</div>
+                                            <div class="fw-bolder text-dark" style="font-size: 14px;">{{ optional($pelatihan->training)->nama_training ?? 'Belum Ada Pelatihan' }}</div>
+                                            <div class="fw-bold text-primary mt-1" style="font-size: 13px;"><i class="fas fa-certificate me-1"></i> {{ $sertifikasi }}</div>
                                             <div class="d-flex gap-2 mt-2 align-items-center">
-                                                <span class="badge badge-soft-info border">{{ optional($pelatihan->training)->sertifikasi ?? 'Lainnya' }}</span>
                                                 <span class="text-muted" style="font-size: 10px;"><i class="fas fa-user-tie me-1"></i> Mkt: {{ $marketingName }}</span>
                                             </div>
                                         </td>
@@ -246,7 +186,7 @@
                                                     <span class="text-muted d-block mb-1" style="font-size: 9px; text-transform: uppercase;">Penanggung Jawab (PIC)</span>
                                                     <div class="d-flex flex-column gap-1">
                                                         <span class="badge bg-light text-dark border text-start px-2 py-1 shadow-sm w-100 text-truncate" style="font-size: 10px;">
-                                                            <i class="fas fa-user-tie text-primary me-1"></i> Klien: {{ $pelatihan->pic_klien ?? 'Belum Diset' }}
+                                                            <i class="fas fa-user-tie text-primary me-1"></i> PIC Sertifikasi: {{ $pelatihan->pic_klien ?? 'Belum Diset' }}
                                                         </span>
                                                     </div>
                                                 </div>
@@ -256,7 +196,8 @@
                                         
                                         <td class="text-center pe-4">
                                             <span class="badge {{ $badgeInfo['class'] }} rounded-pill px-3 py-2 shadow-sm d-block mb-2 w-100">{{ $badgeInfo['text'] }}</span>
-                                            <button class="btn btn-sm btn-white border btn-round text-muted d-block w-100 hover-lift px-3" style="font-size: 10px;" data-bs-toggle="modal" data-bs-target="#modalUpdateStatusKelas-{{ $pelatihan->id }}">Ubah Status</button>
+                                            <button class="btn btn-sm btn-white border btn-round text-muted d-block w-100 hover-lift px-3 mb-1" style="font-size: 10px;" data-bs-toggle="modal" data-bs-target="#modalUpdateStatusKelas-{{ $pelatihan->id }}">Ubah Status</button>
+                                            <button class="btn btn-sm btn-danger btn-round text-white d-block w-100 hover-lift px-3" style="font-size: 10px;" data-bs-toggle="modal" data-bs-target="#modalHapusPelatihan-{{ $pelatihan->id }}">Hapus Data</button>
                                         </td>
                                     </tr>
                                     @empty
@@ -292,7 +233,7 @@
                             <table class="table table-modern table-hover align-middle mb-0" style="min-width: 1400px;">
                                 <thead class="bg-light sticky-top">
                                     <tr>
-                                        <th class="ps-4" width="300">Klien, Judul & Label</th>
+                                        <th class="ps-4" width="300">Sertifikasi, Judul & Klien</th>
                                         <th width="250">Validasi Administrasi</th>
                                         <th width="350">Link Laporan (Internal & Lembaga)</th>
                                         <th width="350">Evaluasi Pelaksanaan</th>
@@ -301,7 +242,8 @@
                                 <tbody>
                                     @forelse($pelatihans as $pelatihan)
                                         @php
-                                            $klien = $pelatihan->pendaftaranPribadis->first()->perusahaan ?? 'Pribadi';
+                                            $firstPendaftaran = $pelatihan->pendaftaranPribadis->first();
+                                            $sertifikasi = ($firstPendaftaran && $firstPendaftaran->cta) ? strtoupper($firstPendaftaran->cta->sertifikasi) : 'Lainnya';
                                             $checklist = json_decode($pelatihan->checklist_validasi, true) ?? [];
                                             $progress = count($checklist);
                                             $percent = $progress > 0 ? round(($progress / 21) * 100) : 0;
@@ -309,9 +251,8 @@
                                         @endphp
                                         <tr>
                                             <td class="ps-4">
-                                                <div class="fw-bolder text-dark" style="font-size: 14px;">{{ $klien }}</div>
-                                                <div class="text-muted fw-bold mt-1" style="font-size: 12px;">{{ $pelatihan->training->name ?? '-' }}</div>
-                                                <span class="badge badge-soft-primary border mt-2">{{ $pelatihan->training->sertifikasi ?? 'Lainnya' }}</span>
+                                                <div class="fw-bolder text-dark" style="font-size: 14px;">{{ optional($pelatihan->training)->nama_training ?? 'Belum Ada Pelatihan' }}</div>
+                                                <div class="text-primary fw-bold mt-1" style="font-size: 13px;"><i class="fas fa-certificate me-1"></i> {{ $sertifikasi }}</div>
                                             </td>
                                             <td>
                                                 <div class="d-flex justify-content-between align-items-center mb-1">
@@ -399,7 +340,7 @@
                             <table class="table table-modern table-hover align-middle mb-0" style="min-width: 1600px;">
                                 <thead class="bg-light sticky-top">
                                     <tr>
-                                        <th class="ps-4" width="250">Klien & Judul Pelatihan</th>
+                                        <th class="ps-4" width="250">Program Pelatihan & Sertifikasi</th>
                                         <th class="text-center" width="180">Status Sertifikat</th>
                                         <th width="250">Timeline Sertifikat (Tgl)</th>
                                         <th width="150" class="text-center">Scan Sertifikat</th>
@@ -410,7 +351,8 @@
                                 <tbody>
                                     @forelse($pelatihans as $pelatihan)
                                         @php
-                                            $klien = $pelatihan->pendaftaranPribadis->first()->perusahaan ?? 'Pribadi';
+                                            $firstPendaftaran = $pelatihan->pendaftaranPribadis->first();
+                                            $sertifikasi = ($firstPendaftaran && $firstPendaftaran->cta) ? strtoupper($firstPendaftaran->cta->sertifikasi) : 'Lainnya';
                                             $picInfo = $pelatihan->pic_klien ?? 'Belum ditentukan';
                                             
                                             $badgeSertif = 'secondary';
@@ -421,9 +363,9 @@
                                         @endphp
                                         <tr>
                                             <td class="ps-4">
-                                                <div class="fw-bolder text-dark" style="font-size: 14px;">{{ $klien }}</div>
-                                                <div class="text-muted fw-bold mt-1" style="font-size: 12px;">{{ $pelatihan->training->name ?? '-' }}</div>
-                                                <div class="text-primary small fw-bold mt-1"><i class="fas fa-user-tie me-1"></i> {{ $picInfo }}</div>
+                                                <div class="fw-bolder text-dark" style="font-size: 14px;">{{ optional($pelatihan->training)->nama_training ?? 'Belum Ada Pelatihan' }}</div>
+                                                <div class="text-primary fw-bold mt-1" style="font-size: 13px;"><i class="fas fa-certificate me-1"></i> {{ $sertifikasi }}</div>
+                                                <div class="text-primary small fw-bold mt-1"><i class="fas fa-user-tie me-1"></i> PIC: {{ $picInfo }}</div>
                                             </td>
                                             <td class="text-center">
                                                 <span class="badge badge-soft-{{ $badgeSertif }} border border-{{ $badgeSertif }} text-{{ $badgeSertif == 'warning' ? 'dark' : $badgeSertif }} px-4 py-2 rounded-pill shadow-sm" style="font-size: 11px;">
@@ -621,7 +563,7 @@
                 </div>
                 <div class="row g-3">
                     <div class="col-12">
-                        <label class="label-modern">PIC Eksternal (Klien)</label>
+                        <label class="label-modern">PIC Eksternal (Lembaga Sertifikasi)</label>
                         <input type="text" name="pic_klien" value="{{ $pelatihan->pic_klien }}" class="form-control input-modern shadow-none" placeholder="Contoh: Ibu Vina (HRD)">
                     </div>
                 </div>
@@ -674,12 +616,12 @@
                     </div>
                     <div>
                         <h5 class="modal-title fw-bolder text-dark mb-0">Update Validasi Checklist</h5>
-                        <p class="text-muted mb-0" style="font-size: 12px;">Klien: <strong class="text-dark">{{ $pelatihan->pendaftaranPribadis->first()->perusahaan ?? 'Pribadi' }}</strong> | Program: <strong>{{ $pelatihan->training->name ?? '-' }}</strong></p>
+                        <p class="text-muted mb-0" style="font-size: 12px;">Program: <strong class="text-dark">{{ optional($pelatihan->training)->nama_training ?? '-' }}</strong></p>
                     </div>
                 </div>
                 <button type="button" class="btn-close shadow-none" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
-            <form action="{{ route('monitoring.pelatihan.update', $pelatihan->id) }}" method="POST">
+            <form action="{{ route('monitoring.pelatihan.update', $pelatihan->id) }}" method="POST" enctype="multipart/form-data">
                 @csrf
                 @method('PUT')
                 <div class="modal-body px-4 px-md-5 pt-4 pb-4" style="background-color: #f8fafc;">
@@ -723,17 +665,43 @@
                                         <input class="form-check-input" type="checkbox" name="checklist_validasi[]" value="Link Zoom Materi" {{ in_array('Link Zoom Materi', $checklist) ? 'checked' : '' }}>
                                         <label class="form-check-label text-dark small fw-medium">Link Zoom / Lokasi Materi</label>
                                     </div>
+                                    <div class="mb-2 mt-1">
+                                        <input type="url" name="link_zoom_pelatihan" class="form-control form-control-sm shadow-none" placeholder="Masukkan Link Zoom Materi" value="{{ $pelatihan->link_zoom_pelatihan }}">
+                                    </div>
                                     <div class="form-check custom-checkbox mb-2">
                                         <input class="form-check-input" type="checkbox" name="checklist_validasi[]" value="Link Zoom Asesment" {{ in_array('Link Zoom Asesment', $checklist) ? 'checked' : '' }}>
                                         <label class="form-check-label text-dark small fw-medium">Link Zoom / Lokasi Asesment</label>
+                                    </div>
+                                    <div class="mb-2 mt-1">
+                                        <input type="url" name="link_zoom_asesmen" class="form-control form-control-sm shadow-none" placeholder="Masukkan Link Zoom Asesmen" value="{{ $pelatihan->link_zoom_asesmen }}">
                                     </div>
                                     <div class="form-check custom-checkbox mb-2">
                                         <input class="form-check-input" type="checkbox" name="checklist_validasi[]" value="Background Zoom" {{ in_array('Background Zoom', $checklist) ? 'checked' : '' }}>
                                         <label class="form-check-label text-dark small fw-medium">Background Zoom / Banner</label>
                                     </div>
+                                    <div class="mb-2 mt-1 d-flex gap-2">
+                                        <input type="file" name="background_zoom" class="form-control form-control-sm shadow-none" accept=".jpg,.jpeg,.png">
+                                        @if($pelatihan->background_zoom) <a href="{{ asset($pelatihan->background_zoom) }}" target="_blank" class="btn btn-sm btn-outline-primary"><i class="fas fa-image"></i></a> @endif
+                                    </div>
                                     <div class="form-check custom-checkbox mb-2">
                                         <input class="form-check-input" type="checkbox" name="checklist_validasi[]" value="Foto Profil Grup WA" {{ in_array('Foto Profil Grup WA', $checklist) ? 'checked' : '' }}>
                                         <label class="form-check-label text-dark small fw-medium">Foto Profil Grup WA</label>
+                                    </div>
+                                    <div class="form-check custom-checkbox mb-2">
+                                        <input class="form-check-input" type="checkbox" name="checklist_validasi[]" value="Modul Pelatihan" {{ in_array('Modul Pelatihan', $checklist) ? 'checked' : '' }}>
+                                        <label class="form-check-label text-dark small fw-medium">Modul Pelatihan (Maks 5MB)</label>
+                                    </div>
+                                    <div class="mb-2 mt-1 d-flex gap-2">
+                                        <input type="file" name="modul" class="form-control form-control-sm shadow-none" accept=".pdf,.doc,.docx,.zip,.rar">
+                                        @if($pelatihan->modul) <a href="{{ asset($pelatihan->modul) }}" target="_blank" class="btn btn-sm btn-outline-primary"><i class="fas fa-file-pdf"></i></a> @endif
+                                    </div>
+                                    <div class="form-check custom-checkbox mb-2">
+                                        <input class="form-check-input" type="checkbox" name="checklist_validasi[]" value="Rundown Pelatihan" {{ in_array('Rundown Pelatihan', $checklist) ? 'checked' : '' }}>
+                                        <label class="form-check-label text-dark small fw-medium">Rundown Pelatihan</label>
+                                    </div>
+                                    <div class="mb-2 mt-1 d-flex gap-2">
+                                        <input type="file" name="rundown_pelatihan" class="form-control form-control-sm shadow-none" accept=".pdf,.doc,.docx">
+                                        @if($pelatihan->rundown_pelatihan) <a href="{{ asset($pelatihan->rundown_pelatihan) }}" target="_blank" class="btn btn-sm btn-outline-primary"><i class="fas fa-file-alt"></i></a> @endif
                                     </div>
                                 </div>
                             </div>
@@ -980,6 +948,35 @@
                 <button type="submit" class="btn btn-success text-white fw-bold btn-round w-100 shadow-sm">Simpan Tanda Terima</button>
             </div>
         </form>
+    </div>
+</div>
+@endforeach
+
+{{-- MODAL HAPUS DATA --}}
+@foreach($pelatihans as $pelatihan)
+<div class="modal fade" id="modalHapusPelatihan-{{ $pelatihan->id }}" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content border-0 shadow" style="border-radius: 20px;">
+            <div class="modal-header border-0 bg-danger text-white pb-3" style="border-radius: 20px 20px 0 0;">
+                <h5 class="modal-title fw-bolder"><i class="fas fa-exclamation-triangle me-2"></i> Konfirmasi Hapus</h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body p-4 text-center">
+                <div class="mb-3 text-danger">
+                    <i class="fas fa-trash-alt fa-3x"></i>
+                </div>
+                <h6 class="fw-bold text-dark mb-2">Hapus Pelatihan Berjalan ini?</h6>
+                <p class="text-muted small mb-0">Apakah Anda yakin ingin menghapus data pelatihan <strong>{{ optional($pelatihan->training)->nama_training ?? 'Belum Ada Pelatihan' }}</strong>? Tindakan ini tidak dapat dibatalkan.</p>
+            </div>
+            <div class="modal-footer border-0 p-3 bg-light d-flex justify-content-end" style="border-radius: 0 0 20px 20px;">
+                <button type="button" class="btn btn-light border btn-round fw-bold px-4" data-bs-dismiss="modal">Batal</button>
+                <form action="{{ route('operational.pelatihan-berjalan.destroy', $pelatihan->id) }}" method="POST">
+                    @csrf
+                    @method('DELETE')
+                    <button type="submit" class="btn btn-danger btn-round fw-bold px-4">Ya, Hapus Data</button>
+                </form>
+            </div>
+        </div>
     </div>
 </div>
 @endforeach

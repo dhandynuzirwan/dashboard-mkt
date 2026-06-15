@@ -21,6 +21,19 @@ class PendaftaranPribadiController extends Controller
         } elseif ($judul_pelatihan) {
             $selected_training = \App\Models\MasterTraining::where('nama_training', $judul_pelatihan)->first();
         }
+
+        if (!$selected_training && $cta_id) {
+            $cta = \App\Models\Cta::find($cta_id);
+            if ($cta && $cta->judul_permintaan && $cta->judul_permintaan !== '-') {
+                // Cari berdasarkan judul_permintaan di master_trainings
+                $selected_training = \App\Models\MasterTraining::where('nama_training', $cta->judul_permintaan)->first();
+                if (!$selected_training) {
+                    $selected_training = \App\Models\MasterTraining::where('nama_training', 'LIKE', '%' . $cta->judul_permintaan . '%')
+                                        ->orWhereRaw('? LIKE CONCAT("%", nama_training, "%")', [$cta->judul_permintaan])
+                                        ->first();
+                }
+            }
+        }
         
         // 🔥 UBAH NAMA VARIABEL INI JADI $trainings
         $trainings = \App\Models\MasterTraining::all();
@@ -78,7 +91,8 @@ class PendaftaranPribadiController extends Controller
 
         // 4. Simpan ke Database
         PendaftaranPribadi::create(array_merge($validated, $paths, [
-            'id_pendaftaran' => $idPendaftaran // Masukkan ID yang digenerate
+            'id_pendaftaran' => $idPendaftaran, // Masukkan ID yang digenerate
+            'cta_id'         => $request->cta_id // Simpan CTA ID agar marketing PIC terbaca
         ]));
 
         // 5. Redirect ke halaman sukses dengan membawa ID Pendaftaran
@@ -101,13 +115,13 @@ class PendaftaranPribadiController extends Controller
 
         // Jika user mencari berdasarkan ID Pendaftaran
         if ($request->filled('id_pendaftaran')) {
-            $pendaftaran = PendaftaranPribadi::with('training')
+            $pendaftaran = PendaftaranPribadi::with(['training', 'cta.prospek.marketing', 'pelatihanBerjalan'])
                 ->where('id_pendaftaran', $request->id_pendaftaran)
                 ->first();
         } 
         // ATAU Jika user mencari berdasarkan Nama & Tanggal Lahir
         elseif ($request->filled('nama_lengkap') && $request->filled('tanggal_lahir')) {
-            $pendaftaran = PendaftaranPribadi::with('training')
+            $pendaftaran = PendaftaranPribadi::with(['training', 'cta.prospek.marketing', 'pelatihanBerjalan'])
                 ->where('nama_lengkap', 'like', '%' . $request->nama_lengkap . '%')
                 ->where('tanggal_lahir', $request->tanggal_lahir)
                 ->first();
@@ -150,5 +164,24 @@ class PendaftaranPribadiController extends Controller
         }
 
         return redirect()->back()->with('error', 'Anda belum memilih berkas revisi apa pun.');
+    }
+
+    public function downloadModul($id)
+    {
+        $peserta = PendaftaranPribadi::findOrFail($id);
+        
+        if ($peserta->is_modul_downloaded) {
+            return redirect()->back()->with('error', 'Modul sudah pernah diunduh. Modul hanya dapat diunduh 1 kali per peserta.');
+        }
+
+        $pb = $peserta->pelatihanBerjalan;
+        if (!$pb || !$pb->modul || !file_exists(public_path($pb->modul))) {
+            return redirect()->back()->with('error', 'File modul belum tersedia.');
+        }
+
+        // Tandai sebagai sudah diunduh
+        $peserta->update(['is_modul_downloaded' => true]);
+
+        return response()->download(public_path($pb->modul));
     }
 }

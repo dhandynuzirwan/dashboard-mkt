@@ -74,18 +74,28 @@ class OperationalPendaftaranController extends Controller
             $queryPendaftar->where('status', $request->status);
         }
         
+        // Filter Tanggal (Default: Bulan Ini)
+        $startDateVerifikasi = $request->input('start_date_verifikasi', Carbon::now()->startOfMonth()->toDateString());
+        $endDateVerifikasi = $request->input('end_date_verifikasi', Carbon::now()->endOfMonth()->toDateString());
+
+        $queryPendaftar->whereDate('created_at', '>=', $startDateVerifikasi)
+                       ->whereDate('created_at', '<=', $endDateVerifikasi);
+
         $pendaftarans = $queryPendaftar->orderBy('created_at', 'desc')->paginate(10, ['*'], 'page_verifikasi')->withQueryString();
 
-        // Statistik
+        // Statistik (difilter berdasarkan tanggal yang dipilih)
+        $baseStatsQuery = PendaftaranPribadi::whereDate('created_at', '>=', $startDateVerifikasi)
+                                            ->whereDate('created_at', '<=', $endDateVerifikasi);
+
         $stats = [
-            'total_pendaftar' => PendaftaranPribadi::count(),
-            'menunggu'        => PendaftaranPribadi::where('status', 'pending')->count(),
-            'revisi'          => PendaftaranPribadi::where('status', 'revisi')->count(),
-            'disetujui'       => PendaftaranPribadi::where('status', 'diterima')->count(),
+            'total_pendaftar' => (clone $baseStatsQuery)->count(),
+            'menunggu'        => (clone $baseStatsQuery)->where('status', 'pending')->count(),
+            'revisi'          => (clone $baseStatsQuery)->where('status', 'revisi')->count(),
+            'disetujui'       => (clone $baseStatsQuery)->where('status', 'diterima')->count(),
         ];
 
         // 🔥 Kirim startDate dan endDate ke view agar tanggal default muncul di form
-        return view('operational.data-pendaftaran', compact('deals', 'pendaftarans', 'stats', 'startDate', 'endDate'));
+        return view('operational.data-pendaftaran', compact('deals', 'pendaftarans', 'stats', 'startDate', 'endDate', 'startDateVerifikasi', 'endDateVerifikasi'));
     }
 
     public function verify(Request $request, $id)

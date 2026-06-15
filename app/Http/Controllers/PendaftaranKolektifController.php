@@ -35,8 +35,21 @@ class PendaftaranKolektifController extends Controller
                                                 ->toArray();
                     
                     // 3. Cocokkan teks judul tersebut dengan kolom 'nama_training' di tabel master_trainings
-                    // array_unique digunakan untuk menyaring agar nama program tidak ganda di dropdown
-                    $trainings = \App\Models\MasterTraining::whereIn('nama_training', array_unique($judulTitles))->get();
+                    // Menggunakan fuzzy match (LIKE) agar lebih toleran terhadap perbedaan penulisan
+                    $judulTitles = array_unique(array_filter($judulTitles, fn($v) => $v && $v !== '-'));
+                    
+                    $trainingsQuery = \App\Models\MasterTraining::query();
+                    if (!empty($judulTitles)) {
+                        $trainingsQuery->where(function($q) use ($judulTitles) {
+                            foreach ($judulTitles as $judul) {
+                                $q->orWhere('nama_training', 'LIKE', '%' . $judul . '%')
+                                  ->orWhereRaw('? LIKE CONCAT("%", nama_training, "%")', [$judul]);
+                            }
+                        });
+                        $trainings = $trainingsQuery->get();
+                    } else {
+                        $trainings = collect();
+                    }
                 } else {
                     // Fallback: Jika tidak terikat prospek tetapi ada training_id di URL
                     $training_id = $request->query('training_id');
@@ -124,7 +137,7 @@ class PendaftaranKolektifController extends Controller
 
         if ($id) {
             // Mencari kolektif berdasarkan ID Registrasi (KLT-...)
-            $kolektif = PendaftaranKolektif::with('pesertas.training')
+            $kolektif = PendaftaranKolektif::with(['pesertas.training', 'pesertas.pelatihanBerjalan', 'cta.prospek.marketing'])
                             ->where('id_pendaftaran', $id)
                             ->first();
 
@@ -134,5 +147,41 @@ class PendaftaranKolektifController extends Controller
         }
 
         return view('portal.cek-status-perusahaan', compact('kolektif'));
+    }
+
+    public function updateRevisi(Request $request, $id)
+    {
+        $kolektif = PendaftaranKolektif::findOrFail($id);
+
+        $request->validate([
+            'file_zip' => 'required|file|mimes:zip,rar,7z|max:20480'
+        ]);
+
+        if ($request->hasFile('file_zip')) {
+            $path = $request->file('file_zip')->store('berkas_kolektif', 'public');
+            $kolektif->update([
+                'file_zip' => $path,
+                'status' => 'pending'
+            ]);
+
+            // Ubah status peserta yang revisi kembali menjadi pending
+            foreach ($kolektif->pesertas()->where('status', 'revisi')->get() as $peserta) {
+                $updates = ['status' => 'pending'];
+                
+                $dokMap = ['ktp', 'ijazah', 'foto', 'cv', 'sk', 'laporan', 'sop'];
+                foreach ($dokMap as $field) {
+                    if ($peserta->{"status_$field"} == 'reject') {
+                        $updates["status_$field"] = 'pending';
+                    }
+                }
+                
+                $peserta->update($updates);
+            }
+
+            return redirect()->route('portal.cek-status-perusahaan', ['id_kolektif' => $kolektif->id_pendaftaran])
+                             ->with('success', 'File ZIP revisi berhasil diunggah. Silakan tunggu proses verifikasi ulang oleh Admin.');
+        }
+
+        return back()->with('error', 'File tidak ditemukan.');
     }
 }

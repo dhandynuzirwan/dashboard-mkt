@@ -47,7 +47,11 @@ class PelatihanBerjalan extends Model
         'nama_lsp',
         'kontak_lsp',
         'wa_asesor',
-        'keterangan_tambahan'
+        'keterangan_tambahan',
+        'background_zoom',
+        'link_zoom_pelatihan',
+        'link_zoom_asesmen',
+        'rundown_pelatihan'
     ];
 
     public function training()

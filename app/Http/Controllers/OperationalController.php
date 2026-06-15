@@ -131,7 +131,7 @@ class OperationalController extends Controller
             'pengawas'          => 'nullable|string',
             'pjk3'              => 'nullable|string',
             'pic_klien'         => 'nullable|string',
-            'status_kelas'      => 'required|in:persiapan,running,selesai,batal',
+            'status_kelas'      => 'sometimes|required|in:persiapan,running,selesai,batal',
         ]);
         
         $data = $request->except(['_token', '_method']);
@@ -142,7 +142,10 @@ class OperationalController extends Controller
             'file_laporan_kemnaker',
             'file_scan_sertifikat',
             'foto_resi',
-            'foto_tanda_terima'
+            'foto_tanda_terima',
+            'background_zoom',
+            'modul',
+            'rundown_pelatihan'
         ];
 
         foreach ($fileFields as $field) {
@@ -178,8 +181,8 @@ class OperationalController extends Controller
             }
 
             \App\Models\RiwayatPelatihan::create([
-                'judul_pelatihan' => $pelatihan->training->name ?? null,
-                'jenis' => $pelatihan->training->sertifikasi ?? null,
+                'judul_pelatihan' => $pelatihan->training->nama_training ?? null,
+                'jenis' => null,
                 'metode' => $pelatihan->lokasi ?? null,
                 'tanggal_mulai' => $pelatihan->tanggal_pelatihan,
                 'tanggal_selesai' => $pelatihan->tanggal_selesai,
@@ -204,5 +207,21 @@ class OperationalController extends Controller
         }
         
         return redirect()->back()->with('success', 'Data Pelatihan Berjalan berhasil diperbarui!');
+    }
+
+    public function destroyPelatihanBerjalan($id)
+    {
+        $pelatihan = \App\Models\PelatihanBerjalan::findOrFail($id);
+        
+        // Cek jika masih ada peserta yang terkait dengan pelatihan berjalan ini
+        if ($pelatihan->pendaftaranPribadis()->count() > 0) {
+            // Bisa dilepas kaitan atau dihapus pelatihannya tergantung aturan bisnis
+            // Disini asumsikan kita null-kan pelatihan_berjalan_id di pesertanya
+            $pelatihan->pendaftaranPribadis()->update(['pelatihan_berjalan_id' => null]);
+        }
+
+        $pelatihan->delete();
+
+        return redirect()->back()->with('success', 'Data Pelatihan Berjalan berhasil dihapus.');
     }
 }
