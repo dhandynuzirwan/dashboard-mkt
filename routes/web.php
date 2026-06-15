@@ -151,6 +151,7 @@ Route::middleware('auth')->group(function () {
             Route::post('/riwayat-pelatihan', [App\Http\Controllers\RiwayatPelatihanController::class, 'store'])->name('riwayat.pelatihan.store');
             Route::put('/riwayat-pelatihan/{id}', [App\Http\Controllers\RiwayatPelatihanController::class, 'update'])->name('riwayat.pelatihan.update');
             Route::put('/riwayat-pelatihan/{id}/peserta/{index}', [App\Http\Controllers\RiwayatPelatihanController::class, 'updatePeserta'])->name('riwayat.pelatihan.updatePeserta');
+            Route::post('/riwayat-pelatihan/{id}/peserta', [App\Http\Controllers\RiwayatPelatihanController::class, 'tambahPeserta'])->name('riwayat.pelatihan.tambahPeserta');
         });
 
 

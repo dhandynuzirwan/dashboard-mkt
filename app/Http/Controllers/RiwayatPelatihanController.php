@@ -189,4 +189,46 @@ class RiwayatPelatihanController extends Controller
 
         return redirect()->back()->with('success', 'Data peserta berhasil diperbarui.');
     }
+
+    public function tambahPeserta(Request $request, $id)
+    {
+        $riwayat = RiwayatPelatihan::findOrFail($id);
+
+        $pesertas = explode(',', $riwayat->nama_peserta ?? '');
+        $instansis = explode(',', $riwayat->instansi_peserta ?? '');
+        $was = explode(',', $riwayat->wa_peserta ?? '');
+        $mkts = explode(',', $riwayat->marketing ?? '');
+
+        // Bersihkan data dari elemen kosong
+        $pesertas = array_filter(array_map('trim', $pesertas));
+        $instansis = array_map('trim', $instansis);
+        $was = array_map('trim', $was);
+        $mkts = array_map('trim', $mkts);
+
+        // Tambahkan ke akhir array
+        $pesertas[] = $request->nama_peserta ?? '';
+        
+        $newIndex = count($pesertas) - 1;
+        
+        // Sesuaikan ukuran array jika kosong
+        if (count($instansis) < $newIndex) $instansis = array_pad($instansis, $newIndex, '');
+        if (count($was) < $newIndex) $was = array_pad($was, $newIndex, '');
+        if (count($mkts) < $newIndex) $mkts = array_pad($mkts, $newIndex, '');
+
+        $instansis[$newIndex] = $request->instansi_peserta ?? '';
+        $was[$newIndex] = $request->wa_peserta ?? '';
+        $mkts[$newIndex] = $request->marketing ?? '';
+
+        $riwayat->nama_peserta = implode(', ', $pesertas);
+        $riwayat->instansi_peserta = implode(', ', $instansis);
+        $riwayat->wa_peserta = implode(', ', $was);
+        $riwayat->marketing = implode(', ', $mkts);
+        
+        // Update jumlah_peserta if it reflects the real count
+        $riwayat->jumlah_peserta = count($pesertas);
+
+        $riwayat->save();
+
+        return redirect()->back()->with('success', 'Data peserta berhasil ditambahkan.');
+    }
 }

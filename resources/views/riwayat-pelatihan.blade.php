@@ -569,7 +569,10 @@
                             <div class="mb-4">
                                 <div class="d-flex justify-content-between align-items-center mb-3 border-bottom border-2 pb-2">
                                     <h6 class="fw-bolder text-dark mb-0"><i class="fas fa-building text-primary me-2"></i> Instansi & Peserta</h6>
-                                    <button type="button" class="btn btn-sm btn-light border py-1 px-2 rounded-3" data-bs-toggle="modal" data-bs-target="#editSyaratModal{{ $item->id }}"><i class="fas fa-edit text-primary"></i> Edit Syarat</button>
+                                    <div>
+                                        <button type="button" class="btn btn-sm btn-primary py-1 px-2 rounded-3 me-1" data-bs-toggle="modal" data-bs-target="#tambahPesertaModal{{ $item->id }}"><i class="fas fa-plus"></i> Tambah</button>
+                                        <button type="button" class="btn btn-sm btn-light border py-1 px-2 rounded-3" data-bs-toggle="modal" data-bs-target="#editSyaratModal{{ $item->id }}"><i class="fas fa-edit text-primary"></i> Edit Syarat</button>
+                                    </div>
                                 </div>
                                 <div class="row g-3">
                                     <div class="col-sm-6">
@@ -1057,6 +1060,49 @@
         $was = explode(',', $item->wa_peserta ?? '');
         $mkts = explode(',', $item->marketing ?? '');
     @endphp
+
+    {{-- Modal Tambah Peserta Baru --}}
+    <div class="modal fade" id="tambahPesertaModal{{ $item->id }}" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content rounded-4 border-0 shadow">
+                <div class="modal-header border-bottom-0 pb-0 px-4 pt-4">
+                    <h5 class="modal-title fw-bold text-dark"><i class="fas fa-user-plus text-primary me-2"></i> Tambah Peserta Baru</h5>
+                    <button type="button" class="btn-close shadow-none" data-bs-dismiss="modal"></button>
+                </div>
+                <form action="{{ route('riwayat.pelatihan.tambahPeserta', $item->id) }}" method="POST">
+                    @csrf
+                    <div class="modal-body p-4">
+                        <div class="mb-3">
+                            <label class="form-label small fw-bold">Nama Peserta</label>
+                            <input type="text" name="nama_peserta" class="form-control rounded-3" required>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label small fw-bold">Perusahaan / Instansi</label>
+                            <input type="text" name="instansi_peserta" class="form-control rounded-3">
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label small fw-bold">WA Peserta</label>
+                            <input type="text" name="wa_peserta" class="form-control rounded-3">
+                        </div>
+                        <div class="mb-0">
+                            <label class="form-label small fw-bold">Marketing</label>
+                            <select name="marketing" class="form-select rounded-3">
+                                <option value="">Pilih...</option>
+                                @foreach($marketings as $mkt)
+                                    <option value="{{ $mkt->name }}">{{ $mkt->nama_lengkap ?: $mkt->name }}</option>
+                                @endforeach
+                            </select>
+                        </div>
+                    </div>
+                    <div class="modal-footer border-top-0 px-4 pb-4 pt-0">
+                        <button type="button" class="btn btn-light rounded-pill px-4" data-bs-dismiss="modal">Batal</button>
+                        <button type="submit" class="btn btn-primary rounded-pill px-4 shadow-sm">Simpan</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
     @foreach(array_filter($pesertas, 'trim') as $i => $peserta)
     <div class="modal fade" id="editPesertaModal{{ $item->id }}_{{ $i }}" tabindex="-1" aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered">
