@@ -231,4 +231,36 @@ class RiwayatPelatihanController extends Controller
 
         return redirect()->back()->with('success', 'Data peserta berhasil ditambahkan.');
     }
+
+    public function hapusPeserta($id, $index)
+    {
+        $riwayat = RiwayatPelatihan::findOrFail($id);
+
+        $pesertas = explode(',', $riwayat->nama_peserta ?? '');
+        $instansis = explode(',', $riwayat->instansi_peserta ?? '');
+        $was = explode(',', $riwayat->wa_peserta ?? '');
+        $mkts = explode(',', $riwayat->marketing ?? '');
+
+        // Hapus elemen jika index ada
+        if (isset($pesertas[$index])) {
+            unset($pesertas[$index]);
+            
+            if (isset($instansis[$index])) unset($instansis[$index]);
+            if (isset($was[$index])) unset($was[$index]);
+            if (isset($mkts[$index])) unset($mkts[$index]);
+
+            // Re-index dan implode kembali
+            $riwayat->nama_peserta = implode(', ', array_values($pesertas));
+            $riwayat->instansi_peserta = implode(', ', array_values($instansis));
+            $riwayat->wa_peserta = implode(', ', array_values($was));
+            $riwayat->marketing = implode(', ', array_values($mkts));
+            
+            // Update jumlah_peserta
+            $riwayat->jumlah_peserta = count(array_filter($pesertas, function($val) { return trim($val) !== ''; }));
+
+            $riwayat->save();
+        }
+
+        return redirect()->back()->with('success', 'Data peserta berhasil dihapus.');
+    }
 }

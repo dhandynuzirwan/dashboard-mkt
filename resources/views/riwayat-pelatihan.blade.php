@@ -623,9 +623,17 @@
                                                         <td class="text-muted">{{ !empty(trim($instansis[$i] ?? '')) ? trim($instansis[$i]) : '-' }}</td>
                                                         <td><span class="badge bg-secondary-subtle text-secondary">{{ !empty(trim($mkts[$i] ?? '')) ? trim($mkts[$i]) : '-' }}</span></td>
                                                         <td class="text-center">
-                                                            <button type="button" class="btn btn-sm btn-light border shadow-sm rounded-3 py-1 px-2" title="Edit Peserta" data-bs-toggle="modal" data-bs-target="#editPesertaModal{{ $item->id }}_{{ $i }}">
-                                                                <i class="fas fa-edit text-primary"></i>
-                                                            </button>
+                                                            <div class="d-flex justify-content-center gap-1">
+                                                                <button type="button" class="btn btn-sm btn-light border shadow-sm rounded-3 py-1 px-2" title="Edit Peserta" data-bs-toggle="modal" data-bs-target="#editPesertaModal{{ $item->id }}_{{ $i }}">
+                                                                    <i class="fas fa-edit text-primary"></i>
+                                                                </button>
+                                                                <form action="{{ route('riwayat.pelatihan.hapusPeserta', ['id' => $item->id, 'index' => $i]) }}" method="POST" onsubmit="return confirm('Apakah Anda yakin ingin menghapus peserta ini?');">
+                                                                    @csrf @method('DELETE')
+                                                                    <button type="submit" class="btn btn-sm btn-light border shadow-sm rounded-3 py-1 px-2" title="Hapus Peserta">
+                                                                        <i class="fas fa-trash-alt text-danger"></i>
+                                                                    </button>
+                                                                </form>
+                                                            </div>
                                                         </td>
                                                     </tr>
                                                     @empty
