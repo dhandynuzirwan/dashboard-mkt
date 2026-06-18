@@ -177,6 +177,9 @@
                                                     <small class="text-muted d-block" style="font-size: 9px;">TGL PELATIHAN</small>
                                                     <span class="fw-bold text-dark" style="font-size: 11px;">
                                                         {{ $pelatihan->tanggal_pelatihan ? \Carbon\Carbon::parse($pelatihan->tanggal_pelatihan)->translatedFormat('d M Y') : 'Belum Diset' }}
+                                                        @if($pelatihan->tanggal_selesai)
+                                                            - {{ \Carbon\Carbon::parse($pelatihan->tanggal_selesai)->translatedFormat('d M Y') }}
+                                                        @endif
                                                     </span>
                                                 </div>
                                                 <div class="bg-danger-subtle p-2 rounded border border-danger-subtle">
@@ -524,9 +527,13 @@
             </div>
             <div class="modal-body px-4 pt-4 pb-4">
                 <div class="row g-3">
-                    <div class="col-12 mt-3">
+                    <div class="col-md-6 mt-3">
                         <label class="label-modern">Mulai Pelatihan <span class="text-danger">*</span></label>
                         <input type="date" name="tanggal_pelatihan" value="{{ $pelatihan->tanggal_pelatihan }}" class="form-control input-modern shadow-none" required>
+                    </div>
+                    <div class="col-md-6 mt-3">
+                        <label class="label-modern">Selesai Pelatihan</label>
+                        <input type="date" name="tanggal_selesai" value="{{ $pelatihan->tanggal_selesai }}" class="form-control input-modern shadow-none">
                     </div>
                     <div class="col-12 mt-3">
                         <label class="label-modern text-danger">Tanggal Asesmen / Ujian</label>

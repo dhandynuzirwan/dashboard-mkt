@@ -766,7 +766,7 @@
                                         
                                         @if($item->foto)
                                         <div class="col-12 mt-3">
-                                            <a href="{{ asset('storage/'.$item->foto) }}" target="_blank" class="btn btn-info text-white rounded-pill px-4 fw-bold shadow-sm w-100"><i class="fas fa-image me-2"></i> Lihat Foto Bukti Resi</a>
+                                            <a href="{{ asset($item->foto) }}" target="_blank" class="btn btn-info text-white rounded-pill px-4 fw-bold shadow-sm w-100"><i class="fas fa-image me-2"></i> Lihat Foto Bukti Resi</a>
                                         </div>
                                         @endif
                                     </div>

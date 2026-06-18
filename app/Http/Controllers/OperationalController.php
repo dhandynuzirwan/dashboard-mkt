@@ -129,7 +129,8 @@ class OperationalController extends Controller
         $pelatihan = \App\Models\PelatihanBerjalan::findOrFail($id);
         
         $request->validate([
-            'tanggal_pelatihan' => 'nullable|date',
+            'tanggal_pelatihan' => 'sometimes|required|date',
+            'tanggal_selesai'   => 'nullable|date|after_or_equal:tanggal_pelatihan',
             'tanggal_asesmen'   => 'nullable|date',
             'lokasi'            => 'nullable|string',
             'instruktur'        => 'nullable|string',
