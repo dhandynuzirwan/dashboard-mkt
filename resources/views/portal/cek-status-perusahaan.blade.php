@@ -182,13 +182,11 @@
                                 <p class="text-xs text-red-600 mt-1 leading-relaxed">Silakan periksa catatan revisi di daftar karyawan di bawah ini. Gabungkan semua berkas perbaikan ke dalam 1 file <b>ZIP/RAR</b> dan unggah ulang di sini.</p>
                             </div>
                         </div>
-                        <form action="{{ route('portal.kolektif.revisi', $kolektif->id) }}" method="POST" enctype="multipart/form-data" class="bg-white p-4 rounded-xl border border-red-100 flex flex-col md:flex-row items-center gap-3">
-                            @csrf
-                            <input type="file" name="file_zip" accept=".zip,.rar" class="block w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-red-50 file:text-red-700 hover:file:bg-red-100" required>
-                            <button type="submit" class="w-full md:w-auto px-5 py-2.5 bg-red-600 text-white text-sm font-bold rounded-xl hover:bg-red-700 transition whitespace-nowrap shadow-sm">
+                        <div class="flex flex-col md:flex-row items-center gap-3">
+                            <button type="button" onclick="document.getElementById('modal-revisi-kolektif').classList.remove('hidden')" class="w-full md:w-auto px-5 py-2.5 bg-red-600 text-white text-sm font-bold rounded-xl hover:bg-red-700 transition whitespace-nowrap shadow-sm flex items-center justify-center">
                                 <i class="fas fa-upload mr-2"></i> Unggah Revisi
                             </button>
-                        </form>
+                        </div>
                     </div>
                     @endif
 
@@ -285,6 +283,61 @@
                         @endforelse
                     </div>
                 </div>
+
+                {{-- MODAL UPLOAD REVISI KOLEKTIF --}}
+                @if($kolektif->pesertas->where('status', 'revisi')->count() > 0)
+                <div id="modal-revisi-kolektif" class="fixed inset-0 z-[100] hidden">
+                    <!-- Backdrop -->
+                    <div class="fixed inset-0 bg-gray-900/60 backdrop-blur-sm transition-opacity" onclick="document.getElementById('modal-revisi-kolektif').classList.add('hidden')"></div>
+                    
+                    <!-- Modal Dialog -->
+                    <div class="fixed inset-0 z-10 overflow-y-auto">
+                        <div class="flex min-h-full items-end justify-center p-4 text-center sm:items-center sm:p-0">
+                            <div class="relative transform overflow-hidden rounded-2xl bg-white text-left shadow-xl transition-all sm:my-8 sm:w-full sm:max-w-lg">
+                                <!-- Modal Header -->
+                                <div class="bg-red-50 px-6 py-4 border-b border-red-100 flex justify-between items-center">
+                                    <h3 class="text-lg font-bold text-red-800 flex items-center">
+                                        <i class="fas fa-file-archive mr-2"></i> Unggah Berkas Revisi (ZIP/RAR)
+                                    </h3>
+                                    <button type="button" class="text-red-400 hover:text-red-600 transition" onclick="document.getElementById('modal-revisi-kolektif').classList.add('hidden')">
+                                        <i class="fas fa-times text-xl"></i>
+                                    </button>
+                                </div>
+
+                                <!-- Modal Body -->
+                                <form action="{{ route('portal.kolektif.revisi', $kolektif->id) }}" method="POST" enctype="multipart/form-data">
+                                    @csrf
+                                    <div class="px-6 py-6">
+                                        <p class="text-sm text-gray-600 mb-4">
+                                            Harap pastikan semua berkas yang diminta revisi oleh tim kami sudah dikumpulkan ke dalam 1 file <b>ZIP</b> atau <b>RAR</b>.
+                                        </p>
+                                        
+                                        <div class="border-2 border-dashed border-red-200 rounded-xl p-6 text-center hover:bg-red-50 transition cursor-pointer" onclick="document.getElementById('file_zip_input').click()">
+                                            <i class="fas fa-cloud-upload-alt text-4xl text-red-300 mb-3"></i>
+                                            <p class="text-sm font-medium text-gray-700 mb-1">Klik di sini untuk memilih file</p>
+                                            <p class="text-xs text-gray-500">Maks. ukuran 10 MB (.zip, .rar)</p>
+                                            
+                                            <input type="file" id="file_zip_input" name="file_zip" accept=".zip,.rar" class="hidden" required onchange="document.getElementById('file-name-display').innerText = this.files[0] ? this.files[0].name : ''">
+                                        </div>
+                                        
+                                        <div class="mt-3 text-center">
+                                            <span id="file-name-display" class="text-sm font-bold text-red-600"></span>
+                                        </div>
+                                    </div>
+
+                                    <!-- Modal Footer -->
+                                    <div class="bg-gray-50 px-6 py-4 border-t border-gray-100 flex justify-end gap-3">
+                                        <button type="button" class="px-4 py-2 bg-white border border-gray-200 text-gray-700 font-bold rounded-xl hover:bg-gray-50 transition" onclick="document.getElementById('modal-revisi-kolektif').classList.add('hidden')">Batal</button>
+                                        <button type="submit" class="px-5 py-2 bg-red-600 text-white font-bold rounded-xl hover:bg-red-700 transition shadow-sm">
+                                            <i class="fas fa-paper-plane mr-1"></i> Kirim Revisi
+                                        </button>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                @endif
             @endif
         </div>
     </main>

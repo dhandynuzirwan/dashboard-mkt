@@ -14,12 +14,16 @@ class OperationalPendaftaranController extends Controller
         // ==========================================
         // TAB 1: DATA PROSPEK DEAL (Tracking)
         // ==========================================
-        $queryDeals = Cta::with(['prospek.marketing'])->where('status_penawaran', 'deal');
+        $queryDeals = \App\Models\Prospek::with(['marketing', 'ctas' => function($q) {
+            $q->where('status_penawaran', 'deal');
+        }])->whereHas('ctas', function($q) {
+            $q->where('status_penawaran', 'deal');
+        });
         
         // 1. Filter Pencarian Teks
         if ($request->filled('search_tracking')) {
             $search = $request->search_tracking;
-            $queryDeals->whereHas('prospek', function($q) use ($search) {
+            $queryDeals->where(function($q) use ($search) {
                 $q->where('perusahaan', 'like', '%'.$search.'%')
                   ->orWhere('pic', 'like', '%'.$search.'%');
             });
@@ -28,11 +32,9 @@ class OperationalPendaftaranController extends Controller
         // 2. 🔥 PERBAIKAN: Filter Status Kelengkapan (Pakai Subquery SQL)
         if ($request->filled('status_tracking')) {
             if ($request->status_tracking == 'lengkap') {
-                // Cari yang jumlah pendaftar (cta_id) >= target peserta
-                $queryDeals->whereRaw('(SELECT COUNT(*) FROM pendaftaran_pribadis WHERE pendaftaran_pribadis.cta_id = ctas.id) >= IFNULL(ctas.jumlah_peserta, 1)');
+                $queryDeals->whereRaw('(SELECT COUNT(*) FROM pendaftaran_pribadis WHERE pendaftaran_pribadis.cta_id IN (SELECT id FROM ctas WHERE ctas.prospek_id = prospeks.id AND ctas.status_penawaran = "deal")) >= (SELECT SUM(IFNULL(jumlah_peserta, 1)) FROM ctas WHERE ctas.prospek_id = prospeks.id AND ctas.status_penawaran = "deal")');
             } elseif ($request->status_tracking == 'kurang') {
-                // Cari yang jumlah pendaftar (cta_id) < target peserta
-                $queryDeals->whereRaw('(SELECT COUNT(*) FROM pendaftaran_pribadis WHERE pendaftaran_pribadis.cta_id = ctas.id) < IFNULL(ctas.jumlah_peserta, 1)');
+                $queryDeals->whereRaw('(SELECT COUNT(*) FROM pendaftaran_pribadis WHERE pendaftaran_pribadis.cta_id IN (SELECT id FROM ctas WHERE ctas.prospek_id = prospeks.id AND ctas.status_penawaran = "deal")) < (SELECT SUM(IFNULL(jumlah_peserta, 1)) FROM ctas WHERE ctas.prospek_id = prospeks.id AND ctas.status_penawaran = "deal")');
             }
         }
 
@@ -40,24 +42,31 @@ class OperationalPendaftaranController extends Controller
         $startDate = $request->input('start_date', Carbon::now()->startOfMonth()->toDateString());
         $endDate = $request->input('end_date', Carbon::now()->endOfMonth()->toDateString());
 
-        $queryDeals->whereHas('prospek', function($q) use ($startDate, $endDate) {
-            $q->whereDate('tanggal_prospek', '>=', $startDate)
-              ->whereDate('tanggal_prospek', '<=', $endDate);
-        });
+        $queryDeals->whereDate('tanggal_prospek', '>=', $startDate)
+                   ->whereDate('tanggal_prospek', '<=', $endDate);
 
         $deals = $queryDeals->orderBy('created_at', 'desc')->paginate(10, ['*'], 'page_deal')->withQueryString();
 
         // 4. 🔥 KALKULASI PROGRESS BAR (WAJIB ADA)
-        $deals->getCollection()->transform(function ($deal) {
-            $deal->target_peserta = $deal->jumlah_peserta ?? 1;
-            $deal->terdaftar = \App\Models\PendaftaranPribadi::where('cta_id', $deal->id)->count();
-            $deal->kurang = max(0, $deal->target_peserta - $deal->terdaftar);
-            $deal->is_lengkap = $deal->terdaftar >= $deal->target_peserta;
+        $deals->getCollection()->transform(function ($prospek) {
+            // Karena satu prospek bisa punya lebih dari 1 CTA Deal
+            $prospek->target_peserta = $prospek->ctas->sum('jumlah_peserta') ?: 1;
+            
+            $ctaIds = $prospek->ctas->pluck('id')->toArray();
+            $prospek->terdaftar = \App\Models\PendaftaranPribadi::whereIn('cta_id', $ctaIds)->count();
+            
+            $prospek->kurang = max(0, $prospek->target_peserta - $prospek->terdaftar);
+            $prospek->is_lengkap = $prospek->terdaftar >= $prospek->target_peserta;
 
-            $persentase = ($deal->target_peserta > 0) ? round(($deal->terdaftar / $deal->target_peserta) * 100) : 0;
-            $deal->persentase = $persentase > 100 ? 100 : $persentase;
+            $persentase = ($prospek->target_peserta > 0) ? round(($prospek->terdaftar / $prospek->target_peserta) * 100) : 0;
+            $prospek->persentase = $persentase > 100 ? 100 : $persentase;
+            
+            // Ambil CTA pertama sebagai perwakilan untuk link kolektif/detail CTA
+            $firstCta = $prospek->ctas->first();
+            $prospek->first_cta_id = $firstCta ? $firstCta->id : null;
+            $prospek->judul_permintaan = $firstCta ? $firstCta->judul_permintaan : null;
 
-            return $deal;
+            return $prospek;
         });
 
         // ==========================================

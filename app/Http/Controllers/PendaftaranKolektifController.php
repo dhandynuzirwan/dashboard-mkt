@@ -23,35 +23,34 @@ class PendaftaranKolektifController extends Controller
             $currentCta = \App\Models\Cta::find($cta_id); 
             
             if ($currentCta) {
-                if ($currentCta->jumlah_peserta) {
-                    $jumlah_peserta = $currentCta->jumlah_peserta;
-                }
-                
                 if ($currentCta->prospek_id) {
-                    // 2. Tarik semua string teks 'judul_permintaan' dari seluruh CTA milik Perusahaan/Prospek yang sama
-                    $judulTitles = \App\Models\Cta::where('prospek_id', $currentCta->prospek_id)
-                                                ->whereNotNull('judul_permintaan')
-                                                ->pluck('judul_permintaan')
-                                                ->toArray();
-                    
-                    // 3. Cocokkan teks judul tersebut dengan kolom 'nama_training' di tabel master_trainings
-                    // Menggunakan fuzzy match (LIKE) agar lebih toleran terhadap perbedaan penulisan
-                    $judulTitles = array_unique(array_filter($judulTitles, fn($v) => $v && $v !== '-'));
-                    
-                    $trainingsQuery = \App\Models\MasterTraining::query();
-                    if (!empty($judulTitles)) {
-                        $trainingsQuery->where(function($q) use ($judulTitles) {
-                            foreach ($judulTitles as $judul) {
-                                $q->orWhere('nama_training', 'LIKE', '%' . $judul . '%')
-                                  ->orWhereRaw('? LIKE CONCAT("%", nama_training, "%")', [$judul]);
-                            }
-                        });
-                        $trainings = $trainingsQuery->get();
+                    // 2. Tarik semua string teks 'judul_permintaan' dari seluruh CTA milik Perusahaan/Prospek yang sama (Hanya yang Deal)
+                    $semuaCta = \App\Models\Cta::where('prospek_id', $currentCta->prospek_id)
+                                                ->where('status_penawaran', 'deal')
+                                                ->get();
+
+                    if ($semuaCta->isNotEmpty()) {
+                        $jumlah_peserta = $semuaCta->sum('jumlah_peserta') ?: 1;
+                        
+                        $judulTitles = $semuaCta->pluck('judul_permintaan')->toArray();
+                        // 3. Cocokkan teks judul tersebut dengan kolom 'nama_training' di tabel master_trainings (EXACT MATCH)
+                        $judulTitles = array_unique(array_filter($judulTitles, fn($v) => $v && $v !== '-'));
+                        
+                        $trainingsQuery = \App\Models\MasterTraining::query();
+                        if (!empty($judulTitles)) {
+                            $trainingsQuery->whereIn('nama_training', $judulTitles);
+                            $trainings = $trainingsQuery->get();
+                        } else {
+                            $trainings = collect();
+                        }
                     } else {
                         $trainings = collect();
                     }
                 } else {
-                    // Fallback: Jika tidak terikat prospek tetapi ada training_id di URL
+                    // Fallback: Jika tidak terikat prospek
+                    if ($currentCta->jumlah_peserta) {
+                        $jumlah_peserta = $currentCta->jumlah_peserta;
+                    }
                     $training_id = $request->query('training_id');
                     if($training_id) {
                         $trainings = \App\Models\MasterTraining::where('id', $training_id)->get();

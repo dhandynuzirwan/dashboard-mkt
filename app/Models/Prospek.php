@@ -23,4 +23,8 @@ class Prospek extends Model
     public function cta() {
         return $this->hasOne(Cta::class, 'prospek_id');
     }
+
+    public function ctas() {
+        return $this->hasMany(Cta::class, 'prospek_id');
+    }
 }

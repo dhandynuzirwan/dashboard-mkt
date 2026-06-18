@@ -228,36 +228,38 @@
                                         {{-- 1. ID & Tanggal Deal --}}
                                         <td class="text-center">
                                             <span class="badge badge-soft-secondary border fw-bolder px-2 py-1 mb-1 shadow-sm">#{{ $deal->id }}</span><br>
-                                            <small class="text-muted fw-bold" style="font-size: 10px;">{{ \Carbon\Carbon::parse($deal->prospek->tanggal_prospek)->format('d M Y') }}</small>
+                                            <small class="text-muted fw-bold" style="font-size: 10px;">{{ \Carbon\Carbon::parse($deal->tanggal_prospek)->format('d M Y') }}</small>
                                         </td>
 
                                         {{-- 2. Perusahaan & PIC --}}
                                         <td class="ps-3">
-                                            <div class="fw-bolder text-dark" style="font-size: 14px;">{{ $deal->prospek->perusahaan ?? 'Individu / Pribadi' }}</div>
+                                            <div class="fw-bolder text-dark" style="font-size: 14px;">{{ $deal->perusahaan ?? 'Individu / Pribadi' }}</div>
                                             <small class="text-muted d-block text-truncate mb-1" style="max-width: 200px;">
-                                                <i class="fas fa-map-marker-alt text-danger me-1"></i> {{ $deal->prospek->lokasi ?? $deal->prospek->lokasi ?? 'Lokasi tidak diketahui' }}
+                                                <i class="fas fa-map-marker-alt text-danger me-1"></i> {{ $deal->lokasi ?? 'Lokasi tidak diketahui' }}
                                             </small>
                                             <div class="bg-light border rounded px-2 py-1 d-inline-block mt-1">
-                                                <small class="text-dark fw-bold" style="font-size: 10px;"><i class="fas fa-user-tie text-muted me-1"></i> {{ $deal->prospek->nama_pic ?? $deal->prospek->nama_pic ?? '-' }}</small>
+                                                <small class="text-dark fw-bold" style="font-size: 10px;"><i class="fas fa-user-tie text-muted me-1"></i> {{ $deal->nama_pic ?? '-' }}</small>
                                             </div>
                                         </td>
 
                                         {{-- 3. Program & Sertifikasi --}}
                                         <td>
                                             {{-- 🔥 Menampilkan Judul Pelatihan spesifik dari CTA Deal --}}
-                                            <span class="fw-bolder text-primary d-block mb-1" style="font-size: 13px;">
-                                                {{ $deal->judul_permintaan ?? $deal->prospek->judul_permintaan ?? '-' }}
-                                            </span>
-                                            <span class="badge badge-soft-info border px-2 py-1 text-uppercase">{{ $deal->sertifikasi ?? 'Internal' }}</span>
+                                            @foreach($deal->ctas as $cta)
+                                                <span class="fw-bolder text-primary d-block mb-1" style="font-size: 13px;">
+                                                    &bull; {{ $cta->judul_permintaan ?? '-' }}
+                                                </span>
+                                            @endforeach
+                                            <span class="badge badge-soft-info border px-2 py-1 text-uppercase">{{ $deal->ctas->first()->sertifikasi ?? 'Internal' }}</span>
                                         </td>
 
                                         {{-- 4. Marketing PIC --}}
                                         <td>
                                             <div class="d-flex align-items-center mb-1">
-                                                <div class="icon-sm bg-light border rounded-circle d-flex align-items-center justify-content-center me-2" style="width: 20px; height: 20px; font-size: 9px;">
-                                                    <i class="fas fa-user text-muted"></i>
+                                                <div class="avatar avatar-xs rounded-circle bg-primary text-white d-flex align-items-center justify-content-center me-2 shadow-sm" style="width: 24px; height: 24px; font-size: 10px;">
+                                                    {{ substr($deal->marketing->name ?? 'M', 0, 1) }}
                                                 </div>
-                                                <span class="fw-bold text-dark" style="font-size: 11px;">{{ $deal->prospek->marketing->name ?? '-' }}</span>
+                                                <span class="fw-bolder text-dark" style="font-size: 12px;">{{ $deal->marketing->name ?? '-' }}</span>
                                             </div>
                                         </td>
 
@@ -307,7 +309,7 @@
                                         <td>
                                             @php
                                                 // 1. Logika penentu: Jika perusahaan kosong atau berisi tulisan 'pribadi' (case insensitive)
-                                                $namaPerusahaan = $deal->prospek->perusahaan ?? 'Pribadi';
+                                                $namaPerusahaan = $deal->perusahaan ?? 'Pribadi';
                                                 $isKolektif = ($namaPerusahaan && strtolower($namaPerusahaan) !== 'pribadi');
 
                                                 // 2. Ambil ID Training dari judul_permintaan di CTA
@@ -323,7 +325,7 @@
                                                 // 3. Susun URL Registrasi Dinamis
                                                 if ($isKolektif) {
                                                     $urlRegistrasi = route('portal.pendaftaran.kolektif', [
-                                                        'cta_id'      => $deal->id,
+                                                        'cta_id'      => $deal->first_cta_id,
                                                         'training_id' => $trainingId,
                                                         'perusahaan'  => $namaPerusahaan
                                                     ]);
@@ -331,7 +333,7 @@
                                                     $btnText  = 'Link Kolektif';
                                                 } else {
                                                     $urlRegistrasi = route('portal.pendaftaran.create', [
-                                                        'cta_id'      => $deal->id,
+                                                        'cta_id'      => $deal->first_cta_id,
                                                         'training_id' => $trainingId
                                                     ]);
                                                     $btnColor = 'btn-info text-white';
@@ -350,8 +352,8 @@
                                                     <i class="fas fa-link me-1"></i> {{ $btnText }}
                                                 </button>
 
-                                                <a href="{{ $linkWa }}" target="_blank" class="btn btn-success btn-sm btn-round fw-bold shadow-sm" title="Kirim via WhatsApp">
-                                                    <i class="fab fa-whatsapp"></i>
+                                                <a href="{{ route('cta.edit', $deal->first_cta_id) }}" target="_blank" class="btn btn-warning btn-sm btn-round fw-bold shadow-sm text-dark" title="Detail CTA">
+                                                    <i class="fas fa-edit"></i>
                                                 </a>
                                             </div>
                                         </td>

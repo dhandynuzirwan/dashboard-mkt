@@ -220,13 +220,13 @@
                     {{-- 5. SK Kerja --}}
                     <div class="flex flex-col md:flex-row md:items-center justify-between bg-gray-50 p-4 rounded-2xl border border-gray-200">
                         <div class="mb-3 md:mb-0">
-                            <h3 class="text-sm font-bold text-gray-800">5. Surat Keterangan Kerja <span class="text-red-500">*</span></h3>
+                            <h3 class="text-sm font-bold text-gray-800">5. Surat Keterangan Kerja</h3>
                             <p class="text-[11px] text-gray-500">Format PDF/JPG/PNG. Max 2MB.</p>
                         </div>
                         <div class="w-full md:w-1/2">
                             <label class="flex items-center justify-center w-full px-4 py-2 bg-white border border-dashed border-gray-300 rounded-xl cursor-pointer">
                                 <span class="text-xs text-gray-500 font-medium">Pilih File...</span>
-                                <input type="file" name="file_sk" accept=".pdf,.jpg,.jpeg,.png" required onchange="updateFileNameList(this, 'file-sk')" />
+                                <input type="file" name="file_sk" accept=".pdf,.jpg,.jpeg,.png" onchange="updateFileNameList(this, 'file-sk')" />
                             </label>
                             <p id="file-sk" class="text-[10px] text-green-600 font-bold mt-1.5 hidden truncate pl-1"></p>
                         </div>
@@ -235,13 +235,13 @@
                     {{-- 6. Laporan --}}
                     <div class="flex flex-col md:flex-row md:items-center justify-between bg-gray-50 p-4 rounded-2xl border border-gray-200">
                         <div class="mb-3 md:mb-0">
-                            <h3 class="text-sm font-bold text-gray-800">6. Laporan Kerja <span class="text-red-500">*</span></h3>
+                            <h3 class="text-sm font-bold text-gray-800">6. Laporan Kerja</h3>
                             <p class="text-[11px] text-gray-500">Format PDF/DOC/DOCX. Max 2MB.</p>
                         </div>
                         <div class="w-full md:w-1/2">
                             <label class="flex items-center justify-center w-full px-4 py-2 bg-white border border-dashed border-gray-300 rounded-xl cursor-pointer">
                                 <span class="text-xs text-gray-500 font-medium">Pilih File...</span>
-                                <input type="file" name="file_laporan" accept=".pdf,.docx,.doc" required onchange="updateFileNameList(this, 'file-laporan')" />
+                                <input type="file" name="file_laporan" accept=".pdf,.docx,.doc" onchange="updateFileNameList(this, 'file-laporan')" />
                             </label>
                             <p id="file-laporan" class="text-[10px] text-green-600 font-bold mt-1.5 hidden truncate pl-1"></p>
                         </div>
@@ -250,13 +250,13 @@
                     {{-- 7. SOP --}}
                     <div class="flex flex-col md:flex-row md:items-center justify-between bg-gray-50 p-4 rounded-2xl border border-gray-200">
                         <div class="mb-3 md:mb-0">
-                            <h3 class="text-sm font-bold text-gray-800">7. Uraian Jobdesk / SOP <span class="text-red-500">*</span></h3>
+                            <h3 class="text-sm font-bold text-gray-800">7. Uraian Jobdesk / SOP</h3>
                             <p class="text-[11px] text-gray-500">Format PDF/DOC/DOCX. Max 2MB.</p>
                         </div>
                         <div class="w-full md:w-1/2">
                             <label class="flex items-center justify-center w-full px-4 py-2 bg-white border border-dashed border-gray-300 rounded-xl cursor-pointer">
                                 <span class="text-xs text-gray-500 font-medium">Pilih File...</span>
-                                <input type="file" name="file_sop" accept=".pdf,.docx,.doc" required onchange="updateFileNameList(this, 'file-sop')" />
+                                <input type="file" name="file_sop" accept=".pdf,.docx,.doc" onchange="updateFileNameList(this, 'file-sop')" />
                             </label>
                             <p id="file-sop" class="text-[10px] text-green-600 font-bold mt-1.5 hidden truncate pl-1"></p>
                         </div>

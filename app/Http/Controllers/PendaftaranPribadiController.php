@@ -60,9 +60,9 @@ class PendaftaranPribadiController extends Controller
             'file_ijazah'  => 'required|file|mimes:pdf,jpg,jpeg,png|max:2048',
             'file_foto'    => 'required|file|mimes:jpg,jpeg,png|max:2048',
             'file_cv'      => 'required|file|mimes:pdf|max:2048',
-            'file_sk'      => 'required|file|mimes:pdf,jpg,jpeg,png|max:2048',
-            'file_laporan' => 'required|file|mimes:pdf,doc,docx|max:2048',
-            'file_sop'     => 'required|file|mimes:pdf,doc,docx|max:2048',
+            'file_sk'      => 'nullable|file|mimes:pdf,jpg,jpeg,png|max:2048',
+            'file_laporan' => 'nullable|file|mimes:pdf,doc,docx|max:2048',
+            'file_sop'     => 'nullable|file|mimes:pdf,doc,docx|max:2048',
         ]);
 
         // 2. Proses Upload File
