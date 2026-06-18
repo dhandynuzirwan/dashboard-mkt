@@ -118,7 +118,9 @@ class OperationalController extends Controller
             ->orderBy('tanggal_pelatihan', 'desc')
             ->get();
             
-        return view('operational.monitoring-pelatihan', compact('pelatihans'));
+        $users = \App\Models\User::all();
+            
+        return view('operational.monitoring-pelatihan', compact('pelatihans', 'users'));
     }
 
     // Update Data Pelatihan Berjalan
@@ -131,10 +133,12 @@ class OperationalController extends Controller
             'tanggal_asesmen'   => 'nullable|date',
             'lokasi'            => 'nullable|string',
             'instruktur'        => 'nullable|string',
+            'wa_trainer'        => 'nullable|string',
             'asesor'            => 'nullable|string',
             'pengawas'          => 'nullable|string',
             'pjk3'              => 'nullable|string',
             'pic_klien'         => 'nullable|string',
+            'pic_operasional'   => 'nullable|string',
             'status_kelas'      => 'sometimes|required|in:persiapan,running,selesai,batal',
         ]);
         
@@ -204,8 +208,20 @@ class OperationalController extends Controller
                 'instansi_peserta' => json_encode($instansi_peserta),
                 'wa_peserta' => json_encode($wa_peserta),
                 'marketing' => json_encode($marketing),
-                'status_sertif' => 'Belum Terbit',
+                'pic' => $pelatihan->pic_operasional,
+                'status_sertif' => $pelatihan->status_sertifikat ?? 'Belum Terbit',
+                'scan_sertif' => $pelatihan->file_scan_sertifikat,
                 'status_kompeten' => 'Belum',
+                'nama_penerima' => $pelatihan->nama_penerima,
+                'wa_penerima' => $pelatihan->wa_penerima,
+                'isi_paket' => $pelatihan->isi_paket,
+                'alamat_pengiriman' => $pelatihan->alamat_pengiriman,
+                'tanggal_kirim' => $pelatihan->tanggal_kirim,
+                'no_resi' => $pelatihan->resi_pengiriman,
+                'status_pengiriman' => $pelatihan->status_pengiriman,
+                'tanggal_diterima' => $pelatihan->tanggal_diterima,
+                'foto' => $pelatihan->foto_tanda_terima ?? $pelatihan->foto_resi,
+                'catatan' => $pelatihan->catatan_pengiriman,
                 'keterangan_tambahan' => $pelatihan->keterangan_tambahan,
             ]);
         }

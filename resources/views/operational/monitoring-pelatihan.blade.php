@@ -201,6 +201,9 @@
                                                 <div class="mb-2">
                                                     <small class="text-muted d-block" style="font-size: 9px; text-transform: uppercase;">Instruktur & Asesor</small>
                                                     <span class="text-dark fw-bold d-block" style="font-size: 12px;"><i class="fas fa-chalkboard-teacher text-primary me-1"></i> Inst: {{ $pelatihan->instruktur ?? '-' }}</span>
+                                                    @if($pelatihan->wa_trainer)
+                                                    <span class="text-dark fw-bold d-block mt-1" style="font-size: 11px;"><i class="fab fa-whatsapp text-success me-1"></i> WA: <a href="https://wa.me/{{ preg_replace('/[^0-9]/', '', $pelatihan->wa_trainer) }}" target="_blank" class="text-success text-decoration-none">{{ $pelatihan->wa_trainer }}</a></span>
+                                                    @endif
                                                     <span class="text-dark fw-bold d-block mt-1" style="font-size: 12px;"><i class="fas fa-user-check text-success me-1"></i> Asr: {{ $pelatihan->asesor ?? '-' }}</span>
                                                 </div>
                                                 <div class="bg-gray-50 p-2 rounded border mb-0">
@@ -223,7 +226,10 @@
                                                     <span class="text-muted d-block mb-1" style="font-size: 9px; text-transform: uppercase;">Penanggung Jawab (PIC)</span>
                                                     <div class="d-flex flex-column gap-1">
                                                         <span class="badge bg-light text-dark border text-start px-2 py-1 shadow-sm w-100 text-truncate" style="font-size: 10px;">
-                                                            <i class="fas fa-user-tie text-primary me-1"></i> PIC Sertifikasi: {{ $pelatihan->pic_klien ?? 'Belum Diset' }}
+                                                            <i class="fas fa-user-tie text-primary me-1"></i> Eksternal: {{ $pelatihan->pic_klien ?? 'Belum Diset' }}
+                                                        </span>
+                                                        <span class="badge bg-light text-dark border text-start px-2 py-1 shadow-sm w-100 text-truncate" style="font-size: 10px;">
+                                                            <i class="fas fa-user-shield text-success me-1"></i> Internal: {{ $pelatihan->pic_operasional ?? 'Belum Diset' }}
                                                         </span>
                                                     </div>
                                                 </div>
@@ -559,6 +565,10 @@
                     <input type="text" name="instruktur" value="{{ $pelatihan->instruktur }}" class="form-control input-modern shadow-none" placeholder="Contoh: Bpk. Ahmad Fauzi">
                 </div>
                 <div class="mb-3">
+                    <label class="label-modern">Nomor WA Instruktur</label>
+                    <input type="text" name="wa_trainer" value="{{ $pelatihan->wa_trainer }}" class="form-control input-modern shadow-none" placeholder="Contoh: 081234567890">
+                </div>
+                <div class="mb-3">
                     <label class="label-modern">Nama Asesor / Evaluator</label>
                     <input type="text" name="asesor" value="{{ $pelatihan->asesor }}" class="form-control input-modern shadow-none" placeholder="Contoh: Bpk. Ridwan R.">
                 </div>
@@ -598,10 +608,23 @@
                         <input type="text" name="pjk3" value="{{ $pelatihan->pjk3 }}" class="form-control input-modern shadow-none" placeholder="Contoh: PT Arsa Safety">
                     </div>
                 </div>
-                <div class="row g-3">
+                <div class="row g-3 mb-3">
                     <div class="col-12">
                         <label class="label-modern">PIC Eksternal (Lembaga Sertifikasi)</label>
                         <input type="text" name="pic_klien" value="{{ $pelatihan->pic_klien }}" class="form-control input-modern shadow-none" placeholder="Contoh: Ibu Vina (HRD)">
+                    </div>
+                </div>
+                <div class="row g-3">
+                    <div class="col-12">
+                        <label class="label-modern">PIC Internal (Operasional)</label>
+                        <select name="pic_operasional" class="form-select input-modern shadow-none">
+                            <option value="">-- Pilih PIC Operasional --</option>
+                            @foreach($users as $user)
+                                <option value="{{ $user->name }}" {{ $pelatihan->pic_operasional == $user->name ? 'selected' : '' }}>
+                                    {{ $user->name }}
+                                </option>
+                            @endforeach
+                        </select>
                     </div>
                 </div>
             </div>

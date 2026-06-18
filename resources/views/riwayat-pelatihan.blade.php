@@ -718,10 +718,10 @@
                                 
                                 <div class="text-muted small fw-bold mb-2 mt-4">Unduh Berkas Pendukung</div>
                                 <div class="d-flex flex-wrap gap-2">
-                                    @if($item->cv)<a href="{{ asset('storage/'.$item->cv) }}" target="_blank" class="btn btn-sm btn-white border fw-bold hover-lift px-3"><i class="fas fa-file-pdf text-danger me-1"></i> CV</a>@endif
-                                    @if($item->modul)<a href="{{ asset('storage/'.$item->modul) }}" target="_blank" class="btn btn-sm btn-white border fw-bold hover-lift px-3"><i class="fas fa-book text-primary me-1"></i> Modul</a>@endif
-                                    @if($item->laporan_pic)<a href="{{ asset('storage/'.$item->laporan_pic) }}" target="_blank" class="btn btn-sm btn-white border fw-bold hover-lift px-3"><i class="fas fa-file-alt text-success me-1"></i> Laporan</a>@endif
-                                    @if($item->scan_sertif)<a href="{{ asset('storage/'.$item->scan_sertif) }}" target="_blank" class="btn btn-sm btn-white border fw-bold hover-lift px-3"><i class="fas fa-award text-warning me-1"></i> Scan Sertif</a>@endif
+                                    @if($item->cv)<a href="{{ asset($item->cv) }}" target="_blank" class="btn btn-sm btn-white border fw-bold hover-lift px-3"><i class="fas fa-file-pdf text-danger me-1"></i> CV</a>@endif
+                                    @if($item->modul)<a href="{{ asset($item->modul) }}" target="_blank" class="btn btn-sm btn-white border fw-bold hover-lift px-3"><i class="fas fa-book text-primary me-1"></i> Modul</a>@endif
+                                    @if($item->laporan_pic)<a href="{{ asset($item->laporan_pic) }}" target="_blank" class="btn btn-sm btn-white border fw-bold hover-lift px-3"><i class="fas fa-file-alt text-success me-1"></i> Laporan</a>@endif
+                                    @if($item->scan_sertif)<a href="{{ asset($item->scan_sertif) }}" target="_blank" class="btn btn-sm btn-white border fw-bold hover-lift px-3"><i class="fas fa-award text-warning me-1"></i> Scan Sertif</a>@endif
                                     
                                     @if(!$item->cv && !$item->modul && !$item->laporan_pic && !$item->scan_sertif)
                                         <span class="text-muted fst-italic bg-light px-3 py-2 rounded-3 w-100 text-center border">Belum ada berkas yang diunggah.</span>

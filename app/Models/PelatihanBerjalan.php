@@ -16,6 +16,7 @@ class PelatihanBerjalan extends Model
         'pengawas',
         'pjk3',
         'pic_klien',
+        'pic_operasional',
         'status_kelas',
         'evaluasi',
         'status_laporan_internal',
