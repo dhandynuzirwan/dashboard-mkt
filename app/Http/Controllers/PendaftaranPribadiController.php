@@ -78,8 +78,9 @@ class PendaftaranPribadiController extends Controller
 
         // 🔥 3. AUTO-GENERATE ID PENDAFTARAN 🔥
         $tahun = date('Y');
-        // Cari data pendaftaran terakhir di tahun ini
+        // Cari data pendaftaran terakhir di tahun ini khusus untuk Pribadi (PRB)
         $lastRecord = PendaftaranPribadi::whereYear('created_at', $tahun)
+                                        ->where('id_pendaftaran', 'LIKE', 'PRB-%')
                                         ->orderBy('id', 'desc')
                                         ->first();
 

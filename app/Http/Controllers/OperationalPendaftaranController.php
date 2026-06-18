@@ -134,8 +134,12 @@ class OperationalPendaftaranController extends Controller
         // LOGIKA PENENTUAN STATUS UTAMA
         $semuaStatus = [
             $request->status_ktp, $request->status_ijazah, $request->status_foto, 
-            $request->status_cv, $request->status_sk, $request->status_laporan, $request->status_sop
+            $request->status_cv
         ];
+
+        if ($pendaftaran->file_sk) $semuaStatus[] = $request->status_sk;
+        if ($pendaftaran->file_laporan) $semuaStatus[] = $request->status_laporan;
+        if ($pendaftaran->file_sop) $semuaStatus[] = $request->status_sop;
 
         if (in_array('reject', $semuaStatus)) {
             $updates['status'] = 'revisi';

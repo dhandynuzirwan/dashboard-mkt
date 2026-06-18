@@ -253,11 +253,46 @@
 
                     @foreach($dokMap as $field => $namaDoc)
                         @php
-                            $statusDoc = $pendaftaran->{'status_' . $field};
+                            $statusDoc  = $pendaftaran->{'status_' . $field};
                             $catatanDoc = $pendaftaran->{'catatan_' . $field};
+                            $fileExist  = $pendaftaran->{'file_' . $field};
                         @endphp
 
-                        @if($statusDoc == 'approve')
+                        @if(!$fileExist && in_array($field, ['sk', 'laporan', 'sop']))
+                            {{-- TAMPILAN ABU-ABU (OPSIONAL & TIDAK DIUNGGAH) --}}
+                            <div class="bg-white p-5 rounded-2xl border-2 border-gray-200 shadow-sm relative overflow-hidden">
+                                <div class="absolute left-0 top-0 bottom-0 w-1 bg-gray-400"></div>
+                                <div class="flex items-center justify-between mb-4 pl-1">
+                                    <div class="flex items-center">
+                                        <div class="w-10 h-10 bg-gray-50 rounded-full flex items-center justify-center mr-4 flex-shrink-0">
+                                            <svg class="w-5 h-5 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 12H4"></path></svg>
+                                        </div>
+                                        <div>
+                                            <p class="text-sm font-bold text-gray-800">{{ $namaDoc }}</p>
+                                            <span class="bg-gray-100 text-gray-600 px-2 py-0.5 rounded text-[10px] font-bold mt-1 inline-block border border-gray-200">Opsional (Kosong)</span>
+                                        </div>
+                                    </div>
+                                </div>
+                                
+                                <div class="bg-blue-50/50 p-3 rounded-xl border border-blue-100 mb-4 ml-1">
+                                    <p class="text-xs font-bold text-blue-800 mb-1">Unggah Susulan:</p>
+                                    <p class="text-xs text-blue-600">Anda masih dapat melengkapi dokumen opsional ini jika diinginkan.</p>
+                                </div>
+
+                                <div id="upload-area-{{ $field }}" class="ml-1">
+                                    <label class="flex items-center justify-center w-full p-3 border border-dashed border-gray-300 rounded-xl cursor-pointer bg-gray-50 hover:bg-blue-50 hover:border-blue-400 transition-colors">
+                                        <svg class="w-5 h-5 text-gray-400 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12"></path></svg>
+                                        <span class="text-sm text-gray-500 font-medium">Pilih file untuk diunggah...</span>
+                                        <input type="file" name="file_{{ $field }}" accept=".pdf,.jpg,.jpeg,.png" onchange="prosesRevisi(this, '{{ $field }}')" />
+                                    </label>
+                                </div>
+
+                                <div id="action-area-{{ $field }}" class="hidden items-center justify-between bg-blue-50 p-3 rounded-xl border border-blue-100 ml-1 mt-2">
+                                    <p class="text-xs text-blue-700 font-medium truncate mr-3 flex-1" id="nama-file-{{ $field }}">namafile.jpg</p>
+                                </div>
+                            </div>
+
+                        @elseif($statusDoc == 'approve')
                             {{-- TAMPILAN HIJAU (DISETUJUI) --}}
                             <div class="bg-white p-5 rounded-2xl border border-gray-100 shadow-sm flex items-center justify-between">
                                 <div class="flex items-center">
@@ -323,12 +358,10 @@
                         @endif
                     @endforeach
 
-                    {{-- Tombol Kirim Revisi (Hanya muncul jika ada status Reject) --}}
-                    @if($pendaftaran->status == 'revisi')
-                        <button type="submit" class="w-full bg-blue-600 text-white font-bold text-lg py-4 rounded-2xl shadow-lg shadow-blue-600/30 hover:bg-blue-700 active:scale-95 transition-all mt-6">
-                            Kirim Ulang Dokumen Revisi
-                        </button>
-                    @endif
+                    {{-- Tombol Kirim Revisi / Susulan --}}
+                    <button type="submit" id="btn-submit-revisi" class="w-full bg-blue-600 text-white font-bold text-lg py-4 rounded-2xl shadow-lg shadow-blue-600/30 hover:bg-blue-700 active:scale-95 transition-all mt-6 {{ $pendaftaran->status != 'revisi' ? 'hidden' : '' }}">
+                        {{ $pendaftaran->status == 'revisi' ? 'Kirim Ulang Dokumen Revisi' : 'Kirim Dokumen Susulan' }}
+                    </button>
                 </div>
             </form>
         </div>
@@ -345,6 +378,12 @@
                 actionArea.classList.add('flex');
                 
                 document.getElementById('nama-file-' + docType).innerText = input.files[0].name;
+
+                // Tampilkan tombol submit jika sebelumnya disembunyikan
+                const submitBtn = document.getElementById('btn-submit-revisi');
+                if (submitBtn) {
+                    submitBtn.classList.remove('hidden');
+                }
             }
         }
     </script>

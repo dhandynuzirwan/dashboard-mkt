@@ -473,10 +473,14 @@
                                     @forelse($pendaftarans as $pendaftar)
                                     @php
                                         // Hitung persentase berkas approve
-                                        $berkasArray = [$pendaftar->status_ktp, $pendaftar->status_ijazah, $pendaftar->status_foto, $pendaftar->status_cv, $pendaftar->status_sk, $pendaftar->status_laporan, $pendaftar->status_sop];
+                                        $berkasArray = [$pendaftar->status_ktp, $pendaftar->status_ijazah, $pendaftar->status_foto, $pendaftar->status_cv];
+                                        if ($pendaftar->file_sk) $berkasArray[] = $pendaftar->status_sk;
+                                        if ($pendaftar->file_laporan) $berkasArray[] = $pendaftar->status_laporan;
+                                        if ($pendaftar->file_sop) $berkasArray[] = $pendaftar->status_sop;
+
                                         $totalBerkas = count($berkasArray);
                                         $approved = count(array_filter($berkasArray, fn($v) => $v == 'approve'));
-                                        $persen = round(($approved / $totalBerkas) * 100);
+                                        $persen = $totalBerkas > 0 ? round(($approved / $totalBerkas) * 100) : 0;
                                     @endphp
                                     <tr>
                                         <td class="text-center">

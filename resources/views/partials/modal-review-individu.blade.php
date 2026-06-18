@@ -91,11 +91,17 @@
                                     @endif
                                     
                                     {{-- Dropdown Status Dinamis --}}
-                                    <select name="{{ $statusField }}" class="form-select form-select-sm border border-light bg-light shadow-none fw-bold text-muted btn-round {{ $currStatus == 'approve' ? 'border-success text-success' : ($currStatus == 'reject' ? 'border-danger text-danger' : '') }}" style="width: 140px; cursor: pointer;" onchange="toggleCatatan(this, 'catatan-{{ $field }}-{{ $pendaftar->id }}')">
-                                        <option value="pending" {{ $currStatus == 'pending' ? 'selected' : '' }}>🟡 Pending</option>
-                                        <option value="approve" {{ $currStatus == 'approve' ? 'selected' : '' }}>🟢 Disetujui</option>
-                                        <option value="reject" {{ $currStatus == 'reject' ? 'selected' : '' }}>🔴 Revisi</option>
-                                    </select>
+                                    @if($filePath)
+                                        <select name="{{ $statusField }}" class="form-select form-select-sm border border-light bg-light shadow-none fw-bold text-muted btn-round {{ $currStatus == 'approve' ? 'border-success text-success' : ($currStatus == 'reject' ? 'border-danger text-danger' : '') }}" style="width: 140px; cursor: pointer;" onchange="toggleCatatan(this, 'catatan-{{ $field }}-{{ $pendaftar->id }}')">
+                                            <option value="pending" {{ $currStatus == 'pending' ? 'selected' : '' }}>🟡 Pending</option>
+                                            <option value="approve" {{ $currStatus == 'approve' ? 'selected' : '' }}>🟢 Disetujui</option>
+                                            <option value="reject" {{ $currStatus == 'reject' ? 'selected' : '' }}>🔴 Revisi</option>
+                                        </select>
+                                    @else
+                                        <select name="{{ $statusField }}" class="form-select form-select-sm border border-light bg-light shadow-none fw-bold text-muted btn-round" style="width: 140px;" disabled>
+                                            <option value="">Tidak Tersedia</option>
+                                        </select>
+                                    @endif
                                 </div>
                             </div>
 

@@ -111,9 +111,33 @@
                                 <tbody>
                                     @forelse($pelatihans as $pelatihan)
                                         @php
-                                            $firstPendaftaran = $pelatihan->pendaftaranPribadis->first();
-                                            $sertifikasi = ($firstPendaftaran && $firstPendaftaran->cta) ? strtoupper($firstPendaftaran->cta->sertifikasi) : 'Lainnya';
-                                            $marketingName = ($firstPendaftaran && $firstPendaftaran->cta) ? $firstPendaftaran->cta->prospek->marketing->name : '-';
+                                            $pesertaList = $pelatihan->pendaftaranPribadis;
+                                            $marketingData = [];
+                                            $sertifikasi = 'Lainnya';
+
+                                            foreach($pesertaList as $p) {
+                                                if ($p->tipe_pendaftaran == 'kolektif' && $p->kolektif && $p->kolektif->cta && $p->kolektif->cta->prospek) {
+                                                    $mktName = $p->kolektif->cta->prospek->marketing->name ?? 'Unknown';
+                                                } else if ($p->cta && $p->cta->prospek) {
+                                                    $mktName = $p->cta->prospek->marketing->name ?? 'Unknown';
+                                                } else {
+                                                    $mktName = 'Unknown';
+                                                }
+                                                
+                                                if(!isset($marketingData[$mktName])) {
+                                                    $marketingData[$mktName] = 0;
+                                                }
+                                                $marketingData[$mktName]++;
+                                            }
+
+                                            $firstPendaftaran = $pesertaList->first();
+                                            if ($firstPendaftaran) {
+                                                if ($firstPendaftaran->tipe_pendaftaran == 'kolektif' && $firstPendaftaran->kolektif && $firstPendaftaran->kolektif->cta) {
+                                                    $sertifikasi = strtoupper($firstPendaftaran->kolektif->cta->sertifikasi);
+                                                } else if ($firstPendaftaran->cta) {
+                                                    $sertifikasi = strtoupper($firstPendaftaran->cta->sertifikasi);
+                                                }
+                                            }
                                             
                                             // Badge Status Kelas
                                             $statusBadgeMap = [
@@ -127,10 +151,23 @@
                                     <tr>
                                         <td class="ps-4">
                                             <div class="fw-bolder text-dark" style="font-size: 14px;">{{ optional($pelatihan->training)->nama_training ?? 'Belum Ada Pelatihan' }}</div>
-                                            <div class="fw-bold text-primary mt-1" style="font-size: 13px;"><i class="fas fa-certificate me-1"></i> {{ $sertifikasi }}</div>
-                                            <div class="d-flex gap-2 mt-2 align-items-center">
-                                                <span class="text-muted" style="font-size: 10px;"><i class="fas fa-user-tie me-1"></i> Mkt: {{ $marketingName }}</span>
+                                            <div class="fw-bold text-primary mt-1 mb-2" style="font-size: 13px;"><i class="fas fa-certificate me-1"></i> {{ $sertifikasi }}</div>
+                                            
+                                            <div class="d-flex flex-column gap-1 bg-light p-2 rounded border border-light">
+                                                @forelse($marketingData as $mkt => $count)
+                                                <span class="text-dark fw-bold" style="font-size: 10px;">
+                                                    <i class="fas fa-user-tie text-muted me-1"></i> {{ $mkt }} <span class="badge bg-white text-primary border px-1 ms-1">{{ $count }} org</span>
+                                                </span>
+                                                @empty
+                                                <span class="text-muted" style="font-size: 10px;">
+                                                    <i class="fas fa-user-tie me-1"></i> Belum ada peserta
+                                                </span>
+                                                @endforelse
                                             </div>
+                                            
+                                            <button class="btn btn-sm btn-white border shadow-sm btn-round text-primary hover-lift mt-2 w-100" style="font-size: 10px; max-width: 180px;" data-bs-toggle="modal" data-bs-target="#modalDetailPeserta-{{ $pelatihan->id }}">
+                                                <i class="fas fa-users me-1"></i> Lihat Detail Peserta
+                                            </button>
                                         </td>
                                         
                                         {{-- KOLOM JADWAL (UPDATE DENGAN LOKASI) --}}
@@ -600,6 +637,62 @@
                 <button type="submit" class="btn btn-primary btn-round fw-bold w-100 shadow-sm hover-lift">Simpan Status</button>
             </div>
         </form>
+    </div>
+</div>
+
+{{-- Modal 5: Detail Peserta --}}
+<div class="modal fade" id="modalDetailPeserta-{{ $pelatihan->id }}" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-xl">
+        <div class="modal-content border-0 shadow-lg" style="border-radius: 20px;">
+            <div class="modal-header border-bottom pb-3 pt-4 px-4 bg-light" style="border-radius: 20px 20px 0 0;">
+                <h5 class="modal-title fw-bolder text-dark"><i class="fas fa-users text-primary me-2"></i> Detail Peserta Pelatihan</h5>
+                <button type="button" class="btn-close shadow-none" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body p-0">
+                <div class="table-responsive" style="max-height: 400px; overflow-y: auto;">
+                    <table class="table table-modern table-hover align-middle mb-0" style="min-width: 1000px;">
+                        <thead class="bg-light sticky-top">
+                            <tr>
+                                <th class="ps-4" width="200">Nama Peserta</th>
+                                <th width="150">Tanggal Lahir</th>
+                                <th width="200">Alamat Perusahaan</th>
+                                <th width="150">Nomor WA</th>
+                                <th width="200">Nama Perusahaan</th>
+                                <th class="pe-4" width="150">Marketing</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @forelse($pelatihan->pendaftaranPribadis as $p)
+                                @php
+                                    if ($p->tipe_pendaftaran == 'kolektif' && $p->kolektif && $p->kolektif->cta && $p->kolektif->cta->prospek) {
+                                        $mktName = $p->kolektif->cta->prospek->marketing->name ?? 'Unknown';
+                                    } else if ($p->cta && $p->cta->prospek) {
+                                        $mktName = $p->cta->prospek->marketing->name ?? 'Unknown';
+                                    } else {
+                                        $mktName = 'Unknown';
+                                    }
+                                @endphp
+                                <tr>
+                                    <td class="ps-4 fw-bold text-dark" style="font-size: 13px;">{{ $p->nama_lengkap }}</td>
+                                    <td style="font-size: 12px;">{{ $p->tanggal_lahir ? \Carbon\Carbon::parse($p->tanggal_lahir)->translatedFormat('d M Y') : '-' }}</td>
+                                    <td style="font-size: 12px;" class="text-truncate" style="max-width: 200px;" title="{{ $p->alamat_perusahaan }}">{{ Str::limit($p->alamat_perusahaan, 30) }}</td>
+                                    <td style="font-size: 12px;"><a href="https://wa.me/{{ preg_replace('/[^0-9]/', '', $p->no_wa) }}" target="_blank" class="text-success fw-bold text-decoration-none"><i class="fab fa-whatsapp me-1"></i> {{ $p->no_wa }}</a></td>
+                                    <td style="font-size: 12px;">{{ $p->perusahaan }}</td>
+                                    <td class="pe-4" style="font-size: 12px;"><span class="badge bg-light text-dark border">{{ $mktName }}</span></td>
+                                </tr>
+                            @empty
+                                <tr>
+                                    <td colspan="6" class="text-center text-muted py-4">Belum ada data peserta.</td>
+                                </tr>
+                            @endforelse
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            <div class="modal-footer border-top bg-light py-3 px-4" style="border-radius: 0 0 20px 20px;">
+                <button type="button" class="btn btn-white border btn-round fw-bold text-dark px-4 shadow-none" data-bs-dismiss="modal">Tutup</button>
+            </div>
+        </div>
     </div>
 </div>
 @endforeach

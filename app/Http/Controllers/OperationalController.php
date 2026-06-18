@@ -110,7 +110,11 @@ class OperationalController extends Controller
     // Menampilkan Halaman Monitoring Pelatihan
     public function monitoringPelatihan()
     {
-        $pelatihans = \App\Models\PelatihanBerjalan::with(['training', 'pendaftaranPribadis.cta.prospek.marketing'])
+        $pelatihans = \App\Models\PelatihanBerjalan::with([
+            'training', 
+            'pendaftaranPribadis.cta.prospek.marketing',
+            'pendaftaranPribadis.kolektif.cta.prospek.marketing'
+        ])
             ->orderBy('tanggal_pelatihan', 'desc')
             ->get();
             
