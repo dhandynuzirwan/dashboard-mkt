@@ -103,6 +103,9 @@
                                 <select name="sumber" class="form-select">
                                     <option value="">-- Pilih Sumber --</option>
                                     <option value="DATA BASE MARKETING" {{ $prospek->sumber == 'DATA BASE MARKETING' ? 'selected' : '' }}>DATA BASE MARKETING</option>
+                                    <option value="DATABASE PERUSAHAAN" {{ $prospek->sumber == 'DATABASE PERUSAHAAN' ? 'selected' : '' }}>DATABASE PERUSAHAAN</option>
+                                    <option value="EMAIL MARKETING" {{ $prospek->sumber == 'EMAIL MARKETING' ? 'selected' : '' }}>EMAIL MARKETING</option>
+                                    <option value="EMAIL ADMIN" {{ $prospek->sumber == 'EMAIL ADMIN' ? 'selected' : '' }}>EMAIL ADMIN</option>
                                     <option value="SEARCHING GOOGLE" {{ $prospek->sumber == 'SEARCHING GOOGLE' ? 'selected' : '' }}>SEARCHING GOOGLE</option>
                                     <option value="GOOGLE MAPS" {{ $prospek->sumber == 'GOOGLE MAPS' ? 'selected' : '' }}>GOOGLE MAPS</option>
                                     <option value="ADS" {{ $prospek->sumber == 'ADS' ? 'selected' : '' }}>ADS</option>
