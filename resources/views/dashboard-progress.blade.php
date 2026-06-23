@@ -179,52 +179,113 @@
             </div>
         </div>
 
-        {{-- ================= CHARTS ================= --}}
+        {{-- ================= GLOBAL LEGEND ================= --}}
+        <div class="row mb-3 fade-in">
+            <div class="col-12">
+                <div class="card card-modern border-0 shadow-sm" style="background-color: #ffffff;">
+                    <div class="card-body p-3 text-center">
+                        <span class="fw-bold text-dark d-block mb-2" style="font-size: 13px;">Filter Marketing (Berlaku untuk semua grafik di bawah)</span>
+                        <div id="globalLegendContainer" class="d-flex flex-wrap justify-content-center gap-2">
+                            <!-- Global Legend akan di-render via Javascript -->
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        {{-- ================= CHARTS ROW 1: PENAWARAN ================= --}}
         <div class="row mb-4 fade-in">
-            {{-- Pie Chart --}}
+            {{-- Pie Chart Penawaran --}}
             <div class="col-md-4 mb-3 mb-md-0">
                 <div class="card card-modern border-0 shadow-sm h-100">
                     <div class="card-header bg-transparent border-bottom-0 pb-0 d-flex justify-content-between align-items-center pt-4 px-4">
                         <div>
-                            <h6 class="card-title fw-bolder mb-0 text-dark">Grafik Ach Target</h6>
-                            <small class="text-muted opacity-75" style="font-size: 11px;">Pencapaian nominal deal tim.</small>
+                            <h6 class="card-title fw-bolder mb-0 text-dark">Proporsi Penawaran</h6>
+                            <small class="text-muted opacity-75" style="font-size: 11px;">Nominal total penawaran.</small>
                         </div>
-                        <button type="button" class="btn btn-sm btn-white border btn-round hover-lift text-muted" onclick="downloadChart('achTargetChart', 'Grafik_Ach_Target')" title="Unduh Gambar">
+                        <button type="button" class="btn btn-sm btn-white border btn-round hover-lift text-muted" onclick="downloadChart('piePenawaranChart', 'Grafik_Proporsi_Penawaran')" title="Unduh Gambar">
                             <i class="fas fa-download"></i>
                         </button>
                     </div>
-                    <div class="card-body pb-3">
+                    <div class="card-body pb-4">
                         <div style="position: relative; height: 260px; width: 100%;">
-                            <canvas id="achTargetChart"></canvas>
+                            <canvas id="piePenawaranChart"></canvas>
                         </div>
-                        <div id="customPieLegend" class="d-flex flex-wrap justify-content-center gap-2 mt-3 mb-1"></div>
                     </div>
                 </div>
             </div>
 
-            {{-- Line Chart --}}
+            {{-- Line Chart Penawaran --}}
             <div class="col-md-8">
                 <div class="card card-modern border-0 shadow-sm h-100">
                     <div class="card-header bg-transparent border-bottom-0 pb-0 d-flex justify-content-between align-items-center flex-wrap pt-4 px-4">
                         <div class="mb-2 mb-md-0">
-                            <h6 class="card-title fw-bolder mb-0 text-dark">Tren Produktivitas</h6>
-                            <small class="text-muted opacity-75" style="font-size: 11px;">Pergerakan nominal penawaran.</small>
+                            <h6 class="card-title fw-bolder mb-0 text-dark">Tren Produktivitas Penawaran</h6>
+                            <small class="text-muted opacity-75" style="font-size: 11px;">Pergerakan nominal seluruh penawaran.</small>
                         </div>
                         <div class="d-flex gap-2">
                             <div class="nav-modern p-1 rounded-pill bg-white border shadow-sm d-inline-flex" role="group">
-                                <button type="button" class="nav-link active py-1 px-3" style="font-size: 11px;" id="btn-6bulan" onclick="ubahChart('6bulan')">6 Bln</button>
-                                <button type="button" class="nav-link py-1 px-3" style="font-size: 11px;" id="btn-1bulan" onclick="ubahChart('1bulan')">1 Bln</button>
+                                <button type="button" class="nav-link active py-1 px-3" style="font-size: 11px;" id="btn-penawaran-6bulan" onclick="ubahChartPenawaran('6bulan')">6 Bln</button>
+                                <button type="button" class="nav-link py-1 px-3" style="font-size: 11px;" id="btn-penawaran-1bulan" onclick="ubahChartPenawaran('1bulan')">1 Bln</button>
                             </div>
-                            <button type="button" class="btn btn-sm btn-white border btn-round hover-lift text-muted" onclick="downloadChart('multipleLineChart', 'Tren_Produktivitas')" title="Unduh Gambar">
+                            <button type="button" class="btn btn-sm btn-white border btn-round hover-lift text-muted" onclick="downloadChart('linePenawaranChart', 'Tren_Penawaran')" title="Unduh Gambar">
                                 <i class="fas fa-download"></i>
                             </button>
                         </div>
                     </div>
-                    <div class="card-body pb-3">
-                        <div class="chart-container" style="position: relative; height: 280px; width: 100%;">
-                            <canvas id="multipleLineChart"></canvas>
+                    <div class="card-body pb-4">
+                        <div class="chart-container" style="position: relative; height: 260px; width: 100%;">
+                            <canvas id="linePenawaranChart"></canvas>
                         </div>
-                        <div id="customLegend" class="d-flex flex-wrap justify-content-center gap-2 mt-4 mb-1"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        {{-- ================= CHARTS ROW 2: DEAL ================= --}}
+        <div class="row mb-4 fade-in">
+            {{-- Pie Chart Deal --}}
+            <div class="col-md-4 mb-3 mb-md-0">
+                <div class="card card-modern border-0 shadow-sm h-100">
+                    <div class="card-header bg-transparent border-bottom-0 pb-0 d-flex justify-content-between align-items-center pt-4 px-4">
+                        <div>
+                            <h6 class="card-title fw-bolder mb-0 text-dark">Proporsi Deal (Ach Target)</h6>
+                            <small class="text-muted opacity-75" style="font-size: 11px;">Pencapaian nominal deal tim.</small>
+                        </div>
+                        <button type="button" class="btn btn-sm btn-white border btn-round hover-lift text-muted" onclick="downloadChart('pieDealChart', 'Grafik_Ach_Target')" title="Unduh Gambar">
+                            <i class="fas fa-download"></i>
+                        </button>
+                    </div>
+                    <div class="card-body pb-4">
+                        <div style="position: relative; height: 260px; width: 100%;">
+                            <canvas id="pieDealChart"></canvas>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            {{-- Line Chart Deal --}}
+            <div class="col-md-8">
+                <div class="card card-modern border-0 shadow-sm h-100">
+                    <div class="card-header bg-transparent border-bottom-0 pb-0 d-flex justify-content-between align-items-center flex-wrap pt-4 px-4">
+                        <div class="mb-2 mb-md-0">
+                            <h6 class="card-title fw-bolder mb-0 text-dark">Tren Produktivitas Deal</h6>
+                            <small class="text-muted opacity-75" style="font-size: 11px;">Pergerakan nominal khusus status deal.</small>
+                        </div>
+                        <div class="d-flex gap-2">
+                            <div class="nav-modern p-1 rounded-pill bg-white border shadow-sm d-inline-flex" role="group">
+                                <button type="button" class="nav-link active py-1 px-3" style="font-size: 11px;" id="btn-deal-6bulan" onclick="ubahChartDeal('6bulan')">6 Bln</button>
+                                <button type="button" class="nav-link py-1 px-3" style="font-size: 11px;" id="btn-deal-1bulan" onclick="ubahChartDeal('1bulan')">1 Bln</button>
+                            </div>
+                            <button type="button" class="btn btn-sm btn-white border btn-round hover-lift text-muted" onclick="downloadChart('lineDealChart', 'Tren_Deal')" title="Unduh Gambar">
+                                <i class="fas fa-download"></i>
+                            </button>
+                        </div>
+                    </div>
+                    <div class="card-body pb-4">
+                        <div class="chart-container" style="position: relative; height: 260px; width: 100%;">
+                            <canvas id="lineDealChart"></canvas>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -995,55 +1056,43 @@
         // ==========================================
         // =========================================================================
         
-        // Pie Chart
-        const ctxPie = document.getElementById('achTargetChart');
-        let pieChartInstance = null;
+        // ==========================================
+        // 4. CHART.JS (4 GRAFIK + GLOBAL LEGEND)
+        // ==========================================
+        const chartColors = [
+            '#0d6efd', '#0dcaf0', '#ffc107', '#198754', '#dc3545', 
+            '#6610f2', '#fd7e14', '#20c997', '#d63384', '#6f42c1', 
+            '#adb5bd', '#17a2b8', '#e83e8c', '#28a745', '#343a40'
+        ];
+        const marketingLabels = @json($pieLabels);
 
-        if (ctxPie) {
-            pieChartInstance = new Chart(ctxPie, {
+        // --- 1. PIE CHART PENAWARAN ---
+        let piePenawaranInstance = null;
+        if (document.getElementById('piePenawaranChart')) {
+            piePenawaranInstance = new Chart(document.getElementById('piePenawaranChart'), {
                 type: 'pie',
                 data: {
-                    labels: @json($pieLabels),
+                    labels: marketingLabels,
                     datasets: [{
-                        data: @json($pieData),
-                        // 🔥 UBAH BAGIAN INI JADI 15 WARNA 🔥
-                        backgroundColor: [
-                            '#0d6efd', '#0dcaf0', '#ffc107', '#198754', '#dc3545', 
-                            '#6610f2', '#fd7e14', '#20c997', '#d63384', '#6f42c1', 
-                            '#adb5bd', '#17a2b8', '#e83e8c', '#28a745', '#343a40'
-                        ],
-                        borderWidth: 2,
-                        borderColor: '#fff'
+                        data: @json($pieDataPenawaran),
+                        backgroundColor: chartColors,
+                        borderWidth: 2, borderColor: '#fff'
                     }]
                 },
                 plugins: [ChartDataLabels], 
                 options: {
-                    responsive: true,
-                    maintainAspectRatio: false,
+                    responsive: true, maintainAspectRatio: false,
                     animation: { duration: 1500, easing: 'easeOutQuart' },
                     plugins: {
                         legend: { display: false }, 
-                        tooltip: {
-                            callbacks: {
-                                label: function(context) {
-                                    let label = context.label || '';
-                                    let value = Number(context.raw) || 0; 
-                                    return ' ' + label + ': Rp ' + value.toLocaleString('id-ID');
-                                }
-                            }
-                        },
+                        tooltip: { callbacks: { label: function(context) { return ' ' + context.label + ': Rp ' + Number(context.raw || 0).toLocaleString('id-ID'); } } },
                         datalabels: {
-                            color: '#ffffff',
-                            font: { weight: 'bold', size: 12 },
+                            color: '#ffffff', font: { weight: 'bold', size: 12 },
                             formatter: (value, ctx) => {
                                 let sum = 0;
-                                let dataset = ctx.chart.data.datasets[0];
-                                dataset.data.forEach((data, index) => {
-                                    if (ctx.chart.getDataVisibility(index)) {
-                                        sum += Number(data) || 0;
-                                    }
+                                ctx.chart.data.datasets[0].data.forEach((data, index) => {
+                                    if (ctx.chart.getDataVisibility(index)) sum += Number(data) || 0;
                                 });
-                                
                                 if (value === 0 || sum === 0) return '';
                                 return (value * 100 / sum).toFixed(1) + "%";
                             }
@@ -1051,69 +1100,55 @@
                     }
                 }
             });
-
-            function buildCustomPieLegend(chart) {
-                const legendContainer = document.getElementById('customPieLegend');
-                legendContainer.innerHTML = ''; 
-
-                const bgColors = chart.data.datasets[0].backgroundColor;
-
-                chart.data.labels.forEach((label, index) => {
-                    const isVisible = chart.getDataVisibility(index);
-                    const color = bgColors[index];
-
-                    const btn = document.createElement('button');
-                    btn.className = 'btn fw-bold rounded-pill border shadow-sm transition-all m-1 d-inline-flex align-items-center hover-lift';
-                    btn.style.padding = '2px 10px';  
-                    btn.style.fontSize = '10px';     
-                    
-                    if (isVisible) {
-                        btn.style.backgroundColor = color;
-                        btn.style.color = '#fff';
-                        btn.style.borderColor = color;
-                    } else {
-                        btn.style.backgroundColor = '#f8f9fa'; 
-                        btn.style.color = '#adb5bd'; 
-                        btn.style.borderColor = '#dee2e6';
-                        btn.style.opacity = '0.6'; 
-                    }
-
-                    btn.innerHTML = `<span style="display:inline-block; width:8px; height:8px; border-radius:50%; background-color:${isVisible ? '#fff' : color}; margin-right:4px; box-shadow: 0 1px 2px rgba(0,0,0,0.2);"></span>${label}`;
-
-                    btn.onclick = () => {
-                        chart.toggleDataVisibility(index);
-                        chart.update(); 
-                        buildCustomPieLegend(chart); 
-                    };
-
-                    legendContainer.appendChild(btn);
-                });
-            }
-
-            buildCustomPieLegend(pieChartInstance);
         }
 
-        // Line Chart
-        const ctxLine = document.getElementById("multipleLineChart");
-        let lineChartInstance = null;
-
-        if (ctxLine) {
-            const data6Bulan = {
-                labels: @json($lineLabels6Months),
-                datasets: @json($lineDatasets6Months)
-            };
-
-            const data1Bulan = {
-                labels: @json($lineLabelsThisMonth),
-                datasets: @json($lineDatasetsThisMonth)
-            };
-
-            lineChartInstance = new Chart(ctxLine.getContext("2d"), {
-                type: "line",
-                data: data6Bulan,
+        // --- 2. PIE CHART DEAL ---
+        let pieDealInstance = null;
+        if (document.getElementById('pieDealChart')) {
+            pieDealInstance = new Chart(document.getElementById('pieDealChart'), {
+                type: 'pie',
+                data: {
+                    labels: marketingLabels,
+                    datasets: [{
+                        data: @json($pieDataDeal),
+                        backgroundColor: chartColors,
+                        borderWidth: 2, borderColor: '#fff'
+                    }]
+                },
+                plugins: [ChartDataLabels], 
                 options: {
-                    responsive: true,
-                    maintainAspectRatio: false,
+                    responsive: true, maintainAspectRatio: false,
+                    animation: { duration: 1500, easing: 'easeOutQuart' },
+                    plugins: {
+                        legend: { display: false }, 
+                        tooltip: { callbacks: { label: function(context) { return ' ' + context.label + ': Rp ' + Number(context.raw || 0).toLocaleString('id-ID'); } } },
+                        datalabels: {
+                            color: '#ffffff', font: { weight: 'bold', size: 12 },
+                            formatter: (value, ctx) => {
+                                let sum = 0;
+                                ctx.chart.data.datasets[0].data.forEach((data, index) => {
+                                    if (ctx.chart.getDataVisibility(index)) sum += Number(data) || 0;
+                                });
+                                if (value === 0 || sum === 0) return '';
+                                return (value * 100 / sum).toFixed(1) + "%";
+                            }
+                        }
+                    }
+                }
+            });
+        }
+
+        // --- 3. LINE CHART PENAWARAN ---
+        let linePenawaranInstance = null;
+        const dataLinePenawaran6Bulan = { labels: @json($lineLabels6Months), datasets: @json($lineDatasetsPenawaran6Months) };
+        const dataLinePenawaran1Bulan = { labels: @json($lineLabelsThisMonth), datasets: @json($lineDatasetsPenawaranThisMonth) };
+
+        if (document.getElementById("linePenawaranChart")) {
+            linePenawaranInstance = new Chart(document.getElementById("linePenawaranChart").getContext("2d"), {
+                type: "line",
+                data: dataLinePenawaran6Bulan,
+                options: {
+                    responsive: true, maintainAspectRatio: false,
                     animation: { duration: 1500, easing: 'easeInOutBack' },
                     interaction: { mode: 'index', intersect: false },
                     scales: {
@@ -1133,76 +1168,143 @@
                     },
                     plugins: {
                         legend: { display: false }, 
-                        tooltip: {
-                            callbacks: {
-                                label: function(context) {
-                                    let value = Number(context.raw) || 0; 
-                                    return ' ' + context.dataset.label + ': Rp ' + value.toLocaleString('id-ID');
-                                }
-                            }
-                        }
+                        tooltip: { callbacks: { label: function(context) { return ' ' + context.dataset.label + ': Rp ' + Number(context.raw || 0).toLocaleString('id-ID'); } } }
                     }
                 }
             });
-
-            function buildCustomLegend(chart) {
-                const legendContainer = document.getElementById('customLegend');
-                legendContainer.innerHTML = ''; 
-
-                chart.data.datasets.forEach((dataset, index) => {
-                    const isVisible = chart.isDatasetVisible(index);
-                    const color = dataset.borderColor || '#3b82f6';
-
-                    const btn = document.createElement('button');
-                    btn.className = 'btn btn-sm fw-bold rounded-pill border shadow-sm transition-all m-1 hover-lift';
-                    
-                    if (isVisible) {
-                        btn.style.backgroundColor = color;
-                        btn.style.color = '#fff';
-                        btn.style.borderColor = color;
-                    } else {
-                        btn.style.backgroundColor = '#f8f9fa'; 
-                        btn.style.color = '#adb5bd'; 
-                        btn.style.borderColor = '#dee2e6';
-                        btn.style.opacity = '0.6'; 
-                    }
-
-                    btn.innerHTML = `<span style="display:inline-block; width:10px; height:10px; border-radius:50%; background-color:${isVisible ? '#fff' : color}; margin-right:6px; box-shadow: 0 1px 2px rgba(0,0,0,0.2);"></span>${dataset.label}`;
-
-                    btn.onclick = () => {
-                        const currentlyVisible = chart.isDatasetVisible(index);
-                        chart.setDatasetVisibility(index, !currentlyVisible); 
-                        chart.update(); 
-                        buildCustomLegend(chart); 
-                    };
-
-                    legendContainer.appendChild(btn);
-                });
-            }
-
-            buildCustomLegend(lineChartInstance);
-
-            window.ubahChart = function(tipe) {
-                const visibilityState = lineChartInstance.data.datasets.map((ds, i) => lineChartInstance.isDatasetVisible(i));
-
+            window.ubahChartPenawaran = function(tipe) {
+                const visibilityState = linePenawaranInstance.data.datasets.map((ds, i) => linePenawaranInstance.isDatasetVisible(i));
                 if (tipe === '6bulan') {
-                    lineChartInstance.data = data6Bulan; 
-                    document.getElementById('btn-6bulan').classList.add('active'); 
-                    document.getElementById('btn-1bulan').classList.remove('active'); 
+                    linePenawaranInstance.data = dataLinePenawaran6Bulan; 
+                    document.getElementById('btn-penawaran-6bulan').classList.add('active'); 
+                    document.getElementById('btn-penawaran-1bulan').classList.remove('active'); 
                 } else {
-                    lineChartInstance.data = data1Bulan; 
-                    document.getElementById('btn-1bulan').classList.add('active');
-                    document.getElementById('btn-6bulan').classList.remove('active');
+                    linePenawaranInstance.data = dataLinePenawaran1Bulan; 
+                    document.getElementById('btn-penawaran-1bulan').classList.add('active');
+                    document.getElementById('btn-penawaran-6bulan').classList.remove('active');
                 }
-
-                lineChartInstance.data.datasets.forEach((ds, i) => {
-                    ds.hidden = !visibilityState[i];
-                });
-
-                lineChartInstance.update(); 
-                buildCustomLegend(lineChartInstance);
+                linePenawaranInstance.data.datasets.forEach((ds, i) => ds.hidden = !visibilityState[i]);
+                linePenawaranInstance.update(); 
             };
         }
+
+        // --- 4. LINE CHART DEAL ---
+        let lineDealInstance = null;
+        const dataLineDeal6Bulan = { labels: @json($lineLabels6Months), datasets: @json($lineDatasetsDeal6Months) };
+        const dataLineDeal1Bulan = { labels: @json($lineLabelsThisMonth), datasets: @json($lineDatasetsDealThisMonth) };
+
+        if (document.getElementById("lineDealChart")) {
+            lineDealInstance = new Chart(document.getElementById("lineDealChart").getContext("2d"), {
+                type: "line",
+                data: dataLineDeal6Bulan,
+                options: {
+                    responsive: true, maintainAspectRatio: false,
+                    animation: { duration: 1500, easing: 'easeInOutBack' },
+                    interaction: { mode: 'index', intersect: false },
+                    scales: {
+                        x: { grid: { display: false } },
+                        y: {
+                            beginAtZero: true,
+                            ticks: {
+                                callback: function(value) {
+                                    let num = Number(value); 
+                                    if(num >= 1000000000) return 'Rp ' + (num / 1000000000).toLocaleString('id-ID') + ' M';
+                                    else if(num >= 1000000) return 'Rp ' + (num / 1000000).toLocaleString('id-ID') + ' Jt';
+                                    else return 'Rp ' + num.toLocaleString('id-ID');
+                                },
+                                font: { size: 10 }
+                            }
+                        }
+                    },
+                    plugins: {
+                        legend: { display: false }, 
+                        tooltip: { callbacks: { label: function(context) { return ' ' + context.dataset.label + ': Rp ' + Number(context.raw || 0).toLocaleString('id-ID'); } } }
+                    }
+                }
+            });
+            window.ubahChartDeal = function(tipe) {
+                const visibilityState = lineDealInstance.data.datasets.map((ds, i) => lineDealInstance.isDatasetVisible(i));
+                if (tipe === '6bulan') {
+                    lineDealInstance.data = dataLineDeal6Bulan; 
+                    document.getElementById('btn-deal-6bulan').classList.add('active'); 
+                    document.getElementById('btn-deal-1bulan').classList.remove('active'); 
+                } else {
+                    lineDealInstance.data = dataLineDeal1Bulan; 
+                    document.getElementById('btn-deal-1bulan').classList.add('active');
+                    document.getElementById('btn-deal-6bulan').classList.remove('active');
+                }
+                lineDealInstance.data.datasets.forEach((ds, i) => ds.hidden = !visibilityState[i]);
+                lineDealInstance.update(); 
+            };
+        }
+
+        // --- 5. GLOBAL LEGEND SINKRONISASI ---
+        function buildGlobalLegend() {
+            const legendContainer = document.getElementById('globalLegendContainer');
+            if(!legendContainer) return;
+            legendContainer.innerHTML = ''; 
+
+            marketingLabels.forEach((label, index) => {
+                // Kita ambil status visibility dari chart pertama (asumsi semua chart sinkron statusnya)
+                let isVisible = true;
+                if(piePenawaranInstance) {
+                    isVisible = piePenawaranInstance.getDataVisibility(index);
+                }
+
+                const color = chartColors[index % chartColors.length];
+
+                const btn = document.createElement('button');
+                btn.className = 'btn fw-bold rounded-pill border shadow-sm transition-all m-1 d-inline-flex align-items-center hover-lift';
+                btn.style.padding = '4px 14px';  
+                btn.style.fontSize = '12px';     
+                
+                if (isVisible) {
+                    btn.style.backgroundColor = color;
+                    btn.style.color = '#fff';
+                    btn.style.borderColor = color;
+                } else {
+                    btn.style.backgroundColor = '#f8f9fa'; 
+                    btn.style.color = '#adb5bd'; 
+                    btn.style.borderColor = '#dee2e6';
+                    btn.style.opacity = '0.6'; 
+                }
+
+                btn.innerHTML = `<span style="display:inline-block; width:10px; height:10px; border-radius:50%; background-color:${isVisible ? '#fff' : color}; margin-right:6px; box-shadow: 0 1px 2px rgba(0,0,0,0.2);"></span>${label}`;
+
+                btn.onclick = () => {
+                    const newVisibility = !isVisible;
+                    
+                    // Update Pie Penawaran
+                    if(piePenawaranInstance) {
+                        piePenawaranInstance.toggleDataVisibility(index);
+                        piePenawaranInstance.update();
+                    }
+                    // Update Pie Deal
+                    if(pieDealInstance) {
+                        pieDealInstance.toggleDataVisibility(index);
+                        pieDealInstance.update();
+                    }
+                    // Update Line Penawaran
+                    if(linePenawaranInstance) {
+                        linePenawaranInstance.setDatasetVisibility(index, newVisibility);
+                        linePenawaranInstance.update();
+                    }
+                    // Update Line Deal
+                    if(lineDealInstance) {
+                        lineDealInstance.setDatasetVisibility(index, newVisibility);
+                        lineDealInstance.update();
+                    }
+
+                    // Rebuild Legend to reflect new state
+                    buildGlobalLegend();
+                };
+
+                legendContainer.appendChild(btn);
+            });
+        }
+
+        // Inisialisasi legend saat pertama load
+        buildGlobalLegend();
 
         // Map Highcharts
         if (document.getElementById('indonesia-map')) {

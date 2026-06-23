@@ -182,7 +182,8 @@ class DashboardController extends Controller
 
         // ================= 4. LOGIKA PIE CHART & KAMUS WARNA MARKETING =================
         $pieLabels = [];
-        $pieData = [];
+        $pieDataDeal = [];
+        $pieDataPenawaran = [];
         
         // 🔥 PERLUAS JADI 15 WARNA KONTRAS (SAMA PERSIS DENGAN BLADE) 🔥
         $warnaPieChart = [
@@ -203,9 +204,17 @@ class DashboardController extends Controller
                   ->whereBetween('tanggal_prospek', [$start . " 00:00:00", $end . " 23:59:59"]); 
             })
             ->where('status_penawaran', 'deal')
-            ->sum(\Illuminate\Support\Facades\DB::raw('harga_penawaran * jumlah_peserta'));
+            ->sum(\Illuminate\Support\Facades\DB::raw('harga_penawaran * COALESCE(jumlah_peserta, 1)'));
             
-            $pieData[] = $totalNominalDeal;
+            $pieDataDeal[] = $totalNominalDeal;
+
+            $totalNominalPenawaran = \App\Models\Cta::whereHas('prospek', function ($q) use ($user, $start, $end) {
+                $q->where('marketing_id', $user->id)
+                  ->whereBetween('tanggal_prospek', [$start . " 00:00:00", $end . " 23:59:59"]); 
+            })
+            ->sum(\Illuminate\Support\Facades\DB::raw('harga_penawaran * COALESCE(jumlah_peserta, 1)'));
+            
+            $pieDataPenawaran[] = $totalNominalPenawaran;
         }
 
         // ================= 5. LOGIKA LINE CHART (DIBAGI 2 PAKET: 6 BULAN & BULAN INI) =================
@@ -217,7 +226,8 @@ class DashboardController extends Controller
         for ($i = 5; $i >= 0; $i--) {
             $lineLabels6Months[] = now()->subMonths($i)->format('M Y');
         }
-        $lineDatasets6Months = [];
+        $lineDatasetsPenawaran6Months = [];
+        $lineDatasetsDeal6Months = [];
 
         // --- PAKET B: DATA HARIAN (BULAN INI) ---
         $lineLabelsThisMonth = [];
@@ -225,42 +235,66 @@ class DashboardController extends Controller
         for ($i = 1; $i <= $daysInMonth; $i++) {
             $lineLabelsThisMonth[] = $i . ' ' . now()->format('M');
         }
-        $lineDatasetsThisMonth = [];
+        $lineDatasetsPenawaranThisMonth = [];
+        $lineDatasetsDealThisMonth = [];
 
         // Eksekusi Query untuk kedua paket
         foreach ($users as $index => $user) {
             
             // Query 6 Bulan
-            $data6Months = [];
+            $dataPenawaran6Months = [];
+            $dataDeal6Months = [];
             for ($i = 5; $i >= 0; $i--) {
                 $startStr = now()->subMonths($i)->startOfMonth()->format('Y-m-d 00:00:00');
                 $endStr = now()->subMonths($i)->endOfMonth()->format('Y-m-d 23:59:59');
-                $data6Months[] = \App\Models\Cta::whereHas('prospek', function ($q) use ($user, $startStr, $endStr) {
+                $dataPenawaran6Months[] = \App\Models\Cta::whereHas('prospek', function ($q) use ($user, $startStr, $endStr) {
                     $q->where('marketing_id', $user->id)->whereBetween('tanggal_prospek', [$startStr, $endStr]);
                 })->sum(\Illuminate\Support\Facades\DB::raw('harga_penawaran * COALESCE(jumlah_peserta, 1)'));
+
+                $dataDeal6Months[] = \App\Models\Cta::whereHas('prospek', function ($q) use ($user, $startStr, $endStr) {
+                    $q->where('marketing_id', $user->id)->whereBetween('tanggal_prospek', [$startStr, $endStr]);
+                })->where('status_penawaran', 'deal')->sum(\Illuminate\Support\Facades\DB::raw('harga_penawaran * COALESCE(jumlah_peserta, 1)'));
             }
-            $lineDatasets6Months[] = [
+            $lineDatasetsPenawaran6Months[] = [
                 'label' => $user->name, 
                 // 🔥 Gunakan modulo agar aman dari error Undefined Offset
                 'borderColor' => $colors[$index % count($colors)] ?? '#000', 
                 'backgroundColor' => 'transparent',
-                'data' => $data6Months, 'fill' => false, 'borderWidth' => 2, 'tension' => 0.3,
+                'data' => $dataPenawaran6Months, 'fill' => false, 'borderWidth' => 2, 'tension' => 0.3,
+            ];
+
+            $lineDatasetsDeal6Months[] = [
+                'label' => $user->name, 
+                'borderColor' => $colors[$index % count($colors)] ?? '#000', 
+                'backgroundColor' => 'transparent',
+                'data' => $dataDeal6Months, 'fill' => false, 'borderWidth' => 2, 'tension' => 0.3,
             ];
 
             // Query Harian (Bulan Ini)
-            $dataThisMonth = [];
+            $dataPenawaranThisMonth = [];
+            $dataDealThisMonth = [];
             for ($i = 1; $i <= $daysInMonth; $i++) {
-                $dateStr = now()->format('Y-m-') . str_pad($i, 2, '0', STR_PAD_LEFT);
-                $dataThisMonth[] = \App\Models\Cta::whereHas('prospek', function ($q) use ($user, $dateStr) {
-                    $q->where('marketing_id', $user->id)->whereBetween('tanggal_prospek', [$dateStr . " 00:00:00", $dateStr . " 23:59:59"]);
-                })->sum(\Illuminate\Support\Facades\DB::raw('harga_penawaran * jumlah_peserta'));
+                $dateStr = now()->format('Y-m-') . sprintf('%02d', $i);
+                $dataPenawaranThisMonth[] = \App\Models\Cta::whereHas('prospek', function ($q) use ($user, $dateStr) {
+                    $q->where('marketing_id', $user->id)->whereDate('tanggal_prospek', $dateStr);
+                })->sum(\Illuminate\Support\Facades\DB::raw('harga_penawaran * COALESCE(jumlah_peserta, 1)'));
+
+                $dataDealThisMonth[] = \App\Models\Cta::whereHas('prospek', function ($q) use ($user, $dateStr) {
+                    $q->where('marketing_id', $user->id)->whereDate('tanggal_prospek', $dateStr);
+                })->where('status_penawaran', 'deal')->sum(\Illuminate\Support\Facades\DB::raw('harga_penawaran * COALESCE(jumlah_peserta, 1)'));
             }
-            $lineDatasetsThisMonth[] = [
-                'label' => $user->name, 
-                // 🔥 Gunakan modulo agar aman dari error Undefined Offset
-                'borderColor' => $colors[$index % count($colors)] ?? '#000', 
+            $lineDatasetsPenawaranThisMonth[] = [
+                'label' => $user->name,
+                'borderColor' => $colors[$index % count($colors)] ?? '#000',
                 'backgroundColor' => 'transparent',
-                'data' => $dataThisMonth, 'fill' => false, 'borderWidth' => 2, 'tension' => 0.3,
+                'data' => $dataPenawaranThisMonth, 'fill' => false, 'borderWidth' => 2, 'tension' => 0.3,
+            ];
+
+            $lineDatasetsDealThisMonth[] = [
+                'label' => $user->name,
+                'borderColor' => $colors[$index % count($colors)] ?? '#000',
+                'backgroundColor' => 'transparent',
+                'data' => $dataDealThisMonth, 'fill' => false, 'borderWidth' => 2, 'tension' => 0.3,
             ];
         }
         // ==============================================================================================
@@ -358,8 +392,9 @@ class DashboardController extends Controller
 
         return view('dashboard-progress', compact(
             'marketings', 'all_marketing', 'start', 'end',
-            'pieLabels', 'pieData', 
-            'lineLabels6Months', 'lineDatasets6Months', 'lineLabelsThisMonth', 'lineDatasetsThisMonth',
+            'pieLabels', 'pieDataDeal', 'pieDataPenawaran', 
+            'lineLabels6Months', 'lineDatasetsPenawaran6Months', 'lineDatasetsDeal6Months', 
+            'lineLabelsThisMonth', 'lineDatasetsPenawaranThisMonth', 'lineDatasetsDealThisMonth',
             'stat_total_qty', 'stat_deal_qty', 'stat_total_nilai', 'stat_deal_nilai', 
             'showReminder', 'showSuccessReminder', 'dataMasukToday', 'targetDataMasuk', 'mapData'
         ));
