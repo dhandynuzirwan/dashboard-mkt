@@ -424,7 +424,7 @@
                               <select name="pic" class="form-select rounded-3">
                                   <option value="">Pilih PIC...</option>
                                   @foreach($users as $user)
-                                      <option value="{{ $user->name }}">{{ $user->name }}</option>
+                                      <option value="{{ $user->name }}">{{ $user->nama_lengkap ?: $user->name }}</option>
                                   @endforeach
                               </select>
                           </div>
