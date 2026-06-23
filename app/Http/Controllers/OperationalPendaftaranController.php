@@ -45,7 +45,7 @@ class OperationalPendaftaranController extends Controller
         $queryDeals->whereDate('tanggal_prospek', '>=', $startDate)
                    ->whereDate('tanggal_prospek', '<=', $endDate);
 
-        $deals = $queryDeals->orderBy('created_at', 'desc')->paginate(10, ['*'], 'page_deal')->withQueryString();
+        $deals = $queryDeals->orderBy('tanggal_prospek', 'desc')->paginate(10, ['*'], 'page_deal')->withQueryString();
 
         // 4. 🔥 KALKULASI PROGRESS BAR (WAJIB ADA)
         $deals->getCollection()->transform(function ($prospek) {
