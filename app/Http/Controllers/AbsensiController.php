@@ -444,6 +444,19 @@ class AbsensiController extends Controller
             'long'        => 'nullable|numeric',
         ]);
 
+        $today = \Carbon\Carbon::now()->format('Y-m-d');
+        
+        // Cek apakah sudah absen dengan tipe yang sama hari ini
+        $sudahAbsen = AbsensiLog::where('user_id', auth()->id())
+                                ->where('tanggal', $today)
+                                ->where('tipe', $request->tipe_absen)
+                                ->exists();
+                                
+        if ($sudahAbsen) {
+            $tipeLabel = $request->tipe_absen == 'in' ? 'Masuk' : 'Pulang';
+            return redirect()->back()->with('error', "Anda sudah melakukan absensi {$tipeLabel} hari ini.");
+        }
+
         // Decode Gambar Base64
         $image_64 = $request->foto_selfie;
         $extension = explode('/', explode(':', substr($image_64, 0, strpos($image_64, ';')))[1])[1];

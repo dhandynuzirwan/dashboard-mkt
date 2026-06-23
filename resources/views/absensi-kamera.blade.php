@@ -32,6 +32,20 @@
             </div>
         @endif
 
+        @if(session('error'))
+            <div class="alert alert-modern-danger alert-dismissible fade show mb-3 fade-in" role="alert" style="padding: 12px; background-color: #fef2f2; border-left: 4px solid #ef4444; border-radius: 8px;">
+                <div class="d-flex align-items-center">
+                    <div class="icon-sm bg-white text-danger rounded-circle d-flex align-items-center justify-content-center shadow-sm me-2" style="width: 28px; height: 28px; font-size: 12px;">
+                        <i class="fas fa-exclamation-circle"></i>
+                    </div>
+                    <div>
+                        <span class="fw-bold text-dark fs-6">Gagal!</span> <span class="text-dark opacity-75 small">{{ session('error') }}</span>
+                    </div>
+                </div>
+                <button type="button" class="btn-close shadow-none" data-bs-dismiss="alert" aria-label="Close" style="padding: 12px;"></button>
+            </div>
+        @endif
+
         {{-- ================= MAIN CAMERA CARD ================= --}}
         <div class="d-flex justify-content-center fade-in">
             <div class="card card-modern border-0 shadow-lg p-3 p-md-4 w-100" style="max-width: 420px; border-radius: 20px;">
@@ -60,13 +74,13 @@
                     
                     {{-- Pilihan Tipe Absen (Diperkecil & Default Masuk) --}}
                     <div class="mb-3 d-flex justify-content-center gap-2">
-                        <input type="radio" class="btn-check btn-absen-custom" name="tipe_absen" id="absen_masuk" value="in" checked>
+                        <input type="radio" class="btn-check btn-absen-custom" name="tipe_absen" id="absen_masuk" value="in" {{ !$sudahAbsen ? 'checked' : '' }}>
                         <label class="btn btn-outline-success rounded-3 px-3 py-2 fw-bold d-flex flex-column align-items-center shadow-sm" for="absen_masuk" style="min-width: 110px; font-size: 14px;">
                             <i class="fas fa-sign-in-alt fs-5 mb-1"></i>
                             <span>MASUK</span>
                         </label>
 
-                        <input type="radio" class="btn-check btn-absen-custom" name="tipe_absen" id="absen_pulang" value="out">
+                        <input type="radio" class="btn-check btn-absen-custom" name="tipe_absen" id="absen_pulang" value="out" {{ $sudahAbsen ? 'checked' : '' }}>
                         <label class="btn btn-outline-danger rounded-3 px-3 py-2 fw-bold d-flex flex-column align-items-center shadow-sm" for="absen_pulang" style="min-width: 110px; font-size: 14px;">
                             <i class="fas fa-sign-out-alt fs-5 mb-1"></i>
                             <span>PULANG</span>
