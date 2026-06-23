@@ -37,7 +37,7 @@ class UserController extends Controller
             'no_hp' => 'nullable|string|max:20',        
             'email' => 'required|email|unique:users,email',
             'password' => 'required|min:6',
-            'role' => 'required|in:superadmin,admin,marketing,rnd,digitalmarketing,operasional,team_leader,web_dev,spv_marketing',
+            'role' => 'required|in:superadmin,admin,marketing,rnd,digitalmarketing,operasional,team_leader,web_dev,spv_marketing,hrd',
             'fingerspot_id' => 'nullable|string|unique:users,fingerspot_id',
         ]);
 
@@ -78,7 +78,7 @@ class UserController extends Controller
             'no_hp' => 'nullable|string|max:20',
             'email' => 'required|email|unique:users,email,' . $id,
             'password' => 'nullable|min:6',
-            'role' => 'required|in:superadmin,admin,marketing,rnd,digitalmarketing,operasional,team_leader,web_dev,spv_marketing,pic',
+            'role' => 'required|in:superadmin,admin,marketing,rnd,digitalmarketing,operasional,team_leader,web_dev,spv_marketing,pic,hrd',
             'foto_profil' => 'nullable|image|mimes:jpeg,png,jpg,webp|max:2048',
             'fingerspot_id' => 'nullable|string|unique:users,fingerspot_id,' . $id,
         ]);

@@ -88,6 +88,7 @@
                                                 'operasional' => 'bg-secondary',
                                                 'team_leader' => 'bg-dark',
                                                 'web_dev' => 'bg-danger',
+                                                'hrd' => 'bg-warning text-dark',
                                                 default => 'bg-secondary',
                                             };
                                         @endphp

@@ -107,6 +107,11 @@ Route::middleware('auth')->group(function () {
     Route::get('/my-profile', [\App\Http\Controllers\ProfileController::class, 'edit'])->name('my-profile.edit');
     Route::post('/my-profile/update', [\App\Http\Controllers\ProfileController::class, 'update'])->name('my-profile.update');
     
+    // ================= RUTE PENGAJUAN IZIN & CUTI (Semua Karyawan) =================
+    Route::get('/pengajuan-izin', [\App\Http\Controllers\PengajuanIzinController::class, 'index'])->name('pengajuan-izin.index');
+    Route::get('/pengajuan-izin/create', [\App\Http\Controllers\PengajuanIzinController::class, 'create'])->name('pengajuan-izin.create');
+    Route::post('/pengajuan-izin', [\App\Http\Controllers\PengajuanIzinController::class, 'store'])->name('pengajuan-izin.store');
+    
     // ================= RUTE BRANKAS AKUN =================
     // Menggunakan Route::resource agar otomatis membuat rute index, store, dan destroy
     Route::resource('akun-vault', AkunAksesController::class)->names([
@@ -337,5 +342,12 @@ Route::middleware('auth')->group(function () {
         });
         
         Route::post('/panduan/update', [App\Http\Controllers\PanduanController::class, 'update'])->name('panduan.update');
+    });
+
+    // ================= RUTE APPROVAL IZIN & CUTI (HRD & Superadmin) =================
+    Route::middleware('role:superadmin,hrd')->group(function () {
+        Route::get('/approval-izin', [\App\Http\Controllers\ApprovalIzinController::class, 'index'])->name('approval-izin.index');
+        Route::post('/approval-izin/{id}/approve', [\App\Http\Controllers\ApprovalIzinController::class, 'approve'])->name('approval-izin.approve');
+        Route::post('/approval-izin/{id}/reject', [\App\Http\Controllers\ApprovalIzinController::class, 'reject'])->name('approval-izin.reject');
     });
 });

@@ -34,7 +34,7 @@
             <ul class="nav nav-secondary">
                 
                 {{-- ================= MENU DASHBOARD ================= --}}
-                @php $isDashboard = request()->routeIs(['home', 'pegawai.absensi.index']); @endphp
+                @php $isDashboard = request()->routeIs(['home', 'pegawai.absensi.index', 'pengajuan-izin.index', 'pengajuan-izin.create']); @endphp
                 <li class="nav-item {{ $isDashboard ? 'active' : '' }}">
                     <a data-bs-toggle="collapse" href="#dashboard" class="{{ $isDashboard ? '' : 'collapsed' }}" aria-expanded="{{ $isDashboard ? 'true' : 'false' }}">
                         <i class="fas fa-home"></i>
@@ -51,6 +51,11 @@
                             <li class="{{ request()->routeIs('pegawai.absensi.index') ? 'active' : '' }}">
                                 <a href="{{ route('pegawai.absensi.index') }}">
                                     <span class="sub-item">Absensi Online</span>
+                                </a>
+                            </li>
+                            <li class="{{ request()->routeIs('pengajuan-izin.*') ? 'active' : '' }}">
+                                <a href="{{ route('pengajuan-izin.index') }}">
+                                    <span class="sub-item">Pengajuan Izin / Cuti</span>
                                 </a>
                             </li>
                         </ul>
@@ -84,7 +89,7 @@
                 @endif
 
                 {{-- ================= MENU HUMAN RESOURCES ================= --}}
-                @php $isHR = request()->routeIs(['user', 'penggajian.index', 'absensi']); @endphp
+                @php $isHR = request()->routeIs(['user', 'penggajian.index', 'absensi', 'approval-izin.index']); @endphp
                 <li class="nav-item {{ $isHR ? 'active' : '' }}">
                     <a data-bs-toggle="collapse" href="#human-resources" class="{{ $isHR ? '' : 'collapsed' }}" aria-expanded="{{ $isHR ? 'true' : 'false' }}">
                         <i class="fas fa-users"></i>
@@ -106,6 +111,11 @@
                             <li class="{{ request()->routeIs('absensi') ? 'active' : '' }}">
                                 <a href="{{ route('absensi') }}">
                                     <span class="sub-item">Data Absensi Internal</span>
+                                </a>
+                            </li>
+                            <li class="{{ request()->routeIs('approval-izin.*') ? 'active' : '' }}">
+                                <a href="{{ route('approval-izin.index') }}">
+                                    <span class="sub-item">Approval Izin / Cuti</span>
                                 </a>
                             </li>
                         </ul>

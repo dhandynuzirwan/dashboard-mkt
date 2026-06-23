@@ -6,7 +6,7 @@ use Illuminate\Database\Eloquent\Model;
 
 class Perizinan extends Model
 {
-    protected $fillable = ['user_id', 'external_id', 'tanggal', 'jenis', 'keterangan', 'status'];
+    protected $fillable = ['user_id', 'external_id', 'tanggal', 'jenis', 'keterangan', 'status', 'file_path'];
 
     public function user()
     {

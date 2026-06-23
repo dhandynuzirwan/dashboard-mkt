@@ -99,6 +99,7 @@
                                         <option value="team_leader" {{ old('role', $user->role) == 'team_leader' ? 'selected' : '' }}>Team Leader / Admin PIC</option>
                                         <option value="spv_marketing" {{ old('role', $user->role) == 'spv_marketing' ? 'selected' : '' }}>SPV Marketing</option>
                                         <option value="web_dev" {{ old('role', $user->role) == 'web_dev' ? 'selected' : '' }}>Web Developer</option>
+                                        <option value="hrd" {{ old('role', $user->role) == 'hrd' ? 'selected' : '' }}>HRD</option>
                                     </select>
                                 </div>
                         
