@@ -150,7 +150,7 @@ Route::middleware('auth')->group(function () {
     });
 
     // 0. KHUSUS MENU OPERASIONAL (Superadmin, Web Developer, Operasional, Team Leader, SPV)
-    Route::middleware('role:superadmin,web_dev,operasional,team_leader,spv_marketing')->group(function () {
+    Route::middleware('role:superadmin,web_dev,operasional,team_leader,spv_marketing,graphic')->group(function () {
         
         // Portal Back Office (Links)
         Route::get('/operational', [OperationalController::class, 'index'])->name('operational');
@@ -163,7 +163,7 @@ Route::middleware('auth')->group(function () {
         Route::put('/monitoring-pelatihan/{id}', [OperationalController::class, 'updatePelatihanBerjalan'])->name('monitoring.pelatihan.update');
         Route::delete('/monitoring-pelatihan/{id}', [OperationalController::class, 'destroyPelatihanBerjalan'])->name('operational.pelatihan-berjalan.destroy');
 
-        Route::middleware('role:superadmin,web_dev,team_leader,operasional,spv_marketing')->group(function () {
+        Route::middleware('role:superadmin,web_dev,team_leader,operasional,spv_marketing,graphic')->group(function () {
             Route::get('/riwayat-pelatihan', [RiwayatPelatihanController::class, 'index'])->name('riwayat.pelatihan');
             Route::post('/riwayat-pelatihan', [RiwayatPelatihanController::class, 'store'])->name('riwayat.pelatihan.store');
             Route::put('/riwayat-pelatihan/{id}', [RiwayatPelatihanController::class, 'update'])->name('riwayat.pelatihan.update');
@@ -212,7 +212,7 @@ Route::middleware('auth')->group(function () {
     });
 
     // 1. FITUR UMUM (Superadmin, Web Dev, Admin, Marketing, RnD, Digital Marketing)
-    Route::middleware('role:superadmin,web_dev,spv_marketing,admin,marketing,rnd,digitalmarketing,operasional,team_leader')->group(function () {
+    Route::middleware('role:superadmin,web_dev,spv_marketing,admin,marketing,rnd,digitalmarketing,operasional,team_leader,graphic')->group(function () {
         
         
         Route::post('/download-request', [DownloadRequestController::class, 'store'])->name('download.request');
