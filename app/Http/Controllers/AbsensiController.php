@@ -324,14 +324,17 @@ class AbsensiController extends Controller
                     // Ini untuk mencegah data ganda jika file diupload ulang
                     $extId = md5($idFingerspot . $tanggal . $namaIzin);
 
+                    // Cek berdasarkan user_id dan tanggal, update jika sudah ada
                     \App\Models\Perizinan::updateOrCreate(
-                        ['external_id' => $extId],
                         [
-                            'user_id'    => $user->id,
-                            'tanggal'    => $tanggal,
+                            'user_id' => $user->id, 
+                            'tanggal' => $tanggal
+                        ],
+                        [
                             'jenis'      => $namaIzin,
                             'keterangan' => $catatan == '-' ? null : $catatan,
                             'status'     => $status,
+                            'external_id'=> $extId,
                         ]
                     );
                     $successCount++;
@@ -342,6 +345,13 @@ class AbsensiController extends Controller
         }
 
         return back()->with('success', "Berhasil mengimpor $successCount data izin karyawan.");
+    }
+
+    public function destroyIzin($id)
+    {
+        $izin = Perizinan::findOrFail($id);
+        $izin->delete();
+        return back()->with('success', 'Data perizinan berhasil dihapus.');
     }
 
     public function destroyAbsensiRange(Request $request)
