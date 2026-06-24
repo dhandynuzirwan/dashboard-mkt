@@ -177,7 +177,7 @@
                 </li>
 
                 {{-- ================= MENU OPERATIONAL ================= --}}
-                @if (in_array($role, ['superadmin','operasional','team_leader','web_dev','spv_marketing']))
+                @if (in_array($role, ['superadmin','operasional','team_leader','web_dev','spv_marketing','graphic']))
                     @php $isOperational = request()->routeIs(['operational.aktivitas-harian', 'operational.data-pendaftaran', 'operational.inventaris', 'operational.monitoring-paket', 'monitoring.pelatihan', 'riwayat.pelatihan']); @endphp
                     <li class="nav-item {{ $isOperational ? 'active' : '' }}">
                         <a data-bs-toggle="collapse" href="#operasional" class="{{ $isOperational ? '' : 'collapsed' }}" aria-expanded="{{ $isOperational ? 'true' : 'false' }}">
@@ -193,7 +193,7 @@
                                     </a>
                                 </li>
                         
-                                @if(in_array(auth()->user()->role, ['admin', 'operasional', 'team_leader', 'superadmin', 'web_dev', 'spv_marketing']))
+                                @if(in_array(auth()->user()->role, ['admin', 'operasional', 'team_leader', 'superadmin', 'web_dev', 'spv_marketing', 'graphic']))
                                     <li class="{{ request()->routeIs('operational.data-pendaftaran') ? 'active' : '' }}">
                                         <a href="{{ route('operational.data-pendaftaran') }}">
                                             <span class="sub-item">Registrasi Peserta</span>
@@ -214,7 +214,7 @@
                                     </a>
                                 </li>
                         
-                                @if(in_array(auth()->user()->role, ['team_leader', 'superadmin', 'web_dev', 'operasional', 'spv_marketing']))
+                                @if(in_array(auth()->user()->role, ['team_leader', 'superadmin', 'web_dev', 'operasional', 'spv_marketing', 'graphic']))
                                     <li class="{{ request()->routeIs('operational.inventaris') ? 'active' : '' }}">
                                         <a href="{{ route('operational.inventaris') }}">
                                             <span class="sub-item">Aset & Inventaris</span>
@@ -253,7 +253,7 @@
                 </li>
                 
                 {{-- ================= MENU PORTAL BACK OFFICE ================= --}}
-                @if(in_array(auth()->user()->role, ['operasional', 'team_leader', 'web_dev', 'superadmin', 'spv_marketing']))
+                @if(in_array(auth()->user()->role, ['operasional', 'team_leader', 'web_dev', 'superadmin', 'spv_marketing', 'graphic']))
                     <li class="nav-section">
                         <span class="sidebar-mini-icon">
                             <i class="fa fa-ellipsis-h"></i>
