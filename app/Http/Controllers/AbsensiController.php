@@ -354,6 +354,19 @@ class AbsensiController extends Controller
         return back()->with('success', 'Data perizinan berhasil dihapus.');
     }
 
+    public function updateIzinStatus(Request $request, $id)
+    {
+        $request->validate([
+            'status' => 'required|in:approved,pending,rejected'
+        ]);
+
+        $izin = Perizinan::findOrFail($id);
+        $izin->status = $request->status;
+        $izin->save();
+
+        return back()->with('success', 'Status perizinan berhasil diperbarui.');
+    }
+
     public function destroyAbsensiRange(Request $request)
     {
         $request->validate([

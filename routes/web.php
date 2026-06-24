@@ -345,6 +345,7 @@ Route::middleware('auth')->group(function () {
             Route::delete('/delete-range', [AbsensiController::class, 'destroyAbsensiRange'])->name('absensi.delete_range');
             Route::delete('/izin/delete-range', [AbsensiController::class, 'destroyIzinRange'])->name('absensi.delete_izin_range');
             Route::delete('/izin/{id}', [AbsensiController::class, 'destroyIzin'])->name('absensi.destroy_izin');
+            Route::put('/izin/{id}/status', [AbsensiController::class, 'updateIzinStatus'])->name('absensi.update_izin_status');
             Route::post('/holiday', [AbsensiController::class, 'storeHoliday'])->name('absensi.store_holiday');
             Route::delete('/holiday/{id}', [AbsensiController::class, 'destroyHoliday'])->name('absensi.destroy_holiday');
             Route::delete('/kamera/{id}', [AbsensiController::class, 'destroyKamera'])->name('absensi.destroy');

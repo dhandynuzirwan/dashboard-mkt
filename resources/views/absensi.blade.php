@@ -300,7 +300,15 @@
                                                         <span class="badge badge-danger">Ditolak</span>
                                                     @endif
                                                 </td>
-                                                <td class="text-center">
+                                                <td class="text-center text-nowrap">
+                                                    <button type="button" class="btn btn-sm btn-warning btn-icon rounded-circle hover-lift btn-edit-izin" 
+                                                            data-id="{{ $izin->id }}" 
+                                                            data-status="{{ $izin->status }}" 
+                                                            data-bs-toggle="modal" 
+                                                            data-bs-target="#modalEditIzin" 
+                                                            title="Ubah Status">
+                                                        <i class="fas fa-edit"></i>
+                                                    </button>
                                                     <form action="{{ route('absensi.destroy_izin', $izin->id) }}" method="POST" class="d-inline" onsubmit="return confirm('Apakah Anda yakin ingin menghapus data perizinan ini?')">
                                                         @csrf
                                                         @method('DELETE')
@@ -576,6 +584,38 @@
             </div>
         </div>
     </div>
+    </div>
+</div>
+
+{{-- Modal Edit Status Izin --}}
+<div class="modal fade" id="modalEditIzin" tabindex="-1" role="dialog" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+        <form id="formEditIzin" method="POST" action="">
+            @csrf
+            @method('PUT')
+            <div class="modal-content card-round">
+                <div class="modal-header border-0">
+                    <h5 class="modal-title fw-bold">Ubah Status Izin</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <p class="small text-muted mb-3">Jika status diubah menjadi <strong>Diterima</strong>, maka absensi akan dihitung "Hadir" dan gaji tidak akan terpotong. Jika <strong>Ditolak</strong>, maka tetap dihitung "Tidak Hadir".</p>
+                    <div class="form-group p-0">
+                        <label class="mb-2 small fw-bold">Status Persetujuan</label>
+                        <select name="status" id="edit_izin_status" class="form-select form-control" required>
+                            <option value="approved">Diterima (Dihitung Hadir)</option>
+                            <option value="pending">Pending (Menunggu Persetujuan)</option>
+                            <option value="rejected">Ditolak (Dihitung Tidak Hadir)</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="modal-footer border-0">
+                    <button type="button" class="btn btn-border btn-round" data-bs-dismiss="modal">Batal</button>
+                    <button type="submit" class="btn btn-primary btn-round">Simpan Perubahan</button>
+                </div>
+            </div>
+        </form>
+    </div>
 </div>
 
 <style>
@@ -634,5 +674,24 @@
         document.getElementById('modal-foto-src').src = url;
         document.getElementById('modal-nama-karyawan').innerText = nama;
     }
+
+    document.addEventListener("DOMContentLoaded", function() {
+        const editIzinButtons = document.querySelectorAll('.btn-edit-izin');
+        const formEditIzin = document.getElementById('formEditIzin');
+        const selectStatus = document.getElementById('edit_izin_status');
+
+        editIzinButtons.forEach(button => {
+            button.addEventListener('click', function() {
+                const id = this.getAttribute('data-id');
+                const status = this.getAttribute('data-status');
+                
+                // Set the action URL dynamically
+                formEditIzin.action = `/absensi/izin/${id}/status`;
+                
+                // Set the current status
+                selectStatus.value = status;
+            });
+        });
+    });
 </script>
 @endsection
