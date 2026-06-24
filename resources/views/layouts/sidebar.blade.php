@@ -243,6 +243,14 @@
                         @endif
                     </a>
                 </li>
+                {{-- ================= MENU MODUL PELATIHAN ================= --}}
+                @php $isModul = request()->routeIs(['modul.index']); @endphp
+                <li class="nav-item {{ $isModul ? 'active' : '' }}">
+                    <a href="{{ route('modul.index') }}">
+                        <i class="fas fa-book"></i>
+                        <p>Modul Pelatihan</p>
+                    </a>
+                </li>
                 
                 {{-- ================= MENU PORTAL BACK OFFICE ================= --}}
                 @if(in_array(auth()->user()->role, ['operasional', 'team_leader', 'web_dev', 'superadmin', 'spv_marketing']))

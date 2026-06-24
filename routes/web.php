@@ -121,6 +121,14 @@ Route::middleware('auth')->group(function () {
         'destroy' => 'akun.destroy',
     ])->except(['create', 'show', 'edit']); // Kita kecualikan yang tidak dipakai
 
+    // ================= RUTE MODUL PELATIHAN =================
+    Route::get('/modul-pelatihan', [\App\Http\Controllers\ModulPelatihanController::class, 'index'])->name('modul.index');
+    Route::post('/modul-pelatihan', [\App\Http\Controllers\ModulPelatihanController::class, 'store'])->name('modul.store');
+    Route::put('/modul-pelatihan/{id}', [\App\Http\Controllers\ModulPelatihanController::class, 'update'])->name('modul.update');
+    Route::delete('/modul-pelatihan/{id}', [\App\Http\Controllers\ModulPelatihanController::class, 'destroy'])->name('modul.destroy');
+    Route::get('/modul-pelatihan/{id}/download', [\App\Http\Controllers\ModulPelatihanController::class, 'download'])->name('modul.download');
+    Route::get('/modul-pelatihan/{id}/preview', [\App\Http\Controllers\ModulPelatihanController::class, 'preview'])->name('modul.preview');
+
     Route::get('/absensi-online', [AbsensiController::class, 'indexKamera'])->name('pegawai.absensi.index');
     
     // Proses Simpan Data Absen & Foto Selfie

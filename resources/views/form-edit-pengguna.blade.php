@@ -100,6 +100,7 @@
                                         <option value="spv_marketing" {{ old('role', $user->role) == 'spv_marketing' ? 'selected' : '' }}>SPV Marketing</option>
                                         <option value="web_dev" {{ old('role', $user->role) == 'web_dev' ? 'selected' : '' }}>Web Developer</option>
                                         <option value="hrd" {{ old('role', $user->role) == 'hrd' ? 'selected' : '' }}>HRD</option>
+                                        <option value="graphic" {{ old('role', $user->role) == 'graphic' ? 'selected' : '' }}>Tim Grafis (Graphic)</option>
                                     </select>
                                 </div>
                         
