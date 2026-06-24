@@ -56,7 +56,7 @@ class AbsensiController extends Controller
             $queryIzin->where('user_id', $userId);
         }
 
-        $perizinans = $queryIzin->orderBy('tanggal', 'desc')->paginate(10, ['*'], 'page_izin')->withQueryString();
+        $perizinans = $queryIzin->orderBy('tanggal', 'desc')->orderBy('updated_at', 'desc')->paginate(10, ['*'], 'page_izin')->withQueryString();
 
         // ==========================================
         // 4. DATA LAINNYA

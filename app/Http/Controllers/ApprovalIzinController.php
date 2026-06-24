@@ -12,13 +12,13 @@ class ApprovalIzinController extends Controller
         $izins = Perizinan::with('user')
             ->where('external_id', 'like', 'SYS-IZIN-%')
             ->where('status', 'pending')
-            ->orderBy('created_at', 'desc')
+            ->orderBy('tanggal', 'desc')
             ->get();
             
         $riwayatIzins = Perizinan::with('user')
             ->where('external_id', 'like', 'SYS-IZIN-%')
             ->whereIn('status', ['approved', 'rejected'])
-            ->orderBy('updated_at', 'desc')
+            ->orderBy('tanggal', 'desc')
             ->paginate(10);
             
         return view('approval-izin.index', compact('izins', 'riwayatIzins'));
