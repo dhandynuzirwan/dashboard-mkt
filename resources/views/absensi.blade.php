@@ -301,7 +301,7 @@
                                                     @endif
                                                 </td>
                                                 <td class="text-center text-nowrap">
-                                                    <button type="button" class="btn btn-sm btn-warning btn-icon rounded-circle hover-lift btn-edit-izin" 
+                                                    <button type="button" class="btn btn-sm btn-light border text-primary btn-round shadow-sm hover-lift px-2 btn-edit-izin" 
                                                             data-id="{{ $izin->id }}" 
                                                             data-status="{{ $izin->status }}" 
                                                             data-bs-toggle="modal" 
@@ -312,7 +312,7 @@
                                                     <form action="{{ route('absensi.destroy_izin', $izin->id) }}" method="POST" class="d-inline" onsubmit="return confirm('Apakah Anda yakin ingin menghapus data perizinan ini?')">
                                                         @csrf
                                                         @method('DELETE')
-                                                        <button type="submit" class="btn btn-sm btn-danger btn-icon rounded-circle hover-lift" data-bs-toggle="tooltip" title="Hapus"><i class="fas fa-trash"></i></button>
+                                                        <button type="submit" class="btn btn-sm btn-light border text-danger btn-round shadow-sm hover-lift" data-bs-toggle="tooltip" title="Hapus"><i class="fas fa-trash"></i></button>
                                                     </form>
                                                 </td>
                                             </tr>
