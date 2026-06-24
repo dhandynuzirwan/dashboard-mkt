@@ -127,8 +127,8 @@
                     </div>
                     <div class="card-body p-0">
                         <div class="table-responsive">
-                            <table class="table align-items-center mb-0">
-                                <thead class="thead-light">
+                            <table class="table table-modern table-hover mb-0">
+                                <thead class="bg-light sticky-top">
                                     <tr>
                                         <th>Judul Modul</th>
                                         <th>Pengunggah</th>
@@ -158,7 +158,7 @@
             <div class="col-md-5">
                 <div class="card card-round h-100">
                     <div class="card-header">
-                        <div class="card-title">Statistik Modul per Kategori</div>
+                        <div class="card-title">Statistik Modul per Sertifikasi</div>
                     </div>
                     <div class="card-body">
                         <div class="chart-container" style="min-height: 250px">
@@ -270,60 +270,69 @@
 
             <div class="card-body p-0">
                 <div class="table-responsive">
-                    <table class="table table-hover table-bordered table-head-bg-primary mb-0">
-                        <thead>
+                    <table class="table table-modern table-hover mb-0">
+                        <thead class="bg-light sticky-top">
                             <tr>
-                                <th>No</th>
-                                <th>Judul Modul</th>
-                                <th>Sertifikasi</th>
-                                <th>Kategori</th>
-                                <th>Pengajar</th>
-                                <th>Tahun</th>
-                                <th>Tgl Upload</th>
-                                <th>Ukuran File</th>
-                                <th>Status</th>
-                                <th>Total DL</th>
-                                <th>Aksi</th>
+                                <th width="5%">No</th>
+                                <th width="30%">Informasi Modul</th>
+                                <th width="20%">Pengajar & Waktu</th>
+                                <th width="20%">Statistik File</th>
+                                <th width="10%">Status</th>
+                                <th width="15%" class="text-center">Aksi</th>
                             </tr>
                         </thead>
                         <tbody>
                             @forelse($moduls as $index => $modul)
                                 <tr>
                                     <td>{{ $moduls->firstItem() + $index }}</td>
-                                    <td><strong>{{ $modul->judul_modul }}</strong></td>
-                                    <td><span class="badge badge-info">{{ $modul->sertifikasi }}</span></td>
-                                    <td>{{ $modul->kategori }}</td>
-                                    <td>{{ $modul->pengajar }}</td>
-                                    <td>{{ $modul->tahun }}</td>
-                                    <td>{{ $modul->created_at->format('d/m/Y') }}</td>
-                                    <td>{{ number_format($modul->ukuran_file / 1048576, 2) }} MB</td>
+                                    <td>
+                                        <div class="d-flex flex-column">
+                                            <strong class="text-dark fs-6 mb-1">{{ $modul->judul_modul }}</strong>
+                                            <div class="">
+                                                <span class="badge badge-soft-info my-1"><i class="fas fa-certificate me-1"></i>{{ $modul->sertifikasi }}</span>
+                                                <span class="badge badge-soft-secondary my-1"><i class="fas fa-tag me-1"></i>{{ $modul->kategori }}</span>
+                                            </div>
+                                        </div>
+                                    </td>
+                                    <td>
+                                        <div class="d-flex flex-column text-muted" style="font-size: 13px;">
+                                            <span class="mb-1"><i class="fas fa-user-tie me-2 text-primary" style="width: 14px;"></i>{{ $modul->pengajar }}</span>
+                                            <span class="mb-1"><i class="fas fa-calendar-alt me-2 text-warning" style="width: 14px;"></i>Tahun: <strong>{{ $modul->tahun }}</strong></span>
+                                            <span><i class="fas fa-upload me-2 text-success" style="width: 14px;"></i>Upload: {{ $modul->created_at->format('d/m/Y') }}</span>
+                                        </div>
+                                    </td>
+                                    <td>
+                                        <div class="d-flex flex-column text-muted" style="font-size: 13px;">
+                                            <span class="mb-1"><i class="fas fa-file-pdf me-2 text-danger" style="width: 14px;"></i>{{ number_format($modul->ukuran_file / 1048576, 2) }} MB</span>
+                                            <span><i class="fas fa-download me-2 text-primary" style="width: 14px;"></i>{{ $modul->total_download }}x Diunduh</span>
+                                        </div>
+                                    </td>
                                     <td>
                                         @if($modul->status == 'Aktif')
-                                            <span class="badge badge-success">Aktif</span>
+                                            <span class="badge badge-success"><i class="fas fa-check-circle me-1"></i>Aktif</span>
                                         @else
-                                            <span class="badge badge-danger">Nonaktif</span>
+                                            <span class="badge badge-danger"><i class="fas fa-times-circle me-1"></i>Nonaktif</span>
                                         @endif
                                     </td>
-                                    <td>{{ $modul->total_download }}</td>
-                                    <td>
+                                    <td class="text-center">
                                         <div class="btn-group">
-                                            <a href="{{ route('modul.preview', $modul->id) }}" target="_blank" class="btn btn-sm btn-info" data-bs-toggle="tooltip" title="Preview">
+                                            <a href="{{ route('modul.preview', $modul->id) }}" target="_blank" class="btn btn-sm btn-info hover-lift" data-bs-toggle="tooltip" title="Preview">
                                                 <i class="fas fa-eye"></i>
                                             </a>
-                                            <a href="{{ route('modul.preview', $modul->id) }}?print=true" target="_blank" class="btn btn-sm btn-secondary" data-bs-toggle="tooltip" title="Print">
+                                            <a href="{{ route('modul.preview', $modul->id) }}?print=true" target="_blank" class="btn btn-sm btn-secondary hover-lift" data-bs-toggle="tooltip" title="Print">
                                                 <i class="fas fa-print"></i>
                                             </a>
-                                            <a href="{{ route('modul.download', $modul->id) }}" class="btn btn-sm btn-primary" data-bs-toggle="tooltip" title="Download">
+                                            <a href="{{ route('modul.download', $modul->id) }}" class="btn btn-sm btn-primary hover-lift" data-bs-toggle="tooltip" title="Download">
                                                 <i class="fas fa-download"></i>
                                             </a>
                                             @if(in_array(auth()->user()->role, ['superadmin', 'web_dev', 'graphic']))
-                                                <button type="button" class="btn btn-sm btn-warning btn-edit" data-modul="{{ json_encode($modul) }}" data-bs-toggle="tooltip" title="Edit">
+                                                <button type="button" class="btn btn-sm btn-warning btn-edit hover-lift" data-modul="{{ json_encode($modul) }}" data-bs-toggle="tooltip" title="Edit">
                                                     <i class="fas fa-edit"></i>
                                                 </button>
                                                 <form action="{{ route('modul.destroy', $modul->id) }}" method="POST" class="d-inline" onsubmit="return confirm('Apakah Anda yakin ingin menghapus modul ini?')">
                                                     @csrf
                                                     @method('DELETE')
-                                                    <button type="submit" class="btn btn-sm btn-danger" data-bs-toggle="tooltip" title="Hapus">
+                                                    <button type="submit" class="btn btn-sm btn-danger hover-lift" data-bs-toggle="tooltip" title="Hapus">
                                                         <i class="fas fa-trash"></i>
                                                     </button>
                                                 </form>
@@ -333,7 +342,12 @@
                                 </tr>
                             @empty
                                 <tr>
-                                    <td colspan="11" class="text-center">Data Modul Tidak Ditemukan.</td>
+                                    <td colspan="6" class="text-center py-4">
+                                        <div class="d-flex flex-column align-items-center">
+                                            <i class="fas fa-folder-open text-muted mb-2" style="font-size: 32px;"></i>
+                                            <h5 class="text-muted">Data Modul Tidak Ditemukan.</h5>
+                                        </div>
+                                    </td>
                                 </tr>
                             @endforelse
                         </tbody>
@@ -574,4 +588,129 @@
         }
     });
 </script>
+
+<style>
+    /* CSS MODERNISASI UI */
+    .card-modern {
+        border-radius: 16px;
+        border: 1px solid #eef2f7;
+        box-shadow: 0 4px 15px rgba(0,0,0,0.03);
+        background: #ffffff;
+        transition: all 0.3s ease;
+    }
+    
+    .hover-lift {
+        transition: transform 0.2s ease, box-shadow 0.2s ease;
+    }
+    .hover-lift:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 10px 20px rgba(0,0,0,0.08) !important;
+    }
+
+    .icon-modern {
+        width: 48px;
+        height: 48px;
+        border-radius: 12px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 20px;
+    }
+
+    /* Soft Colors */
+    .bg-primary-subtle { background-color: #e0eaff !important; }
+    .bg-success-subtle { background-color: #dcfce7 !important; }
+    .bg-info-subtle { background-color: #cff4fc !important; }
+    .bg-warning-subtle { background-color: #fef08a !important; }
+    .bg-danger-subtle { background-color: #fee2e2 !important; }
+    .text-warning-dark { color: #b45309 !important; }
+
+    .badge-soft-primary { background-color: #e0eaff !important; color: #3b82f6 !important; }
+    .badge-soft-success { background-color: #dcfce7 !important; color: #16a34a !important; }
+    .badge-soft-danger { background-color: #fee2e2 !important; color: #dc2626 !important; }
+    .badge-soft-warning { background-color: #fef08a !important; color: #b45309 !important; }
+    .badge-soft-info { background-color: #cff4fc !important; color: #0891b2 !important; }
+    .badge-soft-secondary { background-color: #f3f4f6 !important; color: #4b5563 !important; }
+
+    /* Segmented Tabs (Modern Toggle) */
+    .nav-modern {
+        background-color: #f1f5f9;
+        padding: 4px;
+        border-radius: 50px;
+    }
+    .nav-modern .nav-link {
+        border-radius: 50px;
+        color: #64748b;
+        font-weight: 600;
+        font-size: 14px;
+        padding: 8px 24px;
+        border: none;
+        transition: all 0.3s ease;
+        background: transparent;
+    }
+    .nav-modern .nav-link:hover {
+        color: #0f172a;
+    }
+    .nav-modern .nav-link.active {
+        background-color: #ffffff;
+        color: #3b82f6;
+        box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+    }
+
+    /* Alert Duplikat Modern */
+    .alert-modern-danger {
+        background-color: #fef2f2;
+        border-left: 4px solid #ef4444;
+        border-radius: 12px;
+        padding: 16px;
+        box-shadow: 0 4px 6px rgba(0,0,0,0.02);
+    }
+    .alert-modern-warning {
+        background-color: #fffbeb;
+        border-left: 4px solid #f59e0b;
+        border-radius: 12px;
+        padding: 16px;
+        box-shadow: 0 4px 6px rgba(0,0,0,0.02);
+    }
+
+    /* Table Modern */
+    .table-modern th {
+        text-transform: uppercase;
+        font-size: 11px;
+        letter-spacing: 0.5px;
+        color: #64748b;
+        background: #f8fafc;
+        border-bottom: 2px solid #e2e8f0;
+        padding: 12px 16px;
+    }
+    .table-modern td {
+        padding: 16px;
+        border-bottom: 1px solid #f1f5f9;
+    }
+
+    .label-modern {
+        font-weight: 700;
+        color: #64748b;
+        font-size: 10px;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+        margin-bottom: 4px;
+    }
+    .input-modern {
+        border: 1px solid #cbd5e1;
+        border-radius: 8px;
+        padding: 6px 12px;
+        font-size: 13px;
+        color: #334155;
+    }
+    .input-modern:focus {
+        border-color: #3b82f6;
+        box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+    }
+
+    .fade-in { animation: fadeIn 0.6s ease-in-out; }
+    @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+    .animate-pulse { animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite; }
+    @keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: .5; } }
+</style>
 @endsection

@@ -65,12 +65,12 @@ class ModulPelatihanController extends Controller
         // Aktivitas Terbaru (Log)
         $aktivitasTerbaru = ModulPelatihan::with('pengupload')->latest()->take(5)->get();
 
-        // Pie Chart Data (Modul per Kategori)
-        $kategoriStats = ModulPelatihan::selectRaw('kategori, count(*) as total')
-            ->groupBy('kategori')
+        // Pie Chart Data (Modul per Sertifikasi)
+        $sertifikasiStats = ModulPelatihan::selectRaw('sertifikasi, count(*) as total')
+            ->groupBy('sertifikasi')
             ->get();
-        $pieLabels = $kategoriStats->pluck('kategori');
-        $pieData = $kategoriStats->pluck('total');
+        $pieLabels = $sertifikasiStats->pluck('sertifikasi');
+        $pieData = $sertifikasiStats->pluck('total');
 
         // Untuk Dropdown Filter Dinamis
         $listKategori = ModulPelatihan::select('kategori')->distinct()->pluck('kategori');
