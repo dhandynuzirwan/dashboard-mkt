@@ -588,16 +588,36 @@
 
 <script>
     document.addEventListener("DOMContentLoaded", function() {
-        // Cek apakah ada parameter 'page_libur' di URL
         const urlParams = new URLSearchParams(window.location.search);
+        let tabToActivate = null;
+
+        // 1. Prioritaskan parameter paginasi dari URL
         if (urlParams.has('page_libur')) {
-            // Cari tombol tab libur dan simulasikan klik agar tab terbuka
-            const liburTab = document.querySelector('#pills-libur-tab');
-            if (liburTab) {
-                const tab = new bootstrap.Tab(liburTab);
-                tab.show();
+            tabToActivate = document.querySelector('#pills-libur-tab');
+        } else if (urlParams.has('page_izin')) {
+            tabToActivate = document.querySelector('#pills-izin-tab');
+        } else if (urlParams.has('page_absen')) {
+            tabToActivate = document.querySelector('#pills-log-tab');
+        } else {
+            // 2. Fallback ke Local Storage jika tidak ada parameter paginasi
+            let activeTabId = localStorage.getItem('activeTabAbsensi');
+            if (activeTabId) {
+                tabToActivate = document.querySelector(activeTabId);
             }
         }
+
+        // Buka tab
+        if (tabToActivate) {
+            new bootstrap.Tab(tabToActivate).show();
+        }
+
+        // Simpan ID tab ke Local Storage saat tab diklik/berubah
+        const tabElements = document.querySelectorAll('a[data-bs-toggle="pill"]');
+        tabElements.forEach(function(tab) {
+            tab.addEventListener('shown.bs.tab', function (event) {
+                localStorage.setItem('activeTabAbsensi', '#' + event.target.id);
+            });
+        });
     });
 </script>
 
