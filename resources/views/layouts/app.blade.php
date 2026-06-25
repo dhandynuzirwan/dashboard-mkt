@@ -99,7 +99,12 @@
         
         
         {{-- Load File Audio Suara Tepuk Tangan --}}
-        <audio id="applauseAudio" src="{{ asset('assets/audio/applause2.mp3') }}" preload="auto"></audio>
+        @php
+            $dealSound = auth()->check() && auth()->user()->deal_sound_path 
+                ? asset('storage/' . auth()->user()->deal_sound_path) 
+                : asset('assets/audio/applause2.mp3');
+        @endphp
+        <audio id="applauseAudio" src="{{ $dealSound }}" preload="auto"></audio>
     
         <script>
             document.addEventListener("DOMContentLoaded", function() {

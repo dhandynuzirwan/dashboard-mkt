@@ -91,6 +91,27 @@
                             @enderror
                         </div>
 
+                        @if($user->role === 'marketing')
+                        <div class="form-group mb-5 px-0">
+                            <label class="form-label fw-bold text-dark mb-1" style="font-size: 13px;">Suara CTA Deal Kustom (Maks 30 Detik)</label>
+                            <div class="input-icon">
+                                <span class="input-icon-addon">
+                                    <i class="fas fa-music text-info opacity-75"></i>
+                                </span>
+                                <input type="file" name="deal_sound" id="deal_sound" class="form-control ps-5 @error('deal_sound') is-invalid @enderror" accept="audio/mpeg,audio/wav">
+                            </div>
+                            <small class="text-muted d-block mt-1" style="font-size: 10px;">Format: MP3/WAV. Ukuran maks 5MB. Durasi maksimal 30 detik.
+                                @if($user->deal_sound_path)
+                                    <br><span class="text-success"><i class="fas fa-check-circle"></i> Suara kustom saat ini sudah terpasang.</span>
+                                @endif
+                            </small>
+                            <div class="invalid-feedback fw-bold" id="deal_sound_error" style="font-size: 12px; display: none;"></div>
+                            @error('deal_sound')
+                                <div class="invalid-feedback d-block fw-bold" style="font-size: 12px;">{{ $message }}</div>
+                            @enderror
+                        </div>
+                        @endif
+
                         <div class="d-grid mt-2">
                             <button type="submit" class="btn btn-primary btn-lg fw-bold rounded-3 shadow-sm">
                                 <i class="fas fa-save me-2"></i> Simpan Perubahan
@@ -125,5 +146,44 @@
             reader.readAsDataURL(event.target.files[0]);
         }
     }
+
+    @if($user->role === 'marketing')
+    // Validasi durasi audio maksimal 30 detik
+    document.getElementById('deal_sound').addEventListener('change', function(e) {
+        const file = e.target.files[0];
+        const errorDiv = document.getElementById('deal_sound_error');
+        const submitBtn = document.querySelector('button[type="submit"]');
+        
+        errorDiv.style.display = 'none';
+        submitBtn.disabled = false;
+        this.classList.remove('is-invalid');
+
+        if (file) {
+            // Check file size (5MB = 5242880 bytes)
+            if (file.size > 5242880) {
+                this.classList.add('is-invalid');
+                errorDiv.innerText = 'Ukuran file melebihi 5MB.';
+                errorDiv.style.display = 'block';
+                submitBtn.disabled = true;
+                return;
+            }
+
+            const audio = new Audio();
+            audio.preload = 'metadata';
+            
+            audio.onloadedmetadata = function() {
+                window.URL.revokeObjectURL(audio.src);
+                if (audio.duration > 30.5) { // 30.5 to allow tiny fractions
+                    document.getElementById('deal_sound').classList.add('is-invalid');
+                    errorDiv.innerText = `Durasi audio terlalu panjang (${Math.round(audio.duration)} detik). Maksimal 30 detik!`;
+                    errorDiv.style.display = 'block';
+                    submitBtn.disabled = true;
+                }
+            }
+            
+            audio.src = URL.createObjectURL(file);
+        }
+    });
+    @endif
 </script>
 @endsection

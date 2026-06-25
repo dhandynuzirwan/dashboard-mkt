@@ -22,6 +22,7 @@ class ProfileController extends Controller
             'nama_lengkap' => 'nullable|string|max:255',
             'no_hp'        => 'nullable|string|max:20',
             'foto_profil'  => 'nullable|image|mimes:jpeg,png,jpg,webp|max:2048',
+            'deal_sound'   => 'nullable|file|mimes:mp3,wav|max:5120', // Maks 5MB
         ]);
 
         // Tampung data yang boleh diupdate
@@ -40,6 +41,16 @@ class ProfileController extends Controller
             // Simpan foto baru ke folder storage/app/public/profile_photos
             $path = $request->file('foto_profil')->store('profile_photos', 'public');
             $dataToUpdate['foto_profil'] = $path;
+        }
+
+        // Logika Upload Deal Sound (Hanya untuk marketing)
+        if ($user->role === 'marketing' && $request->hasFile('deal_sound')) {
+            if ($user->deal_sound_path && Storage::disk('public')->exists($user->deal_sound_path)) {
+                Storage::disk('public')->delete($user->deal_sound_path);
+            }
+
+            $soundPath = $request->file('deal_sound')->store('deal_sounds', 'public');
+            $dataToUpdate['deal_sound_path'] = $soundPath;
         }
 
         // Update ke database
