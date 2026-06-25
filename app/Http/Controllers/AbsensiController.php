@@ -23,6 +23,7 @@ class AbsensiController extends Controller
         $start = $request->query('start_date', \Carbon\Carbon::now()->startOfMonth()->format('Y-m-d'));
         $end = $request->query('end_date', \Carbon\Carbon::now()->format('Y-m-d'));
         $userId = $request->query('user_id');
+        $lateThreshold = $request->query('late_threshold', '07:30');
 
         // ==========================================
         // 2. QUERY ABSENSI LOG
@@ -66,8 +67,104 @@ class AbsensiController extends Controller
                 ->paginate(10, ['*'], 'page_libur') 
                 ->withQueryString();
 
+        // ==========================================
+        // 5. METRIK DASHBOARD & CHART
+        // ==========================================
+        $today = \Carbon\Carbon::now()->format('Y-m-d');
+        $totalKaryawan = $users->count();
+
+        // --- Stat Cards (Hari Ini) ---
+        $absenHariIni = AbsensiLog::where('tanggal', $today)
+            ->whereRaw('LOWER(tipe) = ?', ['in'])
+            ->get()
+            ->unique('user_id');
+
+        $hadirHariIni = 0;
+        $telatHariIni = 0;
+        foreach ($absenHariIni as $log) {
+            if ($log->jam <= $lateThreshold . ':00') {
+                $hadirHariIni++;
+            } else {
+                $telatHariIni++;
+            }
+        }
+
+        $izinHariIni = Perizinan::where('tanggal', $today)
+            ->where('status', 'approved')
+            ->count();
+
+        // --- Doughnut Chart (Berdasarkan Filter) ---
+        $userCountForDoughnut = $userId ? 1 : $totalKaryawan;
+        $totalDays = \Carbon\Carbon::parse($start)->diffInDays(\Carbon\Carbon::parse($end)) + 1;
+        $totalExpected = $totalDays * $userCountForDoughnut;
+
+        $queryChartAbsen = AbsensiLog::where('tanggal', '>=', $start)
+            ->where('tanggal', '<=', $end)
+            ->whereRaw('LOWER(tipe) = ?', ['in']);
+        if ($userId) $queryChartAbsen->where('user_id', $userId);
+        
+        $chartAbsen = $queryChartAbsen->get()->unique(function($item) {
+            return $item->user_id . $item->tanggal;
+        });
+
+        $doughnutHadir = 0;
+        $doughnutTelat = 0;
+        foreach ($chartAbsen as $log) {
+            if ($log->jam <= $lateThreshold . ':00') {
+                $doughnutHadir++;
+            } else {
+                $doughnutTelat++;
+            }
+        }
+
+        $queryChartIzin = Perizinan::where('tanggal', '>=', $start)
+            ->where('tanggal', '<=', $end)
+            ->where('status', 'approved');
+        if ($userId) $queryChartIzin->where('user_id', $userId);
+        $doughnutIzin = $queryChartIzin->count();
+
+        $doughnutAbsen = max(0, $totalExpected - $doughnutHadir - $doughnutTelat - $doughnutIzin);
+
+        // --- Line Chart (6 Bulan Terakhir - Dikunci) ---
+        $sixMonthsAgo = \Carbon\Carbon::now()->subMonths(5)->startOfMonth();
+        $lineChartLogs = AbsensiLog::where('tanggal', '>=', $sixMonthsAgo->format('Y-m-d'))
+            ->whereRaw('LOWER(tipe) = ?', ['in'])
+            ->get()
+            ->unique(function($item) { return $item->user_id . $item->tanggal; });
+
+        $lineLabels = [];
+        $lineHadir = [];
+        $lineTelat = [];
+
+        for ($i = 5; $i >= 0; $i--) {
+            $monthDate = \Carbon\Carbon::now()->subMonths($i);
+            $monthStr = $monthDate->format('Y-m');
+            $lineLabels[] = $monthDate->translatedFormat('M Y');
+            
+            $logsThisMonth = $lineChartLogs->filter(function($log) use ($monthStr) {
+                return substr($log->tanggal, 0, 7) === $monthStr;
+            });
+
+            $h = 0;
+            $t = 0;
+            foreach ($logsThisMonth as $log) {
+                if ($log->jam <= $lateThreshold . ':00') {
+                    $h++;
+                } else {
+                    $t++;
+                }
+            }
+            $lineHadir[] = $h;
+            $lineTelat[] = $t;
+        }
+
         // Kirim $start, $end, dan $userId ke view agar filter tetap terisi
-        return view('absensi', compact('absensi', 'users', 'perizinans', 'holidays', 'start', 'end', 'userId'));
+        return view('absensi', compact(
+            'absensi', 'users', 'perizinans', 'holidays', 'start', 'end', 'userId', 'lateThreshold',
+            'totalKaryawan', 'hadirHariIni', 'telatHariIni', 'izinHariIni',
+            'doughnutHadir', 'doughnutTelat', 'doughnutAbsen',
+            'lineLabels', 'lineHadir', 'lineTelat'
+        ));
     }
 
     public function mapping()

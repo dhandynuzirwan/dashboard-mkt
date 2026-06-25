@@ -59,6 +59,15 @@
                     </select>
                 </div>
 
+                {{-- Batas Telat --}}
+                <div class="form-group p-0 m-0">
+                    <div class="input-group input-group-sm">
+                        <span class="input-group-text bg-light text-muted" id="basic-addon1">Telat ></span>
+                        <input type="time" name="late_threshold" class="form-control form-control-sm"
+                            value="{{ $lateThreshold ?? '07:30' }}" title="Batas Jam Telat">
+                    </div>
+                </div>
+
                 {{-- Tombol Aksi --}}
                 <button type="submit" class="btn btn-primary btn-sm btn-round">
                     <i class="fas fa-filter"></i> Filter
@@ -68,8 +77,9 @@
         </div>
 
         <div class="row">
+            {{-- Total Karyawan --}}
             <div class="col-sm-6 col-md-3">
-                <div class="card card-stats card-round card-animate">
+                <div class="card card-stats card-round card-animate shadow-sm border-0 mb-4">
                     <div class="card-body">
                         <div class="row align-items-center">
                             <div class="col-icon">
@@ -79,9 +89,71 @@
                             </div>
                             <div class="col col-stats ms-3 ms-sm-0">
                                 <div class="numbers">
+                                    <p class="card-category">Karyawan Aktif</p>
+                                    <h4 class="card-title">{{ $totalKaryawan }}</h4>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            {{-- Hadir Hari Ini --}}
+            <div class="col-sm-6 col-md-3">
+                <div class="card card-stats card-round card-animate shadow-sm border-0 mb-4">
+                    <div class="card-body">
+                        <div class="row align-items-center">
+                            <div class="col-icon">
+                                <div class="icon-big text-center icon-success bubble-shadow-small">
+                                    <i class="fas fa-clipboard-check"></i>
+                                </div>
+                            </div>
+                            <div class="col col-stats ms-3 ms-sm-0">
+                                <div class="numbers">
                                     <p class="card-category">Hadir Hari Ini</p>
-                                    <h4 class="card-title">{{ $absensi->where('tanggal', date('Y-m-d'))->count() }}</h4>
-                                    <p class="text-muted small mb-0">Karyawan</p>
+                                    <h4 class="card-title text-success">{{ $hadirHariIni }}</h4>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            {{-- Telat Hari Ini --}}
+            <div class="col-sm-6 col-md-3">
+                <div class="card card-stats card-round card-animate shadow-sm border-0 mb-4">
+                    <div class="card-body">
+                        <div class="row align-items-center">
+                            <div class="col-icon">
+                                <div class="icon-big text-center icon-warning bubble-shadow-small">
+                                    <i class="fas fa-clock"></i>
+                                </div>
+                            </div>
+                            <div class="col col-stats ms-3 ms-sm-0">
+                                <div class="numbers">
+                                    <p class="card-category">Telat Hari Ini</p>
+                                    <h4 class="card-title text-warning">{{ $telatHariIni }}</h4>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            {{-- Izin/Sakit Hari Ini --}}
+            <div class="col-sm-6 col-md-3">
+                <div class="card card-stats card-round card-animate shadow-sm border-0 mb-4">
+                    <div class="card-body">
+                        <div class="row align-items-center">
+                            <div class="col-icon">
+                                <div class="icon-big text-center icon-info bubble-shadow-small">
+                                    <i class="fas fa-envelope-open-text"></i>
+                                </div>
+                            </div>
+                            <div class="col col-stats ms-3 ms-sm-0">
+                                <div class="numbers">
+                                    <p class="card-category">Izin/Sakit Hari Ini</p>
+                                    <h4 class="card-title text-info">{{ $izinHariIni }}</h4>
                                 </div>
                             </div>
                         </div>
@@ -89,6 +161,46 @@
                 </div>
             </div>
         </div> 
+
+        {{-- Row Charts --}}
+        <div class="row mb-2">
+            <div class="col-md-4">
+                <div class="card border-0 shadow-sm rounded-4 mb-4" style="height: 350px;">
+                    <div class="card-body p-4 text-center">
+                        <h6 class="fw-bold mb-3 text-start"><i class="fas fa-chart-pie text-primary me-2"></i> Proporsi Filter</h6>
+                        <div class="position-relative mx-auto" style="width: 180px; height: 180px;">
+                            <canvas id="filterDoughnutChart"></canvas>
+                        </div>
+                        <div class="row text-center g-2 mt-3 pt-2">
+                            <div class="col-4">
+                                <span class="d-block fw-bold fs-5 text-success">{{ $doughnutHadir }}</span>
+                                <span class="d-block text-muted" style="font-size: 11px;">Hadir</span>
+                            </div>
+                            <div class="col-4 border-start border-end">
+                                <span class="d-block fw-bold fs-5 text-warning">{{ $doughnutTelat }}</span>
+                                <span class="d-block text-muted" style="font-size: 11px;">Telat</span>
+                            </div>
+                            <div class="col-4">
+                                <span class="d-block fw-bold fs-5 text-danger">{{ $doughnutAbsen }}</span>
+                                <span class="d-block text-muted" style="font-size: 11px;">Absen</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-8">
+                <div class="card border-0 shadow-sm rounded-4 mb-4" style="height: 350px;">
+                    <div class="card-header bg-white border-0 pt-4 pb-0 px-4">
+                        <h6 class="fw-bold mb-0"><i class="fas fa-chart-line text-info me-2"></i> Tren Kehadiran (6 Bulan Terakhir)</h6>
+                    </div>
+                    <div class="card-body p-4">
+                        <div style="height: 250px;">
+                            <canvas id="trendLineChart"></canvas>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
 
         {{-- tombol import --}}
         <div class="mb-3 d-flex gap-2">
@@ -691,6 +803,76 @@
                 // Set the current status
                 selectStatus.value = status;
             });
+        });
+    });
+
+    // --- CHART DASHBOARD ABSENSI ---
+    document.addEventListener("DOMContentLoaded", function() {
+        // Doughnut Chart (Proporsi Filter)
+        const doughnutCtx = document.getElementById('filterDoughnutChart').getContext('2d');
+        new Chart(doughnutCtx, {
+            type: 'doughnut',
+            data: {
+                labels: ['Hadir', 'Telat', 'Absen'],
+                datasets: [{
+                    data: [{{ $doughnutHadir }}, {{ $doughnutTelat }}, {{ $doughnutAbsen }}],
+                    backgroundColor: ['#22c55e', '#eab308', '#ef4444'], // Tailwind colors
+                    borderWidth: 0,
+                    hoverOffset: 4
+                }]
+            },
+            options: {
+                cutout: '75%',
+                plugins: {
+                    legend: { display: false },
+                    tooltip: { enabled: true }
+                },
+                maintainAspectRatio: false
+            }
+        });
+
+        // Line Chart (Tren 6 Bulan Terakhir)
+        const lineCtx = document.getElementById('trendLineChart').getContext('2d');
+        new Chart(lineCtx, {
+            type: 'line',
+            data: {
+                labels: {!! json_encode($lineLabels) !!}.reverse(),
+                datasets: [
+                    {
+                        label: 'Hadir Tepat Waktu',
+                        data: {!! json_encode($lineHadir) !!}.reverse(),
+                        borderColor: '#22c55e',
+                        backgroundColor: 'rgba(34, 197, 94, 0.1)',
+                        borderWidth: 2,
+                        fill: true,
+                        tension: 0.4
+                    },
+                    {
+                        label: 'Telat',
+                        data: {!! json_encode($lineTelat) !!}.reverse(),
+                        borderColor: '#eab308',
+                        backgroundColor: 'rgba(234, 179, 8, 0.1)',
+                        borderWidth: 2,
+                        fill: true,
+                        tension: 0.4
+                    }
+                ]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: {
+                        position: 'top',
+                    }
+                },
+                scales: {
+                    y: {
+                        beginAtZero: true,
+                        ticks: { stepSize: 10 }
+                    }
+                }
+            }
         });
     });
 </script>
