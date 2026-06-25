@@ -47,56 +47,72 @@
                 </div>
 
                 {{-- 2. Quick Actions (Akses Cepat) --}}
+                @php
+                    $userRole = Auth::user()->role ?? 'karyawan';
+                    $quickAccess = [];
+                
+                    if ($userRole == 'superadmin') {
+                        $quickAccess = [
+                            ['title' => 'Dashboard Progress', 'icon' => 'fas fa-chart-pie', 'color' => 'primary', 'route' => route('dashboard.progress')],
+                            ['title' => 'Simulasi Gaji', 'icon' => 'fas fa-calculator', 'color' => 'success', 'route' => route('simulasi-gaji')],
+                            ['title' => 'Riwayat Pelatihan', 'icon' => 'fas fa-history', 'color' => 'warning', 'route' => route('riwayat.pelatihan')],
+                            ['title' => 'Data Absensi', 'icon' => 'fas fa-clipboard-list', 'color' => 'info', 'route' => route('absensi')],
+                        ];
+                    } elseif ($userRole == 'spv' || $userRole == 'spv_marketing') {
+                        $quickAccess = [
+                            ['title' => 'Dashboard Progress', 'icon' => 'fas fa-chart-pie', 'color' => 'primary', 'route' => route('dashboard.progress')],
+                            ['title' => 'Pipeline Marketing', 'icon' => 'fas fa-funnel-dollar', 'color' => 'success', 'route' => route('pipeline')],
+                            ['title' => 'Revenue', 'icon' => 'fas fa-money-bill-wave', 'color' => 'warning', 'route' => route('revenue')],
+                            ['title' => 'Registrasi Peserta', 'icon' => 'fas fa-users-cog', 'color' => 'info', 'route' => route('operational.data-pendaftaran')],
+                        ];
+                    } elseif (in_array($userRole, ['admin', 'rnd', 'digitalmarketing'])) {
+                        $quickAccess = [
+                            ['title' => 'Dashboard Progress', 'icon' => 'fas fa-chart-pie', 'color' => 'primary', 'route' => route('dashboard.progress')],
+                            ['title' => 'Database Masuk', 'icon' => 'fas fa-database', 'color' => 'success', 'route' => route('data-masuk.index')],
+                            ['title' => 'Pipeline Marketing', 'icon' => 'fas fa-funnel-dollar', 'color' => 'warning', 'route' => route('pipeline')],
+                            ['title' => 'Master Pelatihan', 'icon' => 'fas fa-graduation-cap', 'color' => 'info', 'route' => route('master-training.index')],
+                        ];
+                    } elseif (in_array($userRole, ['operasional', 'graphic', 'team_leader', 'web_dev'])) {
+                        $quickAccess = [
+                            ['title' => 'Aktivitas Harian', 'icon' => 'fas fa-tasks', 'color' => 'primary', 'route' => route('operational.aktivitas-harian')],
+                            ['title' => 'Registrasi Peserta', 'icon' => 'fas fa-users-cog', 'color' => 'success', 'route' => route('operational.data-pendaftaran')],
+                            ['title' => 'Pelatihan Berjalan', 'icon' => 'fas fa-chalkboard-teacher', 'color' => 'warning', 'route' => route('monitoring.pelatihan')],
+                            ['title' => 'Riwayat Pelatihan', 'icon' => 'fas fa-history', 'color' => 'info', 'route' => route('riwayat.pelatihan')],
+                        ];
+                    } elseif ($userRole == 'marketing') {
+                        $quickAccess = [
+                            ['title' => 'Pipeline Marketing', 'icon' => 'fas fa-funnel-dollar', 'color' => 'primary', 'route' => route('pipeline')],
+                            ['title' => 'Simulasi Gaji', 'icon' => 'fas fa-calculator', 'color' => 'success', 'route' => route('simulasi-gaji')],
+                            ['title' => 'Revenue', 'icon' => 'fas fa-money-bill-wave', 'color' => 'warning', 'route' => route('revenue')],
+                            ['title' => 'Data KPI', 'icon' => 'fas fa-chart-line', 'color' => 'info', 'route' => route('data-kpi')],
+                        ];
+                    } else {
+                        // Karyawan Biasa
+                        $quickAccess = [
+                            ['title' => 'Absen Selfie', 'icon' => 'fas fa-camera', 'color' => 'primary', 'route' => route('pegawai.absensi.index')],
+                            ['title' => 'Aktivitas Harian', 'icon' => 'fas fa-tasks', 'color' => 'success', 'route' => route('operational.aktivitas-harian')],
+                            ['title' => 'Ajukan Izin', 'icon' => 'fas fa-envelope-open-text', 'color' => 'warning', 'route' => route('pengajuan-izin.index')],
+                            ['title' => 'Modul Pelatihan', 'icon' => 'fas fa-book-open', 'color' => 'info', 'route' => route('modul.index')],
+                        ];
+                    }
+                @endphp
+
                 <h5 class="fw-bold mb-3 fade-in" style="animation-delay: 0.1s;"><i class="fas fa-bolt text-warning me-2"></i> Akses Cepat</h5>
                 <div class="row g-3 mb-4 fade-in" style="animation-delay: 0.2s;">
+                    @foreach($quickAccess as $item)
                     <div class="col-6 col-sm-3">
-                        <a href="{{ route('pegawai.absensi.index') }}" class="text-decoration-none">
+                        <a href="{{ $item['route'] }}" class="text-decoration-none">
                             <div class="card card-hover border-0 shadow-sm rounded-4 text-center h-100 p-3">
                                 <div class="card-body p-2">
-                                    <div class="icon-box bg-primary-subtle text-primary rounded-circle mx-auto mb-3 d-flex align-items-center justify-content-center" style="width: 50px; height: 50px;">
-                                        <i class="fas fa-camera fs-4"></i>
+                                    <div class="icon-box bg-{{ $item['color'] }}-subtle text-{{ $item['color'] }} rounded-circle mx-auto mb-3 d-flex align-items-center justify-content-center" style="width: 50px; height: 50px;">
+                                        <i class="{{ $item['icon'] }} fs-4"></i>
                                     </div>
-                                    <h6 class="text-dark fw-semibold mb-0 small">Absen Selfie</h6>
+                                    <h6 class="text-dark fw-semibold mb-0 small">{{ $item['title'] }}</h6>
                                 </div>
                             </div>
                         </a>
                     </div>
-                    <div class="col-6 col-sm-3">
-                        <a href="{{ route('operational.aktivitas-harian') }}" class="text-decoration-none">
-                            <div class="card card-hover border-0 shadow-sm rounded-4 text-center h-100 p-3">
-                                <div class="card-body p-2">
-                                    <div class="icon-box bg-success-subtle text-success rounded-circle mx-auto mb-3 d-flex align-items-center justify-content-center" style="width: 50px; height: 50px;">
-                                        <i class="fas fa-tasks fs-4"></i>
-                                    </div>
-                                    <h6 class="text-dark fw-semibold mb-0 small">Aktivitas Harian</h6>
-                                </div>
-                            </div>
-                        </a>
-                    </div>
-                    <div class="col-6 col-sm-3">
-                        <a href="{{ route('pengajuan-izin.index') }}" class="text-decoration-none">
-                            <div class="card card-hover border-0 shadow-sm rounded-4 text-center h-100 p-3">
-                                <div class="card-body p-2">
-                                    <div class="icon-box bg-warning-subtle text-warning rounded-circle mx-auto mb-3 d-flex align-items-center justify-content-center" style="width: 50px; height: 50px;">
-                                        <i class="fas fa-envelope-open-text fs-4"></i>
-                                    </div>
-                                    <h6 class="text-dark fw-semibold mb-0 small">Ajukan Izin</h6>
-                                </div>
-                            </div>
-                        </a>
-                    </div>
-                    <div class="col-6 col-sm-3">
-                        <a href="{{ route('modul.index') }}" class="text-decoration-none">
-                            <div class="card card-hover border-0 shadow-sm rounded-4 text-center h-100 p-3">
-                                <div class="card-body p-2">
-                                    <div class="icon-box bg-info-subtle text-info rounded-circle mx-auto mb-3 d-flex align-items-center justify-content-center" style="width: 50px; height: 50px;">
-                                        <i class="fas fa-book-open fs-4"></i>
-                                    </div>
-                                    <h6 class="text-dark fw-semibold mb-0 small">Modul Pelatihan</h6>
-                                </div>
-                            </div>
-                        </a>
-                    </div>
+                    @endforeach
                 </div>
 
                 <div class="row">
