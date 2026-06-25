@@ -25,6 +25,7 @@ class User extends Authenticatable
         'foto_profil',
         'nama_lengkap', // 🔥 TAMBAHAN BARU
         'no_hp',        // 🔥 TAMBAHAN BARU
+        'deal_sound_path',
     ];
 
     /**
