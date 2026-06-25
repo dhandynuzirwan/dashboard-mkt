@@ -22,6 +22,18 @@
             </div>
         @endif
 
+        @if($errors->any())
+            <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                <i class="fas fa-exclamation-circle me-1"></i> Gagal menyimpan data:
+                <ul class="mb-0 mt-1">
+                    @foreach($errors->all() as $error)
+                        <li>{{ $error }}</li>
+                    @endforeach
+                </ul>
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            </div>
+        @endif
+
         <div class="card border-0 shadow-sm rounded-4">
             <div class="card-body p-0">
                 <div class="table-responsive">
@@ -102,7 +114,7 @@
                                                   <div class="form-text">Isi jika pengumuman terkait tanggal spesifik di kalender.</div>
                                               </div>
                                               <div class="form-check form-switch mb-3">
-                                                  <input class="form-check-input" type="checkbox" name="is_active" id="isActive{{ $item->id }}" {{ $item->is_active ? 'checked' : '' }}>
+                                                  <input class="form-check-input" type="checkbox" name="is_active" id="isActive{{ $item->id }}" value="1" {{ $item->is_active ? 'checked' : '' }}>
                                                   <label class="form-check-label fw-bold" for="isActive{{ $item->id }}">Status Aktif (Tampil di Home)</label>
                                               </div>
                                           </div>
@@ -186,7 +198,7 @@
                   <div class="form-text">Isi jika pengumuman terkait tanggal spesifik di kalender.</div>
               </div>
               <div class="form-check form-switch mb-3">
-                  <input class="form-check-input" type="checkbox" name="is_active" id="isActiveNew" checked>
+                  <input class="form-check-input" type="checkbox" name="is_active" id="isActiveNew" value="1" checked>
                   <label class="form-check-label fw-bold" for="isActiveNew">Status Aktif (Tampil di Home)</label>
               </div>
           </div>
