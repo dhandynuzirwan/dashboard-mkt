@@ -64,4 +64,11 @@ class PelatihanBerjalan extends Model
     {
         return $this->hasMany(PendaftaranPribadi::class, 'pelatihan_berjalan_id');
     }
+
+    protected static function booted()
+    {
+        static::created(function ($model) {
+            \App\Models\ActivityLog::log('insert_pelatihan', 'Operasional', 'success', 'Operasional menjadwalkan {count} kelas pelatihan baru');
+        });
+    }
 }

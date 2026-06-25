@@ -13,4 +13,10 @@ class Penggajian extends Model
     {
         return $this->belongsTo(User::class);
     }
-}
+
+    protected static function booted()
+    {
+        static::created(function ($model) {
+            \App\Models\ActivityLog::log('insert_gaji', 'HRD', 'success', 'HRD menerbitkan slip gaji untuk {count} pegawai');
+        });
+    }

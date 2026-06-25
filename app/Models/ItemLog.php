@@ -28,4 +28,12 @@ class ItemLog extends Model
     {
         return $this->belongsTo(User::class, 'user_id');
     }
+
+    protected static function booted()
+    {
+        static::created(function ($model) {
+            $tipeStr = $model->tipe == 'in' ? 'masuk' : 'keluar';
+            \App\Models\ActivityLog::log('insert_itemlog_'.$model->tipe, 'Inventory', 'warning', 'Terdapat {count} aktivitas pencatatan stok barang '.$tipeStr);
+        });
+    }
 }

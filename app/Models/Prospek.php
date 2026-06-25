@@ -27,4 +27,11 @@ class Prospek extends Model
     public function ctas() {
         return $this->hasMany(Cta::class, 'prospek_id');
     }
+
+    protected static function booted()
+    {
+        static::created(function ($model) {
+            \App\Models\ActivityLog::log('insert_prospek', 'Marketing', 'primary', 'Marketing menambahkan {count} prospek baru');
+        });
+    }
 }

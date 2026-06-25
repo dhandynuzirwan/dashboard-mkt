@@ -28,37 +28,14 @@ class HomeController extends Controller
             ->get();
 
         // 2. Logika Aktivitas Feed (Timeline)
-        $feed = collect();
-        
-        $modul = ModulPelatihan::orderBy('created_at', 'desc')->take(3)->get()->map(function($m) {
+        $feed = \App\Models\ActivityLog::orderBy('updated_at', 'desc')->take(5)->get()->map(function($log) {
             return [
-                'type' => 'Modul',
-                'color' => 'info',
-                'title' => 'Admin mengunggah: "' . Str::limit($m->judul, 30) . '"',
-                'time' => $m->created_at,
+                'type' => $log->type,
+                'color' => $log->color,
+                'title' => $log->title,
+                'time' => $log->updated_at,
             ];
         });
-        
-        $logHarian = DailyLog::where('user_id', $user->id)->orderBy('created_at', 'desc')->take(3)->get()->map(function($l) {
-            return [
-                'type' => 'Aktivitas',
-                'color' => 'success',
-                'title' => 'Anda mengisi: "' . Str::limit($l->nama_kegiatan, 30) . '"',
-                'time' => $l->created_at,
-            ];
-        });
-
-        $izin = Perizinan::where('user_id', $user->id)->orderBy('created_at', 'desc')->take(3)->get()->map(function($i) {
-            $statusStr = $i->status == 'approved' ? 'disetujui' : ($i->status == 'rejected' ? 'ditolak' : 'sedang diproses');
-            return [
-                'type' => 'HRD',
-                'color' => $i->status == 'approved' ? 'success' : ($i->status == 'rejected' ? 'danger' : 'warning'),
-                'title' => 'Pengajuan ' . $i->jenis . ' Anda ' . $statusStr . '.',
-                'time' => $i->updated_at ?? $i->created_at,
-            ];
-        });
-
-        $feed = $feed->concat($modul)->concat($logHarian)->concat($izin)->sortByDesc('time')->take(5);
 
         // 3. Logika Absensi Pribadi Bulan Ini
         $absensi = AbsensiLog::where('user_id', $user->id)

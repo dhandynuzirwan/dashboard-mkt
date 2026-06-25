@@ -27,4 +27,11 @@ class PendaftaranPribadi extends Model
     {
         return $this->belongsTo(Cta::class, 'cta_id');
     }
+
+    protected static function booted()
+    {
+        static::created(function ($model) {
+            \App\Models\ActivityLog::log('insert_pendaftaran', 'Operasional', 'warning', 'Terdapat {count} pendaftaran peserta baru');
+        });
+    }
 }

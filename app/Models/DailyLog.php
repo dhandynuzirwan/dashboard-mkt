@@ -22,4 +22,11 @@ class DailyLog extends Model
     {
         return $this->belongsTo(User::class);
     }
+
+    protected static function booted()
+    {
+        static::created(function ($model) {
+            \App\Models\ActivityLog::log('insert_dailylog', 'Aktivitas', 'success', 'Anda mencatat {count} aktivitas harian');
+        });
+    }
 }

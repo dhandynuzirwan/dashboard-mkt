@@ -26,4 +26,11 @@ class ModulPelatihan extends Model
     {
         return $this->belongsTo(User::class, 'pengupload_id');
     }
+
+    protected static function booted()
+    {
+        static::created(function ($model) {
+            \App\Models\ActivityLog::log('insert_modul', 'Admin', 'info', 'Admin mengunggah {count} modul pelatihan baru');
+        });
+    }
 }
