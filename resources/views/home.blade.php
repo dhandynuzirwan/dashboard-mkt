@@ -283,35 +283,29 @@
 
                 {{-- 3. Ringkasan Absensi --}}
                 <div class="card border-0 shadow-sm rounded-4 mb-4">
-                    <div class="card-body p-4">
-                        <h6 class="fw-bold mb-3"><i class="fas fa-clipboard-check text-success me-2"></i> Kehadiran Bulan Ini</h6>
+                    <div class="card-body p-4 text-center">
+                        <h6 class="fw-bold mb-3 text-start"><i class="fas fa-clipboard-check text-success me-2"></i> Kehadiran Bulan Ini</h6>
                         
-                        <div class="d-flex justify-content-between mb-2">
-                            <span class="text-muted small">Tingkat Kehadiran</span>
-                            <span class="fw-bold text-success small">92%</span>
-                        </div>
-                        <div class="progress mb-4" style="height: 8px;">
-                            <div class="progress-bar bg-success rounded-pill" role="progressbar" style="width: 92%"></div>
+                        <div class="position-relative mx-auto" style="width: 140px; height: 140px; margin-bottom: 20px;">
+                            <canvas id="attendanceChart"></canvas>
+                            <div class="position-absolute top-50 start-50 translate-middle text-center" style="margin-top: 2px;">
+                                <span class="d-block fw-bold fs-4 text-dark line-height-1" style="margin-bottom: -5px;">92%</span>
+                                <span class="text-muted" style="font-size: 10px;">Hadir</span>
+                            </div>
                         </div>
 
-                        <div class="row text-center g-2">
+                        <div class="row text-center g-2 mt-2 border-top pt-3">
                             <div class="col-4">
-                                <div class="bg-light rounded p-2">
-                                    <span class="d-block fw-bold fs-5 text-dark">18</span>
-                                    <span class="d-block text-muted" style="font-size: 11px;">Hadir</span>
-                                </div>
+                                <span class="d-block fw-bold fs-5 text-success">18</span>
+                                <span class="d-block text-muted" style="font-size: 11px;">Hadir</span>
                             </div>
                             <div class="col-4">
-                                <div class="bg-light rounded p-2">
-                                    <span class="d-block fw-bold fs-5 text-warning">1</span>
-                                    <span class="d-block text-muted" style="font-size: 11px;">Telat</span>
-                                </div>
+                                <span class="d-block fw-bold fs-5 text-warning">1</span>
+                                <span class="d-block text-muted" style="font-size: 11px;">Telat</span>
                             </div>
                             <div class="col-4">
-                                <div class="bg-light rounded p-2">
-                                    <span class="d-block fw-bold fs-5 text-danger">0</span>
-                                    <span class="d-block text-muted" style="font-size: 11px;">Absen</span>
-                                </div>
+                                <span class="d-block fw-bold fs-5 text-danger">0</span>
+                                <span class="d-block text-muted" style="font-size: 11px;">Absen</span>
                             </div>
                         </div>
                     </div>
@@ -353,6 +347,7 @@
     }
 </style>
 
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <script>
     // --- JAM REALTIME ---
     document.addEventListener("DOMContentLoaded", function() {
@@ -366,6 +361,29 @@
         
         // Render Initial Calendar
         renderCalendar();
+        
+        // Render Doughnut Chart
+        const ctx = document.getElementById('attendanceChart').getContext('2d');
+        new Chart(ctx, {
+            type: 'doughnut',
+            data: {
+                labels: ['Hadir', 'Telat', 'Absen'],
+                datasets: [{
+                    data: [18, 1, 0],
+                    backgroundColor: ['#198754', '#ffc107', '#dc3545'],
+                    borderWidth: 0,
+                    hoverOffset: 4
+                }]
+            },
+            options: {
+                cutout: '75%',
+                plugins: {
+                    legend: { display: false },
+                    tooltip: { enabled: true }
+                },
+                maintainAspectRatio: false
+            }
+        });
     });
 
     // --- KALENDER DINAMIS ---
