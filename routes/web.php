@@ -90,9 +90,7 @@ Route::prefix('portal')->group(function () {
 | AUTHENTICATED ROUTES (Wajib Login)
 |--------------------------------------------------------------------------
 */
-Route::get('/', function () {
-    return view('home'); 
-})->name('home')->middleware('auth');
+Route::get('/', [\App\Http\Controllers\HomeController::class, 'index'])->name('home')->middleware('auth');
 
 Route::middleware('auth')->group(function () {
 
@@ -359,5 +357,8 @@ Route::middleware('auth')->group(function () {
         Route::get('/approval-izin', [\App\Http\Controllers\ApprovalIzinController::class, 'index'])->name('approval-izin.index');
         Route::post('/approval-izin/{id}/approve', [\App\Http\Controllers\ApprovalIzinController::class, 'approve'])->name('approval-izin.approve');
         Route::post('/approval-izin/{id}/reject', [\App\Http\Controllers\ApprovalIzinController::class, 'reject'])->name('approval-izin.reject');
+        
+        // Papan Pengumuman
+        Route::resource('pengumuman', \App\Http\Controllers\PengumumanController::class);
     });
 });

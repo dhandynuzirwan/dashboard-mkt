@@ -89,7 +89,7 @@
                 @endif
 
                 {{-- ================= MENU HUMAN RESOURCES ================= --}}
-                @php $isHR = request()->routeIs(['user', 'penggajian.index', 'absensi', 'approval-izin.index']); @endphp
+                @php $isHR = request()->routeIs(['user', 'penggajian.index', 'absensi', 'approval-izin.index', 'pengumuman.*']); @endphp
                 <li class="nav-item {{ $isHR ? 'active' : '' }}">
                     <a data-bs-toggle="collapse" href="#human-resources" class="{{ $isHR ? '' : 'collapsed' }}" aria-expanded="{{ $isHR ? 'true' : 'false' }}">
                         <i class="fas fa-users"></i>
@@ -116,6 +116,11 @@
                             <li class="{{ request()->routeIs('approval-izin.*') ? 'active' : '' }}">
                                 <a href="{{ route('approval-izin.index') }}">
                                     <span class="sub-item">Approval Izin / Cuti</span>
+                                </a>
+                            </li>
+                            <li class="{{ request()->routeIs('pengumuman.*') ? 'active' : '' }}">
+                                <a href="{{ route('pengumuman.index') }}">
+                                    <span class="sub-item">Papan Pengumuman</span>
                                 </a>
                             </li>
                         </ul>

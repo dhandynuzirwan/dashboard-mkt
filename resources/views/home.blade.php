@@ -117,86 +117,78 @@
 
                 <div class="row">
                     <div class="col-md-6">
-                        {{-- 3. Panel Pengumuman (Ditingkatkan) --}}
+                        {{-- 3. Panel Pengumuman (Dinamis) --}}
                         <div class="card border-0 shadow-sm rounded-4 mb-4 fade-in" style="animation-delay: 0.3s; height: 100%;">
                             <div class="card-header bg-white border-0 pt-4 pb-0 px-4">
                                 <h5 class="fw-bold mb-0"><i class="fas fa-bullhorn text-danger me-2"></i> Papan Pengumuman</h5>
                             </div>
                             <div class="card-body p-4">
-                                {{-- Item: Hari Besar --}}
-                                <div class="d-flex mb-3 pb-3 border-bottom">
-                                    <div class="flex-shrink-0">
-                                        <div class="bg-success-subtle text-success rounded p-2 text-center d-flex align-items-center justify-content-center" style="width: 50px; height: 50px;">
-                                            <i class="fas fa-calendar-day fs-4"></i>
+                                @forelse($pengumuman as $p)
+                                    @php
+                                        $icon = 'fas fa-info-circle';
+                                        $color = 'primary';
+                                        $badgeText = 'Pengumuman';
+                                        if($p->kategori == 'hari_besar') {
+                                            $icon = 'fas fa-calendar-day';
+                                            $color = 'success';
+                                            $badgeText = 'Hari Besar';
+                                        } elseif($p->kategori == 'urgent') {
+                                            $icon = 'fas fa-exclamation-triangle';
+                                            $color = 'danger';
+                                            $badgeText = '<i class="fas fa-fire me-1"></i> Urgent';
+                                        } elseif($p->kategori == 'pencapaian') {
+                                            $icon = 'fas fa-trophy';
+                                            $color = 'primary';
+                                            $badgeText = 'Pencapaian';
+                                        }
+                                    @endphp
+                                    <div class="d-flex mb-3 pb-3 {{ !$loop->last ? 'border-bottom' : '' }}">
+                                        <div class="flex-shrink-0">
+                                            <div class="bg-{{ $color }}-subtle text-{{ $color }} rounded p-2 text-center d-flex align-items-center justify-content-center" style="width: 50px; height: 50px;">
+                                                <i class="{{ $icon }} fs-4"></i>
+                                            </div>
+                                        </div>
+                                        <div class="flex-grow-1 ms-3">
+                                            <span class="badge bg-{{ $color }} {{ $color == 'danger' ? '' : 'bg-opacity-10 text-'.$color.' border border-'.$color.' border-opacity-25' }} rounded-pill px-2 mb-1" style="font-size: 10px;">{!! $badgeText !!}</span>
+                                            <h6 class="fw-bold mb-1">{{ $p->judul }}</h6>
+                                            <p class="text-muted small mb-0">{{ $p->deskripsi }}</p>
                                         </div>
                                     </div>
-                                    <div class="flex-grow-1 ms-3">
-                                        <span class="badge bg-success bg-opacity-10 text-success border border-success border-opacity-25 rounded-pill px-2 mb-1" style="font-size: 10px;">Hari Besar</span>
-                                        <h6 class="fw-bold mb-1">Cuti Bersama Idul Adha</h6>
-                                        <p class="text-muted small mb-0">Libur operasional pada 28-29 Juni. Selamat merayakan bagi yang merayakan.</p>
+                                @empty
+                                    <div class="text-center py-4 text-muted">
+                                        <i class="fas fa-bell-slash fs-1 text-light mb-2 d-block"></i>
+                                        <span class="small">Belum ada pengumuman saat ini.</span>
                                     </div>
-                                </div>
-                                {{-- Item: Deadline Urgent --}}
-                                <div class="d-flex mb-3 pb-3 border-bottom">
-                                    <div class="flex-shrink-0">
-                                        <div class="bg-danger-subtle text-danger rounded p-2 text-center d-flex align-items-center justify-content-center" style="width: 50px; height: 50px;">
-                                            <i class="fas fa-exclamation-triangle fs-4"></i>
-                                        </div>
-                                    </div>
-                                    <div class="flex-grow-1 ms-3">
-                                        <span class="badge bg-danger rounded-pill px-2 mb-1" style="font-size: 10px;"><i class="fas fa-fire me-1"></i> Urgent</span>
-                                        <h6 class="fw-bold mb-1">Batas Akhir Laporan</h6>
-                                        <p class="text-muted small mb-0">Segera lengkapi log aktivitas bulan ini maksimal tanggal 25 sebelum jam 15:00.</p>
-                                    </div>
-                                </div>
-                                {{-- Item: Pencapaian --}}
-                                <div class="d-flex">
-                                    <div class="flex-shrink-0">
-                                        <div class="bg-primary-subtle text-primary rounded p-2 text-center d-flex align-items-center justify-content-center" style="width: 50px; height: 50px;">
-                                            <i class="fas fa-trophy fs-4"></i>
-                                        </div>
-                                    </div>
-                                    <div class="flex-grow-1 ms-3">
-                                        <span class="badge bg-primary bg-opacity-10 text-primary border border-primary border-opacity-25 rounded-pill px-2 mb-1" style="font-size: 10px;">Pencapaian</span>
-                                        <h6 class="fw-bold mb-1">Target Tercapai! 🎉</h6>
-                                        <p class="text-muted small mb-0">Tim Marketing berhasil menembus target KPI kuartal ini lebih awal.</p>
-                                    </div>
-                                </div>
+                                @endforelse
                             </div>
                         </div>
                     </div>
                     
                     <div class="col-md-6">
-                        {{-- 4. Aktivitas Terbaru --}}
+                        {{-- 4. Aktivitas Terbaru (Dinamis) --}}
                         <div class="card border-0 shadow-sm rounded-4 mb-4 fade-in" style="animation-delay: 0.4s; height: 100%;">
                             <div class="card-header bg-white border-0 pt-4 pb-0 px-4">
                                 <h5 class="fw-bold mb-0"><i class="fas fa-list text-info me-2"></i> Aktivitas Feed</h5>
                             </div>
                             <div class="card-body p-4 pt-3">
                                 <ul class="list-unstyled mb-0 position-relative">
-                                    {{-- Garis background timeline --}}
-                                    <div class="position-absolute border-start border-2 border-light" style="top: 10px; bottom: 10px; left: 5px; z-index: 1;"></div>
-                                    
-                                    <li class="position-relative ps-4 mb-4 z-2">
-                                        <div class="position-absolute bg-info border border-white border-2 rounded-circle" style="width: 14px; height: 14px; left: -1px; top: 3px;"></div>
-                                        <div class="small text-muted mb-1">10 Mnt lalu &bull; <span class="fw-semibold text-dark">Modul</span></div>
-                                        <div class="small fw-semibold text-dark">Admin mengunggah: "Panduan ISO 9001"</div>
-                                    </li>
-                                    <li class="position-relative ps-4 mb-4 z-2">
-                                        <div class="position-absolute bg-success border border-white border-2 rounded-circle" style="width: 14px; height: 14px; left: -1px; top: 3px;"></div>
-                                        <div class="small text-muted mb-1">1 Jam lalu &bull; <span class="fw-semibold text-dark">Operasional</span></div>
-                                        <div class="small fw-semibold text-dark">Sistem berhasil di-backup harian.</div>
-                                    </li>
-                                    <li class="position-relative ps-4 mb-4 z-2">
-                                        <div class="position-absolute bg-warning border border-white border-2 rounded-circle" style="width: 14px; height: 14px; left: -1px; top: 3px;"></div>
-                                        <div class="small text-muted mb-1">Kemarin &bull; <span class="fw-semibold text-dark">HRD</span></div>
-                                        <div class="small fw-semibold text-dark">Izin tahunan Budi disetujui.</div>
-                                    </li>
-                                    <li class="position-relative ps-4 z-2">
-                                        <div class="position-absolute bg-primary border border-white border-2 rounded-circle" style="width: 14px; height: 14px; left: -1px; top: 3px;"></div>
-                                        <div class="small text-muted mb-1">Kemarin &bull; <span class="fw-semibold text-dark">Pendaftaran</span></div>
-                                        <div class="small fw-semibold text-dark">PT Maju Mendaftarkan 5 Karyawan.</div>
-                                    </li>
+                                    @if($feed->count() > 0)
+                                        {{-- Garis background timeline --}}
+                                        <div class="position-absolute border-start border-2 border-light" style="top: 10px; bottom: 10px; left: 5px; z-index: 1;"></div>
+                                        
+                                        @foreach($feed as $f)
+                                        <li class="position-relative ps-4 mb-4 z-2">
+                                            <div class="position-absolute bg-{{ $f['color'] }} border border-white border-2 rounded-circle" style="width: 14px; height: 14px; left: -1px; top: 3px;"></div>
+                                            <div class="small text-muted mb-1">{{ \Carbon\Carbon::parse($f['time'])->diffForHumans() }} &bull; <span class="fw-semibold text-dark">{{ $f['type'] }}</span></div>
+                                            <div class="small fw-semibold text-dark">{{ $f['title'] }}</div>
+                                        </li>
+                                        @endforeach
+                                    @else
+                                        <li class="text-center py-4 text-muted">
+                                            <i class="fas fa-history fs-1 text-light mb-2 d-block"></i>
+                                            <span class="small">Belum ada aktivitas terekam.</span>
+                                        </li>
+                                    @endif
                                 </ul>
                             </div>
                         </div>
@@ -219,7 +211,7 @@
                         </div>
                         <div>
                             <h5 class="fw-bold mb-1">{{ Auth::user()->name }}</h5>
-                            <p class="text-muted small mb-0 text-capitalize"><i class="fas fa-user-shield me-1"></i> {{ Auth::user()->role ?? 'Karyawan' }}</p>
+                            <p class="text-muted small mb-0 text-capitalize"><i class="fas fa-user-shield me-1"></i> {{ str_replace('_', ' ', Auth::user()->role ?? 'Karyawan') }}</p>
                         </div>
                         <div class="ms-auto dropdown">
                             <button class="btn btn-light btn-sm rounded-circle" type="button" data-bs-toggle="dropdown"><i class="fas fa-ellipsis-v"></i></button>
@@ -270,14 +262,14 @@
                         
                         {{-- List Event --}}
                         <h6 class="fw-semibold small mb-3 text-muted text-uppercase">Agenda Mendatang</h6>
-                        <div class="d-flex mb-2 align-items-center">
-                            <div class="bg-primary rounded-circle me-2" style="width:10px; height:10px;"></div>
-                            <div class="small fw-semibold text-dark">Pelatihan K3 <span class="badge bg-light text-muted ms-2 fw-normal">12 Jun</span></div>
-                        </div>
-                        <div class="d-flex align-items-center">
-                            <div class="bg-danger rounded-circle me-2" style="width:10px; height:10px;"></div>
-                            <div class="small fw-semibold text-dark">Batas Submit Absen <span class="badge bg-light text-muted ms-2 fw-normal">15 Jun</span></div>
-                        </div>
+                        @forelse($upcomingAgendas as $agenda)
+                            <div class="d-flex mb-2 align-items-center">
+                                <div class="bg-{{ $agenda['color'] }} rounded-circle me-2" style="width:10px; height:10px;"></div>
+                                <div class="small fw-semibold text-dark">{{ $agenda['title'] }} <span class="badge bg-light text-muted ms-2 fw-normal">{{ \Carbon\Carbon::parse($agenda['date'])->format('d M') }}</span></div>
+                            </div>
+                        @empty
+                            <div class="small text-muted text-center py-2">Tidak ada agenda mendatang.</div>
+                        @endforelse
                     </div>
                 </div>
 
@@ -289,23 +281,23 @@
                         <div class="position-relative mx-auto" style="width: 140px; height: 140px; margin-bottom: 20px;">
                             <canvas id="attendanceChart"></canvas>
                             <div class="position-absolute top-50 start-50 translate-middle text-center" style="margin-top: 2px;">
-                                <span class="d-block fw-bold fs-4 text-dark line-height-1" style="margin-bottom: -5px;">92%</span>
-                                <span class="text-muted" style="font-size: 10px;">Hadir</span>
+                                <span class="d-block fw-bold fs-4 text-dark line-height-1" style="margin-bottom: -5px;">{{ $attendanceRate }}%</span>
+                                <span class="text-muted" style="font-size: 10px;">Tingkat Kehadiran</span>
                             </div>
                         </div>
 
                         <div class="row text-center g-2 mt-2 border-top pt-3">
                             <div class="col-4">
-                                <span class="d-block fw-bold fs-5 text-success">18</span>
+                                <span class="d-block fw-bold fs-5 text-success">{{ $hadir }}</span>
                                 <span class="d-block text-muted" style="font-size: 11px;">Hadir</span>
                             </div>
                             <div class="col-4">
-                                <span class="d-block fw-bold fs-5 text-warning">1</span>
+                                <span class="d-block fw-bold fs-5 text-warning">{{ $telat }}</span>
                                 <span class="d-block text-muted" style="font-size: 11px;">Telat</span>
                             </div>
                             <div class="col-4">
-                                <span class="d-block fw-bold fs-5 text-danger">0</span>
-                                <span class="d-block text-muted" style="font-size: 11px;">Absen</span>
+                                <span class="d-block fw-bold fs-5 text-danger">{{ $absen }}</span>
+                                <span class="d-block text-muted" style="font-size: 11px;">Absen/Alpha</span>
                             </div>
                         </div>
                     </div>
@@ -369,7 +361,7 @@
             data: {
                 labels: ['Hadir', 'Telat', 'Absen'],
                 datasets: [{
-                    data: [18, 1, 0],
+                    data: [{{ $hadir }}, {{ $telat }}, {{ $absen }}],
                     backgroundColor: ['#198754', '#ffc107', '#dc3545'],
                     borderWidth: 0,
                     hoverOffset: 4
@@ -389,13 +381,8 @@
     // --- KALENDER DINAMIS ---
     let currentDate = new Date();
     
-    // Dummy event dates (in current month context)
-    const events = {
-        12: 'primary', // tgl 12 warna primary
-        15: 'danger',  // tgl 15 warna merah
-        28: 'success', // tgl 28 hari raya
-        29: 'success'
-    };
+    // Server-side events injected to JS
+    const events = @json($calendarEvents);
 
     function renderCalendar() {
         const monthYearEl = document.getElementById('calendar-month-year');
@@ -431,8 +418,13 @@
             
             // Cek apakah ada event di tgl ini
             let dotHtml = '';
-            if(events[i]) {
-                // Jangan tampilkan dot di hari ini agar tidak tabrakan gaya, atau ubah warnanya
+            // Only show events for current server month if we are viewing the current server month, 
+            // since $calendarEvents is generated only for the server's current month.
+            // For a fully dynamic calendar, we'd need to fetch events via AJAX. For now, this is static per month load.
+            const serverDate = new Date();
+            const isViewingServerMonth = (serverDate.getMonth() === month && serverDate.getFullYear() === year);
+
+            if(isViewingServerMonth && events[i]) {
                 if(!(isCurrentMonth && i === today.getDate())) {
                     dotHtml = `<div class="calendar-dot bg-${events[i]}"></div>`;
                 }
