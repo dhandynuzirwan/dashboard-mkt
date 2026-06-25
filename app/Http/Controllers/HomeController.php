@@ -48,8 +48,8 @@ class HomeController extends Controller
         $telat = 0;
 
         foreach ($absensi as $log) {
-            // Kita skip jika tipenya bukan 'Masuk'
-            if (isset($log->tipe) && $log->tipe !== 'Masuk') continue;
+            // Kita skip jika tipenya bukan 'in' (Masuk)
+            if (isset($log->tipe) && strtolower($log->tipe) !== 'in') continue;
 
             if ($log->jam <= '07:30:00') {
                 $hadir++;
