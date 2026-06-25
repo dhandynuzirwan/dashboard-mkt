@@ -204,8 +204,12 @@
                 <div class="card border-0 shadow-sm rounded-4 mb-4">
                     <div class="card-body p-4 d-flex align-items-center">
                         <div class="avatar-container position-relative me-3">
-                            <div class="bg-secondary bg-opacity-10 rounded-circle d-flex align-items-center justify-content-center" style="width: 60px; height: 60px;">
-                                <i class="fas fa-user text-secondary fs-3"></i>
+                            <div class="bg-secondary bg-opacity-10 rounded-circle d-flex align-items-center justify-content-center overflow-hidden" style="width: 60px; height: 60px;">
+                                @if(Auth::user()->foto_profil)
+                                    <img src="{{ asset('storage/' . Auth::user()->foto_profil) }}" alt="Profile Picture" class="w-100 h-100" style="object-fit: cover;">
+                                @else
+                                    <i class="fas fa-user text-secondary fs-3"></i>
+                                @endif
                             </div>
                             <span class="position-absolute bottom-0 end-0 p-2 bg-success border border-white border-2 rounded-circle" style="transform: translate(-2px, -2px);" title="Online"></span>
                         </div>
