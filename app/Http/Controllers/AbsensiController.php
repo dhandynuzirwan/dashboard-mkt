@@ -139,21 +139,42 @@ class AbsensiController extends Controller
         $currentDate = \Carbon\Carbon::parse($start);
         $endDate = \Carbon\Carbon::parse($end);
 
+        $queryAllIzin = Perizinan::where('tanggal', '>=', $start)->where('tanggal', '<=', $end);
+        if ($userId) $queryAllIzin->where('user_id', $userId);
+        $allIzin = $queryAllIzin->get();
+
+        $holidayDates = \App\Models\Holiday::where('tanggal', '>=', $start)
+            ->where('tanggal', '<=', $end)
+            ->pluck('tanggal')->toArray();
+
         while ($currentDate <= $endDate) {
             $dateStr = $currentDate->format('Y-m-d');
             
+            // Skip weekends and holidays
+            if ($currentDate->isWeekend() || in_array($dateStr, $holidayDates)) {
+                $currentDate->addDay();
+                continue;
+            }
+            
             $logsToday = $chartAbsen->where('tanggal', $dateStr);
             $izinToday = $chartIzin->where('tanggal', $dateStr);
+            $allIzinToday = $allIzin->where('tanggal', $dateStr);
 
             foreach ($usersWithFingerspot as $u) {
                 $hasLog = $logsToday->where('user_id', $u->id)->isNotEmpty();
                 $hasIzin = $izinToday->where('user_id', $u->id)->isNotEmpty();
 
-                if (!$hasLog && !$hasIzin) {
+                if (!$hasLog && (!$hasIzin)) {
+                    $keterangan = 'Tanpa Keterangan';
+                    $izinRecord = $allIzinToday->where('user_id', $u->id)->first();
+                    if ($izinRecord) {
+                        $keterangan = $izinRecord->jenis_izin . ' (' . ucfirst($izinRecord->status) . '): ' . $izinRecord->keterangan;
+                    }
+
                     $listDoughnutAbsen->push((object)[
                         'user' => $u,
                         'tanggal' => $dateStr,
-                        'keterangan' => 'Tanpa Keterangan'
+                        'keterangan' => $keterangan
                     ]);
                 }
             }
