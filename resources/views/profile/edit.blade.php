@@ -102,7 +102,10 @@
                             </div>
                             <small class="text-muted d-block mt-1" style="font-size: 10px;">Format: MP3/WAV. Ukuran maks 5MB. Durasi maksimal 30 detik.
                                 @if($user->deal_sound_path)
-                                    <br><span class="text-success"><i class="fas fa-check-circle"></i> Suara kustom saat ini sudah terpasang.</span>
+                                    <br>
+                                    <span class="text-success fw-bold d-inline-block mt-1">
+                                        <i class="fas fa-check-circle"></i> Tersimpan: {{ basename($user->deal_sound_path) }}
+                                    </span>
                                 @endif
                             </small>
                             <div class="invalid-feedback fw-bold" id="deal_sound_error" style="font-size: 12px; display: none;"></div>
