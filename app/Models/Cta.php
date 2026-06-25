@@ -26,5 +26,12 @@ class Cta extends Model
     {
         return $this->belongsTo(Prospek::class, 'prospek_id');
     }
-    // app/Models/Cta.php
+
+    protected static function booted()
+    {
+        static::created(function ($model) {
+            $user = \Illuminate\Support\Facades\Auth::user()->name ?? 'Sistem';
+            \App\Models\ActivityLog::log('insert_cta', 'Marketing', 'warning', "{$user} menambahkan {count} CTA (Call to Action) baru");
+        });
+    }
 }
