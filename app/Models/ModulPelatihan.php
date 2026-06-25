@@ -30,7 +30,8 @@ class ModulPelatihan extends Model
     protected static function booted()
     {
         static::created(function ($model) {
-            \App\Models\ActivityLog::log('insert_modul', 'Admin', 'info', 'Admin mengunggah {count} modul pelatihan baru');
+            $user = \Illuminate\Support\Facades\Auth::user()->name ?? 'Sistem';
+            \App\Models\ActivityLog::log('insert_modul', 'Admin', 'info', "{$user} mengunggah {count} modul pelatihan baru");
         });
     }
 }

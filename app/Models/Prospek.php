@@ -31,7 +31,8 @@ class Prospek extends Model
     protected static function booted()
     {
         static::created(function ($model) {
-            \App\Models\ActivityLog::log('insert_prospek', 'Marketing', 'primary', 'Marketing menambahkan {count} prospek baru');
+            $user = \Illuminate\Support\Facades\Auth::user()->name ?? 'Sistem';
+            \App\Models\ActivityLog::log('insert_prospek', 'Marketing', 'primary', "{$user} menambahkan {count} prospek baru");
         });
     }
 }

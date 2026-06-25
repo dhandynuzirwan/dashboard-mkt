@@ -68,7 +68,8 @@ class PelatihanBerjalan extends Model
     protected static function booted()
     {
         static::created(function ($model) {
-            \App\Models\ActivityLog::log('insert_pelatihan', 'Operasional', 'success', 'Operasional menjadwalkan {count} kelas pelatihan baru');
+            $user = \Illuminate\Support\Facades\Auth::user()->name ?? 'Sistem';
+            \App\Models\ActivityLog::log('insert_pelatihan', 'Operasional', 'success', "{$user} menjadwalkan {count} kelas pelatihan baru");
         });
     }
 }

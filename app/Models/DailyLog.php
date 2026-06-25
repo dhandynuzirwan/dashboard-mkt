@@ -26,7 +26,8 @@ class DailyLog extends Model
     protected static function booted()
     {
         static::created(function ($model) {
-            \App\Models\ActivityLog::log('insert_dailylog', 'Aktivitas', 'success', 'Anda mencatat {count} aktivitas harian');
+            $user = \Illuminate\Support\Facades\Auth::user()->name ?? 'Sistem';
+            \App\Models\ActivityLog::log('insert_dailylog', 'Aktivitas', 'success', "{$user} mencatat {count} aktivitas harian");
         });
     }
 }

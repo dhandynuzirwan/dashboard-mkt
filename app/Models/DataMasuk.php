@@ -28,7 +28,8 @@ class DataMasuk extends Model
             if (!is_null($dataMasuk->marketing_id)) {
                 self::autoDeliverToProspek($dataMasuk);
             }
-            \App\Models\ActivityLog::log('insert_datamasuk', 'Marketing', 'primary', 'Sistem menerima {count} database masuk baru');
+            $user = \Illuminate\Support\Facades\Auth::user()->name ?? 'Sistem';
+            \App\Models\ActivityLog::log('insert_datamasuk', 'Marketing', 'primary', "{$user} menambahkan {count} database masuk baru");
         });
 
         // 2. Saat data LAMA diubah (Update)

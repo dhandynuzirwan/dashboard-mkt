@@ -17,6 +17,7 @@ class Penggajian extends Model
     protected static function booted()
     {
         static::created(function ($model) {
-            \App\Models\ActivityLog::log('insert_gaji', 'HRD', 'success', 'HRD menerbitkan slip gaji untuk {count} pegawai');
+            $user = \Illuminate\Support\Facades\Auth::user()->name ?? 'Sistem';
+            \App\Models\ActivityLog::log('insert_gaji', 'HRD', 'success', "{$user} menerbitkan slip gaji untuk {count} pegawai");
         });
     }

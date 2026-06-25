@@ -31,7 +31,8 @@ class PendaftaranPribadi extends Model
     protected static function booted()
     {
         static::created(function ($model) {
-            \App\Models\ActivityLog::log('insert_pendaftaran', 'Operasional', 'warning', 'Terdapat {count} pendaftaran peserta baru');
+            $user = \Illuminate\Support\Facades\Auth::user()->name ?? 'Sistem';
+            \App\Models\ActivityLog::log('insert_pendaftaran', 'Operasional', 'warning', "{$user} mendaftarkan {count} peserta baru");
         });
     }
 }

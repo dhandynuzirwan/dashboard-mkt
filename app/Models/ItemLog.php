@@ -33,7 +33,8 @@ class ItemLog extends Model
     {
         static::created(function ($model) {
             $tipeStr = $model->tipe == 'in' ? 'masuk' : 'keluar';
-            \App\Models\ActivityLog::log('insert_itemlog_'.$model->tipe, 'Inventory', 'warning', 'Terdapat {count} aktivitas pencatatan stok barang '.$tipeStr);
+            $user = \Illuminate\Support\Facades\Auth::user()->name ?? 'Sistem';
+            \App\Models\ActivityLog::log('insert_itemlog_'.$model->tipe, 'Inventory', 'warning', "{$user} mencatat {count} stok barang {$tipeStr}");
         });
     }
 }
