@@ -94,7 +94,7 @@ class AbsensiController extends Controller
             ->count();
 
         // --- Doughnut Chart (Berdasarkan Filter) ---
-        $userCountForDoughnut = $userId ? 1 : $totalKaryawan;
+        $userCountForDoughnut = $userId ? 1 : \App\Models\User::whereNotNull('fingerspot_id')->where('fingerspot_id', '!=', '')->count();
         $totalDays = \Carbon\Carbon::parse($start)->diffInDays(\Carbon\Carbon::parse($end)) + 1;
         $totalExpected = $totalDays * $userCountForDoughnut;
 
