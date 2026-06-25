@@ -369,7 +369,7 @@
                 labels: ['Hadir', 'Telat', 'Absen'],
                 datasets: [{
                     data: [{{ $hadir }}, {{ $telat }}, {{ $absen }}],
-                    backgroundColor: ['#198754', '#ffc107', '#dc3545'],
+                    backgroundColor: ['#22c55e', '#eab308', '#ef4444'], // Tailwind Green, Yellow, Red
                     borderWidth: 0,
                     hoverOffset: 4
                 }]
