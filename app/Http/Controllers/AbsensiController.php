@@ -94,11 +94,16 @@ class AbsensiController extends Controller
             ->count();
 
         // --- Doughnut Chart (Berdasarkan Filter) ---
-        $userCountForDoughnut = $userId ? 1 : \App\Models\User::whereNotNull('fingerspot_id')->where('fingerspot_id', '!=', '')->count();
-        $totalDays = \Carbon\Carbon::parse($start)->diffInDays(\Carbon\Carbon::parse($end)) + 1;
+        $usersWithFingerspot = \App\Models\User::whereNotNull('fingerspot_id')->where('fingerspot_id', '!=', '')->get();
+        if ($userId) {
+            $usersWithFingerspot = $usersWithFingerspot->where('id', $userId);
+        }
+        
+        $userCountForDoughnut = $usersWithFingerspot->count();
+        $totalDays = max(1, \Carbon\Carbon::parse($start)->diffInDays(\Carbon\Carbon::parse($end)) + 1);
         $totalExpected = $totalDays * $userCountForDoughnut;
 
-        $queryChartAbsen = AbsensiLog::where('tanggal', '>=', $start)
+        $queryChartAbsen = AbsensiLog::with('user')->where('tanggal', '>=', $start)
             ->where('tanggal', '<=', $end)
             ->whereRaw('LOWER(tipe) = ?', ['in']);
         if ($userId) $queryChartAbsen->where('user_id', $userId);
@@ -107,23 +112,55 @@ class AbsensiController extends Controller
             return $item->user_id . $item->tanggal;
         });
 
-        $doughnutHadir = 0;
-        $doughnutTelat = 0;
+        $listDoughnutHadir = collect();
+        $listDoughnutTelat = collect();
+
         foreach ($chartAbsen as $log) {
             if ($log->jam <= $lateThreshold . ':00') {
-                $doughnutHadir++;
+                $listDoughnutHadir->push($log);
             } else {
-                $doughnutTelat++;
+                $listDoughnutTelat->push($log);
             }
         }
+        
+        $doughnutHadir = $listDoughnutHadir->count();
+        $doughnutTelat = $listDoughnutTelat->count();
 
         $queryChartIzin = Perizinan::where('tanggal', '>=', $start)
             ->where('tanggal', '<=', $end)
             ->where('status', 'approved');
         if ($userId) $queryChartIzin->where('user_id', $userId);
-        $doughnutIzin = $queryChartIzin->count();
+        
+        $chartIzin = $queryChartIzin->get();
+        $doughnutIzin = $chartIzin->count();
 
-        $doughnutAbsen = max(0, $totalExpected - $doughnutHadir - $doughnutTelat - $doughnutIzin);
+        // Calculate Absen Detail
+        $listDoughnutAbsen = collect();
+        $currentDate = \Carbon\Carbon::parse($start);
+        $endDate = \Carbon\Carbon::parse($end);
+
+        while ($currentDate <= $endDate) {
+            $dateStr = $currentDate->format('Y-m-d');
+            
+            $logsToday = $chartAbsen->where('tanggal', $dateStr);
+            $izinToday = $chartIzin->where('tanggal', $dateStr);
+
+            foreach ($usersWithFingerspot as $u) {
+                $hasLog = $logsToday->where('user_id', $u->id)->isNotEmpty();
+                $hasIzin = $izinToday->where('user_id', $u->id)->isNotEmpty();
+
+                if (!$hasLog && !$hasIzin) {
+                    $listDoughnutAbsen->push((object)[
+                        'user' => $u,
+                        'tanggal' => $dateStr,
+                        'keterangan' => 'Tanpa Keterangan'
+                    ]);
+                }
+            }
+            $currentDate->addDay();
+        }
+        
+        $doughnutAbsen = $listDoughnutAbsen->count();
 
         // --- Line Chart (6 Bulan Terakhir - Dikunci) ---
         $sixMonthsAgo = \Carbon\Carbon::now()->subMonths(5)->startOfMonth();
@@ -163,6 +200,7 @@ class AbsensiController extends Controller
             'absensi', 'users', 'perizinans', 'holidays', 'start', 'end', 'userId', 'lateThreshold',
             'totalKaryawan', 'hadirHariIni', 'telatHariIni', 'izinHariIni',
             'doughnutHadir', 'doughnutTelat', 'doughnutAbsen',
+            'listDoughnutHadir', 'listDoughnutTelat', 'listDoughnutAbsen',
             'lineLabels', 'lineHadir', 'lineTelat'
         ));
     }

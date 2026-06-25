@@ -173,16 +173,22 @@
                         </div>
                         <div class="row text-center g-2 mt-3 pt-2">
                             <div class="col-4">
-                                <span class="d-block fw-bold fs-5 text-success">{{ $doughnutHadir }}</span>
-                                <span class="d-block text-muted" style="font-size: 11px;">Hadir</span>
-                            </div>
-                            <div class="col-4 border-start border-end">
-                                <span class="d-block fw-bold fs-5 text-warning">{{ $doughnutTelat }}</span>
-                                <span class="d-block text-muted" style="font-size: 11px;">Telat</span>
+                                <a href="#" data-bs-toggle="modal" data-bs-target="#modalDoughnutHadir" class="text-decoration-none d-block btn btn-light btn-sm px-0 rounded-3">
+                                    <span class="d-block fw-bold fs-5 text-success">{{ $doughnutHadir }}</span>
+                                    <span class="d-block text-muted" style="font-size: 11px;">Hadir</span>
+                                </a>
                             </div>
                             <div class="col-4">
-                                <span class="d-block fw-bold fs-5 text-danger">{{ $doughnutAbsen }}</span>
-                                <span class="d-block text-muted" style="font-size: 11px;">Absen</span>
+                                <a href="#" data-bs-toggle="modal" data-bs-target="#modalDoughnutTelat" class="text-decoration-none d-block btn btn-light btn-sm px-0 rounded-3">
+                                    <span class="d-block fw-bold fs-5 text-warning">{{ $doughnutTelat }}</span>
+                                    <span class="d-block text-muted" style="font-size: 11px;">Telat</span>
+                                </a>
+                            </div>
+                            <div class="col-4">
+                                <a href="#" data-bs-toggle="modal" data-bs-target="#modalDoughnutAbsen" class="text-decoration-none d-block btn btn-light btn-sm px-0 rounded-3">
+                                    <span class="d-block fw-bold fs-5 text-danger">{{ $doughnutAbsen }}</span>
+                                    <span class="d-block text-muted" style="font-size: 11px;">Absen</span>
+                                </a>
                             </div>
                         </div>
                     </div>
@@ -727,6 +733,126 @@
                 </div>
             </div>
         </form>
+    </div>
+</div>
+
+{{-- Modal Detail Doughnut Hadir --}}
+<div class="modal fade" id="modalDoughnutHadir" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-lg modal-dialog-centered modal-dialog-scrollable">
+        <div class="modal-content card-round">
+            <div class="modal-header border-0 pb-0">
+                <h5 class="modal-title fw-bold text-success"><i class="fas fa-check-circle me-2"></i>Detail Kehadiran Tepat Waktu</h5>
+                <button type="button" class="btn-close shadow-none" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <div class="table-responsive">
+                    <table class="table table-hover mb-0">
+                        <thead>
+                            <tr>
+                                <th>Karyawan</th>
+                                <th>Role</th>
+                                <th>Tanggal</th>
+                                <th>Jam Masuk</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @forelse($listDoughnutHadir as $log)
+                                <tr>
+                                    <td>
+                                        <span class="fw-bold">{{ $log->user->nama_lengkap ?? $log->user->name ?? 'Unknown' }}</span>
+                                    </td>
+                                    <td><span class="badge badge-primary">{{ $log->user->role ?? '-' }}</span></td>
+                                    <td>{{ \Carbon\Carbon::parse($log->tanggal)->translatedFormat('d M Y') }}</td>
+                                    <td><span class="text-success fw-bold">{{ substr($log->jam, 0, 5) }}</span></td>
+                                </tr>
+                            @empty
+                                <tr><td colspan="4" class="text-center text-muted">Tidak ada data.</td></tr>
+                            @endforelse
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+{{-- Modal Detail Doughnut Telat --}}
+<div class="modal fade" id="modalDoughnutTelat" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-lg modal-dialog-centered modal-dialog-scrollable">
+        <div class="modal-content card-round">
+            <div class="modal-header border-0 pb-0">
+                <h5 class="modal-title fw-bold text-warning"><i class="fas fa-exclamation-triangle me-2"></i>Detail Keterlambatan</h5>
+                <button type="button" class="btn-close shadow-none" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <div class="table-responsive">
+                    <table class="table table-hover mb-0">
+                        <thead>
+                            <tr>
+                                <th>Karyawan</th>
+                                <th>Role</th>
+                                <th>Tanggal</th>
+                                <th>Jam Masuk</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @forelse($listDoughnutTelat as $log)
+                                <tr>
+                                    <td>
+                                        <span class="fw-bold">{{ $log->user->nama_lengkap ?? $log->user->name ?? 'Unknown' }}</span>
+                                    </td>
+                                    <td><span class="badge badge-primary">{{ $log->user->role ?? '-' }}</span></td>
+                                    <td>{{ \Carbon\Carbon::parse($log->tanggal)->translatedFormat('d M Y') }}</td>
+                                    <td><span class="text-danger fw-bold">{{ substr($log->jam, 0, 5) }}</span></td>
+                                </tr>
+                            @empty
+                                <tr><td colspan="4" class="text-center text-muted">Tidak ada data.</td></tr>
+                            @endforelse
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+{{-- Modal Detail Doughnut Absen --}}
+<div class="modal fade" id="modalDoughnutAbsen" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-lg modal-dialog-centered modal-dialog-scrollable">
+        <div class="modal-content card-round">
+            <div class="modal-header border-0 pb-0">
+                <h5 class="modal-title fw-bold text-danger"><i class="fas fa-times-circle me-2"></i>Detail Absen (Tanpa Keterangan)</h5>
+                <button type="button" class="btn-close shadow-none" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <div class="table-responsive">
+                    <table class="table table-hover mb-0">
+                        <thead>
+                            <tr>
+                                <th>Karyawan</th>
+                                <th>Role</th>
+                                <th>Tanggal</th>
+                                <th>Keterangan</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @forelse($listDoughnutAbsen as $log)
+                                <tr>
+                                    <td>
+                                        <span class="fw-bold">{{ $log->user->nama_lengkap ?? $log->user->name ?? 'Unknown' }}</span>
+                                    </td>
+                                    <td><span class="badge badge-primary">{{ $log->user->role ?? '-' }}</span></td>
+                                    <td>{{ \Carbon\Carbon::parse($log->tanggal)->translatedFormat('d M Y') }}</td>
+                                    <td><span class="text-danger fw-bold">{{ $log->keterangan }}</span></td>
+                                </tr>
+                            @empty
+                                <tr><td colspan="4" class="text-center text-muted">Tidak ada data.</td></tr>
+                            @endforelse
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
     </div>
 </div>
 
