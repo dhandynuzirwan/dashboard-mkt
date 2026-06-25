@@ -61,27 +61,27 @@
                     } elseif ($userRole == 'spv' || $userRole == 'spv_marketing') {
                         $quickAccess = [
                             ['title' => 'Dashboard Progress', 'icon' => 'fas fa-chart-pie', 'color' => 'primary', 'route' => route('dashboard.progress')],
-                            ['title' => 'Pipeline Marketing', 'icon' => 'fas fa-funnel-dollar', 'color' => 'success', 'route' => route('pipeline')],
+                            ['title' => 'Pipeline Marketing', 'icon' => 'fas fa-filter', 'color' => 'success', 'route' => route('pipeline')],
                             ['title' => 'Revenue', 'icon' => 'fas fa-money-bill-wave', 'color' => 'warning', 'route' => route('revenue')],
-                            ['title' => 'Registrasi Peserta', 'icon' => 'fas fa-users-cog', 'color' => 'info', 'route' => route('operational.data-pendaftaran')],
+                            ['title' => 'Registrasi Peserta', 'icon' => 'fas fa-users', 'color' => 'info', 'route' => route('operational.data-pendaftaran')],
                         ];
                     } elseif (in_array($userRole, ['admin', 'rnd', 'digitalmarketing'])) {
                         $quickAccess = [
                             ['title' => 'Dashboard Progress', 'icon' => 'fas fa-chart-pie', 'color' => 'primary', 'route' => route('dashboard.progress')],
                             ['title' => 'Database Masuk', 'icon' => 'fas fa-database', 'color' => 'success', 'route' => route('data-masuk.index')],
-                            ['title' => 'Pipeline Marketing', 'icon' => 'fas fa-funnel-dollar', 'color' => 'warning', 'route' => route('pipeline')],
-                            ['title' => 'Master Pelatihan', 'icon' => 'fas fa-graduation-cap', 'color' => 'info', 'route' => route('master-training.index')],
+                            ['title' => 'Pipeline Marketing', 'icon' => 'fas fa-filter', 'color' => 'warning', 'route' => route('pipeline')],
+                            ['title' => 'Master Pelatihan', 'icon' => 'fas fa-book', 'color' => 'info', 'route' => route('master-training.index')],
                         ];
                     } elseif (in_array($userRole, ['operasional', 'graphic', 'team_leader', 'web_dev'])) {
                         $quickAccess = [
                             ['title' => 'Aktivitas Harian', 'icon' => 'fas fa-tasks', 'color' => 'primary', 'route' => route('operational.aktivitas-harian')],
-                            ['title' => 'Registrasi Peserta', 'icon' => 'fas fa-users-cog', 'color' => 'success', 'route' => route('operational.data-pendaftaran')],
-                            ['title' => 'Pelatihan Berjalan', 'icon' => 'fas fa-chalkboard-teacher', 'color' => 'warning', 'route' => route('monitoring.pelatihan')],
+                            ['title' => 'Registrasi Peserta', 'icon' => 'fas fa-users', 'color' => 'success', 'route' => route('operational.data-pendaftaran')],
+                            ['title' => 'Pelatihan Berjalan', 'icon' => 'fas fa-desktop', 'color' => 'warning', 'route' => route('monitoring.pelatihan')],
                             ['title' => 'Riwayat Pelatihan', 'icon' => 'fas fa-history', 'color' => 'info', 'route' => route('riwayat.pelatihan')],
                         ];
                     } elseif ($userRole == 'marketing') {
                         $quickAccess = [
-                            ['title' => 'Pipeline Marketing', 'icon' => 'fas fa-funnel-dollar', 'color' => 'primary', 'route' => route('pipeline')],
+                            ['title' => 'Pipeline Marketing', 'icon' => 'fas fa-filter', 'color' => 'primary', 'route' => route('pipeline')],
                             ['title' => 'Simulasi Gaji', 'icon' => 'fas fa-calculator', 'color' => 'success', 'route' => route('simulasi-gaji')],
                             ['title' => 'Revenue', 'icon' => 'fas fa-money-bill-wave', 'color' => 'warning', 'route' => route('revenue')],
                             ['title' => 'Data KPI', 'icon' => 'fas fa-chart-line', 'color' => 'info', 'route' => route('data-kpi')],
@@ -127,7 +127,7 @@
                                 <div class="d-flex mb-3 pb-3 border-bottom">
                                     <div class="flex-shrink-0">
                                         <div class="bg-success-subtle text-success rounded p-2 text-center d-flex align-items-center justify-content-center" style="width: 50px; height: 50px;">
-                                            <i class="fas fa-mosque fs-4"></i>
+                                            <i class="fas fa-calendar-day fs-4"></i>
                                         </div>
                                     </div>
                                     <div class="flex-grow-1 ms-3">
@@ -170,7 +170,7 @@
                         {{-- 4. Aktivitas Terbaru --}}
                         <div class="card border-0 shadow-sm rounded-4 mb-4 fade-in" style="animation-delay: 0.4s; height: 100%;">
                             <div class="card-header bg-white border-0 pt-4 pb-0 px-4">
-                                <h5 class="fw-bold mb-0"><i class="fas fa-stream text-info me-2"></i> Aktivitas Feed</h5>
+                                <h5 class="fw-bold mb-0"><i class="fas fa-list text-info me-2"></i> Aktivitas Feed</h5>
                             </div>
                             <div class="card-body p-4 pt-3">
                                 <ul class="list-unstyled mb-0 position-relative">
@@ -339,7 +339,7 @@
     .calendar-day { 
         width: 14.28%; padding: 6px 0; border-radius: 6px; cursor: pointer; position: relative;
     }
-    .calendar-day:hover:not(.empty) { background-color: #f8f9fa; }
+    .calendar-day:hover:not(.empty) { background-color: #eff6ff; color: #0d6efd; font-weight: 600; }
     .calendar-day.today { background-color: #0d6efd; color: white; font-weight: bold; }
     .calendar-dot { 
         position: absolute; bottom: 2px; left: 50%; transform: translateX(-50%);
