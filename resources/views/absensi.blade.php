@@ -746,6 +746,7 @@
     updateClock();
 </script>
 
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <script>
     document.addEventListener("DOMContentLoaded", function() {
         const urlParams = new URLSearchParams(window.location.search);
@@ -836,11 +837,11 @@
         new Chart(lineCtx, {
             type: 'line',
             data: {
-                labels: {!! json_encode($lineLabels) !!}.reverse(),
+                labels: {!! json_encode($lineLabels) !!},
                 datasets: [
                     {
                         label: 'Hadir Tepat Waktu',
-                        data: {!! json_encode($lineHadir) !!}.reverse(),
+                        data: {!! json_encode($lineHadir) !!},
                         borderColor: '#22c55e',
                         backgroundColor: 'rgba(34, 197, 94, 0.1)',
                         borderWidth: 2,
@@ -849,7 +850,7 @@
                     },
                     {
                         label: 'Telat',
-                        data: {!! json_encode($lineTelat) !!}.reverse(),
+                        data: {!! json_encode($lineTelat) !!},
                         borderColor: '#eab308',
                         backgroundColor: 'rgba(234, 179, 8, 0.1)',
                         borderWidth: 2,
