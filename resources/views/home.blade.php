@@ -149,7 +149,7 @@
                                             </div>
                                         </div>
                                         <div class="flex-grow-1 ms-3">
-                                            <div class="d-flex justify-content-between align-items-center mb-1">
+                                            <div class="mb-1">
                                                 <span class="badge badge-{{ $color }} rounded-pill px-2" style="font-size: 10px;">{!! $badgeText !!}</span>
                                                 <small class="text-muted" style="font-size: 11px;"><i class="fas fa-clock me-1"></i>{{ $p->tanggal_event ? \Carbon\Carbon::parse($p->tanggal_event)->format('d M Y') : $p->created_at->diffForHumans() }}</small>
                                             </div>
