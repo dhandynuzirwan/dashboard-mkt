@@ -21,3 +21,4 @@ class Penggajian extends Model
             \App\Models\ActivityLog::log('insert_gaji', 'HRD', 'success', "{$user} menerbitkan slip gaji untuk {count} pegawai");
         });
     }
+}
