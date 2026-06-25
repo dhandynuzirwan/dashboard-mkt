@@ -49,7 +49,13 @@ class ProfileController extends Controller
                 Storage::disk('public')->delete($user->deal_sound_path);
             }
 
-            $soundPath = $request->file('deal_sound')->store('deal_sounds', 'public');
+            $file = $request->file('deal_sound');
+            $originalName = $file->getClientOriginalName();
+            // Bersihkan nama file dari spasi atau karakter aneh
+            $safeName = preg_replace('/[^A-Za-z0-9\-\.]/', '_', $originalName);
+            $filename = time() . '_' . $safeName;
+            
+            $soundPath = $file->storeAs('deal_sounds', $filename, 'public');
             $dataToUpdate['deal_sound_path'] = $soundPath;
         }
 

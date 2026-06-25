@@ -104,7 +104,7 @@
                                 @if($user->deal_sound_path)
                                     <br>
                                     <span class="text-success fw-bold d-inline-block mt-1">
-                                        <i class="fas fa-check-circle"></i> Tersimpan: {{ basename($user->deal_sound_path) }}
+                                        <i class="fas fa-check-circle"></i> Tersimpan: {{ preg_replace('/^[0-9]+_/', '', basename($user->deal_sound_path)) }}
                                     </span>
                                 @endif
                             </small>
