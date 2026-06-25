@@ -149,7 +149,7 @@
                                             </div>
                                         </div>
                                         <div class="flex-grow-1 ms-3">
-                                            <span class="badge bg-{{ $color }} {{ $color == 'danger' ? '' : 'bg-opacity-10 text-'.$color.' border border-'.$color.' border-opacity-25' }} rounded-pill px-2 mb-1" style="font-size: 10px;">{!! $badgeText !!}</span>
+                                            <span class="badge badge-{{ $color }} rounded-pill px-2 mb-1" style="font-size: 10px;">{!! $badgeText !!}</span>
                                             <h6 class="fw-bold mb-1">{{ $p->judul }}</h6>
                                             <p class="text-muted small mb-0">{{ $p->deskripsi }}</p>
                                         </div>
