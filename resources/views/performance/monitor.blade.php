@@ -206,7 +206,7 @@
                                         <span class="fs-4 fw-bold text-muted">Achievement</span>
                                         <span class="fw-black ${achColor}" style="font-size: 2.8rem; line-height: 1;">${item.prosentase}%</span>
                                     </div>
-                                    <div class="progress mb-4 bg-secondary bg-opacity-10" style="height: 24px; border-radius: 30px; box-shadow: inset 0 2px 4px rgba(0,0,0,0.05);">
+                                    <div class="progress mb-4" style="background-color: #e9ecef; height: 24px; border-radius: 30px; box-shadow: inset 0 2px 4px rgba(0,0,0,0.05);">
                                         <div class="progress-bar ${barColor} progress-fill fw-bold fs-5" style="width: ${item.prosentase > 100 ? 100 : item.prosentase}%; border-radius: 30px;"></div>
                                     </div>
                                     
