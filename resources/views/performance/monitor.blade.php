@@ -3,7 +3,7 @@
 @section('content')
 <div class="container-fluid py-2 tv-monitor-mode bg-light" id="monitor-container" style="min-height: 100vh; min-width: 1600px; overflow-x: hidden;">
     {{-- HEADER --}}
-    <div class="d-flex justify-content-between align-items-center mb-2 fade-in px-2">
+    <div class="d-flex justify-content-between align-items-center mb-2 fade-in px-2" id="monitor-header">
         <div>
             <div class="d-inline-flex align-items-center bg-primary-subtle text-primary px-3 py-1 rounded-pill mb-1 shadow-sm border border-primary border-opacity-10">
                 <i class="fas fa-satellite-dish fs-6 me-2 pulse-anim"></i>
@@ -78,6 +78,28 @@
     .bg-primary-subtle { background-color: #eff6ff !important; }
     .bg-success-subtle { background-color: #d1fae5 !important; }
     .bg-info-subtle { background-color: #e0f2fe !important; }
+
+    /* 🔥 SUPER FULLSCREEN OVERRIDES 🔥 */
+    body.fullscreen-active .wrapper,
+    body.fullscreen-active .main-panel,
+    body.fullscreen-active .container,
+    body.fullscreen-active .page-inner,
+    body.fullscreen-active #monitor-container {
+        margin-top: 0 !important;
+        padding-top: 0 !important;
+        margin-bottom: 0 !important;
+        padding-bottom: 0 !important;
+        padding-left: 0 !important;
+        padding-right: 0 !important;
+        width: 100% !important;
+        max-width: 100% !important;
+        left: 0 !important;
+    }
+
+    body.fullscreen-active #monitor-container {
+        padding: 0 1rem !important; /* Keep side padding for cards so they aren't completely edge-to-edge */
+    }
+
 </style>
 
 <script>
@@ -139,13 +161,11 @@
                 let achColor = item.prosentase >= 100 ? 'text-success' : (item.prosentase >= 80 ? 'text-primary' : 'text-dark');
                 let barColor = 'bg-success'; 
 
-                // 🔥 IDE TERBAIK: 2 KOLOM RAKSASA (col-6) 🔥
                 cardsHtml += `
                     <div class="col-6">
                         <div class="card h-100 wide-marketing-card shadow-sm hover-lift p-2">
                             <div class="d-flex align-items-center justify-content-between h-100">
                                 
-                                <!-- KIRI: Rank & Nama (Lebih Ringkas tanpa Foto) -->
                                 <div class="d-flex align-items-center ps-1" style="width: 33%;">
                                     <div class="rank-badge-wide ${badgeClass} me-2">${rankIcon}</div>
                                     <div style="min-width: 0;">
@@ -157,13 +177,11 @@
                                     </div>
                                 </div>
                                 
-                                <!-- TENGAH: PENAWARAN (Angka Raksasa) -->
                                 <div class="text-end px-3 dashed-divider" style="width: 30%;">
                                     <div class="text-muted text-uppercase fw-bold mb-0" style="font-size: 0.8rem; letter-spacing: 0.5px;">Penawaran</div>
                                     <div class="fw-black text-primary text-truncate" style="font-size: 1.8rem; letter-spacing: -0.5px;">${formatRp(valPenawaran)}</div>
                                 </div>
 
-                                <!-- KANAN: DEAL (Angka Paling Raksasa) -->
                                 <div class="text-end px-3 dashed-divider position-relative" style="width: 37%;">
                                     <div class="d-flex justify-content-end align-items-center mb-0 gap-2">
                                         <span class="text-muted text-uppercase fw-bold" style="font-size: 0.8rem; letter-spacing: 0.5px;">Deal Omset</span>
@@ -171,7 +189,6 @@
                                     </div>
                                     <div class="fw-black text-success text-truncate" style="font-size: 2.2rem; letter-spacing: -1px;">${formatRp(valDeal)}</div>
                                     
-                                    <!-- Progress bar numpang di bawah Deal biar compact -->
                                     <div class="progress mt-1" style="background-color: #e9ecef; height: 8px; border-radius: 8px;">
                                         <div class="progress-bar ${barColor}" style="width: ${item.prosentase > 100 ? 100 : item.prosentase}%; border-radius: 8px;"></div>
                                     </div>
@@ -186,7 +203,6 @@
             let avgKpi = data.length > 0 ? (grandKpiTotal / data.length) : 0;
             let grandAch = grandTarget > 0 ? (grandDeal / grandTarget) * 100 : 0;
 
-            // Stat Cards (Tetap 4 Kolom)
             statContainer.innerHTML = `
                 <div class="col-3">
                     <div class="card stat-card-modern shadow-sm h-100 hover-lift border-0">
@@ -266,65 +282,16 @@
 
     document.addEventListener('fullscreenchange', function() {
         const sidebar = document.querySelector('.sidebar');
-        const mainPanel = document.querySelector('.main-panel');
         const navbar = document.querySelector('.main-header'); 
-        const pageInner = document.querySelector('.page-inner');
-        const mainContainer = document.querySelector('.main-panel > .container');
 
         if (document.fullscreenElement) {
+            document.body.classList.add('fullscreen-active');
             if (sidebar) sidebar.style.display = 'none';
             if (navbar) navbar.style.display = 'none';
-            
-            if (mainPanel) {
-                mainPanel.style.width = '100%';
-                mainPanel.style.left = '0';
-                mainPanel.style.paddingTop = '0';
-                mainPanel.style.paddingBottom = '0'; 
-            }
-            
-            if (pageInner) {
-                pageInner.classList.remove('mt-4');
-                pageInner.style.padding = '0';
-                pageInner.style.margin = '0';
-            }
-            
-            if (mainContainer) {
-                mainContainer.style.padding = '0';
-                mainContainer.style.maxWidth = '100%';
-            }
-            
-            const container = document.getElementById('monitor-container');
-            if (container) {
-                container.classList.remove('py-2');
-                container.classList.add('py-0');
-            }
         } else {
+            document.body.classList.remove('fullscreen-active');
             if (sidebar) sidebar.style.display = '';
             if (navbar) navbar.style.display = '';
-            
-            if (mainPanel) {
-                mainPanel.style.width = '';
-                mainPanel.style.left = '';
-                mainPanel.style.paddingTop = '';
-                mainPanel.style.paddingBottom = '';
-            }
-            
-            const container = document.getElementById('monitor-container');
-            if (container) {
-                container.classList.remove('py-0');
-                container.classList.add('py-2');
-            }
-            
-            if (pageInner) {
-                pageInner.classList.add('mt-4');
-                pageInner.style.padding = '';
-                pageInner.style.margin = '';
-            }
-            
-            if (mainContainer) {
-                mainContainer.style.padding = '';
-                mainContainer.style.maxWidth = '';
-            }
         }
     });
 </script>
