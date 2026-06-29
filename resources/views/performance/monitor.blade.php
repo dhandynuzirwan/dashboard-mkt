@@ -158,7 +158,7 @@
                 else if (rankNumber === 2) { badgeClass = 'rank-2-badge'; avatarClass = 'avatar-silver'; rankIcon = '<i class="fas fa-medal"></i>'; }
                 else if (rankNumber === 3) { badgeClass = 'rank-3-badge'; avatarClass = 'avatar-bronze'; rankIcon = '<i class="fas fa-medal"></i>'; }
 
-                let barColor = item.prosentase >= 80 ? 'bg-success' : (item.prosentase >= 50 ? 'bg-warning' : 'bg-danger');
+                let barColor = 'bg-success'; // Permintaan khusus: Progress bar selalu hijau
                 let achColor = item.prosentase >= 100 ? 'text-success' : (item.prosentase >= 80 ? 'text-primary' : 'text-dark');
                 
                 // Avatar size increased for 40% zoom
@@ -178,7 +178,7 @@
                                 </div>
                                 
                                 <div class="mb-4">
-                                    <h2 class="fw-black text-dark mb-2 text-truncate px-2" style="font-size: 2.3rem; letter-spacing: -1px;" title="${item.nama_lengkap}">${item.nama_lengkap}</h2>
+                                    <h2 class="fw-black text-dark mb-2 text-truncate px-2" style="font-size: 3.5rem; letter-spacing: -1px; line-height: 1.1;" title="${item.nama_lengkap}">${item.nama_lengkap}</h2>
                                     <span class="badge bg-primary-subtle text-primary border border-primary border-opacity-25 px-4 py-2 rounded-pill fw-bolder" style="font-size: 1.2rem;">
                                         <i class="fas fa-id-badge me-1"></i> ${item.nama}
                                     </span>
@@ -235,6 +235,7 @@
                             <div>
                                 <p class="text-muted text-uppercase fw-bold mb-2" style="font-size: 1.3rem; letter-spacing: 1px;">Target Keseluruhan</p>
                                 <h3 class="fw-black text-dark mb-0" style="font-size: 2.8rem; letter-spacing: -1px;">${formatRp(grandTarget)}</h3>
+                                <p class="text-muted fw-bold mt-2 mb-0" style="font-size: 1rem;"><i class="fas fa-info-circle me-1"></i> Beban target agregat tim</p>
                             </div>
                         </div>
                     </div>
@@ -248,6 +249,7 @@
                             <div>
                                 <p class="text-muted text-uppercase fw-bold mb-2" style="font-size: 1.3rem; letter-spacing: 1px;">Total Penawaran</p>
                                 <h3 class="fw-black text-primary mb-0" style="font-size: 2.8rem; letter-spacing: -1px;">${formatRp(grandPenawaran)}</h3>
+                                <p class="text-primary fw-bold mt-2 mb-0" style="font-size: 1rem;"><i class="fas fa-info-circle me-1"></i> Potensi nilai pipeline</p>
                             </div>
                         </div>
                     </div>
@@ -277,6 +279,7 @@
                             <div>
                                 <p class="text-muted text-uppercase fw-bold mb-2" style="font-size: 1.3rem; letter-spacing: 1px;">Rata-Rata KPI Tim</p>
                                 <h3 class="fw-black text-info mb-0" style="font-size: 3.5rem; letter-spacing: -1px;">${avgKpi.toFixed(2)}%</h3>
+                                <p class="text-info fw-bold mt-2 mb-0" style="font-size: 1rem;"><i class="fas fa-info-circle me-1"></i> Kesehatan performa gabungan</p>
                             </div>
                         </div>
                     </div>
