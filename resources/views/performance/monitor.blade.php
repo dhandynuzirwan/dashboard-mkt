@@ -184,19 +184,19 @@
                                     </span>
                                 </div>
                                 
-                                <div class="bg-light rounded-4 p-4 mb-4 border border-light">
-                                    <div class="mb-3 pb-3 border-bottom border-secondary border-opacity-10">
-                                        <div class="text-muted text-uppercase fw-bold mb-1" style="font-size: 1.1rem; letter-spacing: 1px;">Target Omset</div>
-                                        <div class="fw-black text-secondary" style="font-size: 1.8rem;">${formatRp(valTarget)}</div>
+                                <div class="bg-light rounded-4 p-3 mb-4 border border-light">
+                                    <div class="mb-3 pb-2 border-bottom border-secondary border-opacity-10">
+                                        <div class="text-muted text-uppercase fw-bold mb-1" style="font-size: 0.9rem; letter-spacing: 1px;">Target Omset</div>
+                                        <div class="fw-bold text-secondary" style="font-size: 1.2rem;">${formatRp(valTarget)}</div>
                                     </div>
                                     <div class="row g-2">
                                         <div class="col-6 border-end border-secondary border-opacity-10">
-                                            <div class="text-muted text-uppercase fw-bold mb-1" style="font-size: 1rem; letter-spacing: 1px;">Penawaran</div>
-                                            <div class="fw-bolder text-primary" style="font-size: 1.3rem;">${formatRp(valPenawaran)}</div>
+                                            <div class="text-muted text-uppercase fw-bold mb-1" style="font-size: 1.1rem; letter-spacing: 1px;">Penawaran</div>
+                                            <div class="fw-black text-primary" style="font-size: 1.8rem; letter-spacing: -1px;">${formatRp(valPenawaran)}</div>
                                         </div>
                                         <div class="col-6">
-                                            <div class="text-muted text-uppercase fw-bold mb-1" style="font-size: 1rem; letter-spacing: 1px;">Deal</div>
-                                            <div class="fw-black text-success" style="font-size: 1.4rem;">${formatRp(valDeal)}</div>
+                                            <div class="text-muted text-uppercase fw-bold mb-1" style="font-size: 1.1rem; letter-spacing: 1px;">Deal</div>
+                                            <div class="fw-black text-success" style="font-size: 2rem; letter-spacing: -1px;">${formatRp(valDeal)}</div>
                                         </div>
                                     </div>
                                 </div>
