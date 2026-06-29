@@ -1,46 +1,46 @@
 @extends('layouts.app')
 
 @section('content')
-<div class="container-fluid py-3 tv-monitor-mode bg-light" id="monitor-container" style="min-height: 100vh; min-width: 1600px; overflow-x: hidden;">
+<div class="container-fluid py-2 tv-monitor-mode bg-light" id="monitor-container" style="min-height: 100vh; min-width: 1600px; overflow-x: hidden;">
     {{-- HEADER --}}
-    <div class="d-flex justify-content-between align-items-center mb-4 fade-in px-2">
+    <div class="d-flex justify-content-between align-items-center mb-2 fade-in px-2">
         <div>
-            <div class="d-inline-flex align-items-center bg-primary-subtle text-primary px-3 py-1 rounded-pill mb-2 shadow-sm border border-primary border-opacity-10">
-                <i class="fas fa-satellite-dish fs-5 me-2 pulse-anim"></i>
-                <span class="fw-bold fs-5" style="letter-spacing: 1.5px;">LIVE TRACKING SYSTEM</span>
+            <div class="d-inline-flex align-items-center bg-primary-subtle text-primary px-3 py-1 rounded-pill mb-1 shadow-sm border border-primary border-opacity-10">
+                <i class="fas fa-satellite-dish fs-6 me-2 pulse-anim"></i>
+                <span class="fw-bold fs-6" style="letter-spacing: 1.5px;">LIVE TRACKING SYSTEM</span>
             </div>
-            <h1 class="fw-black text-dark mb-0 text-uppercase" id="monitor-title" style="font-size: 3rem; letter-spacing: -1px;">
+            <h2 class="fw-black text-dark mb-0 text-uppercase" id="monitor-title" style="font-size: 2.4rem; letter-spacing: -1px;">
                 MONITORING MARKETING <span class="text-primary">•</span> <span id="monitor-month">MEMUAT...</span>
-            </h1>
+            </h2>
         </div>
         <div class="d-flex gap-3 align-items-center">
-            <div class="d-flex align-items-center bg-white px-4 py-2 rounded-pill shadow border-0">
-                <div class="spinner-grow text-success me-3" role="status" style="width: 1.5rem; height: 1.5rem;"></div>
-                <span class="fw-bold text-dark fs-4">Update: <span id="last-update" class="text-success">Memuat...</span></span>
+            <div class="d-flex align-items-center bg-white px-3 py-2 rounded-pill shadow border-0">
+                <div class="spinner-grow text-success me-2" role="status" style="width: 1rem; height: 1rem;"></div>
+                <span class="fw-bold text-dark fs-5">Update: <span id="last-update" class="text-success">Memuat...</span></span>
             </div>
-            <button onclick="toggleFullScreen()" class="btn btn-dark btn-round shadow-lg px-4 py-2 fw-bold hover-lift fs-4">
+            <button onclick="toggleFullScreen()" class="btn btn-dark btn-round shadow-lg px-3 py-2 fw-bold hover-lift fs-5">
                 <i class="fas fa-expand me-2"></i> Fullscreen
             </button>
         </div>
     </div>
 
     {{-- STAT CARDS (Atas) --}}
-    <div class="row g-3 mb-4 fade-in px-2" id="stat-cards-container">
-        <div class="col-12 text-center py-5">
-            <div class="spinner-border text-primary mb-3" style="width: 4rem; height: 4rem;" role="status"></div>
-            <h3 class="text-muted fw-bold">Sinkronisasi Server Data...</h3>
+    <div class="row g-2 mb-2 fade-in px-2" id="stat-cards-container">
+        <div class="col-12 text-center py-3">
+            <div class="spinner-border text-primary mb-2" style="width: 3rem; height: 3rem;" role="status"></div>
+            <h4 class="text-muted fw-bold">Sinkronisasi Server Data...</h4>
         </div>
     </div>
 
     {{-- LIST MARKETING (2 Kolom Lebar) --}}
-    <div class="row g-3 fade-in px-2" id="marketing-cards-container">
+    <div class="row g-2 fade-in px-2" id="marketing-cards-container">
         <!-- Injected by JS -->
     </div>
 </div>
 
 <style>
     /* TV Monitor Mode - Ultra Wide */
-    .tv-monitor-mode { padding: 1.5rem 2rem !important; }
+    .tv-monitor-mode { padding: 1rem 1.5rem !important; }
     
     .fade-in { animation: fadeIn 0.8s ease-out; }
     @keyframes fadeIn { from { opacity: 0; transform: translateY(15px); } to { opacity: 1; transform: translateY(0); } }
@@ -49,20 +49,20 @@
     @keyframes pulse { 0% { transform: scale(1); } 50% { transform: scale(1.1); } 100% { transform: scale(1); } }
     
     .hover-lift { transition: transform 0.3s ease, box-shadow 0.3s ease; }
-    .hover-lift:hover { transform: translateY(-5px); box-shadow: 0 15px 30px rgba(0,0,0,0.08) !important; }
+    .hover-lift:hover { transform: translateY(-3px); box-shadow: 0 10px 20px rgba(0,0,0,0.08) !important; }
 
-    .wide-marketing-card { border-radius: 20px; background: #ffffff; border: 1px solid rgba(0,0,0,0.03); }
-    .stat-card-modern { border-radius: 20px; background: #ffffff; border: 1px solid rgba(0,0,0,0.03); }
+    .wide-marketing-card { border-radius: 16px; background: #ffffff; border: 1px solid rgba(0,0,0,0.03); }
+    .stat-card-modern { border-radius: 16px; background: #ffffff; border: 1px solid rgba(0,0,0,0.03); }
 
     /* RANK BADGES MODERN */
     .rank-badge-wide {
-        width: 60px;
-        height: 60px;
-        border-radius: 15px;
+        width: 45px;
+        height: 45px;
+        border-radius: 12px;
         display: flex;
         align-items: center;
         justify-content: center;
-        font-size: 2rem;
+        font-size: 1.5rem;
         font-weight: 900;
         color: white;
         flex-shrink: 0;
@@ -110,7 +110,7 @@
             let grandTarget = 0, grandPenawaran = 0, grandDeal = 0, grandKpiTotal = 0;
 
             if(data.length === 0) {
-                statContainer.innerHTML = `<div class="col-12 text-center text-muted fs-3 py-4 fw-bold">Belum ada data marketing</div>`;
+                statContainer.innerHTML = `<div class="col-12 text-center text-muted fs-4 py-4 fw-bold">Belum ada data marketing</div>`;
                 marketingContainer.innerHTML = '';
                 return;
             }
@@ -142,38 +142,38 @@
                 // 🔥 IDE TERBAIK: 2 KOLOM RAKSASA (col-6) 🔥
                 cardsHtml += `
                     <div class="col-6">
-                        <div class="card h-100 wide-marketing-card shadow-sm hover-lift p-3">
+                        <div class="card h-100 wide-marketing-card shadow-sm hover-lift p-2">
                             <div class="d-flex align-items-center justify-content-between h-100">
                                 
                                 <!-- KIRI: Rank & Nama (Lebih Ringkas tanpa Foto) -->
-                                <div class="d-flex align-items-center" style="width: 32%;">
-                                    <div class="rank-badge-wide ${badgeClass} me-3">${rankIcon}</div>
+                                <div class="d-flex align-items-center ps-1" style="width: 33%;">
+                                    <div class="rank-badge-wide ${badgeClass} me-2">${rankIcon}</div>
                                     <div style="min-width: 0;">
-                                        <h3 class="fw-black text-dark mb-0 text-truncate text-uppercase" style="font-size: 1.8rem; letter-spacing: -0.5px;" title="${item.nama_lengkap}">${item.nama_lengkap}</h3>
+                                        <h4 class="fw-black text-dark mb-0 text-truncate text-uppercase" style="font-size: 1.5rem; letter-spacing: -0.5px;" title="${item.nama_lengkap}">${item.nama_lengkap}</h4>
                                         <div class="d-flex align-items-center gap-2 mt-1">
-                                            <span class="badge bg-primary-subtle text-primary border border-primary border-opacity-25 px-2 py-1" style="font-size: 0.85rem;"><i class="fas fa-id-badge me-1"></i> ${item.nama}</span>
-                                            <span class="text-info fw-black" style="font-size: 1rem;">KPI: ${item.total_kpi}%</span>
+                                            <span class="badge bg-primary-subtle text-primary border border-primary border-opacity-25 px-2 py-1" style="font-size: 0.75rem;"><i class="fas fa-id-badge me-1"></i> ${item.nama}</span>
+                                            <span class="text-info fw-black" style="font-size: 0.85rem;">KPI: ${item.total_kpi}%</span>
                                         </div>
                                     </div>
                                 </div>
                                 
                                 <!-- TENGAH: PENAWARAN (Angka Raksasa) -->
-                                <div class="text-end px-3 dashed-divider" style="width: 31%;">
-                                    <div class="text-muted text-uppercase fw-bold mb-1" style="font-size: 1rem; letter-spacing: 1px;">Penawaran</div>
-                                    <div class="fw-black text-primary text-truncate" style="font-size: 2.2rem; letter-spacing: -1px;">${formatRp(valPenawaran)}</div>
+                                <div class="text-end px-3 dashed-divider" style="width: 30%;">
+                                    <div class="text-muted text-uppercase fw-bold mb-0" style="font-size: 0.8rem; letter-spacing: 0.5px;">Penawaran</div>
+                                    <div class="fw-black text-primary text-truncate" style="font-size: 1.8rem; letter-spacing: -0.5px;">${formatRp(valPenawaran)}</div>
                                 </div>
 
                                 <!-- KANAN: DEAL (Angka Paling Raksasa) -->
                                 <div class="text-end px-3 dashed-divider position-relative" style="width: 37%;">
-                                    <div class="d-flex justify-content-end align-items-center mb-1 gap-2">
-                                        <span class="text-muted text-uppercase fw-bold" style="font-size: 1rem; letter-spacing: 1px;">Deal Omset</span>
-                                        <span class="badge bg-success-subtle ${achColor} px-2 py-1 border border-success border-opacity-25 fw-black" style="font-size: 0.9rem;">Ach: ${item.prosentase}%</span>
+                                    <div class="d-flex justify-content-end align-items-center mb-0 gap-2">
+                                        <span class="text-muted text-uppercase fw-bold" style="font-size: 0.8rem; letter-spacing: 0.5px;">Deal Omset</span>
+                                        <span class="badge bg-success-subtle ${achColor} px-2 py-1 border border-success border-opacity-25 fw-black" style="font-size: 0.75rem;">Ach: ${item.prosentase}%</span>
                                     </div>
-                                    <div class="fw-black text-success text-truncate" style="font-size: 2.6rem; letter-spacing: -1px;">${formatRp(valDeal)}</div>
+                                    <div class="fw-black text-success text-truncate" style="font-size: 2.2rem; letter-spacing: -1px;">${formatRp(valDeal)}</div>
                                     
                                     <!-- Progress bar numpang di bawah Deal biar compact -->
-                                    <div class="progress mt-2" style="background-color: #e9ecef; height: 10px; border-radius: 10px;">
-                                        <div class="progress-bar ${barColor}" style="width: ${item.prosentase > 100 ? 100 : item.prosentase}%; border-radius: 10px;"></div>
+                                    <div class="progress mt-1" style="background-color: #e9ecef; height: 8px; border-radius: 8px;">
+                                        <div class="progress-bar ${barColor}" style="width: ${item.prosentase > 100 ? 100 : item.prosentase}%; border-radius: 8px;"></div>
                                     </div>
                                 </div>
 
@@ -190,55 +190,55 @@
             statContainer.innerHTML = `
                 <div class="col-3">
                     <div class="card stat-card-modern shadow-sm h-100 hover-lift border-0">
-                        <div class="card-body p-3 p-xl-4 d-flex align-items-center">
-                            <div class="icon-circle bg-secondary-subtle text-secondary rounded-circle d-flex align-items-center justify-content-center me-3" style="width: 70px; height: 70px; min-width: 70px;">
-                                <i class="fas fa-bullseye" style="font-size: 2.2rem;"></i>
+                        <div class="card-body p-2 p-xl-3 d-flex align-items-center">
+                            <div class="icon-circle bg-secondary-subtle text-secondary rounded-circle d-flex align-items-center justify-content-center me-3" style="width: 55px; height: 55px; min-width: 55px;">
+                                <i class="fas fa-bullseye" style="font-size: 1.6rem;"></i>
                             </div>
                             <div style="min-width: 0;">
-                                <p class="text-muted text-uppercase fw-bold mb-1 text-truncate" style="font-size: 1rem;">Target Keseluruhan</p>
-                                <h3 class="fw-black text-dark mb-0 text-truncate" style="font-size: 2.2rem; letter-spacing: -1px;">${formatRp(grandTarget)}</h3>
+                                <p class="text-muted text-uppercase fw-bold mb-0 text-truncate" style="font-size: 0.85rem;">Target Keseluruhan</p>
+                                <h4 class="fw-black text-dark mb-0 text-truncate" style="font-size: 1.7rem; letter-spacing: -1px;">${formatRp(grandTarget)}</h4>
                             </div>
                         </div>
                     </div>
                 </div>
                 <div class="col-3">
                     <div class="card stat-card-modern shadow-sm h-100 hover-lift border-0">
-                        <div class="card-body p-3 p-xl-4 d-flex align-items-center">
-                            <div class="icon-circle bg-primary-subtle text-primary rounded-circle d-flex align-items-center justify-content-center me-3" style="width: 70px; height: 70px; min-width: 70px;">
-                                <i class="fas fa-file-invoice-dollar" style="font-size: 2.2rem;"></i>
+                        <div class="card-body p-2 p-xl-3 d-flex align-items-center">
+                            <div class="icon-circle bg-primary-subtle text-primary rounded-circle d-flex align-items-center justify-content-center me-3" style="width: 55px; height: 55px; min-width: 55px;">
+                                <i class="fas fa-file-invoice-dollar" style="font-size: 1.6rem;"></i>
                             </div>
                             <div style="min-width: 0;">
-                                <p class="text-muted text-uppercase fw-bold mb-1 text-truncate" style="font-size: 1rem;">Total Penawaran</p>
-                                <h3 class="fw-black text-primary mb-0 text-truncate" style="font-size: 2.2rem; letter-spacing: -1px;">${formatRp(grandPenawaran)}</h3>
+                                <p class="text-muted text-uppercase fw-bold mb-0 text-truncate" style="font-size: 0.85rem;">Total Penawaran</p>
+                                <h4 class="fw-black text-primary mb-0 text-truncate" style="font-size: 1.7rem; letter-spacing: -1px;">${formatRp(grandPenawaran)}</h4>
                             </div>
                         </div>
                     </div>
                 </div>
                 <div class="col-3">
                     <div class="card stat-card-modern shadow-sm h-100 hover-lift border-0">
-                        <div class="card-body p-3 p-xl-4 d-flex align-items-center">
-                            <div class="icon-circle bg-success-subtle text-success rounded-circle d-flex align-items-center justify-content-center me-3" style="width: 70px; height: 70px; min-width: 70px;">
-                                <i class="fas fa-handshake" style="font-size: 2.2rem;"></i>
+                        <div class="card-body p-2 p-xl-3 d-flex align-items-center">
+                            <div class="icon-circle bg-success-subtle text-success rounded-circle d-flex align-items-center justify-content-center me-3" style="width: 55px; height: 55px; min-width: 55px;">
+                                <i class="fas fa-handshake" style="font-size: 1.6rem;"></i>
                             </div>
                             <div style="min-width: 0;">
-                                <div class="d-flex align-items-center gap-2 mb-1">
-                                    <p class="text-muted text-uppercase fw-bold mb-0 text-truncate" style="font-size: 1rem;">Deal Omset</p>
-                                    <span class="badge bg-success-subtle text-success border border-success border-opacity-25 px-2 py-1 rounded-pill fw-bold" style="font-size: 0.8rem;">Ach: ${grandAch.toFixed(1)}%</span>
+                                <div class="d-flex align-items-center gap-2 mb-0">
+                                    <p class="text-muted text-uppercase fw-bold mb-0 text-truncate" style="font-size: 0.85rem;">Deal Omset</p>
+                                    <span class="badge bg-success-subtle text-success border border-success border-opacity-25 px-2 py-0 rounded-pill fw-bold" style="font-size: 0.75rem;">Ach: ${grandAch.toFixed(1)}%</span>
                                 </div>
-                                <h3 class="fw-black text-success mb-0 text-truncate" style="font-size: 2.2rem; letter-spacing: -1px;">${formatRp(grandDeal)}</h3>
+                                <h4 class="fw-black text-success mb-0 text-truncate" style="font-size: 1.7rem; letter-spacing: -1px;">${formatRp(grandDeal)}</h4>
                             </div>
                         </div>
                     </div>
                 </div>
                 <div class="col-3">
                     <div class="card stat-card-modern shadow-sm h-100 hover-lift border-0">
-                        <div class="card-body p-3 p-xl-4 d-flex align-items-center">
-                            <div class="icon-circle bg-info-subtle text-info rounded-circle d-flex align-items-center justify-content-center me-3" style="width: 70px; height: 70px; min-width: 70px;">
-                                <i class="fas fa-chart-line" style="font-size: 2.2rem;"></i>
+                        <div class="card-body p-2 p-xl-3 d-flex align-items-center">
+                            <div class="icon-circle bg-info-subtle text-info rounded-circle d-flex align-items-center justify-content-center me-3" style="width: 55px; height: 55px; min-width: 55px;">
+                                <i class="fas fa-chart-line" style="font-size: 1.6rem;"></i>
                             </div>
                             <div style="min-width: 0;">
-                                <p class="text-muted text-uppercase fw-bold mb-1 text-truncate" style="font-size: 1rem;">Rata-Rata KPI Tim</p>
-                                <h3 class="fw-black text-info mb-0 text-truncate" style="font-size: 2.5rem; letter-spacing: -1px;">${avgKpi.toFixed(2)}%</h3>
+                                <p class="text-muted text-uppercase fw-bold mb-0 text-truncate" style="font-size: 0.85rem;">Rata-Rata KPI Tim</p>
+                                <h4 class="fw-black text-info mb-0 text-truncate" style="font-size: 1.9rem; letter-spacing: -1px;">${avgKpi.toFixed(2)}%</h4>
                             </div>
                         </div>
                     </div>
