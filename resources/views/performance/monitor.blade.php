@@ -276,8 +276,14 @@
             if (mainPanel) {
                 mainPanel.style.width = '100%';
                 mainPanel.style.left = '0';
-                mainPanel.style.paddingTop = '10px';
-                mainPanel.style.paddingBottom = '30px'; 
+                mainPanel.style.paddingTop = '0';
+                mainPanel.style.paddingBottom = '0'; 
+            }
+            
+            const container = document.getElementById('monitor-container');
+            if (container) {
+                container.classList.remove('py-2');
+                container.classList.add('py-0');
             }
         } else {
             if (sidebar) sidebar.style.display = '';
@@ -288,6 +294,12 @@
                 mainPanel.style.left = '';
                 mainPanel.style.paddingTop = '';
                 mainPanel.style.paddingBottom = '';
+            }
+            
+            const container = document.getElementById('monitor-container');
+            if (container) {
+                container.classList.remove('py-0');
+                container.classList.add('py-2');
             }
         }
     });
