@@ -1,7 +1,7 @@
 @extends('layouts.app')
 
 @section('content')
-<div class="container-fluid py-3 tv-monitor-mode bg-light" id="monitor-container" style="min-height: 100vh;">
+<div class="container-fluid py-3 tv-monitor-mode bg-light" id="monitor-container" style="min-height: 100vh; min-width: 1600px; overflow-x: hidden;">
     {{-- HEADER --}}
     <div class="d-flex justify-content-between align-items-center mb-3 fade-in px-2">
         <div>
