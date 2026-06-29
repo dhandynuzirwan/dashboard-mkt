@@ -132,10 +132,12 @@ class MonitorController extends Controller
         // Urutkan berdasarkan persentase pencapaian tertinggi ke terendah
         $marketings = $marketings->sortByDesc('prosentase')->values();
 
+        \Carbon\Carbon::setLocale('id');
         return response()->json([
             'status' => 'success',
             'data'   => $marketings,
-            'waktu'  => now()->format('d M Y H:i:s')
+            'waktu'  => now()->format('d M Y H:i:s'),
+            'bulan_tahun' => strtoupper(now()->translatedFormat('F Y'))
         ]);
     }
 }
