@@ -38,9 +38,8 @@
         </div>
     </div>
 
-    {{-- LIST MARKETING (2 Kolom Lebar) --}}
-    <!-- Jarak diseimbangkan dengan g-2 dan p-2 -->
-    <div class="row g-2 fade-in px-2" id="marketing-cards-container">
+    {{-- LIST MARKETING (CSS Grid untuk gap identik) --}}
+    <div class="fade-in px-2" id="marketing-cards-container" style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 14px;">
         <!-- Injected by JS -->
     </div>
 </div>
@@ -216,6 +215,7 @@
 
                 // 🔥 LOGIKA WARNA KPI 🔥
                 let kpiColor = valKpi < 70 ? 'text-danger' : 'text-info';
+                let kpiBg = valKpi < 70 ? 'bg-danger-subtle border-danger' : 'bg-info-subtle border-info';
 
                 // 🔥 LOGIKA WARNA DEAL OMSET 🔥
                 let dealColor = 'text-success'; // Hijau jika >= 60jt
@@ -226,25 +226,25 @@
                 }
 
                 cardsHtml += `
-                    <div class="col-6">
-                        <div class="card h-100 wide-marketing-card shadow-sm hover-lift p-2">
+                    <div style="min-width: 0;">
+                        <div class="card h-100 wide-marketing-card shadow-sm hover-lift p-2 m-0">
                             <div class="d-flex align-items-center justify-content-between h-100">
                                 
-                                <div class="d-flex align-items-center ps-1" style="width: 33%;">
-                                    <div class="rank-badge-wide ${badgeClass} me-2">${rankIcon}</div>
+                                <div class="d-flex align-items-center ps-1" style="width: 35%;">
+                                    <div class="rank-badge-wide ${badgeClass} me-3">${rankIcon}</div>
                                     <div style="min-width: 0;">
-                                        <h4 class="fw-black text-dark mb-0 text-truncate text-uppercase" style="font-size: 1.2rem; letter-spacing: -0.5px;" title="${item.nama_lengkap}">${item.nama_lengkap}</h4>
-                                        <div class="d-flex align-items-center gap-2 mt-1">
+                                        <div class="d-flex align-items-center gap-2 mb-1">
+                                            <h4 class="fw-black text-dark mb-0 text-truncate text-uppercase" style="font-size: 1.25rem; letter-spacing: -0.5px;" title="${item.nama_lengkap}">${item.nama_lengkap}</h4>
                                             <span class="badge bg-primary-subtle text-primary border border-primary border-opacity-25 px-2 py-0" style="font-size: 0.7rem;"><i class="fas fa-id-badge me-1"></i> ${item.nama}</span>
                                         </div>
-                                        <!-- KPI DIBESARKAN -->
-                                        <div class="mt-1">
-                                            <span class="${kpiColor} fw-black" style="font-size: 1.1rem; text-shadow: 1px 1px 1px rgba(0,0,0,0.05);">KPI: ${item.total_kpi}%</span>
+                                        <!-- KPI DIBESARKAN & DI-HIGHLIGHT -->
+                                        <div class="mt-2">
+                                            <span class="badge ${kpiBg} ${kpiColor} border border-opacity-50 px-2 py-1 shadow-sm fw-black" style="font-size: 1.15rem; letter-spacing: 0.5px;">KPI: ${item.total_kpi}%</span>
                                         </div>
                                     </div>
                                 </div>
                                 
-                                <div class="text-end px-2 dashed-divider" style="width: 30%;">
+                                <div class="text-end px-2 dashed-divider" style="width: 28%;">
                                     <div class="text-muted text-uppercase fw-bold mb-0" style="font-size: 0.7rem; letter-spacing: 0.5px;">Penawaran</div>
                                     <div class="fw-black text-primary text-truncate" style="font-size: 1.5rem; letter-spacing: -0.5px;">${formatRp(valPenawaran)}</div>
                                 </div>
@@ -257,7 +257,7 @@
                                     <!-- WARNA DEAL OMSET DINAMIS -->
                                     <div class="fw-black ${dealColor} text-truncate" style="font-size: 1.8rem; letter-spacing: -1px;">${formatRp(valDeal)}</div>
                                     
-                                    <div class="progress mt-0" style="background-color: #e9ecef; height: 6px; border-radius: 6px;">
+                                    <div class="progress mt-1" style="background-color: #e9ecef; height: 6px; border-radius: 6px;">
                                         <div class="progress-bar ${barColor}" style="width: ${item.prosentase > 100 ? 100 : item.prosentase}%; border-radius: 6px;"></div>
                                     </div>
                                 </div>
