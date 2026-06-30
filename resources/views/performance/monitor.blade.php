@@ -14,10 +14,16 @@
             </h2>
         </div>
         <div class="d-flex gap-3 align-items-center">
-            <div class="d-flex align-items-center bg-white px-3 py-2 rounded-pill shadow border-0">
+            <div class="d-flex align-items-center bg-white px-3 py-2 rounded-pill shadow border-0" id="update-badge">
                 <div class="spinner-grow text-success me-2" role="status" style="width: 1rem; height: 1rem;"></div>
                 <span class="fw-bold text-dark fs-5">Update: <span id="last-update" class="text-success">Memuat...</span></span>
             </div>
+            
+            <!-- DARK MODE BUTTON -->
+            <button onclick="toggleDarkMode()" class="btn btn-outline-dark btn-round shadow-lg px-3 py-2 fw-bold hover-lift fs-5" id="btn-dark-mode">
+                <i class="fas fa-moon me-2"></i> Dark Mode
+            </button>
+            
             <button onclick="toggleFullScreen()" class="btn btn-dark btn-round shadow-lg px-3 py-2 fw-bold hover-lift fs-5">
                 <i class="fas fa-expand me-2"></i> Fullscreen
             </button>
@@ -25,7 +31,7 @@
     </div>
 
     {{-- STAT CARDS (Atas) --}}
-    <div class="row g-2 mb-1 fade-in px-2" id="stat-cards-container">
+    <div class="row g-2 mb-2 fade-in px-2" id="stat-cards-container">
         <div class="col-12 text-center py-2">
             <div class="spinner-border text-primary mb-2" style="width: 2rem; height: 2rem;" role="status"></div>
             <h5 class="text-muted fw-bold">Sinkronisasi Server Data...</h5>
@@ -33,7 +39,8 @@
     </div>
 
     {{-- LIST MARKETING (2 Kolom Lebar) --}}
-    <div class="row g-1 fade-in px-2" id="marketing-cards-container">
+    <!-- Jarak diseimbangkan dengan g-2 dan p-2 -->
+    <div class="row g-2 fade-in px-2" id="marketing-cards-container">
         <!-- Injected by JS -->
     </div>
 </div>
@@ -100,10 +107,56 @@
         padding: 0.5rem 1rem !important;
     }
 
+    /* 🔥 DARK MODE THEME 🔥 */
+    body.dark-mode, body.dark-mode #monitor-container { background-color: #121212 !important; color: #e0e0e0; }
+    body.dark-mode .card, 
+    body.dark-mode .bg-white, 
+    body.dark-mode .bg-light,
+    body.dark-mode #update-badge { background-color: #1e1e1e !important; border-color: #333 !important; }
+    body.dark-mode .text-dark { color: #ffffff !important; }
+    body.dark-mode .text-muted { color: #a0a0a0 !important; }
+    body.dark-mode .dashed-divider { border-left-color: #444 !important; }
+    
+    body.dark-mode .bg-primary-subtle { background-color: rgba(13, 110, 253, 0.15) !important; color: #6ea8fe !important; border-color: rgba(13, 110, 253, 0.3) !important; }
+    body.dark-mode .bg-success-subtle { background-color: rgba(25, 135, 84, 0.15) !important; color: #75b798 !important; border-color: rgba(25, 135, 84, 0.3) !important; }
+    body.dark-mode .bg-secondary-subtle { background-color: rgba(108, 117, 125, 0.15) !important; color: #adb5bd !important; border-color: rgba(108, 117, 125, 0.3) !important; }
+    body.dark-mode .bg-info-subtle { background-color: rgba(13, 202, 240, 0.15) !important; color: #6edff6 !important; border-color: rgba(13, 202, 240, 0.3) !important; }
+    
+    body.dark-mode .btn-outline-dark { color: #fff; border-color: #fff; }
+    body.dark-mode .btn-outline-dark:hover { background-color: #fff; color: #000; }
+    
+    body.dark-mode .text-primary { color: #6ea8fe !important; }
+    body.dark-mode .text-success { color: #75b798 !important; }
+    body.dark-mode .text-info { color: #6edff6 !important; }
 </style>
 
 <script>
+    // Dark mode toggle functionality
+    function toggleDarkMode() {
+        document.body.classList.toggle('dark-mode');
+        const btn = document.getElementById('btn-dark-mode');
+        if (document.body.classList.contains('dark-mode')) {
+            btn.innerHTML = '<i class="fas fa-sun me-2"></i> Light Mode';
+            btn.classList.replace('btn-outline-dark', 'btn-outline-light');
+            localStorage.setItem('monitor-theme', 'dark');
+        } else {
+            btn.innerHTML = '<i class="fas fa-moon me-2"></i> Dark Mode';
+            btn.classList.replace('btn-outline-light', 'btn-outline-dark');
+            localStorage.setItem('monitor-theme', 'light');
+        }
+    }
+
     document.addEventListener("DOMContentLoaded", function() {
+        // Init dark mode from local storage
+        if(localStorage.getItem('monitor-theme') === 'dark') {
+            document.body.classList.add('dark-mode');
+            const btn = document.getElementById('btn-dark-mode');
+            if(btn) {
+                btn.innerHTML = '<i class="fas fa-sun me-2"></i> Light Mode';
+                btn.classList.replace('btn-outline-dark', 'btn-outline-light');
+            }
+        }
+
         const formatRp = (angka) => {
             return new Intl.NumberFormat('id-ID', { style: 'currency', currency: 'IDR', minimumFractionDigits: 0, maximumFractionDigits: 0 }).format(angka);
         };
@@ -161,6 +214,17 @@
                 let achColor = item.prosentase >= 100 ? 'text-success' : (item.prosentase >= 80 ? 'text-primary' : 'text-dark');
                 let barColor = 'bg-success'; 
 
+                // 🔥 LOGIKA WARNA KPI 🔥
+                let kpiColor = valKpi < 70 ? 'text-danger' : 'text-info';
+
+                // 🔥 LOGIKA WARNA DEAL OMSET 🔥
+                let dealColor = 'text-success'; // Hijau jika >= 60jt
+                if (valDeal < 30000000) {
+                    dealColor = 'text-danger'; // Merah jika < 30jt
+                } else if (valDeal < 60000000) {
+                    dealColor = 'text-warning'; // Kuning jika < 60jt
+                }
+
                 cardsHtml += `
                     <div class="col-6">
                         <div class="card h-100 wide-marketing-card shadow-sm hover-lift p-2">
@@ -172,7 +236,10 @@
                                         <h4 class="fw-black text-dark mb-0 text-truncate text-uppercase" style="font-size: 1.2rem; letter-spacing: -0.5px;" title="${item.nama_lengkap}">${item.nama_lengkap}</h4>
                                         <div class="d-flex align-items-center gap-2 mt-1">
                                             <span class="badge bg-primary-subtle text-primary border border-primary border-opacity-25 px-2 py-0" style="font-size: 0.7rem;"><i class="fas fa-id-badge me-1"></i> ${item.nama}</span>
-                                            <span class="text-info fw-black" style="font-size: 0.75rem;">KPI: ${item.total_kpi}%</span>
+                                        </div>
+                                        <!-- KPI DIBESARKAN -->
+                                        <div class="mt-1">
+                                            <span class="${kpiColor} fw-black" style="font-size: 1.1rem; text-shadow: 1px 1px 1px rgba(0,0,0,0.05);">KPI: ${item.total_kpi}%</span>
                                         </div>
                                     </div>
                                 </div>
@@ -187,7 +254,8 @@
                                         <span class="text-muted text-uppercase fw-bold" style="font-size: 0.7rem; letter-spacing: 0.5px;">Deal Omset</span>
                                         <span class="badge bg-success-subtle ${achColor} px-1 py-0 border border-success border-opacity-25 fw-black" style="font-size: 0.65rem;">Ach: ${item.prosentase}%</span>
                                     </div>
-                                    <div class="fw-black text-success text-truncate" style="font-size: 1.8rem; letter-spacing: -1px;">${formatRp(valDeal)}</div>
+                                    <!-- WARNA DEAL OMSET DINAMIS -->
+                                    <div class="fw-black ${dealColor} text-truncate" style="font-size: 1.8rem; letter-spacing: -1px;">${formatRp(valDeal)}</div>
                                     
                                     <div class="progress mt-0" style="background-color: #e9ecef; height: 6px; border-radius: 6px;">
                                         <div class="progress-bar ${barColor}" style="width: ${item.prosentase > 100 ? 100 : item.prosentase}%; border-radius: 6px;"></div>
