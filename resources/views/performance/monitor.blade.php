@@ -31,8 +31,8 @@
     </div>
 
     {{-- STAT CARDS (Atas) --}}
-    <div class="row g-2 mb-2 fade-in px-2" id="stat-cards-container">
-        <div class="col-12 text-center py-2">
+    <div class="mb-2 fade-in px-2" id="stat-cards-container" style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 14px;">
+        <div style="grid-column: span 4;" class="text-center py-2">
             <div class="spinner-border text-primary mb-2" style="width: 2rem; height: 2rem;" role="status"></div>
             <h5 class="text-muted fw-bold">Sinkronisasi Server Data...</h5>
         </div>
@@ -272,7 +272,7 @@
             let grandAch = grandTarget > 0 ? (grandDeal / grandTarget) * 100 : 0;
 
             statContainer.innerHTML = `
-                <div class="col-3">
+                <div style="min-width: 0;">
                     <div class="card stat-card-modern shadow-sm h-100 hover-lift border-0">
                         <div class="card-body p-1 p-xl-2 d-flex align-items-center">
                             <div class="icon-circle bg-secondary-subtle text-secondary rounded-circle d-flex align-items-center justify-content-center me-2" style="width: 45px; height: 45px; min-width: 45px;">
@@ -285,7 +285,7 @@
                         </div>
                     </div>
                 </div>
-                <div class="col-3">
+                <div style="min-width: 0;">
                     <div class="card stat-card-modern shadow-sm h-100 hover-lift border-0">
                         <div class="card-body p-1 p-xl-2 d-flex align-items-center">
                             <div class="icon-circle bg-primary-subtle text-primary rounded-circle d-flex align-items-center justify-content-center me-2" style="width: 45px; height: 45px; min-width: 45px;">
@@ -298,31 +298,31 @@
                         </div>
                     </div>
                 </div>
-                <div class="col-3">
+                <div style="min-width: 0;">
                     <div class="card stat-card-modern shadow-sm h-100 hover-lift border-0">
                         <div class="card-body p-1 p-xl-2 d-flex align-items-center">
                             <div class="icon-circle bg-success-subtle text-success rounded-circle d-flex align-items-center justify-content-center me-2" style="width: 45px; height: 45px; min-width: 45px;">
                                 <i class="fas fa-handshake" style="font-size: 1.3rem;"></i>
                             </div>
                             <div style="min-width: 0;">
-                                <div class="d-flex align-items-center gap-1 mb-0">
+                                <div class="d-flex align-items-center gap-1 mb-1">
                                     <p class="text-muted text-uppercase fw-bold mb-0 text-truncate" style="font-size: 0.75rem;">Deal Omset</p>
                                     <span class="badge bg-success-subtle text-success border border-success border-opacity-25 px-1 py-0 rounded-pill fw-bold" style="font-size: 0.65rem;">Ach: ${grandAch.toFixed(1)}%</span>
                                 </div>
-                                <h4 class="fw-black text-success mb-0 text-truncate" style="font-size: 1.4rem; letter-spacing: -1px;">${formatRp(grandDeal)}</h4>
+                                <span class="badge bg-success-subtle text-success border border-success border-opacity-50 px-2 py-0 shadow-sm fw-black" style="font-size: 1.3rem; letter-spacing: -1px;">${formatRp(grandDeal)}</span>
                             </div>
                         </div>
                     </div>
                 </div>
-                <div class="col-3">
+                <div style="min-width: 0;">
                     <div class="card stat-card-modern shadow-sm h-100 hover-lift border-0">
                         <div class="card-body p-1 p-xl-2 d-flex align-items-center">
                             <div class="icon-circle bg-info-subtle text-info rounded-circle d-flex align-items-center justify-content-center me-2" style="width: 45px; height: 45px; min-width: 45px;">
                                 <i class="fas fa-chart-line" style="font-size: 1.3rem;"></i>
                             </div>
                             <div style="min-width: 0;">
-                                <p class="text-muted text-uppercase fw-bold mb-0 text-truncate" style="font-size: 0.75rem;">Rata-Rata KPI Tim</p>
-                                <h4 class="fw-black text-info mb-0 text-truncate" style="font-size: 1.5rem; letter-spacing: -1px;">${avgKpi.toFixed(2)}%</h4>
+                                <p class="text-muted text-uppercase fw-bold mb-1 text-truncate" style="font-size: 0.75rem;">Rata-Rata KPI Tim</p>
+                                <span class="badge bg-info-subtle text-info border border-info border-opacity-50 px-2 py-0 shadow-sm fw-black" style="font-size: 1.3rem; letter-spacing: -1px;">${avgKpi.toFixed(2)}%</span>
                             </div>
                         </div>
                     </div>
