@@ -210,25 +210,24 @@ class ProspekController extends Controller
 
             // 2. Jika ada duplikat, ambil detail datanya
             if ($rawDuplicates->count() > 0) {
-                $dupQuery = Prospek::with('marketing');
-                foreach ($rawDuplicates as $dup) {
-                    $dupQuery->orWhere(function($q) use ($dup) {
-                        $q->where('perusahaan', $dup->perusahaan);
-                        if (is_null($dup->lokasi)) {
-                            $q->whereNull('lokasi');
-                        } else {
-                            $q->where('lokasi', $dup->lokasi);
-                        }
-                    });
-                }
+                $perusahaanList = $rawDuplicates->pluck('perusahaan')->filter()->unique()->toArray();
                 
-                // 3. Kelompokkan berdasarkan Nama Perusahaan & Lokasi
-                $duplicateGroups = $dupQuery->orderBy('perusahaan')
-                    ->orderBy('created_at', 'asc')
-                    ->get()
-                    ->groupBy(function($item) {
+                if (!empty($perusahaanList)) {
+                    // Gunakan whereIn yang sangat efisien dibanding ribuan OR WHERE
+                    $duplicates = Prospek::with('marketing')
+                        ->whereIn('perusahaan', $perusahaanList)
+                        ->orderBy('perusahaan')
+                        ->orderBy('created_at', 'asc')
+                        ->get();
+                        
+                    $duplicateGroups = $duplicates->filter(function($item) use ($rawDuplicates) {
+                        return $rawDuplicates->contains(function($dup) use ($item) {
+                            return $dup->perusahaan === $item->perusahaan && $dup->lokasi === $item->lokasi;
+                        });
+                    })->groupBy(function($item) {
                         return $item->perusahaan . ' - (' . ($item->lokasi ?? 'Tanpa Lokasi') . ')';
                     });
+                }
             }
         }
         // ================= 🔥 END DETEKSI DUPLIKAT 🔥 =================
@@ -244,27 +243,29 @@ class ProspekController extends Controller
                 ->get();
 
             if ($rawCtaDuplicates->count() > 0) {
-                $dupCtaQuery = \App\Models\Cta::with('prospek.marketing');
+                $judulList = $rawCtaDuplicates->pluck('judul_permintaan')->filter()->unique()->toArray();
+                $perusahaanList = $rawCtaDuplicates->pluck('perusahaan')->filter()->unique()->toArray();
                 
-                $dupCtaQuery->where(function($query) use ($rawCtaDuplicates) {
-                    foreach ($rawCtaDuplicates as $dup) {
-                        $query->orWhere(function($q) use ($dup) {
-                            $q->whereHas('prospek', function($pq) use ($dup) {
-                                $pq->where('perusahaan', $dup->perusahaan);
-                                if (is_null($dup->lokasi)) {
-                                    $pq->whereNull('lokasi');
-                                } else {
-                                    $pq->where('lokasi', $dup->lokasi);
-                                }
-                            })->where('judul_permintaan', $dup->judul_permintaan);
+                if (!empty($judulList) && !empty($perusahaanList)) {
+                    $ctaDuplicates = \App\Models\Cta::with('prospek.marketing')
+                        ->whereIn('judul_permintaan', $judulList)
+                        ->whereHas('prospek', function($q) use ($perusahaanList) {
+                            $q->whereIn('perusahaan', $perusahaanList);
+                        })
+                        ->orderBy('created_at', 'asc')
+                        ->get();
+
+                    $duplicateCtaGroups = $ctaDuplicates->filter(function($item) use ($rawCtaDuplicates) {
+                        if (!$item->prospek) return false;
+                        return $rawCtaDuplicates->contains(function($dup) use ($item) {
+                            return $dup->judul_permintaan === $item->judul_permintaan &&
+                                   $dup->perusahaan === $item->prospek->perusahaan &&
+                                   $dup->lokasi === $item->prospek->lokasi;
                         });
-                    }
-                });
-                
-                // 2. Kelompokkan hasilnya
-                $duplicateCtaGroups = $dupCtaQuery->orderBy('created_at', 'asc')->get()->groupBy(function($item) {
-                    return $item->prospek->perusahaan . ' - (' . ($item->prospek->lokasi ?? 'Tanpa Lokasi') . ') | Judul CTA: ' . ($item->judul_permintaan ?? 'Tanpa Judul');
-                });
+                    })->groupBy(function($item) {
+                        return $item->prospek->perusahaan . ' - (' . ($item->prospek->lokasi ?? 'Tanpa Lokasi') . ') | Judul CTA: ' . ($item->judul_permintaan ?? 'Tanpa Judul');
+                    });
+                }
             }
         }
         // ================= 🔥 END DETEKSI DUPLIKAT CTA 🔥 =================
