@@ -73,81 +73,90 @@ class ProspekController extends Controller
 
         if ($user->role === 'marketing') {
             $query->where('marketing_id', $user->id);
+        } else {
+            if ($request->filled('marketing_id')) {
+                $query->where('marketing_id', $request->marketing_id);
+            }
         }
         
         if ($request->filled('search_perusahaan')) {
             $search = $request->search_perusahaan;
-            $query->where('perusahaan', 'LIKE', "%{$search}%");
-        }
-
-        // ================= APPLY FILTER =================
-        $query->whereBetween('tanggal_prospek', [$start, $end]);
-
-        // TAMBAHAN: FILTER SUMBER ADS / ORGANIK
-        if ($request->filled('sumber_tipe')) {
-            if ($request->sumber_tipe == 'ads') {
-                // Mencari yang kolom sumbernya mengandung kata 'Ads'
-                $query->where('sumber', 'LIKE', '%Ads%');
-            } elseif ($request->sumber_tipe == 'organik') {
-                // Mencari yang kolom sumbernya TIDAK mengandung 'Ads' atau Kosong
-                $query->where(function($q) {
-                    $q->where('sumber', 'NOT LIKE', '%Ads%')
-                      ->orWhereNull('sumber');
-                });
-            }
-        }
-
-        // A. FILTER TAHAP (Ini yang tadi hilang, Lang!)
-        if ($request->filled('cta_status')) {
-            if ($request->cta_status == 'pending') {
-                $query->whereDoesntHave('cta'); // Belum input penawaran
-            } elseif ($request->cta_status == 'done') {
-                $query->whereHas('cta'); // Sudah ada penawaran
-            }
-        }
-
-        // Filter Status Akhir Data (Catatan Prospek)
-        if ($request->filled('status_akhir')) {
-            if ($request->status_akhir === 'belum_ada_status') {
-                // 🔥 Jika mencari yang belum ada status (Null atau Kosong)
-                $query->where(function($q) {
-                    $q->whereNull('status')->orWhere('status', '');
-                });
-            } else {
-                // Pencarian normal sesuai nama status
-                $query->where('status', $request->status_akhir);
-            }
-        }
-
-        // FIX: Filter Status Penawaran (Ini filter untuk kolom 'status_penawaran' di tabel CTA)
-        // Di Blade kamu menggunakan name="status", jadi kita tangkap $request->status
-        if ($request->status) {
-            $query->whereHas('cta', function ($q) use ($request) {
-                $q->where('status_penawaran', $request->status);
+            $query->where(function($q) use ($search) {
+                $q->where('perusahaan', 'LIKE', "%{$search}%")
+                  ->orWhere('telp', 'LIKE', "%{$search}%")
+                  ->orWhere('wa_pic', 'LIKE', "%{$search}%")
+                  ->orWhere('wa_baru', 'LIKE', "%{$search}%")
+                  ->orWhere('nama_pic', 'LIKE', "%{$search}%");
             });
-        }
+        } else {
+            // ================= APPLY FILTER KETIKA TIDAK SEDANG SEARCHING =================
+            $query->whereBetween('tanggal_prospek', [$start, $end]);
 
-        if ($request->marketing_id && $user->role !== 'marketing') {
-            $query->where('marketing_id', $request->marketing_id);
-        }
+            // TAMBAHAN: FILTER SUMBER ADS / ORGANIK
+            if ($request->filled('sumber_tipe')) {
+                if ($request->sumber_tipe == 'ads') {
+                    // Mencari yang kolom sumbernya mengandung kata 'Ads'
+                    $query->where('sumber', 'LIKE', '%Ads%');
+                } elseif ($request->sumber_tipe == 'organik') {
+                    // Mencari yang kolom sumbernya TIDAK mengandung 'Ads' atau Kosong
+                    $query->where(function($q) {
+                        $q->where('sumber', 'NOT LIKE', '%Ads%')
+                          ->orWhereNull('sumber');
+                    });
+                }
+            }
 
-        if ($request->status_penawaran) {
-            $query->whereHas('cta', function ($q) use ($request) {
-                $q->where('status_penawaran', $request->status_penawaran);
-            });
-        }
+            // A. FILTER TAHAP (Ini yang tadi hilang, Lang!)
+            if ($request->filled('cta_status')) {
+                if ($request->cta_status == 'pending') {
+                    $query->whereDoesntHave('cta'); // Belum input penawaran
+                } elseif ($request->cta_status == 'done') {
+                    $query->whereHas('cta'); // Sudah ada penawaran
+                }
+            }
 
-        // 🔥 BARU: FILTER KELENGKAPAN HARGA PENAWARAN 🔥
-        if ($request->filled('status_harga')) {
-            if ($request->status_harga == 'sudah_diisi') {
-                // Mencari prospek yang di form CTA-nya kolom harga_penawaran sudah terisi (Tidak Null & Bukan 0)
-                $query->whereHas('cta', function ($q) {
-                    $q->whereNotNull('harga_penawaran')->where('harga_penawaran', '!=', 0)->where('harga_penawaran', '!=', '');
+            // Filter Status Akhir Data (Catatan Prospek)
+            if ($request->filled('status_akhir')) {
+                if ($request->status_akhir === 'belum_ada_status') {
+                    // 🔥 Jika mencari yang belum ada status (Null atau Kosong)
+                    $query->where(function($q) {
+                        $q->whereNull('status')->orWhere('status', '');
+                    });
+                } else {
+                    // Pencarian normal sesuai nama status
+                    $query->where('status', $request->status_akhir);
+                }
+            }
+
+            // FIX: Filter Status Penawaran (Ini filter untuk kolom 'status_penawaran' di tabel CTA)
+            // Di Blade kamu menggunakan name="status", jadi kita tangkap $request->status
+            if ($request->status) {
+                $query->whereHas('cta', function ($q) use ($request) {
+                    $q->where('status_penawaran', $request->status);
                 });
-            } elseif ($request->status_harga == 'belum_diisi') {
-                // Mencari prospek yang SUDAH PUNYA CTA, tapi harga penawarannya belum diisi (Null atau 0)
-                $query->whereHas('cta', function ($q) {
-                    $q->whereNull('harga_penawaran')->orWhere('harga_penawaran', 0)->orWhere('harga_penawaran', '');
+            }
+
+            if ($request->status_penawaran) {
+                $query->whereHas('cta', function ($q) use ($request) {
+                    $q->where('status_penawaran', $request->status_penawaran);
+                });
+            }
+
+            // 🔥 BARU: FILTER KELENGKAPAN HARGA PENAWARAN 🔥
+            if ($request->filled('status_harga')) {
+                if ($request->status_harga == 'sudah_diisi') {
+                    // Mencari prospek yang di form CTA-nya kolom harga_penawaran sudah terisi (Tidak Null & Bukan 0)
+                    $query->whereHas('cta', function ($q) {
+                        $q->whereNotNull('harga_penawaran')->where('harga_penawaran', '!=', 0)->where('harga_penawaran', '!=', '');
+                    });
+                } elseif ($request->status_harga == 'belum_diisi') {
+                    // Mencari prospek yang SUDAH PUNYA CTA, tapi harga penawarannya belum diisi (Null atau 0)
+                    $query->whereHas('cta', function ($q) {
+                        $q->whereNull('harga_penawaran')->orWhere('harga_penawaran', 0)->orWhere('harga_penawaran', '');
+                    });
+                }
+            }
+        }
                 });
             }
         }
