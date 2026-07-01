@@ -157,9 +157,6 @@ class ProspekController extends Controller
                 }
             }
         }
-                });
-            }
-        }
         
         if (!$request->has('sort_by')) {
             $query->orderBy('id', 'desc');
