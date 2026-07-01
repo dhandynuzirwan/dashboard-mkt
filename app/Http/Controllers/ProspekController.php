@@ -166,37 +166,29 @@ class ProspekController extends Controller
         // a. Ambil daftar ID prospek yang sudah difilter
         $prospekIds = (clone $query)->pluck('id');
 
-        // b. Ambil SEMUA data CTA yang berelasi dengan prospek-prospek tersebut
-        $semuaCta = \App\Models\Cta::whereIn('prospek_id', $prospekIds)->get();
-
-        // --- LOGIKA BARU TOTAL PROSPEK ---
-        // Hitung berapa prospek unik yang jumlah aslinya ada di database
+        // b. Hitung statistik langsung dari database (Jauh lebih cepat, mencegah memory leak / loading lama)
         $jumlahProspekUnik = $prospekIds->count();
-        
-        // Hitung berapa prospek unik yang sudah dibuatkan CTA/Penawaran
-        $jumlahProspekPunyaCta = $semuaCta->unique('prospek_id')->count();
+        $jumlahProspekPunyaCta = \App\Models\Cta::whereIn('prospek_id', $prospekIds)->distinct('prospek_id')->count('prospek_id');
+        $totalCta = \App\Models\Cta::whereIn('prospek_id', $prospekIds)->count();
         
         // Kalkulasi: (Prospek yang belum ada CTA) + (Total seluruh form CTA)
-        $totalProspekDihitung = ($jumlahProspekUnik - $jumlahProspekPunyaCta) + $semuaCta->count();
+        $totalProspekDihitung = ($jumlahProspekUnik - $jumlahProspekPunyaCta) + $totalCta;
 
-        // c. Kalkulasi Statistik yang benar
+        // Menghitung Nilai Pipeline (Harga Penawaran x Jumlah Peserta) dari SEMUA judul
+        $totalNilai = \App\Models\Cta::whereIn('prospek_id', $prospekIds)
+            ->selectRaw('SUM(COALESCE(harga_penawaran, 0) * COALESCE(jumlah_peserta, 1)) as total')
+            ->value('total') ?? 0;
+
+        // Total Project Deal (Berdasarkan jumlah CTA/Penawaran yang statusnya 'deal')
+        $totalDeal = \App\Models\Cta::whereIn('prospek_id', $prospekIds)
+            ->where('status_penawaran', 'deal')->count();
+
+        // c. Output Statistik
         $stats = [
             'total_prospek' => $totalProspekDihitung,
-            
-            // Total form penawaran yang pernah dibuat
-            'total_cta'     => $semuaCta->count(), 
-            
-            // Menghitung Nilai Pipeline (Harga Penawaran x Jumlah Peserta) dari SEMUA judul
-            'total_nilai'   => $semuaCta->sum(function($cta) {
-                // Gunakan default 0 jika kosong agar tidak error kalkulasi
-                $harga = $cta->harga_penawaran ?? 0;
-                $peserta = $cta->jumlah_peserta ?? 1; // Default 1 peserta jika kosong agar harga tidak jadi 0
-                
-                return $harga * $peserta;
-            }),
-            
-            // Total Project Deal (Berdasarkan jumlah CTA/Penawaran yang statusnya 'deal')
-            'total_deal'    => $semuaCta->where('status_penawaran', 'deal')->count(),
+            'total_cta'     => $totalCta, 
+            'total_nilai'   => $totalNilai,
+            'total_deal'    => $totalDeal,
         ];
 
         // 3. PAGINATION
