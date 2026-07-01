@@ -267,7 +267,7 @@
                                                     @if(isset($existingProspeks) && $existingProspeks->has($item->perusahaan))
                                                         @php
                                                             $latestProspek = $existingProspeks[$item->perusahaan]->first();
-                                                            $totalCta = $existingProspeks[$item->perusahaan]->sum(function($p) { return $p->cta->count(); });
+                                                            $totalCta = $existingProspeks[$item->perusahaan]->sum(function($p) { return $p->ctas ? $p->ctas->count() : 0; });
                                                         @endphp
                                                         <div class="mt-2">
                                                             <span class="badge badge-soft-warning border border-warning" style="font-size: 10px;">Pernah Diprospek</span>
@@ -422,7 +422,7 @@
                                             @if(isset($existingProspeks) && $existingProspeks->has($ad->nama_perusahaan))
                                                 @php
                                                     $latestProspekAds = $existingProspeks[$ad->nama_perusahaan]->first();
-                                                    $totalCtaAds = $existingProspeks[$ad->nama_perusahaan]->sum(function($p) { return $p->cta->count(); });
+                                                    $totalCtaAds = $existingProspeks[$ad->nama_perusahaan]->sum(function($p) { return $p->ctas ? $p->ctas->count() : 0; });
                                                 @endphp
                                                 <div class="mt-2">
                                                     <span class="badge badge-soft-warning border border-warning" style="font-size: 10px;">Pernah Diprospek</span>

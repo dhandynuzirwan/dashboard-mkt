@@ -93,7 +93,7 @@ class DataMasukController extends Controller
             ->merge(collect($adsData->items())->pluck('nama_perusahaan'))
             ->filter()->unique()->toArray();
             
-        $existingProspeks = Prospek::with(['marketing', 'cta'])
+        $existingProspeks = Prospek::with(['marketing', 'ctas'])
             ->whereIn('perusahaan', $currentCompanies)
             ->orderBy('created_at', 'desc') // Yg terbaru di atas
             ->get()
