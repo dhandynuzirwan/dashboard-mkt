@@ -262,6 +262,45 @@
                                                 <td class="align-middle">
                                                     <div class="fw-bolder text-primary" style="font-size: 14px;">{{ $item->perusahaan }}</div>
                                                     <small class="text-muted d-block fw-medium mt-1"><i class="fas fa-building me-1"></i> Unit: {{ $item->unit_bisnis ?? '-' }}</small>
+                                                    
+                                                    {{-- TOMBOL RIWAYAT PROSPEK --}}
+                                                    @if(isset($existingProspeks) && $existingProspeks->has($item->perusahaan))
+                                                        @php
+                                                            $latestProspek = $existingProspeks[$item->perusahaan]->first();
+                                                            $totalCta = $existingProspeks[$item->perusahaan]->sum(function($p) { return $p->cta->count(); });
+                                                        @endphp
+                                                        <div class="mt-2">
+                                                            <span class="badge badge-soft-warning border border-warning" style="font-size: 10px;">Pernah Diprospek</span>
+                                                            <button type="button" class="btn btn-xs btn-outline-warning btn-round fw-bold shadow-sm ms-1 hover-lift py-0 px-2" style="font-size: 10px;" data-bs-toggle="modal" data-bs-target="#modalRiwayatProspek_{{ $item->id }}">
+                                                                <i class="fas fa-eye me-1"></i> Riwayat
+                                                            </button>
+                                                        </div>
+                                                        
+                                                        {{-- MODAL RIWAYAT PROSPEK --}}
+                                                        <div class="modal fade" id="modalRiwayatProspek_{{ $item->id }}" tabindex="-1" aria-hidden="true">
+                                                            <div class="modal-dialog modal-dialog-centered">
+                                                                <div class="modal-content border-0 shadow-lg">
+                                                                    <div class="modal-header border-bottom-0 pb-0">
+                                                                        <h5 class="modal-title fw-bold text-dark"><i class="fas fa-history text-warning me-2"></i> Riwayat Prospek</h5>
+                                                                        <button type="button" class="btn-close shadow-none" data-bs-dismiss="modal" aria-label="Close"></button>
+                                                                    </div>
+                                                                    <div class="modal-body p-4">
+                                                                        <table class="table table-sm table-borderless">
+                                                                            <tr><td width="160" class="text-muted fw-bold">Perusahaan</td><td>: <span class="fw-bolder">{{ $item->perusahaan }}</span></td></tr>
+                                                                            <tr><td class="text-muted fw-bold">Marketing Terakhir</td><td>: <span class="fw-bolder">{{ $latestProspek->marketing->name ?? '-' }}</span></td></tr>
+                                                                            <tr><td class="text-muted fw-bold">Tgl Prospek Terakhir</td><td>: <span class="fw-bolder">{{ \Carbon\Carbon::parse($latestProspek->tanggal_prospek)->format('d M Y') }}</span></td></tr>
+                                                                            <tr><td class="text-muted fw-bold">Status Akhir</td><td>: <span class="fw-bolder text-info">{{ $latestProspek->status ?? 'Belum ada status' }}</span></td></tr>
+                                                                            <tr><td class="text-muted fw-bold">Total Form CTA</td><td>: <span class="badge bg-primary rounded-pill">{{ $totalCta }}</span></td></tr>
+                                                                        </table>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    @else
+                                                        <div class="mt-2">
+                                                            <span class="badge badge-soft-success border border-success" style="font-size: 10px;"><i class="fas fa-leaf me-1"></i> Fresh Database</span>
+                                                        </div>
+                                                    @endif
                                                 </td>
 
                                                 <td class="align-middle">
@@ -378,6 +417,45 @@
                                         <td class="align-middle">
                                             <div class="fw-bolder text-primary" style="font-size: 14px;">{{ $ad->nama_perusahaan }}</div>
                                             <small class="text-dark fw-bold d-block mt-1"><i class="fas fa-user-tie me-1 text-muted"></i>{{ $ad->nama_hrd }}</small>
+                                            
+                                            {{-- TOMBOL RIWAYAT PROSPEK ADS --}}
+                                            @if(isset($existingProspeks) && $existingProspeks->has($ad->nama_perusahaan))
+                                                @php
+                                                    $latestProspekAds = $existingProspeks[$ad->nama_perusahaan]->first();
+                                                    $totalCtaAds = $existingProspeks[$ad->nama_perusahaan]->sum(function($p) { return $p->cta->count(); });
+                                                @endphp
+                                                <div class="mt-2">
+                                                    <span class="badge badge-soft-warning border border-warning" style="font-size: 10px;">Pernah Diprospek</span>
+                                                    <button type="button" class="btn btn-xs btn-outline-warning btn-round fw-bold shadow-sm ms-1 hover-lift py-0 px-2" style="font-size: 10px;" data-bs-toggle="modal" data-bs-target="#modalRiwayatProspekAds_{{ $ad->id }}">
+                                                        <i class="fas fa-eye me-1"></i> Riwayat
+                                                    </button>
+                                                </div>
+                                                
+                                                {{-- MODAL RIWAYAT PROSPEK ADS --}}
+                                                <div class="modal fade" id="modalRiwayatProspekAds_{{ $ad->id }}" tabindex="-1" aria-hidden="true">
+                                                    <div class="modal-dialog modal-dialog-centered">
+                                                        <div class="modal-content border-0 shadow-lg">
+                                                            <div class="modal-header border-bottom-0 pb-0">
+                                                                <h5 class="modal-title fw-bold text-dark"><i class="fas fa-history text-warning me-2"></i> Riwayat Prospek</h5>
+                                                                <button type="button" class="btn-close shadow-none" data-bs-dismiss="modal" aria-label="Close"></button>
+                                                            </div>
+                                                            <div class="modal-body p-4">
+                                                                <table class="table table-sm table-borderless">
+                                                                    <tr><td width="160" class="text-muted fw-bold">Perusahaan</td><td>: <span class="fw-bolder">{{ $ad->nama_perusahaan }}</span></td></tr>
+                                                                    <tr><td class="text-muted fw-bold">Marketing Terakhir</td><td>: <span class="fw-bolder">{{ $latestProspekAds->marketing->name ?? '-' }}</span></td></tr>
+                                                                    <tr><td class="text-muted fw-bold">Tgl Prospek Terakhir</td><td>: <span class="fw-bolder">{{ \Carbon\Carbon::parse($latestProspekAds->tanggal_prospek)->format('d M Y') }}</span></td></tr>
+                                                                    <tr><td class="text-muted fw-bold">Status Akhir</td><td>: <span class="fw-bolder text-info">{{ $latestProspekAds->status ?? 'Belum ada status' }}</span></td></tr>
+                                                                    <tr><td class="text-muted fw-bold">Total Form CTA</td><td>: <span class="badge bg-primary rounded-pill">{{ $totalCtaAds }}</span></td></tr>
+                                                                </table>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            @else
+                                                <div class="mt-2">
+                                                    <span class="badge badge-soft-success border border-success" style="font-size: 10px;"><i class="fas fa-leaf me-1"></i> Fresh Database</span>
+                                                </div>
+                                            @endif
                                         </td>
                                         <td class="align-middle">
                                             <div class="d-flex flex-column gap-1" style="font-size: 12px;">

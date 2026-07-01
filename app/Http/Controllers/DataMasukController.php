@@ -87,11 +87,22 @@ class DataMasukController extends Controller
                                 ->pluck('perusahaan')
                                 ->unique() 
                                 ->toArray();
+                                
+        // 🔥 BARU: Ambil detail Riwayat Prospek untuk data yang sedang tampil di halaman ini
+        $currentCompanies = collect($allData->items())->pluck('perusahaan')
+            ->merge(collect($adsData->items())->pluck('nama_perusahaan'))
+            ->filter()->unique()->toArray();
+            
+        $existingProspeks = Prospek::with(['marketing', 'cta'])
+            ->whereIn('perusahaan', $currentCompanies)
+            ->orderBy('created_at', 'desc') // Yg terbaru di atas
+            ->get()
+            ->groupBy('perusahaan');
 
         return view('data-masuk', compact(
             'allData', 'totalData','marketings', 'adsData',
             'totalToday', 'dataValid', 'validPercentage', 'dataConverted',
-            'prospekList',  'unsyncedCompanies' 
+            'prospekList',  'unsyncedCompanies', 'existingProspeks' 
         ));
     }
 
