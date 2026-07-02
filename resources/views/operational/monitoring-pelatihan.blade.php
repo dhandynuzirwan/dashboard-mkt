@@ -131,11 +131,14 @@
                                             }
 
                                             $firstPendaftaran = $pesertaList->first();
+                                            $skema = '';
                                             if ($firstPendaftaran) {
                                                 if ($firstPendaftaran->tipe_pendaftaran == 'kolektif' && $firstPendaftaran->kolektif && $firstPendaftaran->kolektif->cta) {
                                                     $sertifikasi = strtoupper($firstPendaftaran->kolektif->cta->sertifikasi);
+                                                    $skema = strtolower($firstPendaftaran->kolektif->cta->skema);
                                                 } else if ($firstPendaftaran->cta) {
                                                     $sertifikasi = strtoupper($firstPendaftaran->cta->sertifikasi);
+                                                    $skema = strtolower($firstPendaftaran->cta->skema);
                                                 }
                                             }
                                             
@@ -201,6 +204,16 @@
                                         {{-- KOLOM TIM (UPDATE) --}}
                                         <td class="cell-relative">
                                             <div class="cell-content-wrapper me-2">
+                                                @if($skema == 'titip vendor lain')
+                                                <div class="mb-2">
+                                                    <span class="badge badge-soft-warning border border-warning text-dark px-2 py-1 mb-2 d-inline-block" style="font-size: 10px;">Titip Vendor</span>
+                                                    <span class="text-dark fw-bold d-block" style="font-size: 12px;"><i class="fas fa-building text-primary me-1"></i> {{ $pelatihan->instruktur ?? '-' }}</span>
+                                                    <span class="text-dark fw-bold d-block mt-1" style="font-size: 11px;"><i class="fas fa-user text-success me-1"></i> PIC: {{ $pelatihan->asesor ?? '-' }}</span>
+                                                    @if($pelatihan->wa_trainer)
+                                                    <span class="text-dark fw-bold d-block mt-1" style="font-size: 11px;"><i class="fab fa-whatsapp text-success me-1"></i> WA: <a href="https://wa.me/{{ preg_replace('/[^0-9]/', '', $pelatihan->wa_trainer) }}" target="_blank" class="text-success text-decoration-none">{{ $pelatihan->wa_trainer }}</a></span>
+                                                    @endif
+                                                </div>
+                                                @else
                                                 <div class="mb-2">
                                                     <small class="text-muted d-block" style="font-size: 9px; text-transform: uppercase;">Instruktur & Asesor</small>
                                                     <span class="text-dark fw-bold d-block" style="font-size: 12px;"><i class="fas fa-chalkboard-teacher text-primary me-1"></i> Inst: {{ $pelatihan->instruktur ?? '-' }}</span>
@@ -213,6 +226,7 @@
                                                     <small class="text-muted d-block mb-1" style="font-size: 9px; text-transform: uppercase;">Pengawas (Wasnaker)</small>
                                                     <span class="text-dark fw-bold d-block" style="font-size: 11px;">{{ $pelatihan->pengawas ?? 'Belum Diset' }}</span>
                                                 </div>
+                                                @endif
                                             </div>
                                             <button class="btn btn-sm btn-edit-absolute hover-lift" title="Edit Tim" data-bs-toggle="modal" data-bs-target="#modalUpdateTim-{{ $pelatihan->id }}"><i class="fas fa-pen"></i></button>
                                         </td>
@@ -220,6 +234,19 @@
                                         {{-- KOLOM LEMBAGA & PIC (UPDATE LABEL) --}}
                                         <td class="cell-relative">
                                             <div class="cell-content-wrapper me-2">
+                                                @if($skema == 'titip vendor lain')
+                                                <div class="mb-2" style="font-size: 11px;">
+                                                    <span class="text-muted d-block" style="font-size: 9px; text-transform: uppercase;">Nama Lembaga</span>
+                                                    <span class="fw-bold text-dark d-block"><i class="fas fa-building text-info me-1"></i> {{ $pelatihan->pjk3 ?? 'Belum Diset' }}</span>
+                                                </div>
+                                                
+                                                <div class="mt-2">
+                                                    <span class="text-muted d-block mb-1" style="font-size: 9px; text-transform: uppercase;">PIC Internal</span>
+                                                    <span class="badge bg-light text-dark border text-start px-2 py-1 shadow-sm w-100 text-truncate" style="font-size: 10px;">
+                                                        <i class="fas fa-user-shield text-success me-1"></i> {{ $pelatihan->pic_operasional ?? 'Belum Diset' }}
+                                                    </span>
+                                                </div>
+                                                @else
                                                 <div class="mb-2" style="font-size: 11px;">
                                                     <span class="text-muted d-block" style="font-size: 9px; text-transform: uppercase;">Lembaga & PJK3</span>
                                                     <span class="fw-bold text-dark d-block"><i class="fas fa-building text-info me-1"></i> {{ $pelatihan->pjk3 ?? 'Belum Diset' }}</span>
@@ -236,6 +263,7 @@
                                                         </span>
                                                     </div>
                                                 </div>
+                                                @endif
                                             </div>
                                             <button class="btn btn-sm btn-edit-absolute hover-lift" title="Edit Lembaga & PIC" data-bs-toggle="modal" data-bs-target="#modalUpdateLembaga-{{ $pelatihan->id }}"><i class="fas fa-pen"></i></button>
                                         </td>
@@ -289,7 +317,17 @@
                                     @forelse($pelatihans as $pelatihan)
                                         @php
                                             $firstPendaftaran = $pelatihan->pendaftaranPribadis->first();
-                                            $sertifikasi = ($firstPendaftaran && $firstPendaftaran->cta) ? strtoupper($firstPendaftaran->cta->sertifikasi) : 'Lainnya';
+                                            $sertifikasi = 'Lainnya';
+                                            $skema = '';
+                                            if ($firstPendaftaran) {
+                                                if ($firstPendaftaran->tipe_pendaftaran == 'kolektif' && $firstPendaftaran->kolektif && $firstPendaftaran->kolektif->cta) {
+                                                    $sertifikasi = strtoupper($firstPendaftaran->kolektif->cta->sertifikasi);
+                                                    $skema = strtolower($firstPendaftaran->kolektif->cta->skema);
+                                                } else if ($firstPendaftaran->cta) {
+                                                    $sertifikasi = strtoupper($firstPendaftaran->cta->sertifikasi);
+                                                    $skema = strtolower($firstPendaftaran->cta->skema);
+                                                }
+                                            }
                                             $checklist = json_decode($pelatihan->checklist_validasi, true) ?? [];
                                             $progress = count($checklist);
                                             $percent = $progress > 0 ? round(($progress / 21) * 100) : 0;
@@ -300,6 +338,16 @@
                                                 <div class="fw-bolder text-dark" style="font-size: 14px;">{{ optional($pelatihan->training)->nama_training ?? 'Belum Ada Pelatihan' }}</div>
                                                 <div class="text-primary fw-bold mt-1" style="font-size: 13px;"><i class="fas fa-certificate me-1"></i> {{ $sertifikasi }}</div>
                                             </td>
+                                            @if($skema == 'titip vendor lain')
+                                            <td colspan="3" class="text-center bg-gray-50 border-start">
+                                                <div class="py-3">
+                                                    <span class="badge badge-soft-warning border border-warning text-dark px-3 py-2" style="font-size: 13px;">
+                                                        <i class="fas fa-building me-2"></i> Titip Vendor Lain
+                                                    </span>
+                                                    <p class="text-muted small mt-2 mb-0">Administrasi dan evaluasi dikelola oleh vendor terkait.</p>
+                                                </div>
+                                            </td>
+                                            @else
                                             <td>
                                                 <div class="d-flex justify-content-between align-items-center mb-1">
                                                     <span class="text-dark fw-bold" style="font-size: 11px;">Progress Checklist</span>
@@ -362,6 +410,7 @@
                                                 </div>
                                                 @endif
                                             </td>
+                                            @endif
                                         </tr>
                                     @empty
                                         <tr>
