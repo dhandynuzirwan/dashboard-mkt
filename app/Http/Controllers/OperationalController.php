@@ -123,6 +123,63 @@ class OperationalController extends Controller
         return view('operational.monitoring-pelatihan', compact('pelatihans', 'users'));
     }
 
+    // Menampilkan Halaman Monitoring Pelatihan TV (Display Monitor)
+    public function monitorTv()
+    {
+        return view('operational.monitor-tv');
+    }
+
+    // JSON API untuk TV Monitor
+    public function monitorTvData()
+    {
+        $pelatihans = \App\Models\PelatihanBerjalan::with([
+            'training', 
+            'pendaftaranPribadis.cta.prospek.marketing',
+            'pendaftaranPribadis.kolektif.cta.prospek.marketing'
+        ])
+        ->whereIn('status_kelas', ['persiapan', 'running'])
+        ->orderBy('tanggal_pelatihan', 'asc')
+        ->get();
+
+        $data = $pelatihans->map(function ($pelatihan) {
+            $firstPendaftaran = $pelatihan->pendaftaranPribadis->first();
+            $sertifikasi = 'Lainnya';
+            if ($firstPendaftaran) {
+                if ($firstPendaftaran->tipe_pendaftaran == 'kolektif' && $firstPendaftaran->kolektif && $firstPendaftaran->kolektif->cta) {
+                    $sertifikasi = strtoupper($firstPendaftaran->kolektif->cta->sertifikasi);
+                } else if ($firstPendaftaran->cta) {
+                    $sertifikasi = strtoupper($firstPendaftaran->cta->sertifikasi);
+                }
+            }
+
+            $checklist = json_decode($pelatihan->checklist_validasi, true) ?? [];
+            $progress = count($checklist);
+            // Asumsi 21 item total, sesuaikan jika beda
+            $percent = $progress > 0 ? round(($progress / 21) * 100) : 0;
+
+            return [
+                'id' => $pelatihan->id,
+                'judul' => optional($pelatihan->training)->nama_training ?? 'Belum Ada Pelatihan',
+                'sertifikasi' => $sertifikasi,
+                'tanggal_pelatihan' => $pelatihan->tanggal_pelatihan ? \Carbon\Carbon::parse($pelatihan->tanggal_pelatihan)->translatedFormat('d M Y') : '-',
+                'tanggal_selesai' => $pelatihan->tanggal_selesai ? \Carbon\Carbon::parse($pelatihan->tanggal_selesai)->translatedFormat('d M Y') : null,
+                'lokasi' => $pelatihan->lokasi ?? 'Belum Diset',
+                'pic_operasional' => $pelatihan->pic_operasional ?? '-',
+                'instruktur' => $pelatihan->instruktur ?? '-',
+                'asesor' => $pelatihan->asesor ?? '-',
+                'status_kelas' => $pelatihan->status_kelas,
+                'progress_persen' => min(100, $percent),
+                'progress_count' => $progress
+            ];
+        });
+
+        return response()->json([
+            'status' => 'success',
+            'data' => $data,
+            'waktu' => now()->format('d M Y H:i:s'),
+        ]);
+    }
+
     // Update Data Pelatihan Berjalan
     public function updatePelatihanBerjalan(Request $request, $id)
     {

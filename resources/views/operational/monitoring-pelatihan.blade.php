@@ -10,6 +10,11 @@
                 <h3 class="fw-bolder mb-1 text-dark" style="letter-spacing: -0.5px;">Monitoring Operasional Pelatihan</h3>
                 <h6 class="text-muted mb-2 fw-normal">Pantau jadwal, personil, administrasi, dan distribusi sertifikat klien</h6>
             </div>
+            <div class="ms-md-auto py-2 py-md-0">
+                <a href="{{ route('monitoring.pelatihan.tv') }}" target="_blank" class="btn btn-dark btn-round fw-bold shadow-sm hover-lift px-4">
+                    <i class="fas fa-tv me-2 text-warning"></i> TV Monitor Mode
+                </a>
+            </div>
         </div>
 
         {{-- ================= STATISTIC CARDS ================= --}}

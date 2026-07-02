@@ -159,6 +159,8 @@ Route::middleware('auth')->group(function () {
         Route::post('/operational/kontak', [OperationalController::class, 'storeKontak'])->name('operational.store-kontak');
         Route::delete('/operational/kontak/{id}', [OperationalController::class, 'destroyKontak'])->name('operational.destroy-kontak');
         Route::get('/monitoring-pelatihan', [OperationalController::class, 'monitoringPelatihan'])->name('monitoring.pelatihan');
+        Route::get('/monitoring-pelatihan/tv', [OperationalController::class, 'monitorTv'])->name('monitoring.pelatihan.tv');
+        Route::get('/api/monitoring-pelatihan/tv-data', [OperationalController::class, 'monitorTvData'])->name('api.monitoring.pelatihan.tv-data');
         Route::put('/monitoring-pelatihan/{id}', [OperationalController::class, 'updatePelatihanBerjalan'])->name('monitoring.pelatihan.update');
         Route::delete('/monitoring-pelatihan/{id}', [OperationalController::class, 'destroyPelatihanBerjalan'])->name('operational.pelatihan-berjalan.destroy');
 
