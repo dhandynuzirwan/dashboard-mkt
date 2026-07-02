@@ -81,6 +81,7 @@
                                         <option value="Offline Training" {{ $cta->skema == 'Offline Training' ? 'selected' : '' }}>Offline Training</option>
                                         <option value="Inhouse Training" {{ $cta->skema == 'Inhouse Training' ? 'selected' : '' }}>Inhouse Training</option>
                                         <option value="Blended Training" {{ $cta->skema == 'Blended Training' ? 'selected' : '' }}>Blended Training</option>
+                                        <option value="Titip Vendor Lain" {{ $cta->skema == 'Titip Vendor Lain' ? 'selected' : '' }}>Titip Vendor Lain</option>
                                     </select>
                                 </div>
 

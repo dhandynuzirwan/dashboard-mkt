@@ -108,6 +108,7 @@
                                         <option value="Offline Training">Offline Training</option>
                                         <option value="Inhouse Training">Inhouse Training</option>
                                         <option value="Blended Training">Blended Training</option>
+                                        <option value="Titip Vendor Lain">Titip Vendor Lain</option>
                                     </select>
                                 </div>
 
