@@ -122,6 +122,7 @@
                     $tglPelatihan = $pendaftar->pelatihanBerjalan->tanggal_pelatihan ?? null;
                     if (!$tglPelatihan && $pendaftar->tipe_pendaftaran == 'kolektif') {
                         $other = \App\Models\PendaftaranPribadi::where('kolektif_id', $pendaftar->kolektif_id)
+                            ->where('master_training_id', $pendaftar->master_training_id)
                             ->whereNotNull('pelatihan_berjalan_id')
                             ->with('pelatihanBerjalan')
                             ->first();
