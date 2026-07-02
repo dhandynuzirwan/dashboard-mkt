@@ -118,6 +118,18 @@
                     </table>
                 </div>
 
+                @php
+                    $tglPelatihan = $pendaftar->tanggal_pelatihan;
+                    if (!$tglPelatihan && $pendaftar->tipe_pendaftaran == 'kolektif') {
+                        $other = \App\Models\PendaftaranPribadi::where('kolektif_id', $pendaftar->kolektif_id)
+                            ->whereNotNull('tanggal_pelatihan')
+                            ->first();
+                        if ($other) {
+                            $tglPelatihan = $other->tanggal_pelatihan;
+                        }
+                    }
+                    $tglFormat = $tglPelatihan ? \Carbon\Carbon::parse($tglPelatihan)->format('Y-m-d') : '';
+                @endphp
                 {{-- Penetapan Jadwal Pelatihan (Dashed Box) --}}
                 <div class="border border-2 border-dashed p-4 rounded-3 bg-white mt-2">
                     <div class="d-flex align-items-center mb-3">
@@ -128,7 +140,7 @@
                     <div class="row">
                         <div class="col-md-6 mb-3 mb-md-0">
                             <label class="form-label text-muted fw-bold mb-1" style="font-size: 11px; text-transform: uppercase;">Mulai Pelatihan (Opsional)</label>
-                            <input type="date" name="tanggal_pelatihan" value="{{ $pendaftar->tanggal_pelatihan }}" class="form-control form-control-sm text-dark fw-bold">
+                            <input type="date" name="tanggal_pelatihan" value="{{ $tglFormat }}" class="form-control form-control-sm text-dark fw-bold">
                         </div>
                     </div>
                 </div>
