@@ -477,13 +477,19 @@
                                         </td>
                                         <td class="text-center pe-4">
                                             <div class="d-flex flex-column gap-1">
-                                                <button class="btn btn-primary btn-sm w-100 btn-round fw-bold shadow-sm" data-bs-toggle="modal" data-bs-target="#modalReviewIndividu-{{ $pendaftar->id }}">
-                                                    <i class="fas fa-search me-1"></i> Review
+                                                @if($pendaftar->tipe_pendaftaran == 'kolektif')
+                                                <button class="btn btn-secondary btn-sm w-100 btn-round fw-bold shadow-sm" data-bs-toggle="modal" data-bs-target="#modalReviewKolektif-{{ $pendaftar->id }}">
+                                                    <i class="fas fa-search me-1"></i> Review Kolektif
                                                 </button>
-                                                @if($pendaftar->tipe_pendaftaran == 'kolektif' && $pendaftar->kolektif && $pendaftar->kolektif->file_zip)
+                                                @if($pendaftar->kolektif && $pendaftar->kolektif->file_zip)
                                                 <a href="{{ asset('storage/' . $pendaftar->kolektif->file_zip) }}" target="_blank" class="btn btn-success btn-sm w-100 btn-round fw-bold shadow-sm">
                                                     <i class="fas fa-file-archive me-1"></i> Berkas ZIP
                                                 </a>
+                                                @endif
+                                                @else
+                                                <button class="btn btn-primary btn-sm w-100 btn-round fw-bold shadow-sm" data-bs-toggle="modal" data-bs-target="#modalReviewIndividu-{{ $pendaftar->id }}">
+                                                    <i class="fas fa-search me-1"></i> Review
+                                                </button>
                                                 @endif
                                                 <form action="{{ route('operational.pendaftaran.destroy', $pendaftar->id) }}" method="POST" class="m-0" onsubmit="return confirm('Yakin ingin menghapus data pendaftaran ini beserta berkasnya? Data yang dihapus tidak dapat dikembalikan.');">
                                                     @csrf
@@ -496,6 +502,9 @@
                                         </td>
                                     </tr>
                                     @include('partials.modal-review-individu')
+                                    @if($pendaftar->tipe_pendaftaran == 'kolektif')
+                                        @include('partials.modal-review-kolektif')
+                                    @endif
                                     @empty
                                     <tr><td colspan="8" class="text-center py-4 text-muted">Belum ada data pendaftar.</td></tr>
                                     @endforelse
@@ -515,7 +524,7 @@
 
         {{-- Include Modal Review Berkas --}}
         
-        @include('partials.modal-review-kolektif')
+        {{-- modal-review-kolektif included inside the loop --}}
 
     </div>
 </div>
