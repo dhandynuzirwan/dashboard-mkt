@@ -31,7 +31,7 @@
     </div>
 
     {{-- STAT CARDS (Atas) --}}
-    <div class="mb-2 fade-in px-2" id="stat-cards-container" style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 14px;">
+    <div class="fade-in px-2" id="stat-cards-container" style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 14px; margin-bottom: 14px;">
         <div style="grid-column: span 4;" class="text-center py-2">
             <div class="spinner-border text-primary mb-2" style="width: 2rem; height: 2rem;" role="status"></div>
             <h5 class="text-muted fw-bold">Sinkronisasi Server Data...</h5>
