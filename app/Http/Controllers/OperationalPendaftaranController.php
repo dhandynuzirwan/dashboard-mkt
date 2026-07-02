@@ -113,33 +113,40 @@ class OperationalPendaftaranController extends Controller
     {
         $pendaftaran = PendaftaranPribadi::findOrFail($id);
 
-        // Ambil semua status yang dikirim form
+        // Gunakan nilai dari request, jika null (karena field disabled), gunakan nilai dari database
+        $statusKtp = $request->status_ktp ?? $pendaftaran->status_ktp;
+        $statusIjazah = $request->status_ijazah ?? $pendaftaran->status_ijazah;
+        $statusFoto = $request->status_foto ?? $pendaftaran->status_foto;
+        $statusCv = $request->status_cv ?? $pendaftaran->status_cv;
+        $statusSk = $request->status_sk ?? $pendaftaran->status_sk;
+        $statusLaporan = $request->status_laporan ?? $pendaftaran->status_laporan;
+        $statusSop = $request->status_sop ?? $pendaftaran->status_sop;
+
         $updates = [
-            'status_ktp'      => $request->status_ktp,
-            'catatan_ktp'     => $request->status_ktp == 'reject' ? $request->catatan_ktp : null,
-            'status_ijazah'   => $request->status_ijazah,
-            'catatan_ijazah'  => $request->status_ijazah == 'reject' ? $request->catatan_ijazah : null,
-            'status_foto'     => $request->status_foto,
-            'catatan_foto'    => $request->status_foto == 'reject' ? $request->catatan_foto : null,
-            'status_cv'       => $request->status_cv,
-            'catatan_cv'      => $request->status_cv == 'reject' ? $request->catatan_cv : null,
-            'status_sk'       => $request->status_sk,
-            'catatan_sk'      => $request->status_sk == 'reject' ? $request->catatan_sk : null,
-            'status_laporan'  => $request->status_laporan,
-            'catatan_laporan' => $request->status_laporan == 'reject' ? $request->catatan_laporan : null,
-            'status_sop'      => $request->status_sop,
-            'catatan_sop'     => $request->status_sop == 'reject' ? $request->catatan_sop : null,
+            'status_ktp'      => $statusKtp,
+            'catatan_ktp'     => $statusKtp == 'reject' ? $request->catatan_ktp : null,
+            'status_ijazah'   => $statusIjazah,
+            'catatan_ijazah'  => $statusIjazah == 'reject' ? $request->catatan_ijazah : null,
+            'status_foto'     => $statusFoto,
+            'catatan_foto'    => $statusFoto == 'reject' ? $request->catatan_foto : null,
+            'status_cv'       => $statusCv,
+            'catatan_cv'      => $statusCv == 'reject' ? $request->catatan_cv : null,
+            'status_sk'       => $statusSk,
+            'catatan_sk'      => $statusSk == 'reject' ? $request->catatan_sk : null,
+            'status_laporan'  => $statusLaporan,
+            'catatan_laporan' => $statusLaporan == 'reject' ? $request->catatan_laporan : null,
+            'status_sop'      => $statusSop,
+            'catatan_sop'     => $statusSop == 'reject' ? $request->catatan_sop : null,
         ];
 
         // LOGIKA PENENTUAN STATUS UTAMA
         $semuaStatus = [
-            $request->status_ktp, $request->status_ijazah, $request->status_foto, 
-            $request->status_cv
+            $statusKtp, $statusIjazah, $statusFoto, $statusCv
         ];
 
-        if ($pendaftaran->file_sk) $semuaStatus[] = $request->status_sk;
-        if ($pendaftaran->file_laporan) $semuaStatus[] = $request->status_laporan;
-        if ($pendaftaran->file_sop) $semuaStatus[] = $request->status_sop;
+        if ($pendaftaran->file_sk) $semuaStatus[] = $statusSk;
+        if ($pendaftaran->file_laporan) $semuaStatus[] = $statusLaporan;
+        if ($pendaftaran->file_sop) $semuaStatus[] = $statusSop;
 
         if (in_array('reject', $semuaStatus)) {
             $updates['status'] = 'revisi';
