@@ -18,6 +18,10 @@
                 <div class="spinner-grow text-success me-2" role="status" style="width: 1rem; height: 1rem;"></div>
                 <span class="fw-bold text-dark fs-5">Update: <span id="last-update" class="text-success">Memuat...</span></span>
             </div>
+            <!-- KEMBALI BUTTON -->
+            <a href="{{ route('monitoring.pelatihan') }}" class="btn btn-outline-danger btn-round shadow-lg px-3 py-2 fw-bold hover-lift fs-5" id="btn-back">
+                <i class="fas fa-arrow-left me-2"></i> Kembali
+            </a>
             
             <!-- DARK MODE BUTTON -->
             <button onclick="toggleDarkMode()" class="btn btn-outline-dark btn-round shadow-lg px-3 py-2 fw-bold hover-lift fs-5" id="btn-dark-mode">
@@ -68,6 +72,11 @@
     .bg-info-subtle { background-color: #e0f2fe !important; }
     .bg-warning-subtle { background-color: #fef3c7 !important; }
     .bg-danger-subtle { background-color: #fee2e2 !important; }
+
+    /* 🔥 CLEAN TV LAYOUT 🔥 */
+    .sidebar { display: none !important; }
+    .main-header { display: none !important; }
+    .main-panel { width: 100% !important; margin: 0 !important; }
 
     /* 🔥 SUPER FULLSCREEN OVERRIDES 🔥 */
     body.fullscreen-active .wrapper,
@@ -250,7 +259,7 @@
                                     <div class="text-warning-dark text-uppercase fw-bolder mb-1" style="font-size: 0.7rem; letter-spacing: 1px;">
                                         PIC OPERASIONAL
                                     </div>
-                                    <div class="fw-black text-dark text-uppercase" style="font-size: 1.1rem; letter-spacing: -0.5px;">
+                                    <div class="fw-black text-dark text-uppercase" style="font-size: 1.5rem; letter-spacing: -0.5px;">
                                         <i class="fas fa-user-shield text-warning me-1"></i> ${item.pic_operasional}
                                     </div>
                                 </div>
@@ -309,12 +318,12 @@
             <div style="min-width: 0;">
                 <div class="card stat-card-modern shadow-sm h-100 hover-lift border-0">
                     <div class="card-body p-2 p-xl-3 d-flex align-items-center">
-                        <div class="icon-circle bg-warning-subtle text-warning-dark rounded-circle d-flex align-items-center justify-content-center me-3" style="width: 55px; height: 55px; min-width: 55px;">
+                        <div class="icon-circle bg-warning-subtle text-warning rounded-circle d-flex align-items-center justify-content-center me-3" style="width: 55px; height: 55px; min-width: 55px;">
                             <i class="fas fa-hourglass-half" style="font-size: 1.6rem;"></i>
                         </div>
                         <div style="min-width: 0;">
-                            <p class="text-muted text-uppercase fw-bold mb-1 text-truncate" style="font-size: 0.85rem;">Tahap Persiapan</p>
-                            <h4 class="fw-black text-warning-dark mb-0 text-truncate" style="font-size: 1.6rem; letter-spacing: -1px;">${totalPersiapan} KELAS</h4>
+                            <p class="text-warning text-uppercase fw-bold mb-1 text-truncate" style="font-size: 0.85rem;">Tahap Persiapan</p>
+                            <h4 class="fw-black text-warning mb-0 text-truncate" style="font-size: 1.6rem; letter-spacing: -1px;">${totalPersiapan} KELAS</h4>
                         </div>
                     </div>
                 </div>
