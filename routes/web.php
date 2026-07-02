@@ -41,8 +41,9 @@ Route::get('/login', function () {
 // --- PROSES LOGIN ---
 Route::post('/login', function (Illuminate\Http\Request $request) {
     $credentials = $request->only('email', 'password');
+    $remember = $request->has('remember');
     
-    if (Auth::attempt($credentials)) {
+    if (Auth::attempt($credentials, $remember)) {
         $request->session()->regenerate();
         
         // 🔥 Ubah arah redirect ke halaman Landing Page Pembuka (home) 🔥

@@ -262,6 +262,13 @@
                     </div>
                 </div>
 
+                <div class="mb-4 form-check d-flex align-items-center">
+                    <input type="checkbox" name="remember" id="remember" class="form-check-input mt-0 me-2" style="cursor: pointer; background-color: rgba(15, 23, 42, 0.5); border-color: rgba(255, 255, 255, 0.1);">
+                    <label class="form-check-label" for="remember" style="color: #e2e8f0; font-size: 0.9rem; cursor: pointer;">
+                        Ingat Saya (Tetap login di perangkat ini)
+                    </label>
+                </div>
+
                 <button type="submit" class="btn-login shadow" id="btnSubmit">
                     Masuk ke Sistem
                 </button>
