@@ -254,13 +254,13 @@
                             </div>
 
                             <!-- PIC HIGHLIGHT -->
-                            <div class="bg-warning-subtle border border-warning border-opacity-25 rounded-3 p-3 mb-3 d-flex align-items-center justify-content-between shadow-sm">
+                            <div class="bg-info-subtle border border-info border-opacity-25 rounded-3 p-3 mb-3 d-flex align-items-center justify-content-between shadow-sm">
                                 <div>
-                                    <div class="text-warning-dark text-uppercase fw-bolder mb-1" style="font-size: 0.7rem; letter-spacing: 1px;">
+                                    <div class="text-info text-uppercase fw-bolder mb-1" style="font-size: 0.7rem; letter-spacing: 1px;">
                                         PIC OPERASIONAL
                                     </div>
                                     <div class="fw-black text-dark text-uppercase" style="font-size: 1.5rem; letter-spacing: -0.5px;">
-                                        <i class="fas fa-user-shield text-warning me-1"></i> ${item.pic_operasional}
+                                        <i class="fas fa-user-shield text-info me-1"></i> ${item.pic_operasional}
                                     </div>
                                 </div>
                                 <div class="text-end">
