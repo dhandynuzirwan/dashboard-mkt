@@ -119,7 +119,7 @@
                     
                     {{-- Input Tanggal Pelatihan (Opsional) --}}
                     @php
-                        $tglIndividu = $pendaftar->tanggal_pelatihan;
+                        $tglIndividu = $pendaftar->pelatihanBerjalan->tanggal_pelatihan ?? null;
                         $tglIndividuFormat = $tglIndividu ? \Carbon\Carbon::parse($tglIndividu)->format('Y-m-d') : '';
                     @endphp
                     <div class="bg-light p-3 rounded-4 border border-light">

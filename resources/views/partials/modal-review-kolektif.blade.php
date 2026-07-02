@@ -119,13 +119,14 @@
                 </div>
 
                 @php
-                    $tglPelatihan = $pendaftar->tanggal_pelatihan;
+                    $tglPelatihan = $pendaftar->pelatihanBerjalan->tanggal_pelatihan ?? null;
                     if (!$tglPelatihan && $pendaftar->tipe_pendaftaran == 'kolektif') {
                         $other = \App\Models\PendaftaranPribadi::where('kolektif_id', $pendaftar->kolektif_id)
-                            ->whereNotNull('tanggal_pelatihan')
+                            ->whereNotNull('pelatihan_berjalan_id')
+                            ->with('pelatihanBerjalan')
                             ->first();
-                        if ($other) {
-                            $tglPelatihan = $other->tanggal_pelatihan;
+                        if ($other && $other->pelatihanBerjalan) {
+                            $tglPelatihan = $other->pelatihanBerjalan->tanggal_pelatihan;
                         }
                     }
                     $tglFormat = $tglPelatihan ? \Carbon\Carbon::parse($tglPelatihan)->format('Y-m-d') : '';

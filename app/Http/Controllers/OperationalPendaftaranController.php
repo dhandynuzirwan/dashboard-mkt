@@ -159,8 +159,6 @@ class OperationalPendaftaranController extends Controller
 
         // Tanggal Pelatihan & Auto-Create PelatihanBerjalan
         if ($request->filled('tanggal_pelatihan')) {
-            $updates['tanggal_pelatihan'] = $request->tanggal_pelatihan;
-            
             // Cek apakah ada PelatihanBerjalan dengan training & tanggal yang sama
             $pelatihanBerjalan = \App\Models\PelatihanBerjalan::firstOrCreate(
                 [
