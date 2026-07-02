@@ -128,55 +128,71 @@
             </div>
         </div>
 
-        {{-- FILTER TRACKING PROSPEK DEAL --}}
+        {{-- FILTER UNIFIED: TRACKING PROSPEK & VERIFIKASI BERKAS --}}
         <div class="card card-modern mb-4" style="background-color: #f8faff;">
             <div class="card-body p-3 p-md-4">
                 <div class="d-flex align-items-center mb-3 pb-3 border-bottom border-light">
                     <div class="icon-sm bg-primary-subtle text-primary rounded-circle d-flex align-items-center justify-content-center me-2" style="width: 32px; height: 32px;">
                         <i class="fas fa-filter" style="font-size: 13px;"></i>
                     </div>
-                    <h6 class="fw-bold mb-0 text-dark">Filter Pencarian Prospek Deal</h6>
+                    <h6 class="fw-bold mb-0 text-dark">Filter Pencarian Data Pendaftaran & Tracking</h6>
                 </div>
 
                 <form action="#" method="GET" class="row g-3 align-items-end">
-                    {{-- Kolom 1: Perusahaan --}}
-                    <div class="col-md-6 col-lg-3 col-xl-2">
-                        <label class="label-modern">Cari Perusahaan</label>
+                    {{-- Row 1 --}}
+                    <div class="col-md-6 col-lg-3">
+                        <label class="label-modern">Cari Data</label>
                         <div class="input-group shadow-sm" style="border-radius: 8px; overflow: hidden;">
                             <span class="input-group-text bg-white border-end-0 text-muted"><i class="fas fa-search"></i></span>
-                            <input type="text" name="search_tracking" class="form-control border-start-0 shadow-none ps-0" style="font-size: 13px; padding: 8px 12px;" placeholder="Nama / PIC...">
+                            <input type="text" name="search" value="{{ request('search') }}" class="form-control border-start-0 shadow-none ps-0" style="font-size: 13px; padding: 8px 12px;" placeholder="Nama / PIC / Instansi...">
                         </div>
                     </div>
 
-                    {{-- Kolom 3: Status --}}
-                    <div class="col-md-6 col-lg-3 col-xl-2">
-                        <label class="label-modern">Status</label>
+                    <div class="col-md-6 col-lg-3">
+                        <label class="label-modern">Status Tracking (Deal)</label>
                         <select name="status_tracking" class="form-select input-modern shadow-none" style="font-size: 13px;">
-                            <option value="">Semua</option>
+                            <option value="">Semua Status</option>
                             <option value="lengkap" {{ request('status_tracking') == 'lengkap' ? 'selected' : '' }}>🟢 Lengkap</option>
                             <option value="kurang" {{ request('status_tracking') == 'kurang' ? 'selected' : '' }}>🟡 Kurang</option>
                         </select>
                     </div>
+                    
+                    <div class="col-md-6 col-lg-3">
+                        <label class="label-modern">Status Berkas (Verifikasi)</label>
+                        <select name="status" class="form-select input-modern shadow-none" style="font-size: 13px;">
+                            <option value="">Semua Status</option>
+                            <option value="pending" {{ request('status') == 'pending' ? 'selected' : '' }}>🟡 Menunggu Verifikasi</option>
+                            <option value="revisi" {{ request('status') == 'revisi' ? 'selected' : '' }}>🔴 Butuh Revisi</option>
+                            <option value="diterima" {{ request('status') == 'diterima' ? 'selected' : '' }}>🟢 Disetujui</option>
+                        </select>
+                    </div>
 
-                    {{-- Kolom 4: Tanggal Awal --}}
-                    <div class="col-md-6 col-lg-3 col-xl-2">
+                    <div class="col-md-6 col-lg-3">
+                        <label class="label-modern">Jalur Pendaftaran</label>
+                        <select name="jalur" class="form-select input-modern shadow-none" style="font-size: 13px;">
+                            <option value="">Semua Jalur</option>
+                            <option value="individu" {{ request('jalur') == 'individu' ? 'selected' : '' }}>Individu / Pribadi</option>
+                            <option value="kolektif" {{ request('jalur') == 'kolektif' ? 'selected' : '' }}>Kolektif / Instansi</option>
+                        </select>
+                    </div>
+
+                    {{-- Row 2 --}}
+                    <div class="col-md-6 col-lg-3">
                         <label class="label-modern">Dari Tanggal</label>
                         <input type="date" name="start_date" value="{{ $startDate }}" class="form-control input-modern shadow-none" style="font-size: 13px;">
                     </div>
 
-                    {{-- Kolom 5: Tanggal Akhir --}}
-                    <div class="col-md-6 col-lg-3 col-xl-2">
+                    <div class="col-md-6 col-lg-3">
                         <label class="label-modern">Sampai Tanggal</label>
                         <input type="date" name="end_date" value="{{ $endDate }}" class="form-control input-modern shadow-none" style="font-size: 13px;">
                     </div>
 
-                    {{-- Kolom 6: Tombol --}}
-                    <div class="col-md-6 col-lg-3 col-xl-2">
-                        <div class="d-flex gap-2">
-                            <button type="submit" class="btn btn-primary btn-round fw-bold shadow-sm flex-fill" style="padding: 8px 12px; font-size: 13px;">
-                                <i class="fas fa-search me-1"></i> Cari
+                    <div class="col-md-12 col-lg-6 mt-3 mt-lg-0">
+                        <div class="d-flex gap-2 h-100 align-items-end justify-content-lg-end">
+                            <button type="submit" class="btn btn-primary btn-round fw-bold shadow-sm" style="padding: 8px 20px; font-size: 13px;">
+                                <i class="fas fa-search me-1"></i> Cari Data
                             </button>
-                            <a href="{{ route('operational.data-pendaftaran') }}" class="btn btn-white border btn-round fw-bold text-dark shadow-sm flex-fill d-flex align-items-center justify-content-center" style="padding: 8px 12px; font-size: 13px;">
+                            <a href="{{ route('operational.data-pendaftaran') }}" class="btn btn-white border btn-round fw-bold text-dark shadow-sm d-flex align-items-center justify-content-center" style="padding: 8px 20px; font-size: 13px;">
                                 Reset
                             </a>
                         </div>
@@ -381,73 +397,7 @@
 
             {{-- TAB 2: VERIFIKASI BERKAS PESERTA --}}
             <div class="tab-pane fade" id="pills-registrasi" role="tabpanel">
-                {{-- FILTER VERIFIKASI BERKAS --}}
-                <div class="card card-modern mb-4" style="background-color: #f8faff;">
-                    <div class="card-body p-3 p-md-4">
-                        <div class="d-flex align-items-center mb-3 pb-3 border-bottom border-light">
-                            <div class="icon-sm bg-primary-subtle text-primary rounded-circle d-flex align-items-center justify-content-center me-2" style="width: 32px; height: 32px;">
-                                <i class="fas fa-filter" style="font-size: 13px;"></i>
-                            </div>
-                            <h6 class="fw-bold mb-0 text-dark">Filter Pencarian Data Pendaftar</h6>
-                        </div>
 
-                        <form action="#" method="GET" class="row g-3 align-items-end">
-                            {{-- Kolom 1 --}}
-                            <div class="col-md-6 col-lg-3 col-xl-2">
-                                <label class="label-modern">Cari Pendaftar</label>
-                                <div class="input-group shadow-sm" style="border-radius: 8px; overflow: hidden;">
-                                    <span class="input-group-text bg-white border-end-0 text-muted"><i class="fas fa-search"></i></span>
-                                    <input type="text" name="search" class="form-control border-start-0 shadow-none ps-0" style="font-size: 13px; padding: 8px 12px;" placeholder="Nama / ID...">
-                                </div>
-                            </div>
-                            
-                            {{-- Kolom 2 --}}
-                            <div class="col-md-6 col-lg-3 col-xl-2">
-                                <label class="label-modern">Status Berkas</label>
-                                <select name="status" class="form-select input-modern shadow-none">
-                                    <option value="">Semua Status</option>
-                                    <option value="pending" {{ request('status') == 'pending' ? 'selected' : '' }}>🟡 Menunggu Verifikasi</option>
-                                    <option value="revisi" {{ request('status') == 'revisi' ? 'selected' : '' }}>🔴 Butuh Revisi</option>
-                                    <option value="diterima" {{ request('status') == 'diterima' ? 'selected' : '' }}>🟢 Disetujui</option>
-                                </select>
-                            </div>
-
-                            {{-- Kolom 3 --}}
-                            <div class="col-md-6 col-lg-3 col-xl-2">
-                                <label class="label-modern">Jalur Pendaftaran</label>
-                                <select name="jalur" class="form-select input-modern shadow-none">
-                                    <option value="">Semua Jalur</option>
-                                    <option value="individu" {{ request('jalur') == 'individu' ? 'selected' : '' }}>Individu / Pribadi</option>
-                                    <option value="kolektif" {{ request('jalur') == 'kolektif' ? 'selected' : '' }}>Kolektif / Instansi</option>
-                                </select>
-                            </div>
-
-                            {{-- Kolom 4: Tanggal Awal --}}
-                            <div class="col-md-6 col-lg-3 col-xl-2">
-                                <label class="label-modern">Dari Tanggal</label>
-                                <input type="date" name="start_date_verifikasi" value="{{ $startDateVerifikasi ?? '' }}" class="form-control input-modern shadow-none" style="font-size: 13px;">
-                            </div>
-
-                            {{-- Kolom 5: Tanggal Akhir --}}
-                            <div class="col-md-6 col-lg-3 col-xl-2">
-                                <label class="label-modern">Sampai Tanggal</label>
-                                <input type="date" name="end_date_verifikasi" value="{{ $endDateVerifikasi ?? '' }}" class="form-control input-modern shadow-none" style="font-size: 13px;">
-                            </div>
-
-                            {{-- Kolom 6 --}}
-                            <div class="col-md-6 col-lg-3 col-xl-2">
-                                <div class="d-flex gap-2">
-                                    <button type="submit" class="btn btn-primary btn-round fw-bold shadow-sm flex-fill" style="padding: 8px 12px; font-size: 13px;">
-                                        <i class="fas fa-search me-1"></i> Cari
-                                    </button>
-                                    <a href="{{ route('operational.data-pendaftaran') }}" class="btn btn-white border btn-round fw-bold text-dark shadow-sm flex-fill d-flex align-items-center justify-content-center" style="padding: 8px 12px; font-size: 13px;">
-                                        Reset
-                                    </a>
-                                </div>
-                            </div>
-                        </form>
-                    </div>
-                </div>
 
                 {{-- TABEL VERIFIKASI BERKAS --}}
                 <div class="card card-modern border-0 shadow-sm mb-4">
@@ -641,7 +591,27 @@
         var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'))
         var tooltipList = tooltipTriggerList.map(function (tooltipTriggerEl) {
             return new bootstrap.Tooltip(tooltipTriggerEl)
-        })
+        });
+
+        // Simpan dan pulihkan state tab aktif menggunakan localStorage
+        const activeTab = localStorage.getItem('activePendaftaranTab');
+        if (activeTab) {
+            const tabButton = document.querySelector(`button[data-bs-target="${activeTab}"]`);
+            if (tabButton) {
+                // Initialize the bootstrap tab
+                const tab = new bootstrap.Tab(tabButton);
+                tab.show();
+            }
+        }
+
+        // Event listener saat tab diganti, simpan ke localStorage
+        const tabButtons = document.querySelectorAll('button[data-bs-toggle="pill"]');
+        tabButtons.forEach(button => {
+            button.addEventListener('shown.bs.tab', function (event) {
+                const target = event.target.getAttribute('data-bs-target');
+                localStorage.setItem('activePendaftaranTab', target);
+            });
+        });
     });
 
     function salinLinkRegistrasi(url) {

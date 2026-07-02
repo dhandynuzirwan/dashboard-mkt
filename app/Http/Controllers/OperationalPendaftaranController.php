@@ -20,9 +20,9 @@ class OperationalPendaftaranController extends Controller
             $q->where('status_penawaran', 'deal');
         });
         
-        // 1. Filter Pencarian Teks
-        if ($request->filled('search_tracking')) {
-            $search = $request->search_tracking;
+        // 1. Filter Pencarian Teks (Unified)
+        if ($request->filled('search')) {
+            $search = $request->search;
             $queryDeals->where(function($q) use ($search) {
                 $q->where('perusahaan', 'like', '%'.$search.'%')
                   ->orWhere('pic', 'like', '%'.$search.'%');
@@ -75,28 +75,29 @@ class OperationalPendaftaranController extends Controller
         $queryPendaftar = PendaftaranPribadi::with('training');
 
         if ($request->filled('search')) {
-            $searchTab2 = $request->search;
-            $queryPendaftar->where(function($q) use ($searchTab2) {
-                $q->where('nama_lengkap', 'like', '%'.$searchTab2.'%')
-                  ->orWhere('id_pendaftaran', 'like', '%'.$searchTab2.'%');
+            $search = $request->search;
+            $queryPendaftar->where(function($q) use ($search) {
+                $q->where('nama_lengkap', 'like', '%'.$search.'%')
+                  ->orWhere('id_pendaftaran', 'like', '%'.$search.'%');
             });
         }
         if ($request->filled('status')) {
             $queryPendaftar->where('status', $request->status);
         }
         
-        // Filter Tanggal (Default: Bulan Ini)
-        $startDateVerifikasi = $request->input('start_date_verifikasi', Carbon::now()->startOfMonth()->toDateString());
-        $endDateVerifikasi = $request->input('end_date_verifikasi', Carbon::now()->endOfMonth()->toDateString());
-
-        $queryPendaftar->whereDate('created_at', '>=', $startDateVerifikasi)
-                       ->whereDate('created_at', '<=', $endDateVerifikasi);
+        if ($request->filled('jalur')) {
+            $queryPendaftar->where('tipe_pendaftaran', $request->jalur);
+        }
+        
+        // Filter Tanggal (Unified, default: Bulan Ini)
+        $queryPendaftar->whereDate('created_at', '>=', $startDate)
+                       ->whereDate('created_at', '<=', $endDate);
 
         $pendaftarans = $queryPendaftar->orderBy('created_at', 'desc')->paginate(10, ['*'], 'page_verifikasi')->withQueryString();
 
         // Statistik (difilter berdasarkan tanggal yang dipilih)
-        $baseStatsQuery = PendaftaranPribadi::whereDate('created_at', '>=', $startDateVerifikasi)
-                                            ->whereDate('created_at', '<=', $endDateVerifikasi);
+        $baseStatsQuery = PendaftaranPribadi::whereDate('created_at', '>=', $startDate)
+                                            ->whereDate('created_at', '<=', $endDate);
 
         $stats = [
             'total_pendaftar' => (clone $baseStatsQuery)->count(),
@@ -105,8 +106,7 @@ class OperationalPendaftaranController extends Controller
             'disetujui'       => (clone $baseStatsQuery)->where('status', 'diterima')->count(),
         ];
 
-        // 🔥 Kirim startDate dan endDate ke view agar tanggal default muncul di form
-        return view('operational.data-pendaftaran', compact('deals', 'pendaftarans', 'stats', 'startDate', 'endDate', 'startDateVerifikasi', 'endDateVerifikasi'));
+        return view('operational.data-pendaftaran', compact('deals', 'pendaftarans', 'stats', 'startDate', 'endDate'));
     }
 
     public function verify(Request $request, $id)
