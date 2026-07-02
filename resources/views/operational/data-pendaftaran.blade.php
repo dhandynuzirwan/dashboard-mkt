@@ -501,10 +501,6 @@
                                             </div>
                                         </td>
                                     </tr>
-                                    @include('partials.modal-review-individu')
-                                    @if($pendaftar->tipe_pendaftaran == 'kolektif')
-                                        @include('partials.modal-review-kolektif')
-                                    @endif
                                     @empty
                                     <tr><td colspan="8" class="text-center py-4 text-muted">Belum ada data pendaftar.</td></tr>
                                     @endforelse
@@ -523,9 +519,13 @@
         </div>
 
         {{-- Include Modal Review Berkas --}}
-        
-        {{-- modal-review-kolektif included inside the loop --}}
-
+        {{-- Include Modal Review Berkas --}}
+        @foreach($pendaftarans as $pendaftar)
+            @include('partials.modal-review-individu')
+            @if($pendaftar->tipe_pendaftaran == 'kolektif')
+                @include('partials.modal-review-kolektif')
+            @endif
+        @endforeach
     </div>
 </div>
 
