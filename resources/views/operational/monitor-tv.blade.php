@@ -238,7 +238,7 @@
                                 <div class="col-6">
                                     <div class="bg-secondary-subtle p-2 rounded-3 h-100">
                                         <div class="text-muted text-uppercase fw-bold" style="font-size: 0.65rem; letter-spacing: 0.5px;">Jadwal Pelaksanaan</div>
-                                        <div class="fw-black text-dark text-truncate mt-1" style="font-size: 0.85rem;">
+                                        <div class="fw-black text-dark text-truncate mt-1" style="font-size: 1.05rem;">
                                             <i class="fas fa-calendar-alt text-primary me-1"></i> ${item.tanggal_pelatihan}
                                         </div>
                                     </div>
@@ -322,7 +322,7 @@
                             <i class="fas fa-hourglass-half" style="font-size: 1.6rem;"></i>
                         </div>
                         <div style="min-width: 0;">
-                            <p class="text-warning text-uppercase fw-bold mb-1 text-truncate" style="font-size: 0.85rem;">Tahap Persiapan</p>
+                            <p class="text-muted text-uppercase fw-bold mb-1 text-truncate" style="font-size: 0.85rem;">Tahap Persiapan</p>
                             <h4 class="fw-black text-warning mb-0 text-truncate" style="font-size: 1.6rem; letter-spacing: -1px;">${totalPersiapan} KELAS</h4>
                         </div>
                     </div>
