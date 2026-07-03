@@ -103,32 +103,77 @@ class KpiController extends Controller
             // Bobot Absensi 10%
             $user->absensi_kpi = ($hitungAbsensiAch / 100) * 10; 
 
-            // ================= PROGRESS (CTA / PENAWARAN) =================
-            $user->progress_target = $target_call * 23;
+            // ================= PROGRESS (NEW LOGIC 3 KOMPONEN) =================
+            $prospeks = \App\Models\Prospek::where('marketing_id', $user->id)
+                ->whereBetween('tanggal_prospek', [$start . " 00:00:00", $end . " 23:59:59"])->get();
 
+            $ctasCount = \App\Models\Cta::whereIn('prospek_id', $prospeks->pluck('id'))
+                ->selectRaw('prospek_id, count(*) as total')
+                ->groupBy('prospek_id')
+                ->pluck('total', 'prospek_id');
+
+            // 1. UPDATE DATA (Jumlah Prospek + CTA) -> dari DashboardController
             $baseCtaQuery = \App\Models\Cta::whereHas('prospek', function ($q) use ($user, $start, $end) {
                 $q->where('marketing_id', $user->id)
                   ->whereBetween('tanggal_prospek', [$start . " 00:00:00", $end . " 23:59:59"]); 
             });
-
             $jumlahCtaBase = (clone $baseCtaQuery)->count();
             $jumlahCtaBerstatus = (clone $baseCtaQuery)
                 ->whereNotNull('status_penawaran')
                 ->where('status_penawaran', '!=', '')
                 ->count();
-
-            $user->progress_real = $jumlahCtaBase + $jumlahCtaBerstatus;
-
-            // Achievement Progress (Murni)
-            $user->progress_ach = ($user->progress_target > 0)
-                ? ($user->progress_real / $user->progress_target) * 100
-                : 0;
-
-            // Eksekusi Limit (Cap) Progress
-            $hitungProgressAch = $kpiCapped ? min(100, $user->progress_ach) : $user->progress_ach;
+            $totalUpdateData = $jumlahCtaBase + $jumlahCtaBerstatus;
             
-            // Bobot Progress 30%
-            $user->progress_kpi = ($hitungProgressAch / 100) * 30;
+            // 2. STATUS AKHIR PEROLEHAN DATA
+            $hitungStatus = function($statusName) use ($prospeks, $ctasCount) {
+                return $prospeks->where('status', $statusName)->sum(function ($p) use ($ctasCount) {
+                    $jmlCta = $ctasCount[$p->id] ?? 0;
+                    return $jmlCta > 0 ? $jmlCta : 1; 
+                });
+            };
+            
+            $statusResmi = [
+                'DATA TIDAK VALID & TIDAK TERHUBUNG', 'TIDAK RESPON', 'DAPAT NO WA HRD',
+                'KIRIM COMPRO', 'MANJA', 'MANJA ULANG', 'REQUEST PERMINTAAN PELATIHAN',
+                'MASUK PENAWARAN', 'BELUM ADA KEBUTUHAN', 'REQUES PERPANJANGAN SERTIFIKAT',
+                'PENAWARAN HARDFILE', 'TIDAK MENERIMA PENAWARAN', 'DAPAT NO TELP',
+                'SUDAH ADA VENDOR KERJASAMA', 'HOLD', 'DAPAT EMAIL'
+            ];
+            
+            $totalAkhirData = 0;
+            foreach($statusResmi as $st) {
+                $totalAkhirData += $hitungStatus($st);
+            }
+
+            // 3. UPDATE PENAWARAN
+            $cta = \App\Models\Cta::whereHas('prospek', function ($q) use ($user, $start, $end) {
+                $q->where('marketing_id', $user->id)
+                  ->whereBetween('tanggal_prospek', [$start . " 00:00:00", $end . " 23:59:59"]); 
+            })->get();
+            $totalPenawaran = $cta->whereNotNull('status_penawaran')->where('status_penawaran', '!=', '')->count();
+
+            // PEMBOBOTAN
+            $maxData = 115;
+            $bobotUpdate = 20;
+            $bobotAkhir = 30;
+            $bobotPenawaran = 50;
+
+            $skorUpdate = min(1, $totalUpdateData / $maxData) * $bobotUpdate;
+            $skorAkhir = min(1, $totalAkhirData / $maxData) * $bobotAkhir;
+            $skorPenawaran = min(1, $totalPenawaran / $maxData) * $bobotPenawaran;
+
+            $user->progress_ach = $skorUpdate + $skorAkhir + $skorPenawaran; // Skala 100%
+            
+            // Simpan detail untuk ditampilkan di view
+            $user->detail_update_data = $totalUpdateData;
+            $user->detail_akhir_data = $totalAkhirData;
+            $user->detail_penawaran = $totalPenawaran;
+            $user->skor_update = $skorUpdate;
+            $user->skor_akhir = $skorAkhir;
+            $user->skor_penawaran = $skorPenawaran;
+
+            // Bobot Progress 30% dari Total KPI
+            $user->progress_kpi = ($user->progress_ach / 100) * 30;
 
             // ================= REVENUE (DEAL) =================
             $user->revenue_target = $target_revenue;

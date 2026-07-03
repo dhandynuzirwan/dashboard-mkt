@@ -57,129 +57,105 @@
             </div>
         </div>
 
-        {{-- ================= TABEL DATA KPI (CLEAN UI) ================= --}}
-        <div class="card card-round shadow-sm border-0 mb-4">
-            <div class="card-header bg-white border-bottom">
-                <div class="card-title fw-bold">Detail Pencapaian Kinerja</div>
-            </div>
-            <div class="card-body p-0">
-                <div class="table-responsive">
-                    <table class="table table-hover table-borderless align-middle mb-0">
-                        <thead class="table-light border-bottom">
-                            <tr>
-                                <th class="ps-4">NAMA MARKETING</th>
-                                <th width="200">ABSENSI (Bobot 10%)</th>
-                                <th width="220">PROGRESS CTA (Bobot 30%)</th>
-                                <th width="250">REVENUE (Bobot 60%)</th>
-                                <th class="text-center pe-4" width="160">TOTAL KPI</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            @foreach ($marketings as $m)
-                                <tr class="border-bottom">
-                                    
-                                    {{-- Kolom 1: Nama Marketing --}}
-                                    <td class="ps-4 py-3">
-                                        <div class="d-flex align-items-center">
-                                            <div class="avatar avatar-sm me-3 flex-shrink-0">
-                                                <span class="avatar-title rounded-circle bg-primary-gradient fw-bold">{{ substr($m->name, 0, 1) }}</span>
-                                            </div>
-                                            <div>
-                                                <span class="fw-bold text-dark" style="font-size: 15px;">{{ $m->name }}</span>
-                                            </div>
-                                        </div>
-                                    </td>
+        {{-- ================= CARD DATA KPI (CLEAN UI) ================= --}}
+        <div class="row">
+            @foreach ($marketings as $m)
+                @php
+                    $total_kpi = $m->total_kpi;
+                    $badgeClass = $total_kpi >= 70 ? 'bg-success' : 'bg-danger';
+                @endphp
+                <div class="col-md-6 col-lg-4 mb-4">
+                    <div class="card card-round shadow-sm h-100 border-0 hover-lift">
+                        <div class="card-header bg-white border-bottom d-flex align-items-center py-3">
+                            <div class="avatar avatar-sm me-3 flex-shrink-0">
+                                <span class="avatar-title rounded-circle bg-primary-gradient fw-bold">{{ substr($m->nama_lengkap ?? $m->name, 0, 1) }}</span>
+                            </div>
+                            <div>
+                                <h5 class="fw-bold mb-0 text-dark">{{ $m->nama_lengkap ?? $m->name }}</h5>
+                                <span class="badge bg-primary-subtle text-primary border border-primary border-opacity-25 mt-1" style="font-size: 0.65rem;">{{ $m->name }}</span>
+                            </div>
+                        </div>
+                        <div class="card-body p-3">
+                            {{-- ABSENSI --}}
+                            <div class="mb-3 border-bottom pb-2">
+                                <div class="d-flex justify-content-between mb-1">
+                                    <span class="text-muted fw-bold" style="font-size: 0.75rem;">Absensi (Bobot 10%)</span>
+                                    <span class="fw-bold text-info" style="font-size: 0.8rem;">{{ number_format($m->absensi_kpi, 1) }}%</span>
+                                </div>
+                                <div class="d-flex justify-content-between mb-1" style="font-size: 0.75rem;">
+                                    <span class="text-muted">Target (Hadir):</span>
+                                    <span class="fw-bold text-dark">{{ $m->absensi_hadir }} / {{ $m->absensi_jadwal }} Hari</span>
+                                </div>
+                                <div class="progress mt-1" style="height: 5px;">
+                                    <div class="progress-bar bg-info" role="progressbar" style="width: {{ $m->absensi_ach > 100 ? 100 : $m->absensi_ach }}%;"></div>
+                                </div>
+                            </div>
+                            
+                            {{-- PROGRESS (3 KOMPONEN) --}}
+                            <div class="mb-3 border-bottom pb-2">
+                                <div class="d-flex justify-content-between mb-1">
+                                    <span class="text-muted fw-bold" style="font-size: 0.75rem;">Progress (Bobot 30%)</span>
+                                    <span class="fw-bold text-warning" style="font-size: 0.8rem;">{{ number_format($m->progress_kpi, 1) }}%</span>
+                                </div>
+                                
+                                <div class="d-flex justify-content-between mb-1" style="font-size: 0.7rem;">
+                                    <span class="text-muted">- Update Data:</span>
+                                    <span class="fw-bold text-dark">{{ $m->detail_update_data }} data ({{ number_format($m->skor_update, 1) }}%)</span>
+                                </div>
+                                <div class="d-flex justify-content-between mb-1" style="font-size: 0.7rem;">
+                                    <span class="text-muted">- Akhir Data:</span>
+                                    <span class="fw-bold text-dark">{{ $m->detail_akhir_data }} data ({{ number_format($m->skor_akhir, 1) }}%)</span>
+                                </div>
+                                <div class="d-flex justify-content-between mb-1" style="font-size: 0.7rem;">
+                                    <span class="text-muted">- Penawaran:</span>
+                                    <span class="fw-bold text-dark">{{ $m->detail_penawaran }} data ({{ number_format($m->skor_penawaran, 1) }}%)</span>
+                                </div>
+                                
+                                <div class="progress mt-2" style="height: 5px;">
+                                    <div class="progress-bar bg-warning" role="progressbar" style="width: {{ $m->progress_ach > 100 ? 100 : $m->progress_ach }}%;"></div>
+                                </div>
+                            </div>
 
-                                    {{-- Kolom 2: Absensi --}}
-                                    <td class="py-3">
-                                        <div class="d-flex justify-content-between mb-1" style="font-size: 12px;">
-                                            <span class="text-muted">Target (Hadir):</span>
-                                            <span class="fw-bold text-dark">{{ $m->absensi_hadir }} / {{ $m->absensi_jadwal }} Hari</span>
-                                        </div>
-                                        <div class="d-flex justify-content-between mb-1" style="font-size: 12px;">
-                                            <span class="text-muted">Pencapaian:</span>
-                                            <span class="fw-bold text-info">{{ number_format($m->absensi_ach, 1) }}%</span>
-                                        </div>
-                                        <div class="progress mt-2" style="height: 5px; background-color: #f1f1f1;">
-                                            <div class="progress-bar bg-info" role="progressbar" style="width: {{ $m->absensi_ach > 100 ? 100 : $m->absensi_ach }}%;"></div>
-                                        </div>
-                                        <div class="mt-1" style="font-size: 11px;">
-                                            <span class="text-muted">Skor Final:</span> <span class="fw-bold text-dark">{{ number_format($m->absensi_kpi, 1) }}%</span>
-                                        </div>
-                                    </td>
-
-                                    {{-- Kolom 3: Progress CTA --}}
-                                    <td class="py-3">
-                                        <div class="d-flex justify-content-between mb-1" style="font-size: 12px;">
-                                            <span class="text-muted">Target (Real):</span>
-                                            <span class="fw-bold text-dark">{{ $m->progress_real }} / {{ $m->progress_target }} CTA</span>
-                                        </div>
-                                        <div class="d-flex justify-content-between mb-1" style="font-size: 12px;">
-                                            <span class="text-muted">Pencapaian:</span>
-                                            <span class="fw-bold text-warning">{{ number_format($m->progress_ach, 1) }}%</span>
-                                        </div>
-                                        <div class="progress mt-2" style="height: 5px; background-color: #f1f1f1;">
-                                            <div class="progress-bar bg-warning" role="progressbar" style="width: {{ $m->progress_ach > 100 ? 100 : $m->progress_ach }}%;"></div>
-                                        </div>
-                                        <div class="mt-1" style="font-size: 11px;">
-                                            <span class="text-muted">Skor Final:</span> <span class="fw-bold text-dark">{{ number_format($m->progress_kpi, 1) }}%</span>
-                                        </div>
-                                    </td>
-
-                                    {{-- Kolom 4: Revenue --}}
-                                    <td class="py-3">
-                                        <div class="d-flex justify-content-between mb-1" style="font-size: 12px;">
-                                            <span class="text-muted">Target:</span>
-                                            <span class="fw-medium text-dark">Rp {{ number_format($m->revenue_target, 0, ',', '.') }}</span>
-                                        </div>
-                                        <div class="d-flex justify-content-between mb-1" style="font-size: 12px;">
-                                            <span class="text-muted">Aktual:</span>
-                                            <span class="fw-bold text-success">Rp {{ number_format($m->revenue_actual, 0, ',', '.') }}</span>
-                                        </div>
-                                        <div class="d-flex justify-content-between mb-1" style="font-size: 12px;">
-                                            <span class="text-muted">Pencapaian:</span>
-                                            <span class="fw-bold text-success">{{ number_format($m->revenue_ach, 1) }}%</span>
-                                        </div>
-                                        <div class="progress mt-2" style="height: 5px; background-color: #f1f1f1;">
-                                            <div class="progress-bar bg-success" role="progressbar" style="width: {{ $m->revenue_ach > 100 ? 100 : $m->revenue_ach }}%;"></div>
-                                        </div>
-                                        <div class="mt-1" style="font-size: 11px;">
-                                            <span class="text-muted">Skor Final:</span> <span class="fw-bold text-dark">{{ number_format($m->revenue_kpi, 1) }}%</span>
-                                        </div>
-                                    </td>
-
-                                    {{-- Kolom 5: Total KPI Akhir --}}
-                                    <td class="py-3 text-center pe-4">
-                                        @php
-                                            $total_kpi = $m->total_kpi;
-                                            $badgeClass = $total_kpi >= 70 ? 'bg-success' : 'bg-danger';
-                                        @endphp
-                                        
-                                        <h4 class="fw-bolder mb-1 {{ $total_kpi >= 70 ? 'text-success' : 'text-danger' }}">
-                                            {{ number_format($total_kpi, 1) }}%
-                                        </h4>
-                                        <span class="badge {{ $badgeClass }} px-2 py-1 shadow-sm" style="font-size: 10px;">
-                                            {{ $total_kpi >= 70 ? 'Sesuai KPI' : 'Kebijakan KPI' }}
-                                        </span>
-                                    </td>
-
-                                </tr>
-                            @endforeach
-
-                            {{-- Jika Data Kosong --}}
-                            @if(count($marketings) == 0)
-                                <tr>
-                                    <td colspan="5" class="text-center py-4 text-muted">
-                                        <i class="fas fa-folder-open fs-3 mb-2 opacity-50"></i><br>
-                                        Belum ada data KPI pada rentang waktu ini.
-                                    </td>
-                                </tr>
-                            @endif
-
-                        </tbody>
-                    </table>                        
+                            {{-- REVENUE --}}
+                            <div class="mb-3">
+                                <div class="d-flex justify-content-between mb-1">
+                                    <span class="text-muted fw-bold" style="font-size: 0.75rem;">Revenue (Bobot 60%)</span>
+                                    <span class="fw-bold text-success" style="font-size: 0.8rem;">{{ number_format($m->revenue_kpi, 1) }}%</span>
+                                </div>
+                                <div class="d-flex justify-content-between mb-1" style="font-size: 0.75rem;">
+                                    <span class="text-muted">Target:</span>
+                                    <span class="fw-medium text-dark">Rp {{ number_format($m->revenue_target, 0, ',', '.') }}</span>
+                                </div>
+                                <div class="d-flex justify-content-between mb-1" style="font-size: 0.75rem;">
+                                    <span class="text-muted">Aktual:</span>
+                                    <span class="fw-bold text-success">Rp {{ number_format($m->revenue_actual, 0, ',', '.') }}</span>
+                                </div>
+                                <div class="progress mt-1" style="height: 5px;">
+                                    <div class="progress-bar bg-success" role="progressbar" style="width: {{ $m->revenue_ach > 100 ? 100 : $m->revenue_ach }}%;"></div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="card-footer bg-light border-top d-flex justify-content-between align-items-center p-3">
+                            <span class="fw-bolder text-dark" style="font-size: 0.85rem;">TOTAL KPI</span>
+                            <div class="text-end">
+                                <h4 class="fw-black mb-0 {{ $total_kpi >= 70 ? 'text-success' : 'text-danger' }}" style="font-size: 1.5rem; letter-spacing: -1px;">
+                                    {{ number_format($total_kpi, 1) }}%
+                                </h4>
+                                <span class="badge {{ $badgeClass }} px-2 py-1 shadow-sm mt-1" style="font-size: 0.65rem;">
+                                    {{ $total_kpi >= 70 ? 'Sesuai KPI' : 'Kebijakan KPI' }}
+                                </span>
+                            </div>
+                        </div>
+                    </div>
                 </div>
-            </div>
+            @endforeach
+
+            @if(count($marketings) == 0)
+                <div class="col-12 text-center py-5">
+                    <i class="fas fa-folder-open fs-1 text-muted mb-3 opacity-50"></i>
+                    <h5 class="text-muted">Belum ada data KPI pada rentang waktu ini.</h5>
+                </div>
+            @endif
         </div>
 
     </div>

@@ -92,58 +92,106 @@ class SalaryController extends Controller
 
         // Agar KPI Absensi juga fair, kita hitung persentasenya menggunakan Hari Berjalan, bukan Hari Full Sebulan
         $persenAbsensi = ($hariEfektifBerjalan > 0) ? ($totalHadir / $hariEfektifBerjalan) * 100 : 0;
-        $persenProg = ($progTarget > 0) ? ($progReal / $progTarget) * 100 : 0;
         $persenRev = ($targetRev > 0) ? ($income / $targetRev) * 100 : 0;
 
         if ($kpiCapped) {
             $persenAbsensi = min(100, $persenAbsensi); 
-            $persenProg = min(100, $persenProg);       
             $persenRev = min(100, $persenRev);         
         }
 
         $absensiKpi = $persenAbsensi * 0.1;
-        $progKpi = $persenProg * 0.3;
         $revKpi = $persenRev * 0.6;
+
+        // ------------------ PROGRESS 3 KOMPONEN ------------------
+        $prospeks = \App\Models\Prospek::where('marketing_id', $user->id)
+            ->whereBetween('tanggal_prospek', [$start . " 00:00:00", $end . " 23:59:59"])->get();
+
+        // Ambil ctacount dengan baseCtaQuery agar filter prospek berlaku
+        $ctasCount = \App\Models\Cta::whereIn('prospek_id', $prospeks->pluck('id'))
+                ->selectRaw('prospek_id, count(*) as total')
+                ->groupBy('prospek_id')
+                ->pluck('total', 'prospek_id');
+
+        // 1. UPDATE DATA
+        $totalUpdateData = $progReal; 
+
+        // 2. STATUS AKHIR PEROLEHAN DATA
+        $hitungStatus = function($statusName) use ($prospeks, $ctasCount) {
+            return $prospeks->where('status', $statusName)->sum(function ($p) use ($ctasCount) {
+                $jmlCta = $ctasCount[$p->id] ?? 0;
+                return $jmlCta > 0 ? $jmlCta : 1; 
+            });
+        };
+        $statusResmi = [
+            'DATA TIDAK VALID & TIDAK TERHUBUNG', 'TIDAK RESPON', 'DAPAT NO WA HRD',
+            'KIRIM COMPRO', 'MANJA', 'MANJA ULANG', 'REQUEST PERMINTAAN PELATIHAN',
+            'MASUK PENAWARAN', 'BELUM ADA KEBUTUHAN', 'REQUES PERPANJANGAN SERTIFIKAT',
+            'PENAWARAN HARDFILE', 'TIDAK MENERIMA PENAWARAN', 'DAPAT NO TELP',
+            'SUDAH ADA VENDOR KERJASAMA', 'HOLD', 'DAPAT EMAIL'
+        ];
+        $totalAkhirData = 0;
+        foreach($statusResmi as $st) {
+            $totalAkhirData += $hitungStatus($st);
+        }
+
+        // 3. UPDATE PENAWARAN
+        $totalPenawaran = (clone $baseCta)->whereNotNull('status_penawaran')->where('status_penawaran', '!=', '')->count();
+
+        // PEMBOBOTAN
+        $maxData = 115;
+        $skorUpdate = min(1, $totalUpdateData / $maxData) * 20;
+        $skorAkhir = min(1, $totalAkhirData / $maxData) * 30;
+        $skorPenawaran = min(1, $totalPenawaran / $maxData) * 50;
+
+        $persenProg = $skorUpdate + $skorAkhir + $skorPenawaran; // Skala 100%
+        $progKpi = ($persenProg / 100) * 30;
 
         $totalKpi = $absensiKpi + $progKpi + $revKpi;
 
-        // G. Hitung Nominal Gaji Akhir
-        $fee_mkt = ($income * 0.6) * (($totalKpi < 70) ? 0.025 : 0.05);
-        
-        // 🔥 UPDATE LOGIKA NILAI PROGRESS 🔥
-        // Maksimal Rp 500.000 jika KPI Progress mencapai batas maksimal (30)
-        // Dihitung secara proporsional: (Skor saat ini / 30) * 500.000
-        $prog_val = ($progKpi > 0) ? ($progKpi / 30) * 500000 : 0;
-        
-        // Final Eksekusi (Dikurangi total potongan yang baru)
-        $total_gaji = $gapokDasar + $fee_mkt + $prog_val + $tunjangan + $tunjBpjs - $iuranBpjs - $totalPotonganKehadiran;
+        // G. Hitung Nominal Gaji Akhir (NEW LOGIC)
+        $kpi_rp = ($income < 60000000) ? ($income * 0.40) : ($income * 0.60);
+
+        if ($income < 30000000) {
+            $fee_mkt = 0;
+        } else {
+            if ($totalKpi < 70) {
+                $fee_mkt = $kpi_rp * 0.02;
+            } else {
+                $fee_mkt = $kpi_rp * 0.05;
+            }
+        }
+
+        // THP = Gaji Pokok + Fee Marketing + Tunjangan BPJS
+        $total_gaji = $gapokDasar + $fee_mkt + $tunjBpjs;
 
         // H. Kembalikan Object
         return (object) [
             'gapok_hitung' => $gapokDasar,
             'fee_marketing' => $fee_mkt,
-            'progress_val' => $prog_val,
-            'tunj_kemahalan' => $tunjangan,
             'tunjangan_bpjs' => $tunjBpjs,
-            'iuran_bpjs' => $iuranBpjs,
-            
-            // Nilai ini sudah mewakili Potongan Form + Potongan Alpa
-            'potonganIzin' => $totalPotonganKehadiran, 
-            
-            // Detail opsional untuk ditampilkan
-            'detail_hari_alpa' => $hariAlpa,
-            'hari_efektif_berjalan' => $hariEfektifBerjalan,
-            
             'total_gaji' => $total_gaji,
-            'absensi_hadir_real' => $totalHadir,
-            'hari_efektif' => $hariEfektif, // Tetap kita kirim yang full bulan untuk label di view
+            
             'income' => $income,
+            'kpi_rp' => $kpi_rp,
             'kpi_persen' => $totalKpi,
+            
             'ach_absensi' => $absensiKpi,
             'ach_progress' => $progKpi,
             'ach_revenue' => $revKpi,
+            
+            'totalHadir' => $totalHadir,
+            'hari_efektif' => $hariEfektif,
+            
+            'detail_update_data' => $totalUpdateData,
+            'detail_akhir_data' => $totalAkhirData,
+            'detail_penawaran' => $totalPenawaran,
+            'skor_update' => $skorUpdate,
+            'skor_akhir' => $skorAkhir,
+            'skor_penawaran' => $skorPenawaran,
+            
             'target_penawaran' => $progTarget,
-            'real_penawaran' => $progReal
+            'real_penawaran' => $progReal,
+            'hari_efektif_berjalan' => $hariEfektifBerjalan,
         ];
     }
     
