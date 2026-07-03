@@ -276,18 +276,77 @@
 @endif
 {{-- ================= INFO & KETERANGAN (MODERN) ================= --}}
         <div class="row fade-in">
-            <div class="col-md-12 mb-3">
-                <div class="alert-modern-info h-100 d-flex align-items-start">
-                    <div class="icon-sm bg-white text-info rounded-circle d-flex align-items-center justify-content-center shadow-sm me-3 flex-shrink-0" style="width: 40px; height: 40px;">
-                        <i class="fas fa-info-circle fs-5"></i>
+            <div class="col-md-6 d-flex flex-column gap-3 mb-3">
+                <!-- Komposisi THP -->
+                <div class="alert-modern-info d-flex align-items-start p-3 h-100 shadow-sm" style="border-radius: 12px; background-color: #f0f9ff; border-left: 4px solid #0ea5e9;">
+                    <div class="icon-sm bg-white text-info rounded-circle d-flex align-items-center justify-content-center shadow-sm me-3 flex-shrink-0" style="width: 35px; height: 35px;">
+                        <i class="fas fa-wallet fs-6"></i>
                     </div>
                     <div>
                         <h6 class="fw-bolder text-dark mb-1">Komposisi Take Home Pay</h6>
-                        <p class="small text-muted mb-2">Total gaji bersih merupakan akumulasi final dari komponen tetap dan variabel.</p>
-                        <div class="bg-white px-3 py-2 rounded-3 border fw-bold small text-dark shadow-sm">
-                            Gapok + Fee Marketing + Tunjangan BPJS.<br>
-                            <span class="text-primary mt-1 d-block"><i class="fas fa-info-circle me-1"></i> Perhitungan KPI: Skor KPI Akhir digunakan sebagai pengukur kinerja. Nilai KPI (Rp) dikalkulasikan berdasarkan capaian HPP, yang nantinya menjadi acuan performa/bonus bulanan.</span>
-                            <span class="text-success mt-1 d-block"><i class="fas fa-info-circle me-1"></i> Perhitungan Fee Marketing: Fee dihitung berdasarkan persentase atau nominal komisi dari total deal closing / target omset yang dicapai.</span>
+                        <div class="bg-white px-3 py-2 mt-2 rounded-3 border fw-bold small text-dark shadow-sm">
+                            Gaji Pokok + Fee Marketing + Tunjangan BPJS
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Perhitungan Fee Marketing -->
+                <div class="alert-modern-info d-flex align-items-start p-3 h-100 shadow-sm" style="border-radius: 12px; background-color: #f0fdf4; border-left: 4px solid #10b981;">
+                    <div class="icon-sm bg-white text-success rounded-circle d-flex align-items-center justify-content-center shadow-sm me-3 flex-shrink-0" style="width: 35px; height: 35px;">
+                        <i class="fas fa-money-bill-wave fs-6"></i>
+                    </div>
+                    <div class="w-100">
+                        <h6 class="fw-bolder text-dark mb-1">Perhitungan Fee Marketing</h6>
+                        <p class="small text-muted mb-2">Didapatkan dari % total deal closing (omset).</p>
+                        <ul class="list-group list-group-flush rounded border shadow-sm small fw-bold">
+                            <li class="list-group-item d-flex justify-content-between p-2"><span>Omset &ge; Rp 30.000.000</span> <span class="text-success">5%</span></li>
+                            <li class="list-group-item d-flex justify-content-between p-2"><span>Omset &ge; Rp 20.000.000</span> <span class="text-success">4%</span></li>
+                            <li class="list-group-item d-flex justify-content-between p-2"><span>Omset &ge; Rp 10.000.000</span> <span class="text-success">3%</span></li>
+                            <li class="list-group-item d-flex justify-content-between p-2"><span>Omset &lt; Rp 10.000.000</span> <span class="text-danger">0%</span></li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-md-6 mb-3">
+                <!-- Perhitungan KPI -->
+                <div class="alert-modern-warning d-flex align-items-start p-3 h-100 shadow-sm" style="border-radius: 12px; background-color: #fffbeb; border-left: 4px solid #f59e0b;">
+                    <div class="icon-sm bg-white text-warning rounded-circle d-flex align-items-center justify-content-center shadow-sm me-3 flex-shrink-0" style="width: 35px; height: 35px;">
+                        <i class="fas fa-chart-pie fs-6"></i>
+                    </div>
+                    <div class="w-100">
+                        <h6 class="fw-bolder text-dark mb-1">Perhitungan Skor KPI</h6>
+                        <p class="small text-muted mb-2">Total bobot KPI adalah 100% yang terbagi menjadi 3 komponen utama.</p>
+                        
+                        <div class="bg-white p-3 rounded-3 border shadow-sm">
+                            <div class="mb-3">
+                                <div class="d-flex justify-content-between fw-bold text-dark small mb-1">
+                                    <span>1. Absensi</span>
+                                    <span class="text-warning">10%</span>
+                                </div>
+                                <div class="progress" style="height: 6px;"><div class="progress-bar bg-warning" style="width: 10%"></div></div>
+                            </div>
+                            
+                            <div class="mb-3">
+                                <div class="d-flex justify-content-between fw-bold text-dark small mb-1">
+                                    <span>2. Progres Database</span>
+                                    <span class="text-warning">30%</span>
+                                </div>
+                                <div class="progress mb-2" style="height: 6px;"><div class="progress-bar bg-warning" style="width: 30%"></div></div>
+                                <ul class="mb-0 ps-3 small text-muted" style="list-style-type: disc;">
+                                    <li>Penawaran: <span class="fw-bold">50%</span> dari bobot progres</li>
+                                    <li>Akhir Data: <span class="fw-bold">30%</span> dari bobot progres</li>
+                                    <li>Update Data: <span class="fw-bold">20%</span> dari bobot progres</li>
+                                </ul>
+                            </div>
+
+                            <div class="mb-1">
+                                <div class="d-flex justify-content-between fw-bold text-dark small mb-1">
+                                    <span>3. Revenue (Pencapaian vs Target HPP)</span>
+                                    <span class="text-warning">60%</span>
+                                </div>
+                                <div class="progress" style="height: 6px;"><div class="progress-bar bg-warning" style="width: 60%"></div></div>
+                            </div>
                         </div>
                     </div>
                 </div>
