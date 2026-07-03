@@ -287,6 +287,7 @@
                         <div class="bg-white px-3 py-2 rounded-3 border fw-bold small text-dark shadow-sm">
                             Gapok + Fee Marketing + Tunjangan BPJS.<br>
                             <span class="text-primary mt-1 d-block"><i class="fas fa-info-circle me-1"></i> Perhitungan KPI: Skor KPI Akhir digunakan sebagai pengukur kinerja. Nilai KPI (Rp) dikalkulasikan berdasarkan capaian HPP, yang nantinya menjadi acuan performa/bonus bulanan.</span>
+                            <span class="text-success mt-1 d-block"><i class="fas fa-info-circle me-1"></i> Perhitungan Fee Marketing: Fee dihitung berdasarkan persentase atau nominal komisi dari total deal closing / target omset yang dicapai.</span>
                         </div>
                     </div>
                 </div>
