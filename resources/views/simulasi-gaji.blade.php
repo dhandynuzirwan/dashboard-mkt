@@ -65,140 +65,140 @@
             </div>
         </div>
 
-        {{-- ================= TABEL SIMULASI GAJI (CLEAN & MODERN) ================= --}}
-        <div class="card card-modern shadow-sm border-0 mb-4 fade-in">
-            <div class="card-header bg-transparent border-bottom pt-4 px-4 pb-3">
-                <h6 class="card-title fw-bolder mb-0 text-dark">Rincian Perhitungan Take Home Pay</h6>
-            </div>
-            <div class="card-body p-0">
-                <div class="table-responsive">
-                    <table class="table table-modern table-hover align-middle mb-0">
-                        <thead class="bg-light sticky-top">
-                            <tr>
-                                <th class="ps-4" width="220">Marketing & Target</th>
-                                <th>Detail Pencapaian KPI</th>
-                                <th class="text-center" width="140">Skor KPI Akhir</th>
-                                <th>Komponen Pendapatan</th>
-                                <th>Komponen Variabel (Insentif)</th>
-                                <th class="text-end pe-4" width="200">Take Home Pay</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            @foreach ($marketings as $m)
-                                <tr>
-                                    {{-- Kolom 1: Marketing & Target Income --}}
-                                    <td class="ps-4 py-4">
-                                        <div class="d-flex align-items-center mb-2">
-                                            <div class="icon-sm bg-primary-subtle text-primary rounded-circle d-flex align-items-center justify-content-center me-3 fw-bold shadow-sm" style="width: 40px; height: 40px; font-size: 16px;">
-                                                {{ substr($m->nama_lengkap ?? $m->name, 0, 1) }}
-                                            </div>
-                                            <div>
-                                                <span class="fw-bolder text-dark" style="font-size: 14px;">{{ $m->nama_lengkap ?? $m->name }}</span><br>
-                                                <span class="badge bg-light text-muted border mt-1 fw-medium">
-                                                    {{ $m->name }}
-                                                </span><br>
-                                                <span class="badge bg-success-subtle text-success border border-success border-opacity-25 mt-1 fw-medium">
-                                                    Income: Rp {{ number_format($m->income, 0, ',', '.') }}
-                                                </span>
-                                            </div>
-                                        </div>
-                                    </td>
+        {{-- ================= STYLES UNTUK MICRO CARDS ================= --}}
+<style>
+    .micro-card-wrapper {
+        position: relative;
+        height: 145px; /* TINGGI DEFAULT KARTU */
+        margin-bottom: 20px;
+    }
+    .micro-card {
+        position: absolute;
+        top: 0;
+        left: 10px;
+        right: 10px;
+        background: #ffffff;
+        border-radius: 14px;
+        box-shadow: 0 4px 10px rgba(0,0,0,0.03);
+        transition: all 0.35s cubic-bezier(0.25, 0.8, 0.25, 1);
+        overflow: hidden;
+        z-index: 1;
+        height: 145px; /* SAMA DENGAN WRAPPER */
+        border: 1px solid #eef2f7;
+    }
+    .micro-card:hover {
+        height: 310px; /* EKSPANSI TINGGI KARTU */
+        z-index: 100;
+        box-shadow: 0 25px 50px rgba(0,0,0,0.15);
+        border-color: #bfdbfe;
+    }
+    .micro-card-header {
+        height: 145px;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        padding: 12px 16px;
+        cursor: pointer;
+        background-color: #fff;
+    }
+    .micro-card:hover .micro-card-header {
+        background-color: #f8fafc;
+    }
+    .hover-details {
+        padding: 16px;
+        opacity: 0;
+        transform: translateY(-15px);
+        transition: all 0.3s ease;
+        visibility: hidden;
+    }
+    .micro-card:hover .hover-details {
+        opacity: 1;
+        transform: translateY(0);
+        visibility: visible;
+        transition-delay: 0.1s;
+    }
+</style>
 
-                                    {{-- Kolom 2: Rincian Pencapaian KPI --}}
-                                    <td class="py-4">
-                                        <div class="d-flex flex-column gap-2" style="font-size: 11px;">
-                                            <div class="d-flex justify-content-between align-items-center p-2 rounded bg-light border border-white shadow-sm" style="max-width: 250px;">
-                                                <span class="text-muted fw-bold"><i class="fas fa-calendar-check text-info me-2"></i>Absensi (10%)</span>
-                                                <div class="text-end">
-                                                    <span class="fw-bolder text-dark">{{ number_format($m->ach_absensi, 1) }}%</span>
-                                                    <span class="text-muted d-block" style="font-size: 9px;">({{ $m->absensi_hadir_real }}/{{ $hariEfektif }} Hari)</span>
-                                                </div>
-                                            </div>
-                                            <div class="d-flex justify-content-between align-items-center p-2 rounded bg-light border border-white shadow-sm" style="max-width: 250px;">
-                                                <span class="text-muted fw-bold"><i class="fas fa-chart-line text-warning me-2"></i>Progress (30%)</span>
-                                                <div class="text-end">
-                                                    <span class="fw-bolder text-dark">{{ number_format($m->ach_progress, 1) }}%</span>
-                                                    <span class="text-muted d-block" style="font-size: 9px;">({{ $m->real_penawaran }}/{{ $m->target_penawaran }} Penawaran)</span>
-                                                </div>
-                                            </div>
-                                            <div class="d-flex justify-content-between align-items-center p-2 rounded bg-light border border-white shadow-sm" style="max-width: 250px;">
-                                                <span class="text-muted fw-bold"><i class="fas fa-money-bill-wave text-success me-2"></i>Revenue (60%)</span>
-                                                <span class="fw-bolder text-dark">{{ number_format($m->ach_revenue, 1) }}%</span>
-                                            </div>
-                                        </div>
-                                    </td>
+{{-- ================= CARD SIMULASI GAJI (MICRO CARDS 4x3) ================= --}}
+<div class="row fade-in mb-4">
+    @foreach ($marketings as $m)
+        @php
+            $total_kpi = $m->kpi_persen;
+            $badgeClass = $total_kpi >= 70 ? 'bg-success' : 'bg-danger';
+        @endphp
+        <div class="col-md-4 col-lg-3 col-sm-6">
+            <div class="micro-card-wrapper">
+                <div class="micro-card">
+                    
+                    {{-- HEADER (SELALU TAMPIL) --}}
+                    <div class="micro-card-header">
+                        <div class="d-flex align-items-center mb-2 pb-1 border-bottom border-light">
+                            <div class="avatar avatar-sm me-2 flex-shrink-0">
+                                <span class="avatar-title rounded-circle bg-primary-gradient fw-bold shadow-sm" style="font-size: 11px;">
+                                    {{ substr($m->nama_lengkap ?? $m->name, 0, 1) }}
+                                </span>
+                            </div>
+                            <div class="overflow-hidden w-100">
+                                <h6 class="fw-bolder mb-0 text-dark text-truncate" style="font-size: 13px;">{{ $m->nama_lengkap ?? $m->name }}</h6>
+                                <div class="text-muted text-truncate" style="font-size: 10px;">{{ $m->name }}</div>
+                            </div>
+                        </div>
+                        
+                        {{-- 3 METRIK UTAMA --}}
+                        <div class="d-flex justify-content-between align-items-center mb-1">
+                            <span class="text-muted fw-bold" style="font-size: 10px;">Income</span>
+                            <span class="fw-bold text-success" style="font-size: 11px;">Rp {{ number_format($m->income, 0, ',', '.') }}</span>
+                        </div>
+                        <div class="d-flex justify-content-between align-items-center mb-1">
+                            <span class="text-muted fw-bold" style="font-size: 10px;">Fee Sales</span>
+                            <span class="fw-bold text-primary" style="font-size: 11px;">Rp {{ number_format($m->fee_marketing ?? 0, 0, ',', '.') }}</span>
+                        </div>
+                        <div class="d-flex justify-content-between align-items-center mt-1 pt-1 bg-light rounded px-2 border">
+                            <span class="fw-bolder text-dark" style="font-size: 10px;">THP</span>
+                            <span class="fw-black text-success" style="font-size: 13px;">Rp {{ number_format($m->total_gaji, 0, ',', '.') }}</span>
+                        </div>
+                    </div>
 
-                                    {{-- Kolom 3: Skor KPI Akhir --}}
-                                    <td class="py-4 text-center">
-                                        @if($m->kpi_persen >= 70)
-                                            <div class="badge bg-success shadow-sm rounded-pill px-3 py-2 fs-6 mb-1">
-                                                {{ number_format($m->kpi_persen, 1) }}%
-                                            </div>
-                                            <small class="d-block text-success fw-bold" style="font-size: 10px;">Sesuai KPI</small>
-                                        @else
-                                            <div class="badge bg-danger shadow-sm rounded-pill px-3 py-2 fs-6 mb-1">
-                                                {{ number_format($m->kpi_persen, 1) }}%
-                                            </div>
-                                            <small class="d-block text-danger fw-bold" style="font-size: 10px;">Di Bawah Target</small>
-                                        @endif
-                                    </td>
-
-                                    {{-- Kolom 4: Komponen Pendapatan --}}
-                                    <td class="py-4">
-                                        <div class="p-3 rounded-4 border border-light shadow-sm" style="background-color: #f8fafc; font-size: 11px;">
-                                            <div class="d-flex justify-content-between mb-2">
-                                                <span class="text-muted fw-medium">Gaji Pokok:</span>
-                                                <span class="fw-bold text-dark">Rp {{ number_format($m->gapok_hitung, 0, ',', '.') }}</span>
-                                            </div>
-                                            <div class="d-flex justify-content-between mb-2">
-                                                <span class="text-muted fw-medium">Tunj. BPJS:</span>
-                                                <span class="fw-bold text-success">+ Rp {{ number_format($m->tunjangan_bpjs ?? 0, 0, ',', '.') }}</span>
-                                            </div>
-                                        </div>
-                                    </td>
-
-                                    {{-- Kolom 5: Komponen Variabel --}}
-                                    <td class="py-4">
-                                        <div class="p-3 rounded-4 border-primary-subtle border shadow-sm" style="background-color: #f0f5ff; font-size: 11px;">
-                                            <div class="d-flex justify-content-between mb-2">
-                                                <span class="text-muted fw-medium">Nilai KPI (Rp):</span>
-                                                <span class="fw-bold text-dark">Rp {{ number_format($m->kpi_rp, 0, ',', '.') }}</span>
-                                            </div>
-                                            <hr class="my-2 border-primary opacity-25">
-                                            <div class="d-flex justify-content-between align-items-center">
-                                                <span class="text-primary fw-bolder"><i class="fas fa-coins me-1"></i> Fee Sales:</span>
-                                                <span class="fw-bolder text-primary" style="font-size: 13px;">Rp {{ number_format($m->fee_marketing ?? 0, 0, ',', '.') }}</span>
-                                            </div>
-                                        </div>
-                                    </td>
-
-                                    {{-- Kolom 6: TOTAL TAKE HOME PAY --}}
-                                    <td class="py-4 text-end pe-4 align-middle">
-                                        <div class="d-inline-block text-end">
-                                            <p class="label-modern text-muted mb-1">TOTAL DITERIMA</p>
-                                            <h4 class="fw-bolder text-success mb-2 lh-1">
-                                                Rp {{ number_format($m->total_gaji, 0, ',', '.') }}
-                                            </h4>
-                                        </div>
-                                    </td>
-                                </tr>
-                            @endforeach
-                            
-                            @if(count($marketings) == 0)
-                                <tr>
-                                    <td colspan="6" class="text-center py-5 text-muted">
-                                        <i class="fas fa-folder-open fs-1 mb-3 text-light"></i><br>
-                                        Belum ada data untuk ditampilkan pada rentang waktu ini.
-                                    </td>
-                                </tr>
-                            @endif
-                        </tbody>
-                    </table>                        
+                    {{-- DETAILS (TAMPIL SAAT HOVER) --}}
+                    <div class="hover-details bg-white border-top">
+                        <div class="mb-2">
+                            <div class="d-flex justify-content-between mb-1">
+                                <span class="text-muted fw-bold" style="font-size: 11px;">Skor KPI Akhir</span>
+                                <span class="fw-bold {{ $total_kpi >= 70 ? 'text-success' : 'text-danger' }}" style="font-size: 12px;">{{ number_format($total_kpi, 1) }}%</span>
+                            </div>
+                            <div class="d-flex justify-content-between mb-1">
+                                <span class="text-muted fw-bold" style="font-size: 11px;">Nilai KPI (Rp)</span>
+                                <span class="fw-bold text-dark" style="font-size: 11px;">Rp {{ number_format($m->kpi_rp, 0, ',', '.') }}</span>
+                            </div>
+                        </div>
+                        <hr class="my-2 border-secondary opacity-10">
+                        <div class="mb-2">
+                            <div class="d-flex justify-content-between mb-1">
+                                <span class="text-muted" style="font-size: 10px;">Gaji Pokok:</span>
+                                <span class="fw-bold text-dark" style="font-size: 10px;">Rp {{ number_format($m->gapok_hitung, 0, ',', '.') }}</span>
+                            </div>
+                            <div class="d-flex justify-content-between mb-1">
+                                <span class="text-muted" style="font-size: 10px;">Tunj. BPJS:</span>
+                                <span class="fw-bold text-success" style="font-size: 10px;">+ Rp {{ number_format($m->tunjangan_bpjs ?? 0, 0, ',', '.') }}</span>
+                            </div>
+                        </div>
+                        <a href="{{ route('penggajian.preview', $m->id) }}" target="_blank" class="btn btn-white btn-sm border text-primary rounded hover-lift shadow-sm w-100 mt-2" style="font-size: 10px; font-weight: 600;">
+                            <i class="fas fa-print me-1"></i> Cetak Slip
+                        </a>
+                    </div>
                 </div>
             </div>
         </div>
+    @endforeach
 
-        {{-- ================= INFO & KETERANGAN (MODERN) ================= --}}
+    @if(count($marketings) == 0)
+        <div class="col-12 text-center py-5">
+            <i class="fas fa-folder-open fs-1 mb-3 text-light"></i><br>
+            <h5 class="text-muted">Belum ada data untuk ditampilkan pada rentang waktu ini.</h5>
+        </div>
+    @endif
+</div>
+{{-- ================= INFO & KETERANGAN (MODERN) ================= --}}
         <div class="row fade-in">
             <div class="col-md-12 mb-3">
                 <div class="alert-modern-info h-100 d-flex align-items-start">
