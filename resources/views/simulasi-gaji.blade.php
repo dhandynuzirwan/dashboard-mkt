@@ -389,9 +389,9 @@
                             <div class="mb-1">
                                 <div class="d-flex justify-content-between fw-bold text-dark small mb-1">
                                     <span>3. Revenue</span>
-                                    <span class="text-warning">50%</span>
+                                    <span class="text-warning">60%</span>
                                 </div>
-                                <div class="progress" style="height: 6px;"><div class="progress-bar bg-warning" style="width: 50%"></div></div>
+                                <div class="progress" style="height: 6px;"><div class="progress-bar bg-warning" style="width: 60%"></div></div>
                             </div>
                         </div>
                     </div>
@@ -408,17 +408,17 @@
                         <h6 class="fw-bolder text-dark mb-1">Perhitungan Fee Marketing & Syarat KPI</h6>
                         <ul class="list-group list-group-flush rounded border shadow-sm small fw-bold mt-2">
                             <li class="list-group-item p-3">
-                                <span class="d-block text-danger mb-1"><i class="fas fa-exclamation-circle me-1"></i> Syarat 1 (Di Bawah Target)</span>
+                                <span class="d-block text-danger mb-1"><i class="fas fa-exclamation-circle me-1"></i></span>
                                 Jika Revenue < Rp 30.000.000 & Skor KPI < 70% <br>
                                 <span class="text-muted"><i class="fas fa-arrow-right me-1"></i> THP = Gaji Pokok (Tanpa Fee & KPI)</span>
                             </li>
                             <li class="list-group-item p-3">
-                                <span class="d-block text-primary mb-1"><i class="fas fa-hand-holding-usd me-1"></i> Syarat 2 (Bonus Capaian Minimal)</span>
+                                <span class="d-block text-primary mb-1"><i class="fas fa-hand-holding-usd me-1"></i></span>
                                 Jika Revenue >= Rp 30.000.000 & Skor KPI < 70% <br>
                                 <span class="text-muted"><i class="fas fa-arrow-right me-1"></i> THP = Revenue * 40% * 2%</span>
                             </li>
                             <li class="list-group-item p-3">
-                                <span class="d-block text-success mb-1"><i class="fas fa-star me-1"></i> Syarat 3 (Sesuai KPI & Target)</span>
+                                <span class="d-block text-success mb-1"><i class="fas fa-star me-1"></i></span>
                                 Jika Skor KPI >= 70% <br>
                                 <span class="text-muted"><i class="fas fa-arrow-right me-1"></i> THP = Revenue * 60% * 5%</span>
                             </li>

@@ -61,21 +61,41 @@
         @if(auth()->user()->role === 'superadmin')
         <div class="row mb-4">
             <div class="col-md-6 col-lg-3">
-                <div class="card card-stats card-round border-0 shadow-sm bg-primary-gradient text-white h-100">
-                    <div class="card-body p-4 text-center">
-                        <i class="fas fa-chart-pie fa-2x mb-2 opacity-75"></i>
-                        <h6 class="fw-bold mb-1">Total KPI Keseluruhan</h6>
-                        <h3 class="fw-bolder mb-0">{{ number_format($total_kpi_avg ?? 0, 1) }}%</h3>
+                <div class="card card-stats card-round">
+                    <div class="card-body">
+                        <div class="row align-items-center">
+                            <div class="col-icon">
+                                <div class="icon-big text-center icon-primary bubble-shadow-small">
+                                    <i class="fas fa-chart-pie"></i>
+                                </div>
+                            </div>
+                            <div class="col col-stats ms-3 ms-sm-0">
+                                <div class="numbers">
+                                    <p class="card-category">Total KPI Keseluruhan</p>
+                                    <h4 class="card-title">{{ number_format($total_kpi_avg ?? 0, 1) }}%</h4>
+                                </div>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
             <div class="col-md-6 col-lg-3">
-                <div class="card card-stats card-round border-0 shadow-sm bg-secondary-gradient text-white h-100">
-                    <div class="card-body p-4 text-center">
-                        <i class="fas fa-percent fa-2x mb-2 opacity-75"></i>
-                        <h6 class="fw-bold mb-1">HPP% (Bulan Ini)</h6>
-                        <h3 class="fw-bolder mb-0">{{ number_format($hpp_percent ?? 0, 1) }}%</h3>
-                        <small class="d-block mt-1 opacity-75" style="font-size:10px;">HPP / Total Income</small>
+                <div class="card card-stats card-round">
+                    <div class="card-body">
+                        <div class="row align-items-center">
+                            <div class="col-icon">
+                                <div class="icon-big text-center icon-secondary bubble-shadow-small">
+                                    <i class="fas fa-percent"></i>
+                                </div>
+                            </div>
+                            <div class="col col-stats ms-3 ms-sm-0">
+                                <div class="numbers">
+                                    <p class="card-category">HPP% (Bulan Ini)</p>
+                                    <h4 class="card-title">{{ number_format($hpp_percent ?? 0, 1) }}%</h4>
+                                    <small class="text-muted" style="font-size:10px;">HPP / Total Income</small>
+                                </div>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -143,6 +163,7 @@
             }
         </style>
 
+        @if(auth()->user()->role !== 'marketing')
         {{-- ================= CARD DATA KPI (MICRO CARDS 4x3) ================= --}}
         <div class="row">
             @foreach ($marketings as $m)
@@ -248,13 +269,11 @@
                     <i class="fas fa-folder-open fs-1 text-muted mb-3 opacity-50"></i>
                     <h5 class="text-muted">Belum ada data KPI pada rentang waktu ini.</h5>
                 </div>
-
-        
-
             @endif
         </div>
+        @endif
 
-{{-- ================= TABEL BREAKDOWN KPI ================= --}}
+        {{-- ================= TABEL BREAKDOWN KPI ================= --}}
         <div class="card card-round shadow-sm border-0 mt-2 mb-4 fade-in">
             <div class="card-header bg-white border-bottom pt-4 px-4 pb-3">
                 <h5 class="fw-bolder mb-0 text-dark"><i class="fas fa-list-alt text-primary me-2"></i> Breakdown Rincian KPI</h5>
@@ -294,9 +313,7 @@
                                 </td>
                                 
                                 <td>
-                                    <div class="d-flex justify-content-between mb-1" style="max-width: 200px;">
-                                        <span class="text-muted">Target Max Data:</span> <span class="fw-bold">115 Data</span>
-                                    </div>
+
                                     <div class="d-flex justify-content-between mb-1" style="max-width: 200px;">
                                         <span class="text-muted">Update Data:</span> <span class="fw-bold">{{ $m->detail_update_data }} Data</span>
                                     </div>
