@@ -108,4 +108,30 @@ class PenggajianController extends Controller
         JenisIzin::destroy($id);
         return redirect()->back()->with('success', 'Aturan potongan izin berhasil dihapus');
     }
+
+    public function massUpdate(Request $request)
+    {
+        $request->validate([
+            'target_call' => 'required|integer',
+            'target' => 'required|numeric',
+            'gaji_pokok' => 'required|numeric',
+            'tunjangan' => 'required|numeric',
+            'tunjangan_bpjs' => 'required|numeric',
+            'iuran_bpjs' => 'required|numeric',
+        ]);
+
+        $marketing_ids = User::where('role', 'marketing')->pluck('id');
+        
+        Penggajian::whereIn('user_id', $marketing_ids)->update([
+            'target_call' => $request->target_call,
+            'target' => $request->target,
+            'gaji_pokok' => $request->gaji_pokok,
+            'tunjangan' => $request->tunjangan,
+            'tunjangan_bpjs' => $request->tunjangan_bpjs,
+            'iuran_bpjs' => $request->iuran_bpjs,
+        ]);
+
+        return redirect()->route('penggajian.index')
+            ->with('success', 'Data penggajian seluruh marketing berhasil diupdate massal');
+    }
 }

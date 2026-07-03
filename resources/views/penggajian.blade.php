@@ -23,9 +23,14 @@
                 <div class="card-title fw-bold m-0">
                     <!--<i class="fas fa-wallet text-success me-2"></i>-->
                      Data Gaji & Tunjangan Karyawan</div>
-                <a href="{{ route('form-penggajian') }}" class="btn btn-success btn-sm btn-round ms-auto shadow-sm">
-                    <i class="fa fa-plus me-1"></i> Tambah Data
-                </a>
+                <div class="ms-auto d-flex">
+                    <button type="button" class="btn btn-primary btn-sm btn-round shadow-sm me-2" data-bs-toggle="modal" data-bs-target="#massUpdateModal">
+                        <i class="fa fa-sync me-1"></i> Update Massal Marketing
+                    </button>
+                    <a href="{{ route('form-penggajian') }}" class="btn btn-success btn-sm btn-round shadow-sm">
+                        <i class="fa fa-plus me-1"></i> Tambah Data Individu
+                    </a>
+                </div>
             </div>
             <div class="card-body p-0">
                 <div class="table-responsive">
@@ -261,4 +266,61 @@
     setInterval(updateClock, 1000);
     updateClock();
 </script>
+
+<!-- Modal Update Massal -->
+<div class="modal fade" id="massUpdateModal" tabindex="-1" aria-labelledby="massUpdateModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title fw-bold" id="massUpdateModalLabel"><i class="fas fa-sync text-primary me-2"></i>Update Massal Data Marketing</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <form action="{{ route('penggajian.mass_update') }}" method="POST">
+                @csrf
+                <div class="modal-body">
+                    <div class="alert alert-warning shadow-sm" role="alert" style="font-size: 13px;">
+                        <i class="fas fa-exclamation-triangle me-2"></i> Aksi ini akan mengubah target dan pendapatan untuk <strong>SEMUA</strong> karyawan dengan role Marketing.
+                    </div>
+                    
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label fw-bold">Target Call (per hari)</label>
+                            <input type="number" class="form-control" name="target_call" required value="40">
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label fw-bold">Target Revenue (Rp)</label>
+                            <input type="number" class="form-control" name="target" required value="100000000">
+                        </div>
+                    </div>
+                    
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label fw-bold">Gaji Pokok (Rp)</label>
+                            <input type="number" class="form-control" name="gaji_pokok" required value="1500000">
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label fw-bold">Tunjangan Lain (Rp)</label>
+                            <input type="number" class="form-control" name="tunjangan" required value="0">
+                        </div>
+                    </div>
+                    
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label fw-bold">Tunjangan BPJS (Rp)</label>
+                            <input type="number" class="form-control" name="tunjangan_bpjs" required value="147614">
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label fw-bold">Iuran BPJS (Rp)</label>
+                            <input type="number" class="form-control" name="iuran_bpjs" required value="44284">
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer bg-light">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Batal</button>
+                    <button type="submit" class="btn btn-primary fw-bold"><i class="fas fa-save me-1"></i> Simpan Massal</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
 @endsection

@@ -331,6 +331,7 @@ Route::middleware('auth')->group(function () {
         Route::get('/penggajian', [PenggajianController::class, 'index'])->name('penggajian.index');
         Route::get('/form-penggajian', [PenggajianController::class, 'create'])->name('form-penggajian');
         Route::post('/penggajian/store', [PenggajianController::class, 'store'])->name('penggajian.store');
+        Route::post('/penggajian/mass-update', [PenggajianController::class, 'massUpdate'])->name('penggajian.mass_update');
         Route::get('/penggajian/{id}/edit', [PenggajianController::class, 'edit'])->name('penggajian.edit');
         Route::put('/penggajian/{id}', [PenggajianController::class, 'update'])->name('penggajian.update');
         Route::delete('/penggajian/{id}', [PenggajianController::class, 'destroy'])->name('penggajian.destroy');
