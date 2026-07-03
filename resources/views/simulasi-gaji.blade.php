@@ -370,7 +370,7 @@
                         <tbody>
                             <tr>
                                 <td class="text-start pt-2">
-                                    <span class="fw-bolder text-dark">{{ number_format($total_kpi_avg ?? 0, 1) }}%</span>
+                                    <span class="fw-bolder {{ ($total_kpi_avg ?? 0) >= 70 ? 'text-success' : 'text-danger' }}">{{ number_format($total_kpi_avg ?? 0, 1) }}%</span>
                                 </td>
                                 <td class="pt-2"><span class="fw-bold text-success">Rp {{ number_format($total_fee_marketing ?? 0, 0, ',', '.') }}</span></td>
                                 <td class="pt-2">
