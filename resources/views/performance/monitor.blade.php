@@ -31,7 +31,7 @@
     </div>
 
     {{-- STAT CARDS (Atas) --}}
-    <div class="fade-in px-2" id="stat-cards-container" style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 14px; margin-bottom: 14px;">
+    <div class="fade-in px-2" id="stat-cards-container" style="display: grid; grid-template-columns: repeat(5, 1fr); gap: 14px; margin-bottom: 14px;">
         <div style="grid-column: span 4;" class="text-center py-2">
             <div class="spinner-border text-primary mb-2" style="width: 2rem; height: 2rem;" role="status"></div>
             <h5 class="text-muted fw-bold">Sinkronisasi Server Data...</h5>
@@ -271,7 +271,22 @@
             let avgKpi = data.length > 0 ? (grandKpiTotal / data.length) : 0;
             let grandAch = grandTarget > 0 ? (grandDeal / grandTarget) * 100 : 0;
 
+            let targetMinimal = 542200000;
+
             statContainer.innerHTML = `
+                <div style="min-width: 0;">
+                    <div class="card stat-card-modern shadow-sm h-100 hover-lift border-0">
+                        <div class="card-body p-2 p-xl-3 d-flex align-items-center">
+                            <div class="icon-circle bg-danger-subtle text-danger rounded-circle d-flex align-items-center justify-content-center me-3" style="width: 55px; height: 55px; min-width: 55px;">
+                                <i class="fas fa-flag-checkered" style="font-size: 1.6rem;"></i>
+                            </div>
+                            <div style="min-width: 0;">
+                                <p class="text-muted text-uppercase fw-bold mb-1 text-truncate" style="font-size: 0.85rem;">Target Minimal</p>
+                                <h4 class="fw-black text-danger mb-0 text-truncate" style="font-size: 1.6rem; letter-spacing: -1px;">${formatRp(targetMinimal)}</h4>
+                            </div>
+                        </div>
+                    </div>
+                </div>
                 <div style="min-width: 0;">
                     <div class="card stat-card-modern shadow-sm h-100 hover-lift border-0">
                         <div class="card-body p-2 p-xl-3 d-flex align-items-center">
