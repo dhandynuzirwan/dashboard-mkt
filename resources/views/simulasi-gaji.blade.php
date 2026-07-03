@@ -345,50 +345,50 @@
 </div>
 @endif
 @if(auth()->user()->role === 'superadmin')
-{{-- ================= TABEL SUMMARY KHUSUS SUPERADMIN ================= --}}
-<div class="row fade-in mb-4">
+{{-- ================= TABEL SUMMARY KHUSUS SUPERADMIN (RINGKAS) ================= --}}
+<div class="row fade-in mb-3">
     <div class="col-12">
-        <div class="card card-round shadow-sm border-0">
-            <div class="card-header bg-white border-bottom pt-4 px-4 pb-3">
-                <h5 class="fw-bolder mb-0 text-dark"><i class="fas fa-briefcase text-primary me-2"></i> Ringkasan Komisi & Rasio (Khusus Superadmin)</h5>
-            </div>
-            <div class="card-body p-0">
+        <div class="card card-round shadow-sm border-0 mb-3">
+            <div class="card-body p-2 px-3">
+                <div class="d-flex align-items-center mb-2 pb-2 border-bottom">
+                    <i class="fas fa-briefcase text-primary me-2"></i>
+                    <span class="fw-bolder text-dark" style="font-size: 13px;">Ringkasan Komisi & Rasio (Khusus Superadmin)</span>
+                </div>
                 <div class="table-responsive">
-                    <table class="table table-hover table-striped mb-0 text-center align-middle" style="white-space: nowrap;">
-                        <thead class="table-light text-muted" style="font-size: 12px; letter-spacing: 0.5px;">
+                    <table class="table table-sm table-borderless mb-0 text-center align-middle" style="white-space: nowrap; font-size: 11px;">
+                        <thead class="text-muted border-bottom">
                             <tr>
-                                <th class="text-start ps-4">Indikator KPI</th>
-                                <th>Total Fee Marketing</th>
-                                <th>Komisi SPV</th>
-                                <th>Komisi Team Leader</th>
-                                <th>Total Fee Dikeluarkan</th>
-                                <th>Rasio Fee / Revenue</th>
-                                <th>Rasio Gaji / Revenue</th>
+                                <th class="text-start pb-1">Avg KPI</th>
+                                <th class="pb-1">Fee Marketing</th>
+                                <th class="pb-1">Komisi SPV</th>
+                                <th class="pb-1">Komisi TL</th>
+                                <th class="pb-1">Total Keluar</th>
+                                <th class="pb-1">Rasio Fee</th>
+                                <th class="pb-1">Rasio Gaji</th>
                             </tr>
                         </thead>
                         <tbody>
                             <tr>
-                                <td class="text-start ps-4">
+                                <td class="text-start pt-2">
                                     <span class="fw-bolder text-dark">{{ number_format($total_kpi_avg ?? 0, 1) }}%</span>
-                                    <br><small class="text-muted" style="font-size:10px;">Avg KPI Marketing</small>
                                 </td>
-                                <td><span class="fw-bold text-success">Rp {{ number_format($total_fee_marketing ?? 0, 0, ',', '.') }}</span></td>
-                                <td>
-                                    <span class="fw-bold text-primary">Rp {{ number_format($komisi_spv ?? 0, 0, ',', '.') }}</span><br>
-                                    <small class="text-muted" style="font-size:10px;">{{ ($total_kpi_avg ?? 0) >= 70 ? '10%' : '5%' }} dari Fee Mkt</small>
+                                <td class="pt-2"><span class="fw-bold text-success">Rp {{ number_format($total_fee_marketing ?? 0, 0, ',', '.') }}</span></td>
+                                <td class="pt-2">
+                                    <span class="fw-bold text-primary">Rp {{ number_format($komisi_spv ?? 0, 0, ',', '.') }}</span>
+                                    <span class="text-muted ms-1" style="font-size: 9px;">({{ ($total_kpi_avg ?? 0) >= 70 ? '10%' : '5%' }})</span>
                                 </td>
-                                <td>
-                                    <span class="fw-bold text-warning">Rp {{ number_format($komisi_tl ?? 0, 0, ',', '.') }}</span><br>
-                                    <small class="text-muted" style="font-size:10px;">{{ ($total_kpi_avg ?? 0) >= 70 ? '5%' : '2.5%' }} dari Fee Mkt</small>
+                                <td class="pt-2">
+                                    <span class="fw-bold text-warning">Rp {{ number_format($komisi_tl ?? 0, 0, ',', '.') }}</span>
+                                    <span class="text-muted ms-1" style="font-size: 9px;">({{ ($total_kpi_avg ?? 0) >= 70 ? '5%' : '2.5%' }})</span>
                                 </td>
-                                <td>
+                                <td class="pt-2">
                                     <span class="fw-bold text-danger">Rp {{ number_format($total_fee_dikeluarkan ?? 0, 0, ',', '.') }}</span>
                                 </td>
-                                <td>
-                                    <span class="badge bg-secondary shadow-sm" style="font-size: 11px;">{{ number_format($rasio_fee_revenue ?? 0, 1) }}%</span>
+                                <td class="pt-2">
+                                    <span class="badge bg-secondary shadow-sm" style="font-size: 10px;">{{ number_format($rasio_fee_revenue ?? 0, 1) }}%</span>
                                 </td>
-                                <td>
-                                    <span class="badge bg-dark shadow-sm" style="font-size: 11px;">{{ number_format($rasio_gaji_revenue ?? 0, 1) }}%</span>
+                                <td class="pt-2">
+                                    <span class="badge bg-dark shadow-sm" style="font-size: 10px;">{{ number_format($rasio_gaji_revenue ?? 0, 1) }}%</span>
                                 </td>
                             </tr>
                         </tbody>
