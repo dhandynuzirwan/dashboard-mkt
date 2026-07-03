@@ -344,6 +344,62 @@
     @endif
 </div>
 @endif
+@if(auth()->user()->role === 'superadmin')
+{{-- ================= TABEL SUMMARY KHUSUS SUPERADMIN ================= --}}
+<div class="row fade-in mb-4">
+    <div class="col-12">
+        <div class="card card-round shadow-sm border-0">
+            <div class="card-header bg-white border-bottom pt-4 px-4 pb-3">
+                <h5 class="fw-bolder mb-0 text-dark"><i class="fas fa-briefcase text-primary me-2"></i> Ringkasan Komisi & Rasio (Khusus Superadmin)</h5>
+            </div>
+            <div class="card-body p-0">
+                <div class="table-responsive">
+                    <table class="table table-hover table-striped mb-0 text-center align-middle" style="white-space: nowrap;">
+                        <thead class="table-light text-muted" style="font-size: 12px; letter-spacing: 0.5px;">
+                            <tr>
+                                <th class="text-start ps-4">Indikator KPI</th>
+                                <th>Total Fee Marketing</th>
+                                <th>Komisi SPV</th>
+                                <th>Komisi Team Leader</th>
+                                <th>Total Fee Dikeluarkan</th>
+                                <th>Rasio Fee / Revenue</th>
+                                <th>Rasio Gaji / Revenue</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td class="text-start ps-4">
+                                    <span class="fw-bolder text-dark">{{ number_format($total_kpi_avg ?? 0, 1) }}%</span>
+                                    <br><small class="text-muted" style="font-size:10px;">Avg KPI Marketing</small>
+                                </td>
+                                <td><span class="fw-bold text-success">Rp {{ number_format($total_fee_marketing ?? 0, 0, ',', '.') }}</span></td>
+                                <td>
+                                    <span class="fw-bold text-primary">Rp {{ number_format($komisi_spv ?? 0, 0, ',', '.') }}</span><br>
+                                    <small class="text-muted" style="font-size:10px;">{{ ($total_kpi_avg ?? 0) >= 70 ? '10%' : '5%' }} dari Fee Mkt</small>
+                                </td>
+                                <td>
+                                    <span class="fw-bold text-warning">Rp {{ number_format($komisi_tl ?? 0, 0, ',', '.') }}</span><br>
+                                    <small class="text-muted" style="font-size:10px;">{{ ($total_kpi_avg ?? 0) >= 70 ? '5%' : '2.5%' }} dari Fee Mkt</small>
+                                </td>
+                                <td>
+                                    <span class="fw-bold text-danger">Rp {{ number_format($total_fee_dikeluarkan ?? 0, 0, ',', '.') }}</span>
+                                </td>
+                                <td>
+                                    <span class="badge bg-secondary shadow-sm" style="font-size: 11px;">{{ number_format($rasio_fee_revenue ?? 0, 1) }}%</span>
+                                </td>
+                                <td>
+                                    <span class="badge bg-dark shadow-sm" style="font-size: 11px;">{{ number_format($rasio_gaji_revenue ?? 0, 1) }}%</span>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+@endif
+
 {{-- ================= INFO & KETERANGAN (MODERN) ================= --}}
         <div class="row fade-in">
             <div class="col-md-6 d-flex flex-column gap-3 mb-3">
@@ -409,12 +465,12 @@
                         <ul class="list-group list-group-flush rounded border shadow-sm small fw-bold mt-2">
                             <li class="list-group-item p-3">
                                 <span class="d-block text-danger mb-1"><i class="fas fa-exclamation-circle me-1"></i></span>
-                                Jika Revenue < Rp 30.000.000 & Skor KPI < 70% <br>
+                                Jika Revenue < Rp 30.000.000 & KPI < 70% <br>
                                 <span class="text-muted"><i class="fas fa-arrow-right me-1"></i> THP = Gaji Pokok (Tanpa Fee & KPI)</span>
                             </li>
                             <li class="list-group-item p-3">
                                 <span class="d-block text-primary mb-1"><i class="fas fa-hand-holding-usd me-1"></i></span>
-                                Jika Revenue >= Rp 30.000.000 & Skor KPI < 70% <br>
+                                Jika Revenue >= Rp 30.000.000 & KPI < 70% <br>
                                 <span class="text-muted"><i class="fas fa-arrow-right me-1"></i> THP = Revenue * 40% * 2%</span>
                             </li>
                             <li class="list-group-item p-3">

@@ -219,7 +219,40 @@ class SalaryController extends Controller
         $all_marketing = User::where('role', 'marketing')->get();
         $hariEfektif = $marketings->first()->hari_efektif ?? 0;
 
-        return view('simulasi-gaji', compact('marketings', 'hariEfektif', 'start', 'end', 'all_marketing'));
+        // KALKULASI STATS SUPERADMIN
+        $total_kpi_avg = 0;
+        $total_fee_marketing = 0;
+        $komisi_spv = 0;
+        $komisi_tl = 0;
+        $total_fee_dikeluarkan = 0;
+        $rasio_fee_revenue = 0;
+        $rasio_gaji_revenue = 0;
+
+        if (auth()->user()->role === 'superadmin') {
+            $total_kpi_avg = $marketings->count() > 0 ? $marketings->avg('kpi_persen') : 0;
+            $total_fee_marketing = $marketings->sum('fee_marketing');
+            $total_income = $marketings->sum('income');
+            $total_thp = $marketings->sum('total_gaji');
+            
+            // Komisi SPV
+            $komisi_spv = ($total_kpi_avg < 70) ? ($total_fee_marketing * 0.05) : ($total_fee_marketing * 0.10);
+            
+            // Komisi TL
+            $komisi_tl = ($total_kpi_avg < 70) ? ($total_fee_marketing * 0.025) : ($total_fee_marketing * 0.05);
+            
+            $total_fee_dikeluarkan = $total_fee_marketing + $komisi_spv + $komisi_tl;
+            
+            if ($total_income > 0) {
+                $rasio_fee_revenue = ($total_fee_dikeluarkan / $total_income) * 100;
+                $rasio_gaji_revenue = ($total_thp / $total_income) * 100;
+            }
+        }
+
+        return view('simulasi-gaji', compact(
+            'marketings', 'hariEfektif', 'start', 'end', 'all_marketing',
+            'total_kpi_avg', 'total_fee_marketing', 'komisi_spv', 'komisi_tl',
+            'total_fee_dikeluarkan', 'rasio_fee_revenue', 'rasio_gaji_revenue'
+        ));
     }
     
     public function previewSlip($id)
