@@ -223,6 +223,90 @@
                     <i class="fas fa-folder-open fs-1 text-muted mb-3 opacity-50"></i>
                     <h5 class="text-muted">Belum ada data KPI pada rentang waktu ini.</h5>
                 </div>
+
+        {{-- ================= TABEL BREAKDOWN KPI ================= --}}
+        <div class="card card-round shadow-sm border-0 mt-2 mb-4 fade-in">
+            <div class="card-header bg-white border-bottom pt-4 px-4 pb-3">
+                <h5 class="fw-bolder mb-0 text-dark"><i class="fas fa-list-alt text-primary me-2"></i> Breakdown Rincian KPI</h5>
+            </div>
+            <div class="card-body p-0">
+                <div class="table-responsive">
+                    <table class="table table-hover align-middle mb-0" style="font-size: 12px;">
+                        <thead class="bg-light sticky-top">
+                            <tr>
+                                <th class="ps-4" width="250">Marketing</th>
+                                <th>Detail Absensi</th>
+                                <th>Detail Progress</th>
+                                <th>Detail Revenue</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach ($marketings as $m)
+                            <tr>
+                                <td class="ps-4">
+                                    <div class="fw-bolder text-dark" style="font-size: 13px;">{{ $m->nama_lengkap ?? $m->name }}</div>
+                                    <span class="badge bg-primary-subtle text-primary border border-primary border-opacity-25 mt-1">{{ $m->name }}</span>
+                                </td>
+                                
+                                <td>
+                                    <div class="d-flex justify-content-between mb-1" style="max-width: 180px;">
+                                        <span class="text-muted">Jadwal:</span> <span class="fw-bold">{{ $m->absensi_jadwal }} Hari</span>
+                                    </div>
+                                    <div class="d-flex justify-content-between mb-1" style="max-width: 180px;">
+                                        <span class="text-muted">Hadir:</span> <span class="text-success fw-bold">{{ $m->absensi_hadir }} Hari</span>
+                                    </div>
+                                    <div class="d-flex justify-content-between mb-1" style="max-width: 180px;">
+                                        <span class="text-muted">Tidak Hadir:</span> <span class="text-danger fw-bold">{{ $m->absensi_jadwal - $m->absensi_hadir }} Hari</span>
+                                    </div>
+                                    <div class="d-flex justify-content-between mt-2 pt-1 border-top border-light" style="max-width: 180px;">
+                                        <span class="fw-bold">Total Absensi:</span> <span class="fw-bolder text-info">{{ number_format($m->absensi_kpi, 1) }}%</span>
+                                    </div>
+                                </td>
+                                
+                                <td>
+                                    <div class="d-flex justify-content-between mb-1" style="max-width: 200px;">
+                                        <span class="text-muted">Target Max Data:</span> <span class="fw-bold">115 Data</span>
+                                    </div>
+                                    <div class="d-flex justify-content-between mb-1" style="max-width: 200px;">
+                                        <span class="text-muted">Update Data:</span> <span class="fw-bold">{{ $m->detail_update_data }} Data</span>
+                                    </div>
+                                    <div class="d-flex justify-content-between mb-1" style="max-width: 200px;">
+                                        <span class="text-muted">Akhir Data:</span> <span class="fw-bold">{{ $m->detail_akhir_data }} Data</span>
+                                    </div>
+                                    <div class="d-flex justify-content-between mb-1" style="max-width: 200px;">
+                                        <span class="text-muted">Penawaran:</span> <span class="fw-bold">{{ $m->detail_penawaran }} Data</span>
+                                    </div>
+                                    <div class="d-flex justify-content-between mt-2 pt-1 border-top border-light" style="max-width: 200px;">
+                                        <span class="fw-bold">Total Progress:</span> <span class="fw-bolder text-warning">{{ number_format($m->progress_kpi, 1) }}%</span>
+                                    </div>
+                                </td>
+                                
+                                <td>
+                                    <div class="d-flex justify-content-between mb-1" style="max-width: 220px;">
+                                        <span class="text-muted">Target:</span> <span class="fw-bold">Rp {{ number_format($m->revenue_target, 0, ',', '.') }}</span>
+                                    </div>
+                                    <div class="d-flex justify-content-between mb-1" style="max-width: 220px;">
+                                        <span class="text-muted">Pencapaian:</span> <span class="text-success fw-bold">Rp {{ number_format($m->revenue_actual, 0, ',', '.') }}</span>
+                                    </div>
+                                    <div class="d-flex justify-content-between mt-2 pt-1 border-top border-light" style="max-width: 220px;">
+                                        <span class="fw-bold">Total Revenue:</span> <span class="fw-bolder text-success">{{ number_format($m->revenue_kpi, 1) }}%</span>
+                                    </div>
+                                    @php
+                                        // Kalkulasi Nilai KPI Rp Berdasarkan Ruleset (60jt threshold)
+                                        $kpi_rp = ($m->revenue_actual < 60000000) ? $m->revenue_actual * 0.40 : $m->revenue_actual * 0.60;
+                                    @endphp
+                                    <div class="d-flex justify-content-between mt-1 pt-1" style="max-width: 220px;">
+                                        <span class="fw-bold">Nilai KPI (Rp):</span> <span class="fw-bolder text-dark">Rp {{ number_format($kpi_rp, 0, ',', '.') }}</span>
+                                    </div>
+                                </td>
+                            </tr>
+                            @endforeach
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
             @endif
         </div>
 </div>
