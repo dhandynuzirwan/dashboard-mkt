@@ -41,9 +41,20 @@
                                 <label class="form-label fw-bold">Target Minimal HPP (Bulan: {{ \Carbon\Carbon::createFromFormat('Y-m', $bulan_tahun)->translatedFormat('F Y') }})</label>
                                 <div class="input-group">
                                     <span class="input-group-text bg-light fw-bold">Rp</span>
-                                    <input type="number" name="target_minimal" class="form-control form-control-lg fw-bold text-primary" value="{{ $target_minimal }}" required min="0">
+                                    <input type="text" id="target_minimal_display" class="form-control form-control-lg fw-bold text-primary format-rupiah" value="{{ number_format($target_minimal, 0, ',', '.') }}" required>
+                                    <input type="hidden" name="target_minimal" id="target_minimal_real" value="{{ $target_minimal }}">
                                 </div>
                                 <small class="text-muted mt-2 d-block">Angka ini akan ditampilkan sebagai patokan target minimal perusahaan pada layar On Display Monitor.</small>
+                            </div>
+
+                            <div class="mb-3">
+                                <label class="form-label fw-bold">HPP / Bulan</label>
+                                <div class="input-group">
+                                    <span class="input-group-text bg-light fw-bold">Rp</span>
+                                    <input type="text" id="hpp_per_bulan_display" class="form-control form-control-lg fw-bold text-success format-rupiah" value="{{ number_format($hpp_per_bulan ?? 0, 0, ',', '.') }}" required>
+                                    <input type="hidden" name="hpp_per_bulan" id="hpp_per_bulan_real" value="{{ $hpp_per_bulan ?? 0 }}">
+                                </div>
+                                <small class="text-muted mt-2 d-block">Angka ini digunakan untuk menghitung persentase HPP di layar Data KPI Superadmin.</small>
                             </div>
                             
                             <div class="d-flex justify-content-end mt-4">
@@ -71,4 +82,35 @@
         </div>
     </div>
 </div>
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const formatRupiah = (angka, prefix) => {
+        let number_string = angka.replace(/[^,\d]/g, '').toString(),
+            split = number_string.split(','),
+            sisa = split[0].length % 3,
+            rupiah = split[0].substr(0, sisa),
+            ribuan = split[0].substr(sisa).match(/\d{3}/gi);
+
+        if (ribuan) {
+            let separator = sisa ? '.' : '';
+            rupiah += separator + ribuan.join('.');
+        }
+
+        rupiah = split[1] != undefined ? rupiah + ',' + split[1] : rupiah;
+        return prefix == undefined ? rupiah : (rupiah ? 'Rp. ' + rupiah : '');
+    }
+
+    const inputs = document.querySelectorAll('.format-rupiah');
+    inputs.forEach(input => {
+        input.addEventListener('keyup', function(e) {
+            this.value = formatRupiah(this.value);
+            // Update hidden input
+            let realInput = this.nextElementSibling;
+            if(realInput && realInput.type === 'hidden') {
+                realInput.value = this.value.replace(/\./g, '');
+            }
+        });
+    });
+});
+</script>
 @endsection

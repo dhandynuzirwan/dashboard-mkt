@@ -205,6 +205,25 @@ class KpiController extends Controller
 
         $all_marketing = User::where('role', 'marketing')->get();
 
-        return view('data-kpi', compact('marketings', 'start', 'end', 'all_marketing', 'hariEfektifSebulan'));
+        // 5. --- STATS KHUSUS SUPERADMIN ---
+        $total_kpi_avg = 0;
+        $hpp_percent = 0;
+        $total_income_keseluruhan = 0;
+        $hpp_per_bulan = 0;
+
+        if (auth()->user()->role === 'superadmin') {
+            $total_kpi_avg = $marketings->count() > 0 ? $marketings->avg('kpi_persen') : 0;
+            $total_income_keseluruhan = $marketings->sum('revenue_actual');
+            
+            $bulan_tahun = \Carbon\Carbon::parse($start)->format('Y-m');
+            $parameterFinansial = \App\Models\ParameterFinansial::where('bulan_tahun', $bulan_tahun)->first();
+            $hpp_per_bulan = $parameterFinansial ? $parameterFinansial->hpp_per_bulan : 0;
+
+            if ($total_income_keseluruhan > 0) {
+                $hpp_percent = ($hpp_per_bulan / $total_income_keseluruhan) * 100;
+            }
+        }
+
+        return view('data-kpi', compact('marketings', 'start', 'end', 'all_marketing', 'hariEfektifSebulan', 'total_kpi_avg', 'hpp_percent', 'hpp_per_bulan', 'total_income_keseluruhan'));
     }
 }

@@ -16,20 +16,25 @@ class ParameterFinansialController extends Controller
         
         // If not found, use default 0
         $target_minimal = $parameter ? $parameter->target_minimal : 0;
+        $hpp_per_bulan = $parameter ? $parameter->hpp_per_bulan : 0;
 
-        return view('finance.parameter-finansial', compact('bulan_tahun', 'target_minimal'));
+        return view('finance.parameter-finansial', compact('bulan_tahun', 'target_minimal', 'hpp_per_bulan'));
     }
 
     public function update(Request $request)
     {
         $request->validate([
             'bulan_tahun' => 'required|date_format:Y-m',
-            'target_minimal' => 'required|numeric|min:0'
+            'target_minimal' => 'required|numeric|min:0',
+            'hpp_per_bulan' => 'required|numeric|min:0'
         ]);
 
         ParameterFinansial::updateOrCreate(
             ['bulan_tahun' => $request->bulan_tahun],
-            ['target_minimal' => $request->target_minimal]
+            [
+                'target_minimal' => $request->target_minimal,
+                'hpp_per_bulan' => $request->hpp_per_bulan
+            ]
         );
 
         return redirect()->route('parameter-finansial.index', ['bulan_tahun' => $request->bulan_tahun])

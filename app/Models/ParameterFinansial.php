@@ -9,5 +9,9 @@ class ParameterFinansial extends Model
 {
     use HasFactory;
 
-    protected $fillable = ['bulan_tahun', 'target_minimal'];
+    protected $fillable = [
+        'bulan_tahun',
+        'hpp_per_bulan',
+        'target_minimal',
+    ];
 }
