@@ -128,7 +128,7 @@
                 </li>
 
                 {{-- ================= MENU MARKETING & SALES ================= --}}
-                @php $isMarketing = request()->routeIs(['pipeline', 'revenue', 'data-kpi', 'simulasi-gaji', 'form-prospek', 'form-cta-massal', 'data-masuk.index', 'master-training.index']); @endphp
+                @php $isMarketing = request()->routeIs(['pipeline', 'form-prospek', 'form-cta-massal', 'data-masuk.index', 'master-training.index']); @endphp
                 <li class="nav-item {{ $isMarketing ? 'active' : '' }}">
                     <a data-bs-toggle="collapse" href="#marketing-sales" class="{{ $isMarketing ? '' : 'collapsed' }}" aria-expanded="{{ $isMarketing ? 'true' : 'false' }}">
                         <i class="fas fa-chart-line"></i>
@@ -142,21 +142,7 @@
                                     <span class="sub-item">Pipeline Marketing</span>
                                 </a>
                             </li>
-                            <li class="{{ request()->routeIs('revenue') ? 'active' : '' }}">
-                                <a href="{{ route('revenue') }}">
-                                    <span class="sub-item">Revenue</span>
-                                </a>
-                            </li>
-                            <li class="{{ request()->routeIs('data-kpi') ? 'active' : '' }}">
-                                <a href="{{ route('data-kpi') }}">
-                                    <span class="sub-item">Data KPI</span>
-                                </a>
-                            </li>
-                            <li class="{{ request()->routeIs('simulasi-gaji') ? 'active' : '' }}">
-                                <a href="{{ route('simulasi-gaji') }}">
-                                    <span class="sub-item">Simulasi Gaji</span>
-                                </a>
-                            </li>
+
                             <li class="{{ request()->routeIs('form-prospek') ? 'active' : '' }}">
                                 <a href="{{ route('form-prospek') }}">
                                     <span class="sub-item">Tambah Data Prospek</span>
@@ -175,6 +161,35 @@
                             <li class="{{ request()->routeIs('master-training.index') ? 'active' : '' }}">
                                 <a href="{{ route('master-training.index') }}">
                                     <span class="sub-item">Master Pelatihan</span>
+                                </a>
+                            </li>
+                        </ul>
+                    </div>
+                </li>
+
+                {{-- ================= MENU FINANCE & TAX ================= --}}
+                @php $isFinance = request()->routeIs(['revenue', 'data-kpi', 'simulasi-gaji']); @endphp
+                <li class="nav-item {{ $isFinance ? 'active' : '' }}">
+                    <a data-bs-toggle="collapse" href="#finance-tax" class="{{ $isFinance ? '' : 'collapsed' }}" aria-expanded="{{ $isFinance ? 'true' : 'false' }}">
+                        <i class="fas fa-file-invoice-dollar"></i>
+                        <p>Finance & Tax</p>
+                        <span class="caret"></span>
+                    </a>
+                    <div class="collapse {{ $isFinance ? 'show' : '' }}" id="finance-tax">
+                        <ul class="nav nav-collapse">
+                            <li class="{{ request()->routeIs('revenue') ? 'active' : '' }}">
+                                <a href="{{ route('revenue') }}">
+                                    <span class="sub-item">Revenue</span>
+                                </a>
+                            </li>
+                            <li class="{{ request()->routeIs('data-kpi') ? 'active' : '' }}">
+                                <a href="{{ route('data-kpi') }}">
+                                    <span class="sub-item">Data KPI</span>
+                                </a>
+                            </li>
+                            <li class="{{ request()->routeIs('simulasi-gaji') ? 'active' : '' }}">
+                                <a href="{{ route('simulasi-gaji') }}">
+                                    <span class="sub-item">Simulasi Gaji</span>
                                 </a>
                             </li>
                         </ul>
