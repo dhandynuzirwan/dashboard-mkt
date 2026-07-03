@@ -212,7 +212,7 @@ class KpiController extends Controller
         $hpp_per_bulan = 0;
 
         if (auth()->user()->role === 'superadmin') {
-            $total_kpi_avg = $marketings->count() > 0 ? $marketings->avg('kpi_persen') : 0;
+            $total_kpi_avg = $marketings->count() > 0 ? $marketings->avg('total_kpi') : 0;
             $total_income_keseluruhan = $marketings->sum('revenue_actual');
             
             $bulan_tahun = \Carbon\Carbon::parse($start)->format('Y-m');
