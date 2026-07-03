@@ -4,14 +4,17 @@
 <div class="container-fluid py-2 tv-monitor-mode bg-light" id="monitor-container" style="min-height: 100vh; min-width: 1600px; overflow-x: hidden;">
     {{-- HEADER --}}
     <div class="d-flex justify-content-between align-items-center mb-1 fade-in px-2" id="monitor-header">
-        <div>
-            <div class="d-inline-flex align-items-center bg-primary-subtle text-primary px-3 py-1 rounded-pill mb-1 shadow-sm border border-primary border-opacity-10">
-                <i class="fas fa-satellite-dish fs-6 me-2 pulse-anim"></i>
-                <span class="fw-bold fs-6" style="letter-spacing: 1.5px;">LIVE TRACKING SYSTEM</span>
+        <div class="d-flex align-items-center gap-4">
+            <div>
+                <div class="d-inline-flex align-items-center bg-primary-subtle text-primary px-3 py-1 rounded-pill mb-1 shadow-sm border border-primary border-opacity-10">
+                    <i class="fas fa-satellite-dish fs-6 me-2 pulse-anim"></i>
+                    <span class="fw-bold fs-6" style="letter-spacing: 1.5px;">LIVE TRACKING SYSTEM</span>
+                </div>
+                <h2 class="fw-black text-dark mb-0 text-uppercase" id="monitor-title" style="font-size: 2rem; letter-spacing: -1px;">
+                    MONITORING MARKETING <span class="text-primary">•</span> <span id="monitor-month">MEMUAT...</span>
+                </h2>
             </div>
-            <h2 class="fw-black text-dark mb-0 text-uppercase" id="monitor-title" style="font-size: 2rem; letter-spacing: -1px;">
-                MONITORING MARKETING <span class="text-primary">•</span> <span id="monitor-month">MEMUAT...</span>
-            </h2>
+            <div id="target-minimal-container" class="align-self-stretch py-1"></div>
         </div>
         <div class="d-flex gap-3 align-items-center">
             <div class="d-flex align-items-center bg-white px-3 py-2 rounded-pill shadow border-0" id="update-badge">
@@ -31,7 +34,7 @@
     </div>
 
     {{-- STAT CARDS (Atas) --}}
-    <div class="fade-in px-2" id="stat-cards-container" style="display: grid; grid-template-columns: repeat(5, 1fr); gap: 14px; margin-bottom: 14px;">
+    <div class="fade-in px-2" id="stat-cards-container" style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 14px; margin-bottom: 14px;">
         <div style="grid-column: span 4;" class="text-center py-2">
             <div class="spinner-border text-primary mb-2" style="width: 2rem; height: 2rem;" role="status"></div>
             <h5 class="text-muted fw-bold">Sinkronisasi Server Data...</h5>
@@ -273,20 +276,24 @@
 
             let targetMinimal = Number(targetMinimalData) || 0;
 
-            statContainer.innerHTML = `
-                <div style="min-width: 0;">
-                    <div class="card stat-card-modern shadow-sm h-100 hover-lift border-0">
-                        <div class="card-body p-2 p-xl-3 d-flex align-items-center">
-                            <div class="icon-circle bg-danger-subtle text-danger rounded-circle d-flex align-items-center justify-content-center me-3" style="width: 55px; height: 55px; min-width: 55px;">
-                                <i class="fas fa-flag-checkered" style="font-size: 1.6rem;"></i>
-                            </div>
-                            <div style="min-width: 0;">
-                                <p class="text-muted text-uppercase fw-bold mb-1 text-truncate" style="font-size: 0.85rem;">Target Minimal</p>
-                                <h4 class="fw-black text-danger mb-0 text-truncate" style="font-size: 1.6rem; letter-spacing: -1px;">${formatRp(targetMinimal)}</h4>
-                            </div>
+            // Render Target Minimal di Header
+            let targetMinimalHtml = `
+                <div class="card shadow-sm border-0 bg-danger-subtle border-danger" style="border-radius: 12px; height: 100%;">
+                    <div class="card-body py-1 px-3 d-flex align-items-center h-100">
+                        <div class="me-3 text-danger">
+                            <i class="fas fa-flag-checkered fs-4"></i>
+                        </div>
+                        <div>
+                            <p class="text-danger text-uppercase fw-bold mb-0" style="font-size: 0.7rem; opacity: 0.8;">Target Minimal (HPP)</p>
+                            <h4 class="fw-black text-danger mb-0" style="font-size: 1.3rem; letter-spacing: -0.5px; line-height: 1;">${formatRp(targetMinimal)}</h4>
                         </div>
                     </div>
                 </div>
+            `;
+            let tmc = document.getElementById('target-minimal-container');
+            if (tmc) tmc.innerHTML = targetMinimalHtml;
+
+            statContainer.innerHTML = `
                 <div style="min-width: 0;">
                     <div class="card stat-card-modern shadow-sm h-100 hover-lift border-0">
                         <div class="card-body p-2 p-xl-3 d-flex align-items-center">
