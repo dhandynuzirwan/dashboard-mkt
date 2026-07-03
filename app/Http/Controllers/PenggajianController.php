@@ -13,8 +13,12 @@ class PenggajianController extends Controller
     {
         $penggajians = Penggajian::with('user')->get();
         $jenis_izins = JenisIzin::all(); // Ambil data master izin
+        
+        // Ambil salah satu data penggajian marketing sebagai default (pre-fill form)
+        $marketing_ids = User::where('role', 'marketing')->pluck('id');
+        $default_penggajian = Penggajian::whereIn('user_id', $marketing_ids)->first();
 
-        return view('penggajian', compact('penggajians', 'jenis_izins'));
+        return view('penggajian', compact('penggajians', 'jenis_izins', 'default_penggajian'));
     }
 
     public function create()

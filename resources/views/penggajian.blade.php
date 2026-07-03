@@ -285,33 +285,33 @@
                     <div class="row">
                         <div class="col-md-6 mb-3">
                             <label class="form-label fw-bold">Target Call (per hari)</label>
-                            <input type="number" class="form-control" name="target_call" required value="40">
+                            <input type="number" class="form-control" name="target_call" required value="{{ $default_penggajian->target_call ?? 40 }}">
                         </div>
                         <div class="col-md-6 mb-3">
                             <label class="form-label fw-bold">Target Revenue (Rp)</label>
-                            <input type="number" class="form-control" name="target" required value="100000000">
+                            <input type="number" class="form-control" name="target" required value="{{ $default_penggajian->target ?? 100000000 }}">
                         </div>
                     </div>
                     
                     <div class="row">
                         <div class="col-md-6 mb-3">
                             <label class="form-label fw-bold">Gaji Pokok (Rp)</label>
-                            <input type="number" class="form-control" name="gaji_pokok" required value="1500000">
+                            <input type="number" class="form-control" name="gaji_pokok" required value="{{ $default_penggajian->gaji_pokok ?? 1500000 }}">
                         </div>
                         <div class="col-md-6 mb-3">
                             <label class="form-label fw-bold">Tunjangan Lain (Rp)</label>
-                            <input type="number" class="form-control" name="tunjangan" required value="0">
+                            <input type="number" class="form-control" name="tunjangan" required value="{{ $default_penggajian->tunjangan ?? 0 }}">
                         </div>
                     </div>
                     
                     <div class="row">
                         <div class="col-md-6 mb-3">
                             <label class="form-label fw-bold">Tunjangan BPJS (Rp)</label>
-                            <input type="number" class="form-control" name="tunjangan_bpjs" required value="147614">
+                            <input type="number" class="form-control" name="tunjangan_bpjs" required value="{{ $default_penggajian->tunjangan_bpjs ?? 147614 }}">
                         </div>
                         <div class="col-md-6 mb-3">
                             <label class="form-label fw-bold">Iuran BPJS (Rp)</label>
-                            <input type="number" class="form-control" name="iuran_bpjs" required value="44284">
+                            <input type="number" class="form-control" name="iuran_bpjs" required value="{{ $default_penggajian->iuran_bpjs ?? 44284 }}">
                         </div>
                     </div>
                 </div>
