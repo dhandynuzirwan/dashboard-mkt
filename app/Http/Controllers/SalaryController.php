@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Cta;
 use App\Models\Penggajian;
+use App\Traits\KpiCalculationTrait;
 use App\Models\Prospek;
 use App\Models\User;
 use App\Models\AbsensiLog;
@@ -14,6 +15,8 @@ use Illuminate\Http\Request;
 
 class SalaryController extends Controller
 {
+    use KpiCalculationTrait;
+
     private function getSalaryCalculation($user, $start, $end)
     {
         // A. Setup Tanggal & Libur

@@ -6,6 +6,7 @@ use App\Models\Cta;
 use App\Models\Penggajian;
 use App\Models\Prospek;
 use App\Models\User;
+use App\Traits\KpiCalculationTrait;
 use App\Models\AbsensiLog;
 use App\Models\Perizinan;
 use App\Models\Holiday; 
@@ -14,6 +15,8 @@ use Illuminate\Http\Request;
 
 class KpiController extends Controller
 {
+    use KpiCalculationTrait;
+
     public function index(Request $request)
     {
         $authUser = auth()->user();
