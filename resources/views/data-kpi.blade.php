@@ -237,7 +237,7 @@
             <div class="card-body p-0">
                 <div class="table-responsive">
                     <table class="table table-hover align-middle mb-0" style="font-size: 12px;">
-                        <thead class="bg-light sticky-top">
+                        <thead class="bg-light">
                             <tr>
                                 <th class="ps-4" width="250">Marketing</th>
                                 <th>Detail Absensi</th>
