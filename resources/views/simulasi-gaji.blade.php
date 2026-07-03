@@ -120,6 +120,81 @@
 </style>
 
 {{-- ================= CARD SIMULASI GAJI (MICRO CARDS 4x3) ================= --}}
+@if(auth()->user()->role === 'marketing')
+    {{-- TAMPILAN BARIS DETAIL (KHUSUS MARKETING) --}}
+    @foreach ($marketings as $m)
+        @php
+            $total_kpi = $m->kpi_persen;
+        @endphp
+        <div class="row fade-in mb-4">
+            <div class="col-md-12">
+                <div class="card card-modern shadow-sm border-0">
+                    <div class="card-body p-4">
+                        <div class="d-flex align-items-center mb-4 pb-3 border-bottom">
+                            <div class="avatar avatar-md me-3 flex-shrink-0">
+                                <span class="avatar-title rounded-circle bg-primary-gradient fw-bold shadow-sm fs-5">
+                                    {{ substr($m->nama_lengkap ?? $m->name, 0, 1) }}
+                                </span>
+                            </div>
+                            <div>
+                                <h4 class="fw-bolder mb-1 text-dark">{{ $m->nama_lengkap ?? $m->name }}</h4>
+                                <span class="badge bg-primary-subtle text-primary">Marketing Sales</span>
+                            </div>
+                            <div class="ms-auto text-end">
+                                <a href="{{ route('penggajian.preview', $m->id) }}" target="_blank" class="btn btn-primary btn-round shadow-sm fw-bold">
+                                    <i class="fas fa-print me-2"></i> Cetak Slip Gaji
+                                </a>
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <div class="p-3 bg-light rounded border border-light h-100">
+                                    <h6 class="fw-bold text-muted mb-3 text-uppercase" style="font-size: 11px; letter-spacing: 1px;"><i class="fas fa-wallet me-2"></i>Rincian Gaji & Tunjangan</h6>
+                                    <div class="d-flex justify-content-between mb-2 pb-2 border-bottom border-white">
+                                        <span class="text-dark fw-bold">Gaji Pokok</span>
+                                        <span class="text-dark">Rp {{ number_format($m->gapok_hitung, 0, ',', '.') }}</span>
+                                    </div>
+                                    <div class="d-flex justify-content-between mb-2 pb-2 border-bottom border-white">
+                                        <span class="text-dark fw-bold">Tunjangan BPJS</span>
+                                        <span class="text-success">+ Rp {{ number_format($m->tunjangan_bpjs ?? 0, 0, ',', '.') }}</span>
+                                    </div>
+                                    <div class="d-flex justify-content-between">
+                                        <span class="text-dark fw-bold">Fee Sales</span>
+                                        <span class="text-primary">+ Rp {{ number_format($m->fee_marketing ?? 0, 0, ',', '.') }}</span>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <div class="p-3 bg-light rounded border border-light h-100">
+                                    <h6 class="fw-bold text-muted mb-3 text-uppercase" style="font-size: 11px; letter-spacing: 1px;"><i class="fas fa-chart-line me-2"></i>Perhitungan KPI</h6>
+                                    <div class="d-flex justify-content-between mb-2 pb-2 border-bottom border-white">
+                                        <span class="text-dark fw-bold">Skor KPI Akhir</span>
+                                        <span class="fw-bold {{ $total_kpi >= 70 ? 'text-success' : 'text-danger' }}">{{ number_format($total_kpi, 1) }}%</span>
+                                    </div>
+                                    <div class="d-flex justify-content-between mb-2 pb-2 border-bottom border-white">
+                                        <span class="text-dark fw-bold">Nilai KPI (Rp)</span>
+                                        <span class="text-dark">Rp {{ number_format($m->kpi_rp, 0, ',', '.') }}</span>
+                                    </div>
+                                    <div class="d-flex justify-content-between">
+                                        <span class="text-dark fw-bold">Total Income</span>
+                                        <span class="text-dark">Rp {{ number_format($m->income, 0, ',', '.') }}</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="mt-2 p-3 bg-success-subtle border border-success border-opacity-25 rounded d-flex justify-content-between align-items-center">
+                            <h5 class="fw-bolder text-success mb-0">TOTAL TAKE HOME PAY</h5>
+                            <h3 class="fw-black text-success mb-0">Rp {{ number_format($m->total_gaji, 0, ',', '.') }}</h3>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    @endforeach
+@else
+    {{-- TAMPILAN MICRO CARDS 4x3 (UNTUK SUPERADMIN / ROLE LAIN) --}}
 <div class="row fade-in mb-4">
     @foreach ($marketings as $m)
         @php
@@ -198,6 +273,7 @@
         </div>
     @endif
 </div>
+@endif
 {{-- ================= INFO & KETERANGAN (MODERN) ================= --}}
         <div class="row fade-in">
             <div class="col-md-12 mb-3">
@@ -209,7 +285,8 @@
                         <h6 class="fw-bolder text-dark mb-1">Komposisi Take Home Pay</h6>
                         <p class="small text-muted mb-2">Total gaji bersih merupakan akumulasi final dari komponen tetap dan variabel.</p>
                         <div class="bg-white px-3 py-2 rounded-3 border fw-bold small text-dark shadow-sm">
-                            Gapok + Fee Marketing + Tunjangan BPJS.
+                            Gapok + Fee Marketing + Tunjangan BPJS.<br>
+                            <span class="text-primary mt-1 d-block"><i class="fas fa-info-circle me-1"></i> Perhitungan KPI: Skor KPI Akhir digunakan sebagai pengukur kinerja. Nilai KPI (Rp) dikalkulasikan berdasarkan capaian HPP, yang nantinya menjadi acuan performa/bonus bulanan.</span>
                         </div>
                     </div>
                 </div>
