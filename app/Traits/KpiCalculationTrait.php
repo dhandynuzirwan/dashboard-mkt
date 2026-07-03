@@ -113,7 +113,7 @@ trait KpiCalculationTrait
               ->whereBetween("tanggal_prospek", [$start . " 00:00:00", $end . " 23:59:59"]); 
         })
         ->where("status_penawaran", "DEAL")
-        ->sum("nominal");
+        ->sum(\Illuminate\Support\Facades\DB::raw('harga_penawaran * COALESCE(jumlah_peserta, 1)'));
 
         $user->revenue_ach = ($target_revenue > 0) 
             ? ($user->revenue_actual / $target_revenue) * 100 
