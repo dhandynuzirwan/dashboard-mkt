@@ -284,9 +284,9 @@
                         <thead class="bg-light">
                             <tr>
                                 <th class="ps-4" width="250">Marketing</th>
-                                <th>Detail Absensi</th>
-                                <th>Detail Progress</th>
-                                <th>Detail Revenue</th>
+                                <th>Detail Absensi (10%)</th>
+                                <th>Detail Progress (30%)</th>
+                                <th>Detail Revenue (60%)</th>
                             </tr>
                         </thead>
                         <tbody>
