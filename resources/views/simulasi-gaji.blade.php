@@ -360,25 +360,6 @@
                     </div>
                 </div>
 
-                <!-- Perhitungan Fee Marketing -->
-                <div class="alert-modern-info d-flex align-items-start p-3 h-100 shadow-sm" style="border-radius: 12px; background-color: #f0fdf4; border-left: 4px solid #10b981;">
-                    <div class="icon-sm bg-white text-success rounded-circle d-flex align-items-center justify-content-center shadow-sm me-3 flex-shrink-0" style="width: 35px; height: 35px;">
-                        <i class="fas fa-money-bill-wave fs-6"></i>
-                    </div>
-                    <div class="w-100">
-                        <h6 class="fw-bolder text-dark mb-1">Perhitungan Fee Marketing</h6>
-                        <p class="small text-muted mb-2">Didapatkan dari % total deal closing (omset).</p>
-                        <ul class="list-group list-group-flush rounded border shadow-sm small fw-bold">
-                            <li class="list-group-item d-flex justify-content-between p-2"><span>Omset &ge; Rp 30.000.000</span> <span class="text-success">5%</span></li>
-                            <li class="list-group-item d-flex justify-content-between p-2"><span>Omset &ge; Rp 20.000.000</span> <span class="text-success">4%</span></li>
-                            <li class="list-group-item d-flex justify-content-between p-2"><span>Omset &ge; Rp 10.000.000</span> <span class="text-success">3%</span></li>
-                            <li class="list-group-item d-flex justify-content-between p-2"><span>Omset &lt; Rp 10.000.000</span> <span class="text-danger">0%</span></li>
-                        </ul>
-                    </div>
-                </div>
-            </div>
-
-            <div class="col-md-6 mb-3">
                 <!-- Perhitungan KPI -->
                 <div class="alert-modern-warning d-flex align-items-start p-3 h-100 shadow-sm" style="border-radius: 12px; background-color: #fffbeb; border-left: 4px solid #f59e0b;">
                     <div class="icon-sm bg-white text-warning rounded-circle d-flex align-items-center justify-content-center shadow-sm me-3 flex-shrink-0" style="width: 35px; height: 35px;">
@@ -386,7 +367,7 @@
                     </div>
                     <div class="w-100">
                         <h6 class="fw-bolder text-dark mb-1">Perhitungan Skor KPI</h6>
-                        <p class="small text-muted mb-2">Total bobot KPI adalah 100% yang terbagi menjadi 3 komponen utama.</p>
+                        <p class="small text-muted mb-2">Total bobot KPI terbagi menjadi 3 komponen utama.</p>
                         
                         <div class="bg-white p-3 rounded-3 border shadow-sm">
                             <div class="mb-3">
@@ -403,28 +384,51 @@
                                     <span class="text-warning">30%</span>
                                 </div>
                                 <div class="progress mb-2" style="height: 6px;"><div class="progress-bar bg-warning" style="width: 30%"></div></div>
-                                <ul class="mb-0 ps-3 small text-muted" style="list-style-type: disc;">
-                                    <li>Penawaran: <span class="fw-bold">50%</span> dari bobot progres</li>
-                                    <li>Akhir Data: <span class="fw-bold">30%</span> dari bobot progres</li>
-                                    <li>Update Data: <span class="fw-bold">20%</span> dari bobot progres</li>
-                                </ul>
                             </div>
 
                             <div class="mb-1">
                                 <div class="d-flex justify-content-between fw-bold text-dark small mb-1">
-                                    <span>3. Revenue (Pencapaian vs Target HPP)</span>
-                                    <span class="text-warning">60%</span>
+                                    <span>3. Revenue</span>
+                                    <span class="text-warning">50%</span>
                                 </div>
-                                <div class="progress" style="height: 6px;"><div class="progress-bar bg-warning" style="width: 60%"></div></div>
+                                <div class="progress" style="height: 6px;"><div class="progress-bar bg-warning" style="width: 50%"></div></div>
                             </div>
                         </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-md-6 mb-3">
+                <!-- Perhitungan Fee Marketing -->
+                <div class="alert-modern-info d-flex align-items-start p-3 h-100 shadow-sm" style="border-radius: 12px; background-color: #f0fdf4; border-left: 4px solid #10b981;">
+                    <div class="icon-sm bg-white text-success rounded-circle d-flex align-items-center justify-content-center shadow-sm me-3 flex-shrink-0" style="width: 35px; height: 35px;">
+                        <i class="fas fa-money-bill-wave fs-6"></i>
+                    </div>
+                    <div class="w-100">
+                        <h6 class="fw-bolder text-dark mb-1">Perhitungan Fee Marketing & Syarat KPI</h6>
+                        <ul class="list-group list-group-flush rounded border shadow-sm small fw-bold mt-2">
+                            <li class="list-group-item p-3">
+                                <span class="d-block text-danger mb-1"><i class="fas fa-exclamation-circle me-1"></i> Syarat 1 (Di Bawah Target)</span>
+                                Jika Revenue < Rp 30.000.000 & Skor KPI < 70% <br>
+                                <span class="text-muted"><i class="fas fa-arrow-right me-1"></i> THP = Gaji Pokok (Tanpa Fee & KPI)</span>
+                            </li>
+                            <li class="list-group-item p-3">
+                                <span class="d-block text-primary mb-1"><i class="fas fa-hand-holding-usd me-1"></i> Syarat 2 (Bonus Capaian Minimal)</span>
+                                Jika Revenue >= Rp 30.000.000 & Skor KPI < 70% <br>
+                                <span class="text-muted"><i class="fas fa-arrow-right me-1"></i> THP = Revenue * 40% * 2%</span>
+                            </li>
+                            <li class="list-group-item p-3">
+                                <span class="d-block text-success mb-1"><i class="fas fa-star me-1"></i> Syarat 3 (Sesuai KPI & Target)</span>
+                                Jika Skor KPI >= 70% <br>
+                                <span class="text-muted"><i class="fas fa-arrow-right me-1"></i> THP = Revenue * 60% * 5%</span>
+                            </li>
+                        </ul>
                     </div>
                 </div>
             </div>
         </div>
     </div>
 </div>
-
 {{-- ================= STYLES ================= --}}
 <style>
     /* CSS MODERNISASI UI */
