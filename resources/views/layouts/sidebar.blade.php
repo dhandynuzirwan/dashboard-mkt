@@ -113,11 +113,13 @@
                                     <span class="sub-item">Simulasi Gaji</span>
                                 </a>
                             </li>
-                                                    <li class="{{ request()->routeIs('parameter-finansial.*') ? 'active' : '' }}">
+                                                    @if(auth()->user()->role === 'superadmin')
+                            <li class="{{ request()->routeIs('parameter-finansial.*') ? 'active' : '' }}">
                                 <a href="{{ route('parameter-finansial.index') }}">
                                     <span class="sub-item">Parameter Finansial</span>
                                 </a>
                             </li>
+                            @endif
                         </ul>
                     </div>
                 </li>

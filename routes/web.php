@@ -368,6 +368,8 @@ Route::middleware('auth')->group(function () {
     });
 
     // Parameter Finansial
-    Route::get('/parameter-finansial', [ParameterFinansialController::class, 'index'])->name('parameter-finansial.index');
-    Route::post('/parameter-finansial/update', [ParameterFinansialController::class, 'update'])->name('parameter-finansial.update');
+    Route::middleware('role:superadmin')->group(function () {
+        Route::get('/parameter-finansial', [ParameterFinansialController::class, 'index'])->name('parameter-finansial.index');
+        Route::post('/parameter-finansial/update', [ParameterFinansialController::class, 'update'])->name('parameter-finansial.update');
+    });
 });
