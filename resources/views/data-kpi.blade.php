@@ -79,7 +79,7 @@
                 border: 1px solid #eef2f7;
             }
             .micro-card:hover {
-                height: 480px; /* EKSPANSI TINGGI KARTU */
+                height: 380px; /* EKSPANSI TINGGI KARTU */
                 z-index: 100;
                 box-shadow: 0 25px 50px rgba(0,0,0,0.15);
                 border-color: #bfdbfe;
@@ -224,7 +224,12 @@
                     <h5 class="text-muted">Belum ada data KPI pada rentang waktu ini.</h5>
                 </div>
 
-        {{-- ================= TABEL BREAKDOWN KPI ================= --}}
+        
+
+            @endif
+        </div>
+
+{{-- ================= TABEL BREAKDOWN KPI ================= --}}
         <div class="card card-round shadow-sm border-0 mt-2 mb-4 fade-in">
             <div class="card-header bg-white border-bottom pt-4 px-4 pb-3">
                 <h5 class="fw-bolder mb-0 text-dark"><i class="fas fa-list-alt text-primary me-2"></i> Breakdown Rincian KPI</h5>
@@ -305,9 +310,6 @@
                     </table>
                 </div>
             </div>
-        </div>
-
-            @endif
         </div>
 </div>
 
