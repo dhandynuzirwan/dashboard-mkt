@@ -57,6 +57,31 @@
             </div>
         </div>
 
+        {{-- ================= STAT CARDS KHUSUS SUPERADMIN ================= --}}
+        @if(auth()->user()->role === 'superadmin')
+        <div class="row mb-4">
+            <div class="col-md-6 col-lg-3">
+                <div class="card card-stats card-round border-0 shadow-sm bg-primary-gradient text-white h-100">
+                    <div class="card-body p-4 text-center">
+                        <i class="fas fa-chart-pie fa-2x mb-2 opacity-75"></i>
+                        <h6 class="fw-bold mb-1">Total KPI Keseluruhan</h6>
+                        <h3 class="fw-bolder mb-0">{{ number_format($total_kpi_avg ?? 0, 1) }}%</h3>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-6 col-lg-3">
+                <div class="card card-stats card-round border-0 shadow-sm bg-secondary-gradient text-white h-100">
+                    <div class="card-body p-4 text-center">
+                        <i class="fas fa-percent fa-2x mb-2 opacity-75"></i>
+                        <h6 class="fw-bold mb-1">HPP% (Bulan Ini)</h6>
+                        <h3 class="fw-bolder mb-0">{{ number_format($hpp_percent ?? 0, 1) }}%</h3>
+                        <small class="d-block mt-1 opacity-75" style="font-size:10px;">HPP / Total Income</small>
+                    </div>
+                </div>
+            </div>
+        </div>
+        @endif
+
                 {{-- ================= STYLES UNTUK MICRO CARDS ================= --}}
         <style>
             .micro-card-wrapper {
