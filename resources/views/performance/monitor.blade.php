@@ -169,7 +169,7 @@
                     if(result.bulan_tahun) {
                         document.getElementById('monitor-month').innerText = result.bulan_tahun;
                     }
-                    renderStatCardsAndGrid(result.data);
+                    renderStatCardsAndGrid(result.data, result.target_minimal);
                     document.getElementById('last-update').innerText = result.waktu;
                 }
             } catch (error) {
@@ -177,7 +177,7 @@
             }
         };
 
-        const renderStatCardsAndGrid = (data) => {
+        const renderStatCardsAndGrid = (data, targetMinimalData) => {
             const statContainer = document.getElementById('stat-cards-container');
             const marketingContainer = document.getElementById('marketing-cards-container');
             
@@ -271,7 +271,7 @@
             let avgKpi = data.length > 0 ? (grandKpiTotal / data.length) : 0;
             let grandAch = grandTarget > 0 ? (grandDeal / grandTarget) * 100 : 0;
 
-            let targetMinimal = 542200000;
+            let targetMinimal = Number(targetMinimalData) || 0;
 
             statContainer.innerHTML = `
                 <div style="min-width: 0;">

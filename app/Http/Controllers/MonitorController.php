@@ -133,9 +133,13 @@ class MonitorController extends Controller
         $marketings = $marketings->sortByDesc('prosentase')->values();
 
         \Carbon\Carbon::setLocale('id');
+        $param = \App\Models\ParameterFinansial::where('bulan_tahun', now()->format('Y-m'))->first();
+        $target_minimal = $param ? $param->target_minimal : 0;
+
         return response()->json([
             'status' => 'success',
             'data'   => $marketings,
+            'target_minimal' => $target_minimal,
             'waktu'  => now()->format('d M Y H:i:s'),
             'bulan_tahun' => strtoupper(now()->translatedFormat('F Y'))
         ]);

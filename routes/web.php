@@ -23,6 +23,7 @@ use App\Http\Controllers\AkunAksesController;
 use App\Http\Controllers\OperationalPendaftaranController;
 use App\Http\Controllers\PendaftaranKolektifController;
 use App\Http\Controllers\PendaftaranPribadiController;
+use App\Http\Controllers\ParameterFinansialController;
 use App\Http\Controllers\MonitorController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -365,4 +366,8 @@ Route::middleware('auth')->group(function () {
         // Papan Pengumuman
         Route::resource('pengumuman', \App\Http\Controllers\PengumumanController::class);
     });
+
+    // Parameter Finansial
+    Route::get('/parameter-finansial', [ParameterFinansialController::class, 'index'])->name('parameter-finansial.index');
+    Route::post('/parameter-finansial/update', [ParameterFinansialController::class, 'update'])->name('parameter-finansial.update');
 });
