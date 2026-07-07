@@ -323,9 +323,25 @@ class ProspekController extends Controller
 
             DB::commit();
 
+            if ($request->ajax() || $request->wantsJson()) {
+                session()->flash('success', 'Data Prospek berhasil disimpan!');
+                return response()->json([
+                    'status' => 'success',
+                    'message' => 'Data Prospek berhasil disimpan!',
+                    'redirect' => route('prospek.index')
+                ]);
+            }
+
             return redirect()->route('prospek.index')->with('success', 'Data Prospek berhasil disimpan!');
         } catch (\Exception $e) {
             DB::rollBack();
+
+            if ($request->ajax() || $request->wantsJson()) {
+                return response()->json([
+                    'status' => 'error',
+                    'message' => 'Terjadi kesalahan: '.$e->getMessage()
+                ], 500);
+            }
 
             return back()->with('error', 'Terjadi kesalahan: '.$e->getMessage());
         }

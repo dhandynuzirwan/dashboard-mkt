@@ -153,6 +153,57 @@
             $(document).on('click', '.remove-row', function() {
                 $(this).closest('tr').remove();
             });
+
+            // Handle AJAX Submit untuk menghindari Layar Hitam (WAF 403 Forbidden)
+            $('#bulkForm').submit(function(e) {
+                e.preventDefault();
+                let form = $(this);
+                let btn = form.find('button[type="submit"]');
+                let originalText = btn.text();
+                
+                btn.prop('disabled', true).html('<i class="fas fa-spinner fa-spin"></i> Menyimpan...');
+
+                $.ajax({
+                    url: form.attr('action'),
+                    type: 'POST',
+                    data: form.serialize(),
+                    success: function(response) {
+                        if (response.redirect) {
+                            window.location.href = response.redirect;
+                        } else {
+                            window.location.href = "{{ route('prospek.index') }}";
+                        }
+                    },
+                    error: function(xhr) {
+                        btn.prop('disabled', false).text(originalText);
+                        
+                        if (xhr.status === 403) {
+                            Swal.fire({
+                                icon: 'error',
+                                title: 'Akses Ditolak (403)',
+                                text: 'Terjadi kesalahan format penulisan (seperti tanda titik berlebih pada input telp/teks) yang diblokir oleh sistem keamanan server. Mohon periksa kembali inputan Anda dan hapus karakter yang mencurigakan.'
+                            });
+                        } else if (xhr.status === 422) {
+                            let msg = '';
+                            $.each(xhr.responseJSON.errors, function(k, v) {
+                                msg += v[0] + '<br>';
+                            });
+                            Swal.fire({
+                                icon: 'warning',
+                                title: 'Validasi Gagal!',
+                                html: msg
+                            });
+                        } else {
+                            let errorMsg = xhr.responseJSON && xhr.responseJSON.message ? xhr.responseJSON.message : 'Terjadi kesalahan pada server saat memproses data.';
+                            Swal.fire({
+                                icon: 'error',
+                                title: 'Gagal Menyimpan!',
+                                text: errorMsg
+                            });
+                        }
+                    }
+                });
+            });
         });
     </script>
 @endpush
