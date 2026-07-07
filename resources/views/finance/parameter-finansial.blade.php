@@ -5,7 +5,7 @@
     <div class="page-inner">
         <div class="d-flex align-items-left align-items-md-center flex-column flex-md-row pt-2 pb-4">
             <div>
-                <h3 class="fw-bold mb-3">Parameter Finansial</h3>
+                <h3 class="fw-bold mb-3">Nilai Target Omset</h3>
                 <h6 class="op-7 mb-2">Konfigurasi Target Minimal (HPP) Perusahaan</h6>
             </div>
         </div>
@@ -20,8 +20,8 @@
         <div class="row">
             <div class="col-md-6">
                 <div class="card shadow-sm border-0">
-                    <div class="card-header bg-white border-bottom py-3">
-                        <div class="card-title fw-bold m-0"><i class="fas fa-sliders-h text-primary me-2"></i> Atur Target Minimal HPP</div>
+                    <div class="card-header bg-primary rounded-top">
+                        <div class="card-title text-white fw-bold"><i class="fas fa-cog me-2"></i> Pengaturan Nilai Target Omset</div>
                     </div>
                     <div class="card-body">
                         <form action="{{ route('parameter-finansial.index') }}" method="GET" class="mb-4">
@@ -57,11 +57,13 @@
                                 <small class="text-muted mt-2 d-block">Angka ini digunakan untuk menghitung persentase HPP di layar Data KPI Superadmin.</small>
                             </div>
                             
+                            @if(auth()->user()->role === 'superadmin')
                             <div class="d-flex justify-content-end mt-4">
                                 <button type="submit" class="btn btn-primary btn-round shadow-sm fw-bold px-4">
                                     <i class="fas fa-save me-2"></i> Simpan Parameter
                                 </button>
                             </div>
+                            @endif
                         </form>
                     </div>
                 </div>

@@ -367,9 +367,12 @@ Route::middleware('auth')->group(function () {
         Route::resource('pengumuman', \App\Http\Controllers\PengumumanController::class);
     });
 
-    // Parameter Finansial
-    Route::middleware('role:superadmin')->group(function () {
+    // Parameter Finansial / Nilai Target Omset
+    Route::middleware('role:superadmin,spv_marketing')->group(function () {
         Route::get('/parameter-finansial', [ParameterFinansialController::class, 'index'])->name('parameter-finansial.index');
+    });
+    
+    Route::middleware('role:superadmin')->group(function () {
         Route::post('/parameter-finansial/update', [ParameterFinansialController::class, 'update'])->name('parameter-finansial.update');
     });
 });

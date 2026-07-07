@@ -65,6 +65,7 @@
         </div>
 
         {{-- ================= STATISTIC CARDS (MODERN UI) ================= --}}
+        @if(auth()->user()->role !== 'admin')
         <div class="row mb-3 fade-in">
             {{-- Total Penawaran --}}
             <div class="col-sm-6 col-md-3 mb-3">
@@ -145,6 +146,7 @@
                 </div>
             </div>
         </div>
+        @endif
 
         {{-- ================= FILTER SECTION (MODERN STYLE) ================= --}}
         <div class="card card-modern border-0 shadow-sm mb-4 fade-in" style="background-color: #f8faff;">
