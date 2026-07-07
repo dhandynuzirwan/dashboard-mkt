@@ -875,6 +875,45 @@
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <script>
     document.addEventListener("DOMContentLoaded", function() {
+        // AJAX Pagination untuk menghindari refresh halaman dan lompat tab
+        $(document).on('click', '.tab-pane .pagination a', function(event) {
+            event.preventDefault();
+            var url = $(this).attr('href');
+            var targetTab = $(this).closest('.tab-pane');
+            
+            // Tambahkan overlay loading sederhana
+            var originalContent = targetTab.html();
+            targetTab.html('<div class="text-center py-5"><i class="fas fa-spinner fa-spin fa-2x text-primary"></i><p class="mt-2 text-muted">Memuat data...</p></div>');
+            
+            $.ajax({
+                url: url,
+                type: 'GET',
+                success: function(data) {
+                    var newContent = $(data).find('#' + targetTab.attr('id')).html();
+                    targetTab.html(newContent);
+                    // Update URL browser tanpa refresh (opsional, tapi bagus untuk share link)
+                    window.history.pushState("", "", url);
+                },
+                error: function() {
+                    targetTab.html(originalContent);
+                    alert('Terjadi kesalahan saat memuat data. Silakan coba lagi.');
+                }
+            });
+        });
+        
+        // Ingat Tab Aktif saat reload (sebagai fallback backup)
+        $('a[data-bs-toggle="pill"]').on('shown.bs.tab', function (e) {
+            localStorage.setItem('activeAbsensiTab', $(e.target).attr('href'));
+        });
+        var activeTab = localStorage.getItem('activeAbsensiTab');
+        if(activeTab){
+            var triggerEl = document.querySelector('a[href="' + activeTab + '"]');
+            if(triggerEl) {
+                var tab = new bootstrap.Tab(triggerEl);
+                tab.show();
+            }
+        }
+
         const urlParams = new URLSearchParams(window.location.search);
         let tabToActivate = null;
 
