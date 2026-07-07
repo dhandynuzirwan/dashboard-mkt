@@ -16,6 +16,13 @@ class DataMasuk extends Model
     {
         return $this->belongsTo(User::class, 'marketing_id');
     }
+
+    public function getTerkaitProspekAttribute()
+    {
+        return Prospek::withCount('ctas')->where('perusahaan', $this->perusahaan)
+            ->where('email', $this->email)
+            ->first();
+    }
     
     // =========================================================
     // TAMBAHKAN KODE INI UNTUK OTOMATISASI DELIVER KE PROSPEK

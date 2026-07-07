@@ -88,7 +88,7 @@
                                         <td><input type="text" name="rows[0][perusahaan]" class="form-control paste-input" placeholder="Paste di sini..." required></td>
                                         <td><input type="text" name="rows[0][telp]" class="form-control"></td>
                                         <td><input type="text" name="rows[0][unit_bisnis]" class="form-control"></td>
-                                        <td><input type="email" name="rows[0][email]" class="form-control"></td>
+                                        <td><input type="text" name="rows[0][email]" class="form-control"></td>
                                         <td><input type="text" name="rows[0][status_email]" class="form-control"></td>
                                         <td><input type="text" name="rows[0][wa_pic]" class="form-control"></td>
                                         <td><input type="text" name="rows[0][wa_baru]" class="form-control" placeholder="Opsional"></td>
@@ -123,7 +123,7 @@
                         <td><input type="text" name="rows[${index}][perusahaan]" class="form-control paste-input"></td>
                         <td><input type="text" name="rows[${index}][telp]" class="form-control"></td>
                         <td><input type="text" name="rows[${index}][unit_bisnis]" class="form-control"></td>
-                        <td><input type="email" name="rows[${index}][email]" class="form-control"></td>
+                        <td><input type="text" name="rows[${index}][email]" class="form-control"></td>
                         <td><input type="text" name="rows[${index}][status_email]" class="form-control"></td>
                         <td><input type="text" name="rows[${index}][wa_pic]" class="form-control"></td>
                         <td><input type="text" name="rows[${index}][wa_baru]" class="form-control"></td>
