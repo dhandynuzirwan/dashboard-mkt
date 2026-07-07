@@ -5,17 +5,21 @@ namespace App\Http\Controllers;
 use App\Models\ResourceLink; // Pastikan model di-import
 use App\Models\KontakPenting; // Import model baru
 use Illuminate\Http\Request;
+use Illuminate\Routing\Controllers\HasMiddleware;
+use Illuminate\Routing\Controllers\Middleware;
 
-class OperationalController extends Controller
+class OperationalController extends Controller implements HasMiddleware
 {
-    public function __construct()
+    public static function middleware(): array
     {
-        $this->middleware(function ($request, $next) {
-            if (!in_array(auth()->user()->email, ['pic1@arsatraining.com', 'pic2@arsatraining.com'])) {
-                abort(403, 'Akses ditolak. Menu ini khusus PIC Portal Back Office.');
-            }
-            return $next($request);
-        })->only(['index', 'storeResource', 'updateResource', 'destroyResource', 'storeKontak', 'destroyKontak']);
+        return [
+            (new Middleware(function ($request, $next) {
+                if (!in_array(auth()->user()->email, ['pic1@arsatraining.com', 'pic2@arsatraining.com'])) {
+                    abort(403, 'Akses ditolak. Menu ini khusus PIC Portal Back Office.');
+                }
+                return $next($request);
+            }))->only(['index', 'storeResource', 'updateResource', 'destroyResource', 'storeKontak', 'destroyKontak']),
+        ];
     }
 
     // 1. Menampilkan Halaman Utama (Index)
