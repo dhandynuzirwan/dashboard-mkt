@@ -37,8 +37,12 @@ class UserController extends Controller
             'no_hp' => 'nullable|string|max:20',        
             'email' => 'required|email|unique:users,email',
             'password' => 'required|min:6',
-            'role' => 'required|in:superadmin,admin,marketing,rnd,digitalmarketing,operasional,team_leader,web_dev,spv_marketing,hrd,graphic',
+            'role' => 'required|in:superadmin,admin,marketing,rnd,digitalmarketing,operasional,team_leader,web_dev,spv_marketing,pic,hrd,graphic,finance',
             'fingerspot_id' => 'nullable|string|unique:users,fingerspot_id',
+            'nik' => 'nullable|string|max:50',
+            'tanggal_lahir' => 'nullable|date',
+            'tanggal_kontrak_baru' => 'nullable|date',
+            'tanggal_kontrak_berakhir' => 'nullable|date',
         ]);
 
         User::create([
@@ -49,6 +53,10 @@ class UserController extends Controller
             'password' => Hash::make($request->password),
             'role' => $request->role,
             'fingerspot_id' => $request->fingerspot_id,
+            'nik' => $request->nik,
+            'tanggal_lahir' => $request->tanggal_lahir,
+            'tanggal_kontrak_baru' => $request->tanggal_kontrak_baru,
+            'tanggal_kontrak_berakhir' => $request->tanggal_kontrak_berakhir,
         ]);
 
         return redirect()->route('user')->with('success', 'User berhasil ditambahkan');
@@ -78,9 +86,13 @@ class UserController extends Controller
             'no_hp' => 'nullable|string|max:20',
             'email' => 'required|email|unique:users,email,' . $id,
             'password' => 'nullable|min:6',
-            'role' => 'required|in:superadmin,admin,marketing,rnd,digitalmarketing,operasional,team_leader,web_dev,spv_marketing,pic,hrd,graphic',
+            'role' => 'required|in:superadmin,admin,marketing,rnd,digitalmarketing,operasional,team_leader,web_dev,spv_marketing,pic,hrd,graphic,finance',
             'foto_profil' => 'nullable|image|mimes:jpeg,png,jpg,webp|max:2048',
             'fingerspot_id' => 'nullable|string|unique:users,fingerspot_id,' . $id,
+            'nik' => 'nullable|string|max:50',
+            'tanggal_lahir' => 'nullable|date',
+            'tanggal_kontrak_baru' => 'nullable|date',
+            'tanggal_kontrak_berakhir' => 'nullable|date',
         ]);
 
         // Siapkan array data untuk diupdate (KOSONGKAN FOTO PROFIL DULU DI SINI)
@@ -91,6 +103,10 @@ class UserController extends Controller
             'email' => $request->email,
             'role' => $request->role,
             'fingerspot_id' => $request->fingerspot_id,
+            'nik' => $request->nik,
+            'tanggal_lahir' => $request->tanggal_lahir,
+            'tanggal_kontrak_baru' => $request->tanggal_kontrak_baru,
+            'tanggal_kontrak_berakhir' => $request->tanggal_kontrak_berakhir,
         ];
 
         // Jika user mengetikkan password baru, masukkan ke array $data

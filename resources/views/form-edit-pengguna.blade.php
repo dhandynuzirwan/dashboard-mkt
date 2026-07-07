@@ -87,6 +87,29 @@
                                     <input type="email" class="form-control @error('email') is-invalid @enderror" id="email" name="email" value="{{ old('email', $user->email) }}" required>
                                 </div>
                         
+                                                                {{-- NIK --}}
+                                <div class="form-group col-md-6 mb-3">
+                                    <label for="nik" class="fw-bold mb-1">NIK (Nomor Induk Kependudukan)</label>
+                                    <input type="text" class="form-control @error('nik') is-invalid @enderror" id="nik" name="nik" value="{{ old('nik', $user->nik) }}" placeholder="Masukkan NIK 16 digit">
+                                </div>
+
+                                {{-- Tanggal Lahir --}}
+                                <div class="form-group col-md-6 mb-3">
+                                    <label for="tanggal_lahir" class="fw-bold mb-1">Tanggal Lahir</label>
+                                    <input type="date" class="form-control @error('tanggal_lahir') is-invalid @enderror" id="tanggal_lahir" name="tanggal_lahir" value="{{ old('tanggal_lahir', $user->tanggal_lahir) }}">
+                                </div>
+
+                                {{-- Tanggal Kontrak --}}
+                                <div class="form-group col-md-6 mb-3">
+                                    <label for="tanggal_kontrak_baru" class="fw-bold mb-1">Tanggal Kontrak Terbaru</label>
+                                    <input type="date" class="form-control @error('tanggal_kontrak_baru') is-invalid @enderror" id="tanggal_kontrak_baru" name="tanggal_kontrak_baru" value="{{ old('tanggal_kontrak_baru', $user->tanggal_kontrak_baru) }}">
+                                </div>
+
+                                <div class="form-group col-md-6 mb-3">
+                                    <label for="tanggal_kontrak_berakhir" class="fw-bold mb-1">Tanggal Kontrak Berakhir</label>
+                                    <input type="date" class="form-control @error('tanggal_kontrak_berakhir') is-invalid @enderror" id="tanggal_kontrak_berakhir" name="tanggal_kontrak_berakhir" value="{{ old('tanggal_kontrak_berakhir', $user->tanggal_kontrak_berakhir) }}">
+                                </div>
+
                                 <div class="form-group col-md-6 mb-3">
                                     <label for="role" class="fw-bold mb-1">Role / Hak Akses <span class="text-danger">*</span></label>
                                     <select class="form-select form-control @error('role') is-invalid @enderror" id="role" name="role" required>

@@ -83,6 +83,29 @@
                                         placeholder="Buat Password" required>
                                 </div>
 
+                                                                {{-- NIK --}}
+                                <div class="form-group col-md-6 mb-3">
+                                    <label for="nik" class="fw-bold mb-1">NIK (Nomor Induk Kependudukan)</label>
+                                    <input type="text" class="form-control" id="nik" name="nik" value="{{ old('nik') }}" placeholder="Masukkan NIK 16 digit">
+                                </div>
+
+                                {{-- Tanggal Lahir --}}
+                                <div class="form-group col-md-6 mb-3">
+                                    <label for="tanggal_lahir" class="fw-bold mb-1">Tanggal Lahir</label>
+                                    <input type="date" class="form-control" id="tanggal_lahir" name="tanggal_lahir" value="{{ old('tanggal_lahir') }}">
+                                </div>
+
+                                {{-- Tanggal Kontrak --}}
+                                <div class="form-group col-md-6 mb-3">
+                                    <label for="tanggal_kontrak_baru" class="fw-bold mb-1">Tanggal Kontrak Terbaru</label>
+                                    <input type="date" class="form-control" id="tanggal_kontrak_baru" name="tanggal_kontrak_baru" value="{{ old('tanggal_kontrak_baru') }}">
+                                </div>
+
+                                <div class="form-group col-md-6 mb-3">
+                                    <label for="tanggal_kontrak_berakhir" class="fw-bold mb-1">Tanggal Kontrak Berakhir</label>
+                                    <input type="date" class="form-control" id="tanggal_kontrak_berakhir" name="tanggal_kontrak_berakhir" value="{{ old('tanggal_kontrak_berakhir') }}">
+                                </div>
+
                                 {{-- ROLE --}}
                                 <div class="form-group col-md-6 mb-3">
                                     <label for="role" class="fw-bold mb-1">Role / Hak Akses <span class="text-danger">*</span></label>
