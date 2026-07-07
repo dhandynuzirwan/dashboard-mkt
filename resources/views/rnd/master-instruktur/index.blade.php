@@ -2,195 +2,181 @@
 @section('title', 'Master Instruktur / Narasumber')
 
 @section('content')
-<div class="container-fluid">
-    <div class="page-header">
-        <h4 class="page-title">Master Instruktur / Narasumber</h4>
-        <ul class="breadcrumbs">
-            <li class="nav-home">
-                <a href="{{ route('dashboard.progress') }}">
-                    <i class="flaticon-home"></i>
-                </a>
-            </li>
-            <li class="separator">
-                <i class="flaticon-right-arrow"></i>
-            </li>
-            <li class="nav-item">
-                <a href="#">Performance</a>
-            </li>
-            <li class="separator">
-                <i class="flaticon-right-arrow"></i>
-            </li>
-            <li class="nav-item">
-                <a href="#">Master Instruktur</a>
-            </li>
-        </ul>
-    </div>
+<div class="container">
+    <div class="page-inner">
+        
+        {{-- ================= HEADER SECTION (MODERN) ================= --}}
+        <div class="d-flex align-items-left align-items-md-center flex-column flex-md-row mb-4 justify-content-between fade-in">
+            <div>
+                <h3 class="fw-bolder mb-1 text-dark" style="letter-spacing: -0.5px;">Master Instruktur / Narasumber</h3>
+                <h6 class="text-muted mb-2 fw-normal">Database Instruktur dan Narasumber</h6>
+            </div>
+        </div>
 
-    
-    {-- BARIS 1: STATISTIK & CHART --}
-    <div class="row">
-        <div class="col-md-4">
-            <div class="card card-stats card-round">
-                <div class="card-body">
-                    <div class="row align-items-center">
-                        <div class="col-icon">
-                            <div class="icon-big text-center icon-primary bubble-shadow-small">
-                                <i class="fas fa-chalkboard-teacher"></i>
+        <div class="row">
+            <div class="col-md-4">
+                <div class="card card-stats card-round">
+                    <div class="card-body">
+                        <div class="row align-items-center">
+                            <div class="col-icon">
+                                <div class="icon-big text-center icon-primary bubble-shadow-small">
+                                    <i class="fas fa-chalkboard-teacher"></i>
+                                </div>
                             </div>
-                        </div>
-                        <div class="col col-stats ms-3 ms-sm-0">
-                            <div class="numbers">
-                                <p class="card-category">Total Instruktur</p>
-                                <h4 class="card-title">{{ $totalStat }}</h4>
+                            <div class="col col-stats ms-3 ms-sm-0">
+                                <div class="numbers">
+                                    <p class="card-category">Total Instruktur</p>
+                                    <h4 class="card-title">{{ $totalStat }}</h4>
+                                </div>
                             </div>
                         </div>
                     </div>
                 </div>
             </div>
-        </div>
-        <div class="col-md-8">
-            <div class="card card-round">
-                <div class="card-header">
-                    <div class="card-title">Statistik Instruktur per Bulan (Tahun Ini)</div>
-                </div>
-                <div class="card-body">
-                    <div class="chart-container" style="min-height: 250px">
-                        <canvas id="statisticsChart"></canvas>
+            <div class="col-md-8">
+                <div class="card card-round">
+                    <div class="card-header">
+                        <div class="card-title">Statistik Instruktur per Bulan (Tahun Ini)</div>
+                    </div>
+                    <div class="card-body">
+                        <div class="chart-container" style="min-height: 250px">
+                            <canvas id="statisticsChart"></canvas>
+                        </div>
                     </div>
                 </div>
             </div>
         </div>
-    </div>
 
-    @if(session('success'))
-    <div class="alert alert-success alert-dismissible fade show" role="alert">
-        {{ session('success') }}
-        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-    </div>
-    @endif
+        @if(session('success'))
+        <div class="alert alert-success alert-dismissible fade show" role="alert">
+            {{ session('success') }}
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+        @endif
 
-    <div class="row">
-        <div class="col-md-12">
-            <div class="card">
-                <div class="card-header d-flex justify-content-between align-items-center">
-                    <h4 class="card-title">Data Instruktur</h4>
-                    <button class="btn btn-primary btn-round ms-auto" data-bs-toggle="modal" data-bs-target="#tambahModal">
-                        <i class="fa fa-plus"></i> Tambah Instruktur
-                    </button>
-                </div>
-                <div class="card-body">
-                    <div class="table-responsive">
-                        <table id="basic-datatables" class="display table table-striped table-hover">
-                            <thead>
-                                <tr>
-                                    <th>No</th>
-                                    <th>Nama Instruktur</th>
-                                    <th>Wilayah/Instansi</th>
-                                    <th>No Telp</th>
-                                    <th>Bidang Ahli</th>
-                                    <th>Rate (Harga)</th>
-                                    <th>Rekening</th>
-                                    <th>Link CV</th>
-                                    <th>Penginput</th>
-                                    <th>Aksi</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                @foreach($instrukturs as $item)
-                                <tr>
-                                    <td>{{ $loop->iteration }}</td>
-                                    <td>{{ $item->nama_instruktur }}</td>
-                                    <td>{{ $item->wilayah_instansi }}</td>
-                                    <td>{{ $item->no_telepon }}</td>
-                                    <td>{{ $item->bidang_ahli }}</td>
-                                    <td>Rp {{ number_format($item->rate_harga, 0, ',', '.') }}</td>
-                                    <td>
-                                        <strong>Bank:</strong> {{ $item->bank }} <br>
-                                        <strong>No:</strong> {{ $item->no_rek }}
-                                    </td>
-                                    <td>
-                                        @if($item->link_cv)
-                                            <a href="{{ $item->link_cv }}" target="_blank" class="btn btn-sm btn-outline-info">Buka CV</a>
-                                        @else
-                                            -
-                                        @endif
-                                    </td>
-                                    <td>{{ $item->user->nama_lengkap ?? $item->user->name }}</td>
-                                    <td>
-                                        <div class="form-button-action">
-                                            <button type="button" data-bs-toggle="modal" data-bs-target="#editModal{{ $item->id }}" class="btn btn-link btn-primary btn-lg" data-original-title="Edit Task">
-                                                <i class="fa fa-edit"></i>
-                                            </button>
-                                            <form action="{{ route('master-instruktur.destroy', $item->id) }}" method="POST" class="d-inline" onsubmit="return confirm('Yakin ingin menghapus instruktur ini?');">
-                                                @csrf
-                                                @method('DELETE')
-                                                <button type="submit" data-toggle="tooltip" title="" class="btn btn-link btn-danger" data-original-title="Remove">
-                                                    <i class="fa fa-times"></i>
+        <div class="row">
+            <div class="col-md-12">
+                <div class="card">
+                    <div class="card-header d-flex justify-content-between align-items-center">
+                        <h4 class="card-title">Data Instruktur</h4>
+                        <button class="btn btn-primary btn-round ms-auto" data-bs-toggle="modal" data-bs-target="#tambahModal">
+                            <i class="fa fa-plus"></i> Tambah Instruktur
+                        </button>
+                    </div>
+                    <div class="card-body">
+                        <div class="table-responsive">
+                            <table id="basic-datatables" class="display table table-striped table-hover">
+                                <thead>
+                                    <tr>
+                                        <th>No</th>
+                                        <th>Nama Instruktur</th>
+                                        <th>Wilayah/Instansi</th>
+                                        <th>No Telp</th>
+                                        <th>Bidang Ahli</th>
+                                        <th>Rate (Harga)</th>
+                                        <th>Rekening</th>
+                                        <th>Link CV</th>
+                                        <th>Penginput</th>
+                                        <th>Aksi</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @foreach($instrukturs as $item)
+                                    <tr>
+                                        <td>{{ $loop->iteration }}</td>
+                                        <td>{{ $item->nama_instruktur }}</td>
+                                        <td>{{ $item->wilayah_instansi }}</td>
+                                        <td>{{ $item->no_telepon }}</td>
+                                        <td>{{ $item->bidang_ahli }}</td>
+                                        <td>Rp {{ number_format($item->rate_harga, 0, ',', '.') }}</td>
+                                        <td>
+                                            <strong>Bank:</strong> {{ $item->bank }} <br>
+                                            <strong>No:</strong> {{ $item->no_rek }}
+                                        </td>
+                                        <td>
+                                            @if($item->link_cv)
+                                                <a href="{{ $item->link_cv }}" target="_blank" class="btn btn-sm btn-outline-info">Buka CV</a>
+                                            @else
+                                                -
+                                            @endif
+                                        </td>
+                                        <td>{{ $item->user->nama_lengkap ?? $item->user->name }}</td>
+                                        <td>
+                                            <div class="form-button-action">
+                                                <button type="button" data-bs-toggle="modal" data-bs-target="#editModal{{ $item->id }}" class="btn btn-link btn-primary btn-lg" data-original-title="Edit Task">
+                                                    <i class="fa fa-edit"></i>
                                                 </button>
-                                            </form>
-                                        </div>
-                                    </td>
-                                </tr>
+                                                <form action="{{ route('master-instruktur.destroy', $item->id) }}" method="POST" class="d-inline" onsubmit="return confirm('Yakin ingin menghapus instruktur ini?');">
+                                                    @csrf
+                                                    @method('DELETE')
+                                                    <button type="submit" data-toggle="tooltip" title="" class="btn btn-link btn-danger" data-original-title="Remove">
+                                                        <i class="fa fa-times"></i>
+                                                    </button>
+                                                </form>
+                                            </div>
+                                        </td>
+                                    </tr>
 
-                                <!-- Edit Modal -->
-                                <div class="modal fade" id="editModal{{ $item->id }}" tabindex="-1" aria-hidden="true">
-                                    <div class="modal-dialog modal-lg">
-                                        <form action="{{ route('master-instruktur.update', $item->id) }}" method="POST">
-                                            @csrf
-                                            @method('PUT')
-                                            <div class="modal-content">
-                                                <div class="modal-header">
-                                                    <h5 class="modal-title">Edit Instruktur</h5>
-                                                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                                                </div>
-                                                <div class="modal-body">
-                                                    <div class="row">
-                                                        <div class="col-md-6 mb-3">
-                                                            <label>Nama Instruktur <span class="text-danger">*</span></label>
-                                                            <input type="text" class="form-control" name="nama_instruktur" value="{{ $item->nama_instruktur }}" required>
-                                                        </div>
-                                                        <div class="col-md-6 mb-3">
-                                                            <label>Wilayah/Instansi <span class="text-danger">*</span></label>
-                                                            <input type="text" class="form-control" name="wilayah_instansi" value="{{ $item->wilayah_instansi }}" required>
-                                                        </div>
-                                                        <div class="col-md-6 mb-3">
-                                                            <label>Nomor Telepon <span class="text-danger">*</span></label>
-                                                            <input type="text" class="form-control" name="no_telepon" value="{{ $item->no_telepon }}" required>
-                                                        </div>
-                                                        <div class="col-md-6 mb-3">
-                                                            <label>Bidang Ahli <span class="text-danger">*</span></label>
-                                                            <input type="text" class="form-control" name="bidang_ahli" value="{{ $item->bidang_ahli }}" required>
-                                                        </div>
-                                                        <div class="col-md-6 mb-3">
-                                                            <label>Rate Harga (Rp) <span class="text-danger">*</span></label>
-                                                            <input type="text" class="form-control input-currency" name="rate_harga_display" value="{{ number_format($item->rate_harga, 0, ',', '.') }}" required>
-                                                            <input type="hidden" name="rate_harga" class="input-currency-hidden" value="{{ $item->rate_harga }}">
-                                                        </div>
-                                                        <div class="col-md-6 mb-3">
-                                                            <label>Nama Bank <span class="text-danger">*</span></label>
-                                                            <input type="text" class="form-control" name="bank" value="{{ $item->bank }}" required>
-                                                        </div>
-                                                        <div class="col-md-6 mb-3">
-                                                            <label>No Rekening <span class="text-danger">*</span></label>
-                                                            <input type="text" class="form-control" name="no_rek" value="{{ $item->no_rek }}" required>
-                                                        </div>
-                                                        <div class="col-md-6 mb-3">
-                                                            <label>Link CV (Opsional)</label>
-                                                            <input type="url" class="form-control" name="link_cv" value="{{ $item->link_cv }}">
+                                    <!-- Edit Modal -->
+                                    <div class="modal fade" id="editModal{{ $item->id }}" tabindex="-1" aria-hidden="true">
+                                        <div class="modal-dialog modal-lg">
+                                            <form action="{{ route('master-instruktur.update', $item->id) }}" method="POST">
+                                                @csrf
+                                                @method('PUT')
+                                                <div class="modal-content">
+                                                    <div class="modal-header">
+                                                        <h5 class="modal-title">Edit Instruktur</h5>
+                                                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                                    </div>
+                                                    <div class="modal-body">
+                                                        <div class="row">
+                                                            <div class="col-md-6 mb-3">
+                                                                <label>Nama Instruktur <span class="text-danger">*</span></label>
+                                                                <input type="text" class="form-control" name="nama_instruktur" value="{{ $item->nama_instruktur }}" required>
+                                                            </div>
+                                                            <div class="col-md-6 mb-3">
+                                                                <label>Wilayah/Instansi <span class="text-danger">*</span></label>
+                                                                <input type="text" class="form-control" name="wilayah_instansi" value="{{ $item->wilayah_instansi }}" required>
+                                                            </div>
+                                                            <div class="col-md-6 mb-3">
+                                                                <label>Nomor Telepon <span class="text-danger">*</span></label>
+                                                                <input type="text" class="form-control" name="no_telepon" value="{{ $item->no_telepon }}" required>
+                                                            </div>
+                                                            <div class="col-md-6 mb-3">
+                                                                <label>Bidang Ahli <span class="text-danger">*</span></label>
+                                                                <input type="text" class="form-control" name="bidang_ahli" value="{{ $item->bidang_ahli }}" required>
+                                                            </div>
+                                                            <div class="col-md-6 mb-3">
+                                                                <label>Rate Harga (Rp) <span class="text-danger">*</span></label>
+                                                                <input type="text" class="form-control input-currency" name="rate_harga_display" value="{{ number_format($item->rate_harga, 0, ',', '.') }}" required>
+                                                                <input type="hidden" name="rate_harga" class="input-currency-hidden" value="{{ $item->rate_harga }}">
+                                                            </div>
+                                                            <div class="col-md-6 mb-3">
+                                                                <label>Nama Bank <span class="text-danger">*</span></label>
+                                                                <input type="text" class="form-control" name="bank" value="{{ $item->bank }}" required>
+                                                            </div>
+                                                            <div class="col-md-6 mb-3">
+                                                                <label>No Rekening <span class="text-danger">*</span></label>
+                                                                <input type="text" class="form-control" name="no_rek" value="{{ $item->no_rek }}" required>
+                                                            </div>
+                                                            <div class="col-md-6 mb-3">
+                                                                <label>Link CV (Opsional)</label>
+                                                                <input type="url" class="form-control" name="link_cv" value="{{ $item->link_cv }}">
+                                                            </div>
                                                         </div>
                                                     </div>
+                                                    <div class="modal-footer">
+                                                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Tutup</button>
+                                                        <button type="submit" class="btn btn-primary">Simpan Perubahan</button>
+                                                    </div>
                                                 </div>
-                                                <div class="modal-footer">
-                                                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Tutup</button>
-                                                    <button type="submit" class="btn btn-primary">Simpan Perubahan</button>
-                                                </div>
-                                            </div>
-                                        </form>
+                                            </form>
+                                        </div>
                                     </div>
-                                </div>
-                                @endforeach
-                            </tbody>
-                        </table>
+                                    @endforeach
+                                </tbody>
+                            </table>
+                        </div>
                     </div>
                 </div>
             </div>

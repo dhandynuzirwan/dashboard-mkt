@@ -110,6 +110,7 @@ class CtaController extends Controller
             'file_proposal' => 'nullable|mimes:pdf|max:5120',
             'status_penawaran' => 'nullable',
             'keterangan' => 'nullable|string',
+            'tanggal_pelaksanaan' => 'nullable|date',
         ]);
     
         $prospek = Prospek::findOrFail($validated['prospek_id']);
@@ -162,6 +163,7 @@ class CtaController extends Controller
             'file_proposal' => 'nullable|mimes:pdf|max:5120',
             'status_penawaran' => 'nullable|string', 
             'keterangan' => 'nullable|string',
+            'tanggal_pelaksanaan' => 'nullable|date',
         ]);
     
         // 3. Update Catatan di tabel Prospek (pake id_prospek dari data cta)
@@ -404,6 +406,7 @@ class CtaController extends Controller
                     'proposal_link'    => $row['proposal_link'] ?? null,
                     'status_penawaran' => $row['status_penawaran'] ?? null,
                     'keterangan'       => $keterangan,
+                    'tanggal_pelaksanaan' => $row['tanggal_pelaksanaan'] ?? null,
                 ]);
     
                 $countSuccess++;

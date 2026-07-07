@@ -57,6 +57,7 @@
                                         
                                         <td><input type="text" name="rows[0][judul_permintaan]" class="form-control"></td>
                                         <td><input type="number" name="rows[0][jumlah_peserta]" class="form-control"></td>
+                                        <td><input type="date" name="rows[0][tanggal_pelaksanaan]" class="form-control"></td>
                                         <td><input type="text" name="rows[0][sertifikasi]" class="form-control"></td>
                                         <td><input type="text" name="rows[0][skema]" class="form-control"></td>
                                         <td><input type="number" name="rows[0][harga_penawaran]" class="form-control"></td>
@@ -96,6 +97,7 @@
                             
                             <td><input type="text" name="rows[${index}][judul_permintaan]" class="form-control"></td>
                             <td><input type="number" name="rows[${index}][jumlah_peserta]" class="form-control"></td>
+                            <td><input type="date" name="rows[${index}][tanggal_pelaksanaan]" class="form-control"></td>
                             <td><input type="text" name="rows[${index}][sertifikasi]" class="form-control"></td>
                             <td><input type="text" name="rows[${index}][skema]" class="form-control"></td>
                             <td><input type="number" name="rows[${index}][harga_penawaran]" class="form-control"></td>

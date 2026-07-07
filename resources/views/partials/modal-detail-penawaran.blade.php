@@ -33,7 +33,7 @@
                         </small>
                     </td>
 
-                    {{-- Kolom 2: Judul Permintaan, Skema & Sertifikasi --}}
+                    {{-- Kolom 2: Judul Permintaan, Skema, Sertifikasi, Tanggal Pelaksanaan --}}
                     <td class="py-3">
                         <div class="fw-bold text-primary mb-1">{{ $d->judul_permintaan ?? 'Tanpa Judul' }}</div>
                         <div class="d-flex align-items-center gap-2 mt-1">
@@ -44,9 +44,12 @@
                                 <i class="fas fa-tags me-1"></i> {{ $d->skema ?? 'Tanpa Skema' }}
                             </span>
                         </div>
+                        <div class="mt-1">
+                            <span class="text-muted" style="font-size: 11px;"><i class="fas fa-calendar-check me-1"></i> Tgl Pelaksanaan: <span class="text-dark">{{ $d->tanggal_pelaksanaan ? \Carbon\Carbon::parse($d->tanggal_pelaksanaan)->format('d M Y') : '-' }}</span></span>
+                        </div>
                     </td>
 
-                    {{-- Kolom 3: Harga, Peserta & Total --}}
+                    {{-- Kolom 3: Harga, Peserta, Vendor & Total --}}
                     <td class="py-3">
                         <div class="d-flex flex-column">
                             <div class="d-flex justify-content-between mb-1">
@@ -54,11 +57,15 @@
                                 <span class="fw-medium text-dark">Rp {{ number_format($d->harga_penawaran, 0, ',', '.') }}</span>
                             </div>
                             <div class="d-flex justify-content-between mb-1">
+                                <span class="text-muted">Harga Vendor:</span>
+                                <span class="fw-medium text-danger">Rp {{ number_format($d->harga_vendor ?? 0, 0, ',', '.') }}</span>
+                            </div>
+                            <div class="d-flex justify-content-between mb-1">
                                 <span class="text-muted">Peserta:</span>
                                 <span class="fw-medium text-dark"><i class="fas fa-users me-1 text-muted"></i> {{ $d->jumlah_peserta ?? 1 }} Org</span>
                             </div>
                             <div class="d-flex justify-content-between border-top pt-1 mt-1">
-                                <span class="fw-bold text-dark">Total:</span>
+                                <span class="fw-bold text-dark">Total Penawaran:</span>
                                 <span class="fw-bold text-success" style="font-size: 14px;">Rp {{ number_format($d->harga_penawaran * ($d->jumlah_peserta ?? 1), 0, ',', '.') }}</span>
                             </div>
                         </div>

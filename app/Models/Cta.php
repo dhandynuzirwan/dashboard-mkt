@@ -20,6 +20,7 @@ class Cta extends Model
         'file_proposal',
         'status_penawaran',
         'keterangan',
+        'tanggal_pelaksanaan',
     ];
 
     public function prospek()
