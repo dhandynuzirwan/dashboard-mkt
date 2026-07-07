@@ -214,6 +214,11 @@
                                                     <span class="text-muted fw-medium">Tunj. BPJS:</span>
                                                     <span class="fw-bold text-success">+ Rp {{ number_format($m->tunjangan_bpjs ?? 0, 0, ',', '.') }}</span>
                                                 </div>
+                                                <hr class="my-2 border-secondary opacity-25">
+                                                <div class="d-flex justify-content-between">
+                                                    <span class="fw-bolder text-dark" style="font-size: 10px;">Total (Inc BPJS & Fee):</span>
+                                                    <span class="fw-bolder text-success">Rp {{ number_format($m->total_gaji, 0, ',', '.') }}</span>
+                                                </div>
                                             </div>
                                         </td>
     
@@ -221,7 +226,7 @@
                                         <td class="py-4">
                                             <div class="p-3 rounded-4 border-primary-subtle border shadow-sm" style="background-color: #f0f5ff; font-size: 11px;">
                                                 <div class="d-flex justify-content-between mb-2">
-                                                    <span class="text-muted fw-medium">Nilai KPI (Rp):</span>
+                                                    <span class="text-muted fw-medium">Nilai Revenue:</span>
                                                     <span class="fw-bold text-dark">Rp {{ number_format($m->kpi_rp, 0, ',', '.') }}</span>
                                                 </div>
                                                 <hr class="my-2 border-primary opacity-25">
@@ -237,7 +242,7 @@
                                             <div class="d-inline-block text-end">
                                                 <p class="label-modern text-muted mb-1">TOTAL DITERIMA</p>
                                                 <h4 class="fw-bolder text-success mb-2 lh-1">
-                                                    Rp {{ number_format($m->total_gaji, 0, ',', '.') }}
+                                                    Rp {{ number_format($m->gapok_hitung + ($m->fee_marketing ?? 0), 0, ',', '.') }}
                                                 </h4>
                                             </div>
                                         </td>
@@ -296,7 +301,7 @@
                         </div>
                         <div class="d-flex justify-content-between align-items-center mt-1 pt-1 bg-light rounded px-2 border">
                             <span class="fw-bolder text-dark" style="font-size: 10px;">THP</span>
-                            <span class="fw-black text-success" style="font-size: 13px;">Rp {{ number_format($m->total_gaji, 0, ',', '.') }}</span>
+                            <span class="fw-black text-success" style="font-size: 13px;">Rp {{ number_format($m->gapok_hitung + ($m->fee_marketing ?? 0), 0, ',', '.') }}</span>
                         </div>
                     </div>
 
@@ -308,7 +313,7 @@
                                 <span class="fw-bold {{ $total_kpi >= 70 ? 'text-success' : 'text-danger' }}" style="font-size: 12px;">{{ number_format($total_kpi, 1) }}%</span>
                             </div>
                             <div class="d-flex justify-content-between mb-1">
-                                <span class="text-muted fw-bold" style="font-size: 11px;">Nilai KPI (Rp)</span>
+                                <span class="text-muted fw-bold" style="font-size: 11px;">Nilai Revenue</span>
                                 <span class="fw-bold text-dark" style="font-size: 11px;">Rp {{ number_format($m->kpi_rp, 0, ',', '.') }}</span>
                             </div>
                         </div>
@@ -321,6 +326,11 @@
                             <div class="d-flex justify-content-between mb-1">
                                 <span class="text-muted" style="font-size: 10px;">Tunj. BPJS:</span>
                                 <span class="fw-bold text-success" style="font-size: 10px;">+ Rp {{ number_format($m->tunjangan_bpjs ?? 0, 0, ',', '.') }}</span>
+                            </div>
+                            <hr class="my-1 border-secondary opacity-10">
+                            <div class="d-flex justify-content-between">
+                                <span class="fw-bold text-dark" style="font-size: 10px;">Total (Inc BPJS & Fee):</span>
+                                <span class="fw-bolder text-success" style="font-size: 10px;">Rp {{ number_format($m->total_gaji, 0, ',', '.') }}</span>
                             </div>
                         </div>
 
@@ -405,7 +415,7 @@
                     <div>
                         <h6 class="fw-bolder text-dark mb-1">Komposisi Take Home Pay</h6>
                         <div class="bg-white px-3 py-2 mt-2 rounded-3 border fw-bold small text-dark shadow-sm">
-                            Gaji Pokok + Fee Marketing + Tunjangan BPJS
+                            Gaji Pokok + Fee Marketing
                         </div>
                     </div>
                 </div>
