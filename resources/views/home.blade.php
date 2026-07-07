@@ -19,6 +19,20 @@
         </div>
         @endif
 
+        @if(isset($statusHariIni) && $statusHariIni)
+        <div class="alert alert-{{ $statusHariIni['color'] }} alert-dismissible fade show shadow-sm border-0 rounded-4 mb-4 fade-in" role="alert" style="background-color: var(--bs-{{ $statusHariIni['color'] }}-bg-subtle, #fef3c7);">
+            <div class="d-flex align-items-center">
+                <div class="icon-sm bg-white text-{{ $statusHariIni['color'] }} rounded-circle d-flex align-items-center justify-content-center shadow-sm me-3" style="width: 32px; height: 32px;">
+                    <i class="{{ $statusHariIni['icon'] }}"></i>
+                </div>
+                <div>
+                    <strong>Pemberitahuan:</strong> Anda sedang berstatus <strong>{{ $statusHariIni['tipe'] }}</strong> hari ini. (Keterangan: {{ $statusHariIni['keterangan'] ?? '-' }})
+                </div>
+            </div>
+            <button type="button" class="btn-close mt-1" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+        @endif
+
         <div class="row g-4">
             {{-- KOLOM KIRI (Utama) --}}
             <div class="col-lg-8 col-md-12">
@@ -205,33 +219,64 @@
                 
                 {{-- 1. Mini Profile --}}
                 <div class="card border-0 shadow-sm rounded-4 mb-4">
-                    <div class="card-body p-4 d-flex align-items-center">
-                        <div class="avatar-container position-relative me-3">
-                            <div class="bg-secondary bg-opacity-10 rounded-circle d-flex align-items-center justify-content-center overflow-hidden" style="width: 60px; height: 60px;">
-                                @if(Auth::user()->foto_profil)
-                                    <img src="{{ asset('storage/' . Auth::user()->foto_profil) }}" alt="Profile Picture" class="w-100 h-100" style="object-fit: cover;">
-                                @else
-                                    <i class="fas fa-user text-secondary fs-3"></i>
-                                @endif
+                    <div class="card-body p-4">
+                        <div class="d-flex align-items-center mb-3">
+                            <div class="avatar-container position-relative me-3">
+                                <div class="bg-secondary bg-opacity-10 rounded-circle d-flex align-items-center justify-content-center overflow-hidden" style="width: 60px; height: 60px;">
+                                    @if(Auth::user()->foto_profil)
+                                        <img src="{{ asset('storage/' . Auth::user()->foto_profil) }}" alt="Profile Picture" class="w-100 h-100" style="object-fit: cover;">
+                                    @else
+                                        <i class="fas fa-user text-secondary fs-3"></i>
+                                    @endif
+                                </div>
+                                <span class="position-absolute bottom-0 end-0 p-2 bg-success border border-white border-2 rounded-circle" style="transform: translate(-2px, -2px);" title="Online"></span>
                             </div>
-                            <span class="position-absolute bottom-0 end-0 p-2 bg-success border border-white border-2 rounded-circle" style="transform: translate(-2px, -2px);" title="Online"></span>
+                            <div>
+                                <h5 class="fw-bold mb-1">{{ Auth::user()->name }}</h5>
+                                <p class="text-muted small mb-0 text-capitalize"><i class="fas fa-user-shield me-1"></i> {{ str_replace('_', ' ', Auth::user()->role ?? 'Karyawan') }}</p>
+                            </div>
+                            <div class="ms-auto dropdown">
+                                <button class="btn btn-light btn-sm rounded-circle" type="button" data-bs-toggle="dropdown"><i class="fas fa-ellipsis-v"></i></button>
+                                <ul class="dropdown-menu dropdown-menu-end shadow-sm border-0">
+                                    <li><a class="dropdown-item" href="{{ route('my-profile.edit') }}"><i class="fas fa-user-edit me-2"></i> Edit Profil</a></li>
+                                    <li><hr class="dropdown-divider"></li>
+                                    <li>
+                                        <form action="{{ route('logout') }}" method="POST">
+                                            @csrf
+                                            <button type="submit" class="dropdown-item text-danger"><i class="fas fa-sign-out-alt me-2"></i> Logout</button>
+                                        </form>
+                                    </li>
+                                </ul>
+                            </div>
                         </div>
-                        <div>
-                            <h5 class="fw-bold mb-1">{{ Auth::user()->name }}</h5>
-                            <p class="text-muted small mb-0 text-capitalize"><i class="fas fa-user-shield me-1"></i> {{ str_replace('_', ' ', Auth::user()->role ?? 'Karyawan') }}</p>
+                        
+                        <div class="bg-light rounded p-3 mb-3">
+                            <h6 class="fw-bold mb-3 small text-muted"><i class="fas fa-id-card me-1"></i> DATA DIRI</h6>
+                            <div class="d-flex justify-content-between mb-2">
+                                <span class="text-muted small">Nama Lengkap</span>
+                                <span class="fw-semibold small text-end">{{ Auth::user()->nama_lengkap ?? '-' }}</span>
+                            </div>
+                            <div class="d-flex justify-content-between mb-2">
+                                <span class="text-muted small">NIK</span>
+                                <span class="fw-semibold small text-end">{{ Auth::user()->nik ?? '-' }}</span>
+                            </div>
+                            <div class="d-flex justify-content-between mb-2">
+                                <span class="text-muted small">Tanggal Lahir</span>
+                                <span class="fw-semibold small text-end">{{ Auth::user()->tanggal_lahir ? \Carbon\Carbon::parse(Auth::user()->tanggal_lahir)->translatedFormat('d F Y') : '-' }}</span>
+                            </div>
+                            <div class="d-flex justify-content-between mb-2">
+                                <span class="text-muted small">Kontrak Baru</span>
+                                <span class="fw-semibold small text-end">{{ Auth::user()->tanggal_kontrak_baru ? \Carbon\Carbon::parse(Auth::user()->tanggal_kontrak_baru)->translatedFormat('d M Y') : '-' }}</span>
+                            </div>
+                            <div class="d-flex justify-content-between">
+                                <span class="text-muted small">Kontrak Berakhir</span>
+                                <span class="fw-bold small text-danger text-end">{{ Auth::user()->tanggal_kontrak_berakhir ? \Carbon\Carbon::parse(Auth::user()->tanggal_kontrak_berakhir)->translatedFormat('d M Y') : '-' }}</span>
+                            </div>
                         </div>
-                        <div class="ms-auto dropdown">
-                            <button class="btn btn-light btn-sm rounded-circle" type="button" data-bs-toggle="dropdown"><i class="fas fa-ellipsis-v"></i></button>
-                            <ul class="dropdown-menu dropdown-menu-end shadow-sm border-0">
-                                <li><a class="dropdown-item" href="{{ route('my-profile.edit') }}"><i class="fas fa-user-edit me-2"></i> Edit Profil</a></li>
-                                <li><hr class="dropdown-divider"></li>
-                                <li>
-                                    <form action="{{ route('logout') }}" method="POST">
-                                        @csrf
-                                        <button type="submit" class="dropdown-item text-danger"><i class="fas fa-sign-out-alt me-2"></i> Logout</button>
-                                    </form>
-                                </li>
-                            </ul>
+                        
+                        <div class="d-flex gap-2">
+                            <a href="#" class="btn btn-primary btn-sm flex-fill fw-semibold"><i class="fas fa-briefcase me-1"></i> Jobdesk</a>
+                            <a href="#" class="btn btn-info btn-sm flex-fill fw-semibold text-white"><i class="fas fa-sitemap me-1"></i> Struktur</a>
                         </div>
                     </div>
                 </div>

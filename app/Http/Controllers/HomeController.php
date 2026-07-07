@@ -28,14 +28,49 @@ class HomeController extends Controller
             ->get();
 
         // 2. Logika Aktivitas Feed (Timeline)
-        $feed = \App\Models\ActivityLog::orderBy('updated_at', 'desc')->take(5)->get()->map(function($log) {
-            return [
-                'type' => $log->type,
-                'color' => $log->color,
-                'title' => $log->title,
-                'time' => $log->updated_at,
+        $feed = \App\Models\ActivityLog::where('user_id', $user->id)
+            ->orderBy('updated_at', 'desc')
+            ->take(5)
+            ->get()
+            ->map(function($log) {
+                return [
+                    'type' => $log->type,
+                    'color' => $log->color,
+                    'title' => $log->title,
+                    'time' => $log->updated_at,
+                ];
+            });
+
+        // 2.5 Cek Keterangan Hari Ini (Cuti/Sakit/Holiday)
+        $todayStr = $now->format('Y-m-d');
+        $statusHariIni = null;
+        
+        $liburHariIni = Holiday::where('tanggal', $todayStr)->first();
+        if ($liburHariIni) {
+            $statusHariIni = [
+                'tipe' => 'Holiday',
+                'keterangan' => $liburHariIni->keterangan,
+                'color' => 'danger',
+                'icon' => 'fas fa-calendar-day'
             ];
-        });
+        } else {
+            $izinHariIni = Perizinan::where('user_id', $user->id)
+                ->where('tanggal', $todayStr)
+                ->where('status', 'approved')
+                ->first();
+            if ($izinHariIni) {
+                $tipeIzin = strtolower($izinHariIni->tipe ?? 'izin'); // fallback if tipe is not available directly, wait Perizinan table structure
+                $statusHariIni = [
+                    'tipe' => ucfirst($tipeIzin), // e.g. Sakit, Cuti
+                    'keterangan' => $izinHariIni->keterangan,
+                    'color' => 'warning',
+                    'icon' => 'fas fa-procedures'
+                ];
+                if (in_array(strtolower($tipeIzin), ['cuti', 'izin'])) {
+                    $statusHariIni['icon'] = 'fas fa-plane-departure';
+                }
+            }
+        }
 
         // 3. Logika Absensi Pribadi Bulan Ini
         $absensi = AbsensiLog::where('user_id', $user->id)
@@ -140,8 +175,24 @@ class HomeController extends Controller
             return $item['date']->format('Y-m-d') >= $now->format('Y-m-d');
         })->sortBy('date')->take(3);
 
+        // Tambahkan Tanggal Kontrak Berakhir jika ada
+        if ($user->tanggal_kontrak_berakhir) {
+            $kontrakEnd = Carbon::parse($user->tanggal_kontrak_berakhir);
+            if ($kontrakEnd->month == $now->month && $kontrakEnd->year == $now->year) {
+                $calendarEvents[$kontrakEnd->day] = 'danger'; // Merah
+            }
+            if ($kontrakEnd->format('Y-m-d') >= $now->format('Y-m-d')) {
+                $upcomingAgendas->push([
+                    'title' => 'Kontrak Berakhir',
+                    'date' => $kontrakEnd,
+                    'color' => 'danger'
+                ]);
+                $upcomingAgendas = $upcomingAgendas->sortBy('date')->take(3); // Re-sort and take top 3
+            }
+        }
+
         return view('home', compact(
-            'pengumuman', 'feed', 'hadir', 'telat', 'absen', 'attendanceRate', 'calendarEvents', 'upcomingAgendas'
+            'pengumuman', 'feed', 'hadir', 'telat', 'absen', 'attendanceRate', 'calendarEvents', 'upcomingAgendas', 'statusHariIni'
         ));
     }
 }

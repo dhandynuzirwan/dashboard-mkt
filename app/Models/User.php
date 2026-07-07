@@ -25,6 +25,10 @@ class User extends Authenticatable
         'foto_profil',
         'nama_lengkap', // 🔥 TAMBAHAN BARU
         'no_hp',        // 🔥 TAMBAHAN BARU
+        'nik',
+        'tanggal_lahir',
+        'tanggal_kontrak_baru',
+        'tanggal_kontrak_berakhir',
         'deal_sound_path',
     ];
 
