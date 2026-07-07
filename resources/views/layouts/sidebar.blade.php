@@ -64,7 +64,7 @@
 
                                 {{-- ================= MENU PERFORMANCE & FINANCE ================= --}}
                 @if(in_array($role, ['superadmin', 'web_dev', 'spv_marketing', 'admin', 'rnd']))
-                    @php $isPerformance = request()->routeIs(['dashboard.progress', 'performance.display', 'revenue', 'data-kpi', 'simulasi-gaji', 'parameter-finansial.*']); @endphp
+                    @php $isPerformance = request()->routeIs(['dashboard.progress', 'performance.display', 'revenue', 'data-kpi', 'simulasi-gaji', 'parameter-finansial.*', 'master-artikel.*', 'master-instruktur.*', 'master-proposal.*']); @endphp
                     <li class="nav-item {{ $isPerformance ? 'active' : '' }}">
                         <a data-bs-toggle="collapse" href="#performance" class="{{ $isPerformance ? '' : 'collapsed' }}" aria-expanded="{{ $isPerformance ? 'true' : 'false' }}">
                             <i class="fas fa-tachometer-alt"></i>
