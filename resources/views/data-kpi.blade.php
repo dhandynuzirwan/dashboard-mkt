@@ -58,7 +58,7 @@
         </div>
 
         {{-- ================= STAT CARDS KHUSUS SUPERADMIN & SPV ================= --}}
-        @if(in_array(auth()->user()->role, ['superadmin', 'spv']))
+        @if(in_array(auth()->user()->role, ['superadmin', 'spv_marketing']))
         <div class="row mb-4">
             <div class="col-md-6 col-lg-3">
                 <div class="card card-stats card-round">
