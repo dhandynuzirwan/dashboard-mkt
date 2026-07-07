@@ -10,7 +10,20 @@ class MasterArtikelController extends Controller
     public function index()
     {
         $artikels = MasterArtikel::with('user')->latest()->get();
-        return view('rnd.master-artikel.index', compact('artikels'));
+        
+        $totalStat = MasterArtikel::count();
+        $chartData = MasterArtikel::selectRaw('MONTH(created_at) as month, count(*) as total')
+                                  ->whereYear('created_at', date('Y'))
+                                  ->groupBy('month')
+                                  ->pluck('total', 'month')
+                                  ->toArray();
+                                  
+        $chartValues = [];
+        for ($i = 1; $i <= 12; $i++) {
+            $chartValues[] = $chartData[$i] ?? 0;
+        }
+
+        return view('rnd.master-artikel.index', compact('artikels', 'totalStat', 'chartValues'));
     }
 
     public function store(Request $request)

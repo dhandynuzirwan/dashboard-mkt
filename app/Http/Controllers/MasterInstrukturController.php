@@ -10,7 +10,20 @@ class MasterInstrukturController extends Controller
     public function index()
     {
         $instrukturs = MasterInstruktur::with('user')->latest()->get();
-        return view('rnd.master-instruktur.index', compact('instrukturs'));
+        
+        $totalStat = MasterInstruktur::count();
+        $chartData = MasterInstruktur::selectRaw('MONTH(created_at) as month, count(*) as total')
+                                  ->whereYear('created_at', date('Y'))
+                                  ->groupBy('month')
+                                  ->pluck('total', 'month')
+                                  ->toArray();
+                                  
+        $chartValues = [];
+        for ($i = 1; $i <= 12; $i++) {
+            $chartValues[] = $chartData[$i] ?? 0;
+        }
+
+        return view('rnd.master-instruktur.index', compact('instrukturs', 'totalStat', 'chartValues'));
     }
 
     public function store(Request $request)

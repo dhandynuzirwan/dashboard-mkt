@@ -11,7 +11,20 @@ class MasterProposalController extends Controller
     public function index()
     {
         $proposals = MasterProposal::with('user')->latest()->get();
-        return view('rnd.master-proposal.index', compact('proposals'));
+        
+        $totalStat = MasterProposal::count();
+        $chartData = MasterProposal::selectRaw('MONTH(created_at) as month, count(*) as total')
+                                  ->whereYear('created_at', date('Y'))
+                                  ->groupBy('month')
+                                  ->pluck('total', 'month')
+                                  ->toArray();
+                                  
+        $chartValues = [];
+        for ($i = 1; $i <= 12; $i++) {
+            $chartValues[] = $chartData[$i] ?? 0;
+        }
+
+        return view('rnd.master-proposal.index', compact('proposals', 'totalStat', 'chartValues'));
     }
 
     public function store(Request $request)
