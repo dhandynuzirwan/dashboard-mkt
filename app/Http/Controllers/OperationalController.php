@@ -8,6 +8,16 @@ use Illuminate\Http\Request;
 
 class OperationalController extends Controller
 {
+    public function __construct()
+    {
+        $this->middleware(function ($request, $next) {
+            if (!in_array(auth()->user()->email, ['pic1@arsatraining.com', 'pic2@arsatraining.com'])) {
+                abort(403, 'Akses ditolak. Menu ini khusus PIC Portal Back Office.');
+            }
+            return $next($request);
+        })->only(['index', 'storeResource', 'updateResource', 'destroyResource', 'storeKontak', 'destroyKontak']);
+    }
+
     // 1. Menampilkan Halaman Utama (Index)
     public function index(Request $request)
     {

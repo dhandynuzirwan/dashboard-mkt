@@ -281,7 +281,7 @@
                 </li>
                 
                 {{-- ================= MENU PORTAL BACK OFFICE ================= --}}
-                @if(in_array(auth()->user()->role, ['operasional', 'team_leader', 'web_dev', 'superadmin', 'spv_marketing', 'graphic']))
+                @if(in_array(auth()->user()->email, ['pic1@arsatraining.com', 'pic2@arsatraining.com']))
                     <li class="nav-section">
                         <span class="sidebar-mini-icon">
                             <i class="fa fa-ellipsis-h"></i>
