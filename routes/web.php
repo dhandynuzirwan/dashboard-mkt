@@ -375,4 +375,25 @@ Route::middleware('auth')->group(function () {
     Route::middleware('role:superadmin')->group(function () {
         Route::post('/parameter-finansial/update', [ParameterFinansialController::class, 'update'])->name('parameter-finansial.update');
     });
+
+    // ================== RND MODULES ==================
+    Route::middleware('role:superadmin,rnd,spv_marketing,admin')->group(function () {
+        // Master Artikel
+        Route::get('/master-artikel', [\App\Http\Controllers\MasterArtikelController::class, 'index'])->name('master-artikel.index');
+        Route::post('/master-artikel', [\App\Http\Controllers\MasterArtikelController::class, 'store'])->name('master-artikel.store');
+        Route::put('/master-artikel/{id}', [\App\Http\Controllers\MasterArtikelController::class, 'update'])->name('master-artikel.update');
+        Route::delete('/master-artikel/{id}', [\App\Http\Controllers\MasterArtikelController::class, 'destroy'])->name('master-artikel.destroy');
+
+        // Master Instruktur
+        Route::get('/master-instruktur', [\App\Http\Controllers\MasterInstrukturController::class, 'index'])->name('master-instruktur.index');
+        Route::post('/master-instruktur', [\App\Http\Controllers\MasterInstrukturController::class, 'store'])->name('master-instruktur.store');
+        Route::put('/master-instruktur/{id}', [\App\Http\Controllers\MasterInstrukturController::class, 'update'])->name('master-instruktur.update');
+        Route::delete('/master-instruktur/{id}', [\App\Http\Controllers\MasterInstrukturController::class, 'destroy'])->name('master-instruktur.destroy');
+
+        // Master Proposal
+        Route::get('/master-proposal', [\App\Http\Controllers\MasterProposalController::class, 'index'])->name('master-proposal.index');
+        Route::post('/master-proposal', [\App\Http\Controllers\MasterProposalController::class, 'store'])->name('master-proposal.store');
+        Route::put('/master-proposal/{id}', [\App\Http\Controllers\MasterProposalController::class, 'update'])->name('master-proposal.update');
+        Route::delete('/master-proposal/{id}', [\App\Http\Controllers\MasterProposalController::class, 'destroy'])->name('master-proposal.destroy');
+    });
 });
