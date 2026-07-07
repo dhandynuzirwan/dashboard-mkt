@@ -122,18 +122,18 @@
                                 @endif
                                 
                                 @if(in_array($role, ['rnd', 'superadmin', 'spv_marketing', 'admin']))
-                                <li class="">
-                                    <a href="#">
+                                <li class="{{ request()->routeIs('master-artikel.*') ? 'active' : '' }}">
+                                    <a href="{{ route('master-artikel.index') }}">
                                         <span class="sub-item">Master Artikel</span>
                                     </a>
                                 </li>
-                                <li class="">
-                                    <a href="#">
+                                <li class="{{ request()->routeIs('master-instruktur.*') ? 'active' : '' }}">
+                                    <a href="{{ route('master-instruktur.index') }}">
                                         <span class="sub-item">Master Instruktur/Narasumber</span>
                                     </a>
                                 </li>
-                                <li class="">
-                                    <a href="#">
+                                <li class="{{ request()->routeIs('master-proposal.*') ? 'active' : '' }}">
+                                    <a href="{{ route('master-proposal.index') }}">
                                         <span class="sub-item">Master Proposal Penawaran</span>
                                     </a>
                                 </li>
