@@ -121,7 +121,7 @@
                                 </li>
                                 @endif
                                 
-                                @if($role === 'rnd')
+                                @if(in_array($role, ['rnd', 'superadmin']))
                                 <li class="">
                                     <a href="#">
                                         <span class="sub-item">Master Artikel</span>
