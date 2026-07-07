@@ -65,7 +65,7 @@
                                                 class="form-control paste-input" placeholder="Paste di sini"></td>
                                         <td><input type="text" name="rows[0][telp]" class="form-control"></td>
                                         <td><input type="text" name="rows[0][telp_baru]" class="form-control"></td>
-                                        <td><input type="email" name="rows[0][email]" class="form-control"></td>
+                                        <td><input type="text" name="rows[0][email]" class="form-control"></td>
                                         <td><input type="text" name="rows[0][jabatan]" class="form-control"></td>
                                         <td><input type="text" name="rows[0][nama_pic]" class="form-control"></td>
                                         <td><input type="text" name="rows[0][wa_pic]" class="form-control"></td>
