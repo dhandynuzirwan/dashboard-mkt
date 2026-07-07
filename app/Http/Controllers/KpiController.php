@@ -210,15 +210,29 @@ class KpiController extends Controller
 
         $all_marketing = User::where('role', 'marketing')->get();
 
-        // 5. --- STATS KHUSUS SUPERADMIN ---
+        // 5. --- STATS KHUSUS SUPERADMIN & SPV ---
         $total_kpi_avg = 0;
         $hpp_percent = 0;
         $total_income_keseluruhan = 0;
         $hpp_per_bulan = 0;
+        $komisi_spv = 0;
 
-        if (auth()->user()->role === 'superadmin') {
+        if (in_array(auth()->user()->role, ['superadmin', 'spv'])) {
             $total_kpi_avg = $marketings->count() > 0 ? $marketings->avg('total_kpi') : 0;
             $total_income_keseluruhan = $marketings->sum('revenue_actual');
+            
+            // Hitung Fee Marketing untuk Komisi SPV
+            $total_fee_marketing = 0;
+            foreach ($marketings as $m) {
+                $income = $m->revenue_actual;
+                $kpi_rp = ($income < 60000000) ? ($income * 0.40) : ($income * 0.60);
+                if ($income >= 30000000) {
+                    $fee_mkt = ($m->total_kpi < 70) ? ($kpi_rp * 0.02) : ($kpi_rp * 0.05);
+                    $total_fee_marketing += $fee_mkt;
+                }
+            }
+            // Komisi SPV (5% jika avg kpi < 70, 10% jika >= 70)
+            $komisi_spv = ($total_kpi_avg < 70) ? ($total_fee_marketing * 0.05) : ($total_fee_marketing * 0.10);
             
             $bulan_tahun = \Carbon\Carbon::parse($start)->format('Y-m');
             $parameterFinansial = \App\Models\ParameterFinansial::where('bulan_tahun', $bulan_tahun)->first();
@@ -229,6 +243,6 @@ class KpiController extends Controller
             }
         }
 
-        return view('data-kpi', compact('marketings', 'start', 'end', 'all_marketing', 'hariEfektifSebulan', 'total_kpi_avg', 'hpp_percent', 'hpp_per_bulan', 'total_income_keseluruhan'));
+        return view('data-kpi', compact('marketings', 'start', 'end', 'all_marketing', 'hariEfektifSebulan', 'total_kpi_avg', 'hpp_percent', 'hpp_per_bulan', 'total_income_keseluruhan', 'komisi_spv'));
     }
 }

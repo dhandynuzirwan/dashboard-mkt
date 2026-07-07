@@ -57,8 +57,8 @@
             </div>
         </div>
 
-        {{-- ================= STAT CARDS KHUSUS SUPERADMIN ================= --}}
-        @if(auth()->user()->role === 'superadmin')
+        {{-- ================= STAT CARDS KHUSUS SUPERADMIN & SPV ================= --}}
+        @if(in_array(auth()->user()->role, ['superadmin', 'spv']))
         <div class="row mb-4">
             <div class="col-md-6 col-lg-3">
                 <div class="card card-stats card-round">
@@ -94,6 +94,26 @@
                                     <p class="card-category">HPP% (Bulan Ini)</p>
                                     <h4 class="card-title">{{ number_format($hpp_percent ?? 0, 1) }}%</h4>
                                     <small class="text-muted" style="font-size:10px;">HPP / Total Income</small>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-6 col-lg-3">
+                <div class="card card-stats card-round">
+                    <div class="card-body">
+                        <div class="row align-items-center">
+                            <div class="col-icon">
+                                <div class="icon-big text-center icon-success bubble-shadow-small">
+                                    <i class="fas fa-coins"></i>
+                                </div>
+                            </div>
+                            <div class="col col-stats ms-3 ms-sm-0">
+                                <div class="numbers">
+                                    <p class="card-category">Komisi SPV</p>
+                                    <h4 class="card-title">Rp {{ number_format($komisi_spv ?? 0, 0, ',', '.') }}</h4>
+                                    <small class="text-muted" style="font-size:10px;">Berdasarkan Fee Mkt</small>
                                 </div>
                             </div>
                         </div>
@@ -191,7 +211,7 @@
                                     </div>
                                 </div>
                                 <div class="d-flex justify-content-between align-items-center mt-1 bg-light rounded px-2 py-1 border">
-                                    <span class="text-muted fw-bold" style="font-size: 10px;">TOTAL KPI</span>
+                                    <span class="text-muted fw-bold" style="font-size: 11px;">TOTAL KPI</span>
                                     <span class="badge {{ $badgeClass }} shadow-sm" style="font-size: 11px;">{{ number_format($total_kpi, 1) }}%</span>
                                 </div>
                             </div>
@@ -344,7 +364,7 @@
                                         $kpi_rp = ($m->revenue_actual < 60000000) ? $m->revenue_actual * 0.40 : $m->revenue_actual * 0.60;
                                     @endphp
                                     <div class="d-flex justify-content-between mt-1 pt-1" style="max-width: 220px;">
-                                        <span class="fw-bold">Nilai KPI (Rp):</span> <span class="fw-bolder text-dark">Rp {{ number_format($kpi_rp, 0, ',', '.') }}</span>
+                                        <span class="fw-bold">Nilai Revenue:</span> <span class="fw-bolder text-dark">Rp {{ number_format($kpi_rp, 0, ',', '.') }}</span>
                                     </div>
                                 </td>
                             </tr>
