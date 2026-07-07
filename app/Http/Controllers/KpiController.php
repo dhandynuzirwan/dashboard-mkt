@@ -156,14 +156,16 @@ class KpiController extends Controller
             $totalPenawaran = $cta->whereNotNull('status_penawaran')->where('status_penawaran', '!=', '')->count();
 
             // PEMBOBOTAN
-            $maxData = 115;
+            $maxDataUpdate = 115;
+            $maxDataAkhir = 172;
+            $maxDataPenawaran = 287; 
             $bobotUpdate = 20;
             $bobotAkhir = 30;
             $bobotPenawaran = 50;
 
-            $skorUpdate = min(1, $totalUpdateData / $maxData) * $bobotUpdate;
-            $skorAkhir = min(1, $totalAkhirData / $maxData) * $bobotAkhir;
-            $skorPenawaran = min(1, $totalPenawaran / $maxData) * $bobotPenawaran;
+            $skorUpdate = min(1, $totalUpdateData / $maxDataUpdate) * $bobotUpdate;
+            $skorAkhir = min(1, $totalAkhirData / $maxDataAkhir) * $bobotAkhir;
+            $skorPenawaran = min(1, $totalPenawaran / $maxDataPenawaran) * $bobotPenawaran;
 
             $user->progress_ach = $skorUpdate + $skorAkhir + $skorPenawaran; // Skala 100%
             
