@@ -73,6 +73,7 @@
                                 <div class="numbers">
                                     <p class="card-category">Total KPI Keseluruhan</p>
                                     <h4 class="card-title">{{ number_format($total_kpi_avg ?? 0, 1) }}%</h4>
+                                    <small class="text-muted" style="font-size:10px;">AVG Total KPI</small>
                                 </div>
                             </div>
                         </div>
