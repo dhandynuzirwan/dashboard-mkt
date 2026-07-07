@@ -26,6 +26,42 @@
         </ul>
     </div>
 
+    
+    {-- BARIS 1: STATISTIK & CHART --}
+    <div class="row">
+        <div class="col-md-4">
+            <div class="card card-stats card-round">
+                <div class="card-body">
+                    <div class="row align-items-center">
+                        <div class="col-icon">
+                            <div class="icon-big text-center icon-primary bubble-shadow-small">
+                                <i class="fas fa-chalkboard-teacher"></i>
+                            </div>
+                        </div>
+                        <div class="col col-stats ms-3 ms-sm-0">
+                            <div class="numbers">
+                                <p class="card-category">Total Instruktur</p>
+                                <h4 class="card-title">{{ $totalStat }}</h4>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-8">
+            <div class="card card-round">
+                <div class="card-header">
+                    <div class="card-title">Statistik Instruktur per Bulan (Tahun Ini)</div>
+                </div>
+                <div class="card-body">
+                    <div class="chart-container" style="min-height: 250px">
+                        <canvas id="statisticsChart"></canvas>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
     @if(session('success'))
     <div class="alert alert-success alert-dismissible fade show" role="alert">
         {{ session('success') }}
@@ -256,4 +292,34 @@
         });
     });
 </script>
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+    $(document).ready(function() {
+        var ctx = document.getElementById('statisticsChart').getContext('2d');
+        var statisticsChart = new Chart(ctx, {
+            type: 'bar',
+            data: {
+                labels: ['Jan', 'Feb', 'Mar', 'Apr', 'Mei', 'Jun', 'Jul', 'Agu', 'Sep', 'Okt', 'Nov', 'Des'],
+                datasets: [{
+                    label: "Jumlah Instruktur Baru",
+                    backgroundColor: '#1d7af3',
+                    borderColor: '#1d7af3',
+                    data: {{ json_encode($chartValues) }},
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                scales: {
+                    y: {
+                        beginAtZero: true,
+                        ticks: { stepSize: 1 }
+                    }
+                }
+            }
+        });
+    });
+</script>
+
 @endsection
