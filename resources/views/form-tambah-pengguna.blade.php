@@ -101,6 +101,8 @@
                                         {{-- 2 ROLE BARU YANG DIGABUNG --}}
                                         <option value="operasional" {{ old('role', $user->role ?? '') == 'operasional' ? 'selected' : '' }}>Operasional / Backoffice / PIC</option>
                                         <option value="team_leader" {{ old('role', $user->role ?? '') == 'team_leader' ? 'selected' : '' }}>Team Leader / Admin PIC</option>
+                                        <option value="pic" {{ old('role', $user->role ?? '') == 'pic' ? 'selected' : '' }}>PIC Khusus</option>
+                                        <option value="finance" {{ old('role', $user->role ?? '') == 'finance' ? 'selected' : '' }}>Finance & Tax</option>
                                     </select>
                                 </div>
 

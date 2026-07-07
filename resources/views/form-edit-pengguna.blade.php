@@ -101,6 +101,8 @@
                                         <option value="web_dev" {{ old('role', $user->role) == 'web_dev' ? 'selected' : '' }}>Web Developer</option>
                                         <option value="hrd" {{ old('role', $user->role) == 'hrd' ? 'selected' : '' }}>HRD</option>
                                         <option value="graphic" {{ old('role', $user->role) == 'graphic' ? 'selected' : '' }}>Tim Grafis (Graphic)</option>
+                                        <option value="pic" {{ old('role', $user->role) == 'pic' ? 'selected' : '' }}>PIC Khusus</option>
+                                        <option value="finance" {{ old('role', $user->role) == 'finance' ? 'selected' : '' }}>Finance & Tax</option>
                                     </select>
                                 </div>
                         
