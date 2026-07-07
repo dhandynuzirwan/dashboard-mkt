@@ -128,11 +128,7 @@
             <div class="card card-modern shadow-sm border-0 mb-4 fade-in">
                 <div class="card-header bg-transparent border-bottom pt-4 px-4 pb-3 d-flex justify-content-between align-items-center">
                     <h6 class="card-title fw-bolder mb-0 text-dark">Rincian Perhitungan Take Home Pay</h6>
-                    @if(count($marketings) > 0)
-                    <a href="{{ route('penggajian.preview', $marketings[0]->id) }}" target="_blank" class="btn btn-primary btn-round shadow-sm fw-bold btn-sm">
-                        <i class="fas fa-print me-2"></i> Cetak Slip
-                    </a>
-                    @endif
+
                 </div>
                 <div class="card-body p-0">
                     <div class="table-responsive">
@@ -327,9 +323,7 @@
                                 <span class="fw-bold text-success" style="font-size: 10px;">+ Rp {{ number_format($m->tunjangan_bpjs ?? 0, 0, ',', '.') }}</span>
                             </div>
                         </div>
-                        <a href="{{ route('penggajian.preview', $m->id) }}" target="_blank" class="btn btn-white btn-sm border text-primary rounded hover-lift shadow-sm w-100 mt-2" style="font-size: 10px; font-weight: 600;">
-                            <i class="fas fa-print me-1"></i> Cetak Slip
-                        </a>
+
                     </div>
                 </div>
             </div>
