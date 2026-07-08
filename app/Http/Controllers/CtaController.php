@@ -111,6 +111,7 @@ class CtaController extends Controller
             'status_penawaran' => 'nullable',
             'keterangan' => 'nullable|string',
             'tanggal_pelaksanaan' => 'nullable|date',
+            'tanggal_selesai' => 'nullable|date',
         ]);
     
         $prospek = Prospek::findOrFail($validated['prospek_id']);
@@ -164,6 +165,7 @@ class CtaController extends Controller
             'status_penawaran' => 'nullable|string', 
             'keterangan' => 'nullable|string',
             'tanggal_pelaksanaan' => 'nullable|date',
+            'tanggal_selesai' => 'nullable|date',
         ]);
     
         // 3. Update Catatan di tabel Prospek (pake id_prospek dari data cta)

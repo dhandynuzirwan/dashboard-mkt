@@ -21,6 +21,7 @@ class Cta extends Model
         'status_penawaran',
         'keterangan',
         'tanggal_pelaksanaan',
+        'tanggal_selesai',
     ];
 
     public function prospek()

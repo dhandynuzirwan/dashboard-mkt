@@ -94,6 +94,11 @@
                                 </div>
 
                                 <div class="form-group">
+                                    <label>Tanggal Selesai</label>
+                                    <input type="date" class="form-control" name="tanggal_selesai">
+                                </div>
+
+                                <div class="form-group">
                                     <label>Sertifikasi</label>
                                     <select class="form-select" name="sertifikasi">
                                         <option value="">-- Kosong --</option>

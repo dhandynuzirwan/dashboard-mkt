@@ -45,7 +45,15 @@
                             </span>
                         </div>
                         <div class="mt-1">
-                            <span class="text-muted" style="font-size: 11px;"><i class="fas fa-calendar-check me-1"></i> Tgl Pelaksanaan: <span class="text-dark">{{ $d->tanggal_pelaksanaan ? \Carbon\Carbon::parse($d->tanggal_pelaksanaan)->format('d M Y') : '-' }}</span></span>
+                            <span class="text-muted" style="font-size: 11px;"><i class="fas fa-calendar-check me-1"></i> Tgl Pelaksanaan: <span class="text-dark">
+                                @if($d->tanggal_pelaksanaan && $d->tanggal_selesai)
+                                    {{ \Carbon\Carbon::parse($d->tanggal_pelaksanaan)->format('d M') }} s/d {{ \Carbon\Carbon::parse($d->tanggal_selesai)->format('d M Y') }}
+                                @elseif($d->tanggal_pelaksanaan)
+                                    {{ \Carbon\Carbon::parse($d->tanggal_pelaksanaan)->format('d M Y') }}
+                                @else
+                                    -
+                                @endif
+                            </span></span>
                         </div>
                     </td>
 
