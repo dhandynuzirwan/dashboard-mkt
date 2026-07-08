@@ -325,6 +325,7 @@
                                   <option value="">Pilih...</option>
                                   <option value="Sertifikat KEMNAKER">Sertifikat KEMNAKER</option>
                                   <option value="Sertifikat BNSP">Sertifikat BNSP</option>
+                                  <option value="UPSKILLS">UPSKILLS</option>
                                   <option value="Sertifikat Internal">Sertifikat Internal</option>
                                   <option value="Pembuatan & Perpanjangan SIO">Pembuatan & Perpanjangan SIO</option>
                                   <option value="Riksa Uji Alat">Riksa Uji Alat</option>
@@ -832,6 +833,7 @@
                                 <select name="jenis" class="form-select rounded-3">
                                     <option value="Sertifikat KEMNAKER" {{ $item->jenis == 'Sertifikat KEMNAKER' ? 'selected' : '' }}>Sertifikat KEMNAKER</option>
                                     <option value="Sertifikat BNSP" {{ $item->jenis == 'Sertifikat BNSP' ? 'selected' : '' }}>Sertifikat BNSP</option>
+                                    <option value="UPSKILLS" {{ $item->jenis == 'UPSKILLS' ? 'selected' : '' }}>UPSKILLS</option>
                                     <option value="Sertifikat Internal" {{ $item->jenis == 'Sertifikat Internal' ? 'selected' : '' }}>Sertifikat Internal</option>
                                     <option value="Pembuatan & Perpanjangan SIO" {{ $item->jenis == 'Pembuatan & Perpanjangan SIO' ? 'selected' : '' }}>Pembuatan & Perpanjangan SIO</option>
                                     <option value="Riksa Uji Alat" {{ $item->jenis == 'Riksa Uji Alat' ? 'selected' : '' }}>Riksa Uji Alat</option>
