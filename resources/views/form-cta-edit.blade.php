@@ -61,9 +61,15 @@
                                     <input type="number" class="form-control" name="jumlah_peserta" value="{{ $cta->jumlah_peserta }}">
                                 </div>
 
-                                <div class="form-group">
-                                    <label>Tanggal Pelaksanaan</label>
-                                    <input type="date" class="form-control" name="tanggal_pelaksanaan" value="{{ $cta->tanggal_pelaksanaan }}">
+                                <div class="row mx-0">
+                                    <div class="col-md-6 form-group ps-md-0">
+                                        <label>Tanggal Pelaksanaan</label>
+                                        <input type="date" class="form-control" name="tanggal_pelaksanaan" value="{{ $cta->tanggal_pelaksanaan }}">
+                                    </div>
+                                    <div class="col-md-6 form-group pe-md-0">
+                                        <label>Tanggal Selesai</label>
+                                        <input type="date" class="form-control" name="tanggal_selesai" value="{{ $cta->tanggal_selesai }}">
+                                    </div>
                                 </div>
 
                                 <div class="form-group">
