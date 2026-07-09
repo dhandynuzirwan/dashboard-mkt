@@ -248,12 +248,10 @@ class ProspekController extends Controller
                 ->get();
 
             if ($rawCtaDuplicates->count() > 0) {
-                $judulList = $rawCtaDuplicates->pluck('judul_permintaan')->filter()->unique()->toArray();
                 $perusahaanList = $rawCtaDuplicates->pluck('perusahaan')->filter()->unique()->toArray();
                 
-                if (!empty($judulList) && !empty($perusahaanList)) {
+                if (!empty($perusahaanList)) {
                     $ctaDuplicates = \App\Models\Cta::with('prospek.marketing')
-                        ->whereIn('judul_permintaan', $judulList)
                         ->whereHas('prospek', function($q) use ($perusahaanList) {
                             $q->whereIn('perusahaan', $perusahaanList);
                         })
