@@ -227,6 +227,10 @@ class ProspekController extends Controller
                     })->groupBy(function($item) {
                         return $item->perusahaan . ' - (' . ($item->lokasi ?? 'Tanpa Lokasi') . ')';
                     });
+
+                    $duplicateGroups = $duplicateGroups->filter(function($group) use ($filteredProspekIds) {
+                        return $group->pluck('id')->intersect($filteredProspekIds)->isNotEmpty();
+                    });
                 }
             }
         }
@@ -264,6 +268,10 @@ class ProspekController extends Controller
                         });
                     })->groupBy(function($item) {
                         return $item->prospek->perusahaan . ' - (' . ($item->prospek->lokasi ?? 'Tanpa Lokasi') . ') | Judul CTA: ' . ($item->judul_permintaan ?? 'Tanpa Judul');
+                    });
+
+                    $duplicateCtaGroups = $duplicateCtaGroups->filter(function($group) use ($filteredProspekIds) {
+                        return $group->pluck('prospek_id')->intersect($filteredProspekIds)->isNotEmpty();
                     });
                 }
             }
