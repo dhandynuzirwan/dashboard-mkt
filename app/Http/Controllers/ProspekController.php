@@ -201,6 +201,7 @@ class ProspekController extends Controller
         // ================= 🔥 DETEKSI DATA DUPLIKAT 🔥 =================
         // Hanya dijalankan jika user adalah admin / superadmin
         $duplicateGroups = collect();
+        $filteredProspekIds = (clone $query)->pluck('id');
         if (in_array($user->role, ['admin', 'superadmin'])) {
             // 1. Cari kombinasi Perusahaan & Lokasi yang jumlahnya > 1
             $rawDuplicates = Prospek::select('perusahaan', 'lokasi', DB::raw('COUNT(*) as count'))
