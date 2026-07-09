@@ -162,10 +162,6 @@
                                     </select>
                                 </div>
 
-                                <div class="form-group">
-                                    <label>Catatan CTA</label>
-                                    <textarea class="form-control" name="keterangan" rows="1"></textarea>
-                                </div>
                                 
                                 <div class="form-group">
                                     <label>Keterangan Akhir Data <span class="text-danger">*</span></label>

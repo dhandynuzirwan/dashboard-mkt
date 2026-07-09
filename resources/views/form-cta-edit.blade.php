@@ -153,10 +153,6 @@
                                     </select>
                                 </div>
 
-                                <div class="form-group">
-                                    <label>Catatan CTA</label>
-                                    <textarea class="form-control" name="keterangan" rows="1">{{ $cta->keterangan }}</textarea>
-                                </div>
 
                                 {{-- Field Wajib: Keterangan Akhir Data --}}
                                 <div class="form-group">
