@@ -59,13 +59,20 @@ class MasterArtikelController extends Controller
             $chartValues[] = $chartData[$i] ?? 0;
         }
 
+        // Data untuk Doughnut Chart (Kategori)
+        $kategoriStats = MasterArtikel::select('kategori_artikel', \DB::raw('count(*) as total'))
+                                      ->groupBy('kategori_artikel')
+                                      ->get();
+        $kategoriLabels = $kategoriStats->pluck('kategori_artikel')->toArray();
+        $kategoriValues = $kategoriStats->pluck('total')->toArray();
+
         // Data untuk Dropdown Filter
         $listKategori = MasterArtikel::select('kategori_artikel')->distinct()->pluck('kategori_artikel');
         $listPenginput = MasterArtikel::with('user')->select('user_id')->distinct()->get()->map(function($item) {
             return $item->user;
         })->filter();
 
-        return view('rnd.master-artikel.index', compact('artikels', 'totalStat', 'totalPublish', 'kategoriTop', 'kategoriTopCount', 'chartValues', 'listKategori', 'listPenginput'));
+        return view('rnd.master-artikel.index', compact('artikels', 'totalStat', 'totalPublish', 'kategoriTop', 'kategoriTopCount', 'chartValues', 'kategoriLabels', 'kategoriValues', 'listKategori', 'listPenginput'));
     }
 
     public function downloadTxt($id)

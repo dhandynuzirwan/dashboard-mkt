@@ -57,16 +57,28 @@
             </div>
         </div>
 
-        {{-- GRAFIK BULANAN (FULL ROW) --}}
+        {{-- GRAFIK --}}
         <div class="row mb-3 fade-in">
-            <div class="col-12">
-                <div class="card card-modern hover-lift">
+            <div class="col-md-8 mb-3">
+                <div class="card card-modern hover-lift h-100">
                     <div class="card-header border-0 bg-transparent pb-0">
                         <div class="card-title fw-bold text-dark" style="font-size: 15px;">Statistik Input Artikel per Bulan (Tahun Ini)</div>
                     </div>
                     <div class="card-body pt-2">
                         <div class="chart-container" style="min-height: 250px">
                             <canvas id="statisticsChart"></canvas>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4 mb-3">
+                <div class="card card-modern hover-lift h-100">
+                    <div class="card-header border-0 bg-transparent pb-0">
+                        <div class="card-title fw-bold text-dark" style="font-size: 15px;">Komposisi Kategori</div>
+                    </div>
+                    <div class="card-body pt-2 d-flex justify-content-center align-items-center">
+                        <div class="chart-container" style="min-height: 250px; width: 100%;">
+                            <canvas id="kategoriChart"></canvas>
                         </div>
                     </div>
                 </div>
@@ -392,6 +404,38 @@
 <script>
     $(document).ready(function() {
         var ctx = document.getElementById('statisticsChart').getContext('2d');
+        var ctxKategori = document.getElementById('kategoriChart').getContext('2d');
+        var kategoriChart = new Chart(ctxKategori, {
+            type: 'doughnut',
+            data: {
+                labels: {!! json_encode($kategoriLabels) !!},
+                datasets: [{
+                    data: {!! json_encode($kategoriValues) !!},
+                    backgroundColor: ['#3b82f6', '#10b981', '#f59e0b', '#ef4444', '#8b5cf6', '#ec4899', '#14b8a6', '#f97316', '#06b6d4', '#64748b'],
+                    borderWidth: 0,
+                    hoverOffset: 4
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                cutout: '75%',
+                plugins: {
+                    legend: {
+                        position: 'bottom',
+                        labels: {
+                            usePointStyle: true,
+                            boxWidth: 8,
+                            padding: 20,
+                            font: {
+                                size: 11
+                            }
+                        }
+                    }
+                }
+            }
+        });
+
         var statisticsChart = new Chart(ctx, {
             type: 'bar',
             data: {
