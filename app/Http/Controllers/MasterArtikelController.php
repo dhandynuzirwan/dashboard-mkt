@@ -38,7 +38,16 @@ class MasterArtikelController extends Controller
 
         $artikels = $query->latest()->paginate(10)->withQueryString();
         
-        $totalStat = MasterArtikel::count();
+                $totalStat = MasterArtikel::count();
+        $totalPublish = MasterArtikel::where('status_publish', 'Publish')->count();
+        $kategoriTerbanyak = MasterArtikel::select('kategori_artikel')
+            ->selectRaw('COUNT(*) as total')
+            ->groupBy('kategori_artikel')
+            ->orderByDesc('total')
+            ->first();
+        $kategoriTop = $kategoriTerbanyak ? $kategoriTerbanyak->kategori_artikel : '-';
+        $kategoriTopCount = $kategoriTerbanyak ? $kategoriTerbanyak->total : 0;
+
         $chartData = MasterArtikel::selectRaw('MONTH(created_at) as month, count(*) as total')
                                   ->whereYear('created_at', date('Y'))
                                   ->groupBy('month')
@@ -56,7 +65,7 @@ class MasterArtikelController extends Controller
             return $item->user;
         })->filter();
 
-        return view('rnd.master-artikel.index', compact('artikels', 'totalStat', 'chartValues', 'listKategori', 'listPenginput'));
+        return view('rnd.master-artikel.index', compact('artikels', 'totalStat', 'totalPublish', 'kategoriTop', 'kategoriTopCount', 'chartValues', 'listKategori', 'listPenginput'));
     }
 
     public function downloadTxt($id)

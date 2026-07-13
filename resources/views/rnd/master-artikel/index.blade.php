@@ -12,9 +12,10 @@
             </div>
         </div>
 
-        <div class="row">
-            <div class="col-md-3">
-                <div class="card card-modern hover-lift">
+                {{-- 3 STAT CARDS SEJAJAR --}}
+        <div class="row mb-3 fade-in">
+            <div class="col-md-4 mb-3">
+                <div class="card card-modern hover-lift h-100">
                     <div class="card-body p-3 p-xl-4 d-flex align-items-center">
                         <div class="icon-modern bg-primary-subtle text-primary me-3">
                             <i class="fas fa-newspaper"></i>
@@ -26,18 +27,46 @@
                     </div>
                 </div>
             </div>
-            <div class="col-md-9">
+
+            <div class="col-md-4 mb-3">
+                <div class="card card-modern hover-lift h-100">
+                    <div class="card-body p-3 p-xl-4 d-flex align-items-center">
+                        <div class="icon-modern bg-success-subtle text-success me-3">
+                            <i class="fas fa-check-circle"></i>
+                        </div>
+                        <div>
+                            <p class="text-muted fw-bold mb-1" style="font-size: 11px; text-transform: uppercase; letter-spacing: 0.5px;">Artikel Publish</p>
+                            <h3 class="fw-bolder text-dark mb-0 lh-1">{{ $totalPublish }}</h3>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-md-4 mb-3">
+                <div class="card card-modern hover-lift h-100">
+                    <div class="card-body p-3 p-xl-4 d-flex align-items-center">
+                        <div class="icon-modern bg-info-subtle text-info me-3">
+                            <i class="fas fa-tags"></i>
+                        </div>
+                        <div style="min-width: 0;">
+                            <p class="text-muted fw-bold mb-1" style="font-size: 11px; text-transform: uppercase; letter-spacing: 0.5px;">Kategori Terbanyak</p>
+                            <h4 class="fw-bolder text-dark mb-0 lh-1 text-truncate" title="{{ $kategoriTop }}">{{ $kategoriTop }} <span class="badge badge-soft-info" style="font-size: 10px;">{{ $kategoriTopCount }}</span></h4>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        {{-- GRAFIK BULANAN (FULL ROW) --}}
+        <div class="row mb-3 fade-in">
+            <div class="col-12">
                 <div class="card card-modern hover-lift">
                     <div class="card-header border-0 bg-transparent pb-0">
-                        <div class="card-title fw-bold text-dark" style="font-size: 15px;">Statistik Artikel per Bulan (Tahun Ini)</div>
+                        <div class="card-title fw-bold text-dark" style="font-size: 15px;">Statistik Input Artikel per Bulan (Tahun Ini)</div>
                     </div>
                     <div class="card-body pt-2">
                         <div class="chart-container" style="min-height: 250px">
                             <canvas id="statisticsChart"></canvas>
-
-                            <div class="mt-4">
-                                {{ $artikels->links('pagination::bootstrap-5') }}
-                            </div>
                         </div>
                     </div>
                 </div>
