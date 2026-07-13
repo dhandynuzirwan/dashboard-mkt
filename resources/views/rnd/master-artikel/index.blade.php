@@ -138,7 +138,7 @@
                                     <select class="form-select form-select-sm input-modern" name="user_id">
                                         <option value="">Semua Penginput</option>
                                         @foreach($listPenginput as $user)
-                                            <option value="{{ $user->id }}" {{ request('user_id') == $user->id ? 'selected' : '' }}>{{ $user->nama_lengkap ?? $user->name }}</option>
+                                            <option value="{{ $user->id }}" {{ request('user_id') == $user->id ? 'selected' : '' }}>{{ !empty($user->nama_lengkap) ? $user->nama_lengkap : $user->name }}</option>
                                         @endforeach
                                     </select>
                                 </div>
@@ -228,7 +228,7 @@
                                             </div>
                                         </td>
                                         <td>
-                                            <div class="fw-bold text-dark">{{ $item->user->nama_lengkap ?? $item->user->name }}</div>
+                                            <div class="fw-bold text-dark">{{ !empty($item->user->nama_lengkap) ? $item->user->nama_lengkap : $item->user->name }}</div>
                                             <small class="text-muted"><i class="far fa-calendar-alt"></i> {{ $item->created_at->format('d/m/Y H:i') }}</small>
                                         </td>
                                         <td>
