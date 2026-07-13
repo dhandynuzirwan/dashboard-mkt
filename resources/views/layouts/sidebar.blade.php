@@ -63,7 +63,7 @@
                 </li>
 
                                 {{-- ================= MENU PERFORMANCE & FINANCE ================= --}}
-                @if(in_array($role, ['superadmin', 'web_dev', 'spv_marketing', 'admin', 'rnd']))
+                @if(in_array($role, ['superadmin', 'web_dev', 'spv_marketing', 'admin', 'rnd', 'marketing']))
                     @php $isPerformance = request()->routeIs(['dashboard.progress', 'performance.display', 'revenue', 'data-kpi', 'simulasi-gaji', 'parameter-finansial.*', 'master-artikel.*', 'master-instruktur.*', 'master-proposal.*']); @endphp
                     <li class="nav-item {{ $isPerformance ? 'active' : '' }}">
                         <a data-bs-toggle="collapse" href="#performance" class="{{ $isPerformance ? '' : 'collapsed' }}" aria-expanded="{{ $isPerformance ? 'true' : 'false' }}">
@@ -90,7 +90,7 @@
                                 @endif
                                 
                                 @if(in_array($role, ['superadmin', 'spv_marketing', 'marketing', 'web_dev']))
-                                <li class=\"{{ request()->routeIs('revenue') ? 'active' : '' }}\">
+                                <li class="{{ request()->routeIs('revenue') ? 'active' : '' }}">
                                     <a href="{{ route('revenue') }}">
                                         <span class="sub-item">Revenue</span>
                                     </a>
@@ -98,7 +98,7 @@
                                 @endif
                                 
                                 @if(in_array($role, ['superadmin', 'spv_marketing', 'marketing', 'web_dev']))
-                                <li class=\"{{ request()->routeIs('data-kpi') ? 'active' : '' }}\">
+                                <li class="{{ request()->routeIs('data-kpi') ? 'active' : '' }}">
                                     <a href="{{ route('data-kpi') }}">
                                         <span class="sub-item">Data KPI</span>
                                     </a>
@@ -106,7 +106,7 @@
                                 @endif
                                 
                                 @if(in_array($role, ['superadmin', 'spv_marketing', 'marketing', 'web_dev']))
-                                <li class=\"{{ request()->routeIs('simulasi-gaji') ? 'active' : '' }}\">
+                                <li class="{{ request()->routeIs('simulasi-gaji') ? 'active' : '' }}">
                                     <a href="{{ route('simulasi-gaji') }}">
                                         <span class="sub-item">Skema Penggajian</span>
                                     </a>
