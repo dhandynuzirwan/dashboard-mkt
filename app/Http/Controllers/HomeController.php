@@ -191,7 +191,63 @@ class HomeController extends Controller
             }
         }
 
-        return view('home', compact(
+        
+        // ================= QUICK ACCESS LOGIC =================
+        $userRole = $user->role ?? 'karyawan';
+        $quickAccess = [];
+        
+        // 1. Fetch top 4 visited routes from database
+        $topVisits = \App\Models\UserPageVisit::where('user_id', $user->id)
+            ->orderBy('visits', 'desc')
+            ->take(4)
+            ->get();
+            
+        $trackableRoutes = config('quickaccess', []);
+        
+        foreach ($topVisits as $visit) {
+            $routeName = $visit->route_name;
+            if (isset($trackableRoutes[$routeName]) && \Illuminate\Support\Facades\Route::has($routeName)) {
+                $item = $trackableRoutes[$routeName];
+                $item['route'] = route($routeName);
+                $quickAccess[] = $item;
+            }
+        }
+        
+        // 2. If less than 4, fill with defaults
+        if (count($quickAccess) < 4) {
+            $defaultRoutes = [];
+            if ($userRole == 'superadmin') {
+                $defaultRoutes = ['dashboard.progress', 'simulasi-gaji', 'riwayat.pelatihan', 'absensi'];
+            } elseif ($userRole == 'spv' || $userRole == 'spv_marketing') {
+                $defaultRoutes = ['dashboard.progress', 'pipeline', 'revenue', 'operational.data-pendaftaran'];
+            } elseif (in_array($userRole, ['admin', 'rnd', 'digitalmarketing'])) {
+                $defaultRoutes = ['dashboard.progress', 'data-masuk.index', 'pipeline', 'master-training.index'];
+            } elseif (in_array($userRole, ['operasional', 'graphic', 'team_leader', 'web_dev'])) {
+                $defaultRoutes = ['operational.aktivitas-harian', 'operational.data-pendaftaran', 'monitoring.pelatihan', 'riwayat.pelatihan'];
+            } elseif ($userRole == 'marketing') {
+                $defaultRoutes = ['pipeline', 'simulasi-gaji', 'revenue', 'data-kpi'];
+            } else {
+                $defaultRoutes = ['absensi', 'pengajuan-izin.index'];
+            }
+            
+            $existingRoutes = array_column($quickAccess, 'route');
+            
+            foreach ($defaultRoutes as $defRouteName) {
+                if (count($quickAccess) >= 4) break;
+                
+                if (isset($trackableRoutes[$defRouteName]) && \Illuminate\Support\Facades\Route::has($defRouteName)) {
+                    $defRoute = route($defRouteName);
+                    if (!in_array($defRoute, $existingRoutes)) {
+                        $item = $trackableRoutes[$defRouteName];
+                        $item['route'] = $defRoute;
+                        $quickAccess[] = $item;
+                        $existingRoutes[] = $defRoute;
+                    }
+                }
+            }
+        }
+
+        return view('home', compact('quickAccess', 
             'pengumuman', 'feed', 'hadir', 'telat', 'absen', 'attendanceRate', 'calendarEvents', 'upcomingAgendas', 'statusHariIni'
         ));
     }

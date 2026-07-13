@@ -61,56 +61,6 @@
                 </div>
 
                 {{-- 2. Quick Actions (Akses Cepat) --}}
-                @php
-                    $userRole = Auth::user()->role ?? 'karyawan';
-                    $quickAccess = [];
-                
-                    if ($userRole == 'superadmin') {
-                        $quickAccess = [
-                            ['title' => 'Dashboard Progress', 'icon' => 'fas fa-chart-pie', 'color' => 'primary', 'route' => route('dashboard.progress')],
-                            ['title' => 'Simulasi Gaji', 'icon' => 'fas fa-calculator', 'color' => 'success', 'route' => route('simulasi-gaji')],
-                            ['title' => 'Riwayat Pelatihan', 'icon' => 'fas fa-history', 'color' => 'warning', 'route' => route('riwayat.pelatihan')],
-                            ['title' => 'Data Absensi', 'icon' => 'fas fa-clipboard-list', 'color' => 'info', 'route' => route('absensi')],
-                        ];
-                    } elseif ($userRole == 'spv' || $userRole == 'spv_marketing') {
-                        $quickAccess = [
-                            ['title' => 'Dashboard Progress', 'icon' => 'fas fa-chart-pie', 'color' => 'primary', 'route' => route('dashboard.progress')],
-                            ['title' => 'Pipeline Marketing', 'icon' => 'fas fa-filter', 'color' => 'success', 'route' => route('pipeline')],
-                            ['title' => 'Revenue', 'icon' => 'fas fa-money-bill-wave', 'color' => 'warning', 'route' => route('revenue')],
-                            ['title' => 'Registrasi Peserta', 'icon' => 'fas fa-users', 'color' => 'info', 'route' => route('operational.data-pendaftaran')],
-                        ];
-                    } elseif (in_array($userRole, ['admin', 'rnd', 'digitalmarketing'])) {
-                        $quickAccess = [
-                            ['title' => 'Dashboard Progress', 'icon' => 'fas fa-chart-pie', 'color' => 'primary', 'route' => route('dashboard.progress')],
-                            ['title' => 'Database Masuk', 'icon' => 'fas fa-database', 'color' => 'success', 'route' => route('data-masuk.index')],
-                            ['title' => 'Pipeline Marketing', 'icon' => 'fas fa-filter', 'color' => 'warning', 'route' => route('pipeline')],
-                            ['title' => 'Master Pelatihan', 'icon' => 'fas fa-book', 'color' => 'info', 'route' => route('master-training.index')],
-                        ];
-                    } elseif (in_array($userRole, ['operasional', 'graphic', 'team_leader', 'web_dev'])) {
-                        $quickAccess = [
-                            ['title' => 'Aktivitas Harian', 'icon' => 'fas fa-tasks', 'color' => 'primary', 'route' => route('operational.aktivitas-harian')],
-                            ['title' => 'Registrasi Peserta', 'icon' => 'fas fa-users', 'color' => 'success', 'route' => route('operational.data-pendaftaran')],
-                            ['title' => 'Pelatihan Berjalan', 'icon' => 'fas fa-desktop', 'color' => 'warning', 'route' => route('monitoring.pelatihan')],
-                            ['title' => 'Riwayat Pelatihan', 'icon' => 'fas fa-history', 'color' => 'info', 'route' => route('riwayat.pelatihan')],
-                        ];
-                    } elseif ($userRole == 'marketing') {
-                        $quickAccess = [
-                            ['title' => 'Pipeline Marketing', 'icon' => 'fas fa-filter', 'color' => 'primary', 'route' => route('pipeline')],
-                            ['title' => 'Simulasi Gaji', 'icon' => 'fas fa-calculator', 'color' => 'success', 'route' => route('simulasi-gaji')],
-                            ['title' => 'Revenue', 'icon' => 'fas fa-money-bill-wave', 'color' => 'warning', 'route' => route('revenue')],
-                            ['title' => 'Data KPI', 'icon' => 'fas fa-chart-line', 'color' => 'info', 'route' => route('data-kpi')],
-                        ];
-                    } else {
-                        // Karyawan Biasa
-                        $quickAccess = [
-                            ['title' => 'Absen Selfie', 'icon' => 'fas fa-camera', 'color' => 'primary', 'route' => route('pegawai.absensi.index')],
-                            ['title' => 'Aktivitas Harian', 'icon' => 'fas fa-tasks', 'color' => 'success', 'route' => route('operational.aktivitas-harian')],
-                            ['title' => 'Ajukan Izin', 'icon' => 'fas fa-envelope-open-text', 'color' => 'warning', 'route' => route('pengajuan-izin.index')],
-                            ['title' => 'Modul Pelatihan', 'icon' => 'fas fa-book-open', 'color' => 'info', 'route' => route('modul.index')],
-                        ];
-                    }
-                @endphp
-
                 <h5 class="fw-bold mb-3 fade-in" style="animation-delay: 0.1s;"><i class="fas fa-bolt text-warning me-2"></i> Akses Cepat</h5>
                 <div class="row g-3 mb-4 fade-in" style="animation-delay: 0.2s;">
                     @foreach($quickAccess as $item)
