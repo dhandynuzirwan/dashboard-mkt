@@ -13,8 +13,8 @@
         </div>
 
         <div class="row">
-            <div class="col-md-4">
-                <div class="card card-modern h-100 hover-lift">
+            <div class="col-md-3">
+                <div class="card card-modern hover-lift">
                     <div class="card-body p-3 p-xl-4 d-flex align-items-center">
                         <div class="icon-modern bg-primary-subtle text-primary me-3">
                             <i class="fas fa-newspaper"></i>
@@ -26,8 +26,8 @@
                     </div>
                 </div>
             </div>
-            <div class="col-md-8">
-                <div class="card card-modern hover-lift h-100">
+            <div class="col-md-9">
+                <div class="card card-modern hover-lift">
                     <div class="card-header border-0 bg-transparent pb-0">
                         <div class="card-title fw-bold text-dark" style="font-size: 15px;">Statistik Artikel per Bulan (Tahun Ini)</div>
                     </div>
@@ -155,7 +155,7 @@
                                         <th>Penulis & Tanggal</th>
                                         <th>Status Publish</th>
                                         <th>Link Publikasi</th>
-                                        <th>Aksi</th>
+                                        <th class="text-center">Aksi</th>
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -165,8 +165,8 @@
                                         <td>{{ $item->kategori_artikel }}</td>
                                         <td>{{ $item->judul_artikel }}</td>
                                         <td>
-                                            <button class="btn btn-sm btn-info" data-bs-toggle="modal" data-bs-target="#naskahModal{{ $item->id }}">
-                                                Lihat Naskah
+                                            <button class="btn btn-sm btn-white border text-info rounded-pill hover-lift shadow-sm px-3" data-bs-toggle="modal" data-bs-target="#naskahModal{{ $item->id }}">
+                                                <i class="fas fa-file-alt me-1"></i> Lihat
                                             </button>
 
                                             <!-- Modal Naskah -->
@@ -205,15 +205,15 @@
                                             @endif
                                         </td>
                                         <td>
-                                            <div class="form-button-action">
-                                                <button type="button" data-bs-toggle="modal" data-bs-target="#editModal{{ $item->id }}" class="btn btn-link btn-primary btn-lg" data-original-title="Edit Task">
-                                                    <i class="fa fa-edit"></i>
+                                            <div class="d-flex gap-2 justify-content-center">
+                                                <button type="button" data-bs-toggle="modal" data-bs-target="#editModal{{ $item->id }}" class="btn btn-sm btn-white border text-primary rounded-pill hover-lift shadow-sm px-3">
+                                                    <i class="fa fa-edit me-1"></i> Edit
                                                 </button>
-                                                <form action="{{ route('master-artikel.destroy', $item->id) }}" method="POST" class="d-inline" onsubmit="return confirm('Yakin ingin menghapus artikel ini?');">
+                                                <form action="{{ route('master-artikel.destroy', $item->id) }}" method="POST" class="d-inline m-0" onsubmit="return confirm('Yakin ingin menghapus artikel ini?');">
                                                     @csrf
                                                     @method('DELETE')
-                                                    <button type="submit" data-toggle="tooltip" title="" class="btn btn-link btn-danger" data-original-title="Remove">
-                                                        <i class="fa fa-times"></i>
+                                                    <button type="submit" class="btn btn-sm btn-white border text-danger rounded-pill hover-lift shadow-sm px-3">
+                                                        <i class="fa fa-trash-alt me-1"></i> Hapus
                                                     </button>
                                                 </form>
                                             </div>
