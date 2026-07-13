@@ -392,7 +392,7 @@
         animation: popClick 0.4s ease forwards;
     }
 
-    @keyframes popClick {
+    @@keyframes popClick {
         0% { transform: scale(1); }
         50% { transform: scale(0.97); }
         100% { transform: scale(1); }
