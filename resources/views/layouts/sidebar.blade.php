@@ -186,6 +186,7 @@
                 @if($role !== 'finance')
 
                 {{-- ================= MENU MARKETING & SALES ================= --}}
+                @if(in_array($role, ['superadmin', 'web_dev', 'spv_marketing', 'admin', 'marketing', 'rnd', 'digitalmarketing']))
                 @php $isMarketing = request()->routeIs(['pipeline', 'form-prospek', 'form-cta-massal', 'data-masuk.index', 'master-training.index']); @endphp
                 <li class="nav-item {{ $isMarketing ? 'active' : '' }}">
                     <a data-bs-toggle="collapse" href="#marketing-sales" class="{{ $isMarketing ? '' : 'collapsed' }}" aria-expanded="{{ $isMarketing ? 'true' : 'false' }}">
@@ -224,6 +225,8 @@
                         </ul>
                     </div>
                 </li>
+
+                @endif
 
                 {{-- ================= MENU OPERATIONAL ================= --}}
                 @if (in_array($role, ['superadmin','operasional','team_leader','web_dev','spv_marketing','graphic']))
