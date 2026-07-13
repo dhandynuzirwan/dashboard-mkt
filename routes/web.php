@@ -224,11 +224,13 @@ Route::middleware('auth')->group(function () {
         Route::get('/panduan', [App\Http\Controllers\PanduanController::class, 'index'])->name('panduan.index');
     });
 
-    // 2. ANALYTICS & REPORTING (Superadmin, Web Dev, SPV Marketing, Marketing)
+    // 2. ANALYTICS & REPORTING
     Route::middleware('role:superadmin,web_dev,spv_marketing,marketing')->group(function () {
-
-        Route::get('/revenue', [RevenueController::class, 'index'])->name('revenue');
         Route::get('/data-kpi', [KpiController::class, 'index'])->name('data-kpi');
+    });
+
+    Route::middleware('role:superadmin,web_dev,marketing')->group(function () {
+        Route::get('/revenue', [RevenueController::class, 'index'])->name('revenue');
         Route::get('/simulasi-gaji', [SalaryController::class, 'index'])->name('simulasi-gaji');
     });
 

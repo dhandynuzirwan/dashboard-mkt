@@ -89,7 +89,7 @@
                                 </li>
                                 @endif
                                 
-                                @if(in_array($role, ['superadmin', 'spv_marketing', 'marketing', 'web_dev']))
+                                @if(in_array($role, ['superadmin', 'marketing', 'web_dev']))
                                 <li class="{{ request()->routeIs('revenue') ? 'active' : '' }}">
                                     <a href="{{ route('revenue') }}">
                                         <span class="sub-item">Revenue</span>
@@ -105,7 +105,7 @@
                                 </li>
                                 @endif
                                 
-                                @if(in_array($role, ['superadmin', 'spv_marketing', 'marketing', 'web_dev']))
+                                @if(in_array($role, ['superadmin', 'marketing', 'web_dev']))
                                 <li class="{{ request()->routeIs('simulasi-gaji') ? 'active' : '' }}">
                                     <a href="{{ route('simulasi-gaji') }}">
                                         <span class="sub-item">Skema Penggajian</span>
