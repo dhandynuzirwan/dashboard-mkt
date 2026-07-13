@@ -206,7 +206,7 @@
                                         <td>{{ $item->kategori_artikel }}</td>
                                         <td>{{ $item->judul_artikel }}</td>
                                         <td>
-                                            <button class="btn btn-sm btn-white border text-info rounded-pill hover-lift shadow-sm px-3" data-bs-toggle="modal" data-bs-target="#naskahModal{{ $item->id }}">
+                                            <button class="btn btn-sm btn-info text-white rounded-pill hover-lift shadow-sm px-3" data-bs-toggle="modal" data-bs-target="#naskahModal{{ $item->id }}">
                                                 <i class="fas fa-file-alt me-1"></i> Lihat
                                             </button>
 
@@ -247,13 +247,13 @@
                                         </td>
                                         <td>
                                             <div class="d-flex gap-2 justify-content-center">
-                                                <button type="button" data-bs-toggle="modal" data-bs-target="#editModal{{ $item->id }}" class="btn btn-sm btn-white border text-primary rounded-pill hover-lift shadow-sm px-3">
+                                                <button type="button" data-bs-toggle="modal" data-bs-target="#editModal{{ $item->id }}" class="btn btn-sm btn-primary text-white rounded-pill hover-lift shadow-sm px-3">
                                                     <i class="fa fa-edit me-1"></i> Edit
                                                 </button>
                                                 <form action="{{ route('master-artikel.destroy', $item->id) }}" method="POST" class="d-inline m-0" onsubmit="return confirm('Yakin ingin menghapus artikel ini?');">
                                                     @csrf
                                                     @method('DELETE')
-                                                    <button type="submit" class="btn btn-sm btn-white border text-danger rounded-pill hover-lift shadow-sm px-3">
+                                                    <button type="submit" class="btn btn-sm btn-danger text-white rounded-pill hover-lift shadow-sm px-3">
                                                         <i class="fa fa-trash-alt me-1"></i> Hapus
                                                     </button>
                                                 </form>
