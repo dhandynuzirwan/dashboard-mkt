@@ -181,6 +181,9 @@
                         </ul>
                     </div>
                 </li>
+                @endif
+                
+                @if($role !== 'finance')
 
                 {{-- ================= MENU MARKETING & SALES ================= --}}
                 @php $isMarketing = request()->routeIs(['pipeline', 'form-prospek', 'form-cta-massal', 'data-masuk.index', 'master-training.index']); @endphp
