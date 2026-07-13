@@ -7,9 +7,36 @@ use Illuminate\Http\Request;
 
 class MasterArtikelController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
-        $artikels = MasterArtikel::with('user')->latest()->get();
+        $query = MasterArtikel::with('user');
+
+        // Fitur Pencarian & Filter
+        $query->when($request->search, function ($q) use ($request) {
+            $q->where('judul_artikel', 'like', '%' . $request->search . '%');
+        });
+
+        $query->when($request->kategori, function ($q) use ($request) {
+            $q->where('kategori_artikel', $request->kategori);
+        });
+
+        $query->when($request->user_id, function ($q) use ($request) {
+            $q->where('user_id', $request->user_id);
+        });
+
+        $query->when($request->status_publish, function ($q) use ($request) {
+            $q->where('status_publish', $request->status_publish);
+        });
+
+        if ($request->start_date && $request->end_date) {
+            $query->whereBetween('created_at', [$request->start_date . ' 00:00:00', $request->end_date . ' 23:59:59']);
+        } elseif ($request->start_date) {
+            $query->whereDate('created_at', '>=', $request->start_date);
+        } elseif ($request->end_date) {
+            $query->whereDate('created_at', '<=', $request->end_date);
+        }
+
+        $artikels = $query->latest()->paginate(10)->withQueryString();
         
         $totalStat = MasterArtikel::count();
         $chartData = MasterArtikel::selectRaw('MONTH(created_at) as month, count(*) as total')
@@ -23,8 +50,33 @@ class MasterArtikelController extends Controller
             $chartValues[] = $chartData[$i] ?? 0;
         }
 
-        return view('rnd.master-artikel.index', compact('artikels', 'totalStat', 'chartValues'));
+        // Data untuk Dropdown Filter
+        $listKategori = MasterArtikel::select('kategori_artikel')->distinct()->pluck('kategori_artikel');
+        $listPenginput = MasterArtikel::with('user')->select('user_id')->distinct()->get()->map(function($item) {
+            return $item->user;
+        })->filter();
+
+        return view('rnd.master-artikel.index', compact('artikels', 'totalStat', 'chartValues', 'listKategori', 'listPenginput'));
     }
+
+    public function downloadTxt($id)
+    {
+        $artikel = MasterArtikel::findOrFail($id);
+        
+        $content = "Judul: " . $artikel->judul_artikel . "\r\n";
+        $content .= "Kategori: " . $artikel->kategori_artikel . "\r\n";
+        $content .= "Tanggal: " . $artikel->created_at->format('d/m/Y H:i') . "\r\n";
+        $content .= "Status: " . $artikel->status_publish . "\r\n";
+        $content .= str_repeat("-", 50) . "\r\n\r\n";
+        $content .= $artikel->naskah_artikel;
+
+        $fileName = 'Artikel_' . \Str::slug($artikel->judul_artikel) . '.txt';
+
+        return response($content)
+            ->header('Content-Type', 'text/plain')
+            ->header('Content-Disposition', 'attachment; filename="' . $fileName . '"');
+    }
+
 
     public function store(Request $request)
     {

@@ -40,6 +40,10 @@
                     <div class="card-body">
                         <div class="chart-container" style="min-height: 250px">
                             <canvas id="statisticsChart"></canvas>
+
+                            <div class="mt-4">
+                                {{ $artikels->links('pagination::bootstrap-5') }}
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -71,6 +75,66 @@
 
         <div class="row">
             <div class="col-md-12">
+                <div class="card mb-4">
+                    <div class="card-header">
+                        <h4 class="card-title"><i class="fas fa-filter"></i> Filter Pencarian</h4>
+                    </div>
+                    <div class="card-body">
+                        <form method="GET" action="{{ route('master-artikel.index') }}">
+                            <div class="row g-3">
+                                <div class="col-md-3">
+                                    <label>Cari Judul</label>
+                                    <input type="text" class="form-control" name="search" value="{{ request('search') }}" placeholder="Ketik judul artikel...">
+                                </div>
+                                <div class="col-md-2">
+                                    <label>Kategori</label>
+                                    <select class="form-select" name="kategori">
+                                        <option value="">Semua Kategori</option>
+                                        @foreach($listKategori as $kat)
+                                            <option value="{{ $kat }}" {{ request('kategori') == $kat ? 'selected' : '' }}>{{ $kat }}</option>
+                                        @endforeach
+                                    </select>
+                                </div>
+                                <div class="col-md-2">
+                                    <label>Penginput</label>
+                                    <select class="form-select" name="user_id">
+                                        <option value="">Semua Penginput</option>
+                                        @foreach($listPenginput as $user)
+                                            <option value="{{ $user->id }}" {{ request('user_id') == $user->id ? 'selected' : '' }}>{{ $user->nama_lengkap ?? $user->name }}</option>
+                                        @endforeach
+                                    </select>
+                                </div>
+                                <div class="col-md-2">
+                                    <label>Status</label>
+                                    <select class="form-select" name="status_publish">
+                                        <option value="">Semua Status</option>
+                                        <option value="Sudah Publish" {{ request('status_publish') == 'Sudah Publish' ? 'selected' : '' }}>Sudah Publish</option>
+                                        <option value="Belum Publish" {{ request('status_publish') == 'Belum Publish' ? 'selected' : '' }}>Belum Publish</option>
+                                    </select>
+                                </div>
+                                <div class="col-md-3">
+                                    <label>Rentang Tanggal</label>
+                                    <div class="d-flex">
+                                        <input type="date" class="form-control" name="start_date" value="{{ request('start_date') }}">
+                                        <span class="mx-2 mt-2">-</span>
+                                        <input type="date" class="form-control" name="end_date" value="{{ request('end_date') }}">
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row mt-3">
+                                <div class="col-12 text-end">
+                                    <a href="{{ route('master-artikel.index') }}" class="btn btn-secondary me-2">Reset</a>
+                                    <button type="submit" class="btn btn-primary"><i class="fas fa-search"></i> Terapkan Filter</button>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-md-12">
                 <div class="card">
                     <div class="card-header d-flex justify-content-between align-items-center">
                         <h4 class="card-title">Data Artikel</h4>
@@ -80,15 +144,14 @@
                     </div>
                     <div class="card-body">
                         <div class="table-responsive">
-                            <table id="basic-datatables" class="display table table-striped table-hover">
+                            <table class="display table table-striped table-hover mt-3">
                                 <thead>
                                     <tr>
                                         <th>No</th>
                                         <th>Kategori</th>
                                         <th>Judul Artikel</th>
                                         <th>Naskah</th>
-                                        <th>Penginput</th>
-                                        <th>Tanggal Input</th>
+                                        <th>Penulis & Tanggal</th>
                                         <th>Status Publish</th>
                                         <th>Link Publikasi</th>
                                         <th>Aksi</th>
@@ -113,16 +176,19 @@
                                                             <h5 class="modal-title">Naskah Artikel: {{ $item->judul_artikel }}</h5>
                                                             <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                                                         </div>
-                                                        <div class="modal-body" style="white-space: pre-wrap;">{{ $item->naskah_artikel }}</div>
+                                                        <div class="modal-body" style="white-space: pre-wrap; font-size: 14px; text-align: left;">{{ $item->naskah_artikel }}</div>
                                                         <div class="modal-footer">
+                                                            <a href="{{ route('master-artikel.download', $item->id) }}" class="btn btn-primary"><i class="fas fa-download"></i> Download .txt</a>
                                                             <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Tutup</button>
                                                         </div>
                                                     </div>
                                                 </div>
                                             </div>
                                         </td>
-                                        <td>{{ $item->user->nama_lengkap ?? $item->user->name }}</td>
-                                        <td>{{ $item->created_at->format('d/m/Y H:i') }}</td>
+                                        <td>
+                                            <div class="fw-bold text-dark">{{ $item->user->nama_lengkap ?? $item->user->name }}</div>
+                                            <small class="text-muted"><i class="far fa-calendar-alt"></i> {{ $item->created_at->format('d/m/Y H:i') }}</small>
+                                        </td>
                                         <td>
                                             @if($item->status_publish == 'Sudah Publish')
                                                 <span class="badge bg-success">Sudah Publish</span>
@@ -200,6 +266,10 @@
                                     @endforeach
                                 </tbody>
                             </table>
+
+                            <div class="mt-4">
+                                {{ $artikels->links('pagination::bootstrap-5') }}
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -254,11 +324,7 @@
 @endsection
 
 @section('scripts')
-<script>
-    $(document).ready(function() {
-        $('#basic-datatables').DataTable();
-    });
-</script>
+
 
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <script>

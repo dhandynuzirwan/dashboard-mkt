@@ -382,6 +382,7 @@ Route::middleware('auth')->group(function () {
     Route::middleware('role:superadmin,rnd,spv_marketing,admin')->group(function () {
         // Master Artikel
         Route::get('/master-artikel', [\App\Http\Controllers\MasterArtikelController::class, 'index'])->name('master-artikel.index');
+        Route::get('/master-artikel/{id}/download', [\App\Http\Controllers\MasterArtikelController::class, 'downloadTxt'])->name('master-artikel.download');
         Route::post('/master-artikel', [\App\Http\Controllers\MasterArtikelController::class, 'store'])->name('master-artikel.store');
         Route::put('/master-artikel/{id}', [\App\Http\Controllers\MasterArtikelController::class, 'update'])->name('master-artikel.update');
         Route::delete('/master-artikel/{id}', [\App\Http\Controllers\MasterArtikelController::class, 'destroy'])->name('master-artikel.destroy');
