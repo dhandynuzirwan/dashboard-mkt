@@ -89,24 +89,24 @@
                                 </li>
                                 @endif
                                 
-                                @if(in_array($role, ['superadmin']))
-                                <li class="{{ request()->routeIs('revenue') ? 'active' : '' }}">
+                                @if(in_array($role, ['superadmin', 'spv_marketing', 'marketing', 'web_dev']))
+                                <li class=\"{{ request()->routeIs('revenue') ? 'active' : '' }}\">
                                     <a href="{{ route('revenue') }}">
                                         <span class="sub-item">Revenue</span>
                                     </a>
                                 </li>
                                 @endif
                                 
-                                @if(in_array($role, ['superadmin', 'spv_marketing']))
-                                <li class="{{ request()->routeIs('data-kpi') ? 'active' : '' }}">
+                                @if(in_array($role, ['superadmin', 'spv_marketing', 'marketing', 'web_dev']))
+                                <li class=\"{{ request()->routeIs('data-kpi') ? 'active' : '' }}\">
                                     <a href="{{ route('data-kpi') }}">
                                         <span class="sub-item">Data KPI</span>
                                     </a>
                                 </li>
                                 @endif
                                 
-                                @if(in_array($role, ['superadmin']))
-                                <li class="{{ request()->routeIs('simulasi-gaji') ? 'active' : '' }}">
+                                @if(in_array($role, ['superadmin', 'spv_marketing', 'marketing', 'web_dev']))
+                                <li class=\"{{ request()->routeIs('simulasi-gaji') ? 'active' : '' }}\">
                                     <a href="{{ route('simulasi-gaji') }}">
                                         <span class="sub-item">Skema Penggajian</span>
                                     </a>
