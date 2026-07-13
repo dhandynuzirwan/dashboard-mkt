@@ -142,7 +142,7 @@
                         </div>
                     </li>
                 @endif
-                                @if($role !== 'finance')
+                                @if(in_array($role, ['superadmin', 'web_dev', 'hrd']))
 {{-- ================= MENU HUMAN RESOURCES ================= --}}
                 @php $isHR = request()->routeIs(['user', 'penggajian.index', 'absensi', 'approval-izin.index', 'pengumuman.*']); @endphp
                 <li class="nav-item {{ $isHR ? 'active' : '' }}">
