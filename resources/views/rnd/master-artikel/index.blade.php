@@ -178,7 +178,7 @@
         <div class="row">
             <div class="col-md-12">
                 <div class="d-flex flex-wrap justify-content-between align-items-center mb-3 fade-in">
-                    <h5 class="fw-bold text-dark mb-0"><i class="fas fa-list text-primary me-2"></i>Data Artikel</h5>
+                    
                     <button class="btn btn-primary btn-sm btn-round fw-bold shadow-sm hover-lift" data-bs-toggle="modal" data-bs-target="#tambahModal">
                         <i class="fa fa-plus me-1"></i> Tambah Artikel Baru
                     </button>
