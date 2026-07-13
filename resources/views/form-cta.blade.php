@@ -164,6 +164,12 @@
 
                                 
                                 <div class="form-group">
+                                    <label>Catatan CTA</label>
+                                    <textarea class="form-control" name="keterangan" rows="1"></textarea>
+                                    <small class="text-muted fst-italic">* Bersifat opsional jika ada catatan khusus terkait penawaran, tidak wajib diisi jika sudah dirangkum di Keterangan Akhir Data.</small>
+                                </div>
+
+                                <div class="form-group">
                                     <label>Keterangan Akhir Data <span class="text-danger">*</span></label>
                                     <textarea 
                                         name="catatan_prospek" 
