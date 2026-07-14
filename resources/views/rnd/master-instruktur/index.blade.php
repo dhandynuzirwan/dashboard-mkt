@@ -186,43 +186,42 @@
                             <table class="table table-modern table-hover align-middle mb-0">
                                 <thead class="bg-light">
                                     <tr>
-                                        <th>No</th>
-                                        <th>Nama Instruktur</th>
-                                        <th>Wilayah/Instansi</th>
-                                        <th>No Telp</th>
-                                        <th>Bidang Ahli</th>
-                                        <th>Rate (Harga)</th>
-                                        <th>Rekening</th>
-                                        <th>Link CV</th>
-                                        <th>Penginput</th>
-                                        <th class="text-center">Aksi</th>
+                                        <th style="width: 5%">No</th>
+                                        <th style="width: 25%">Profil Instruktur</th>
+                                        <th style="width: 20%">Bidang & Berkas</th>
+                                        <th style="width: 20%">Info Rate & Rekening</th>
+                                        <th style="width: 15%">Penginput</th>
+                                        <th class="text-center" style="width: 15%">Aksi</th>
                                     </tr>
                                 </thead>
                                 <tbody>
                                     @foreach($instrukturs as $item)
                                     <tr>
-                                        <td>{{ $loop->iteration }}</td>
-                                        <td class="fw-bold text-dark">{{ $item->nama_instruktur }}</td>
-                                        <td>{{ $item->wilayah_instansi }}</td>
-                                        <td>{{ $item->no_telepon }}</td>
-                                        <td><span class="badge badge-soft-primary">{{ $item->bidang_ahli }}</span></td>
-                                        <td class="fw-bold text-success">Rp {{ number_format($item->rate_harga, 0, ',', '.') }}</td>
+                                        <td>{{ $loop->iteration + $instrukturs->firstItem() - 1 }}</td>
                                         <td>
-                                            <small class="d-block text-muted">Bank:</small>
-                                            <strong>{{ $item->bank }}</strong><br>
-                                            <small class="d-block text-muted">No:</small>
-                                            <strong>{{ $item->no_rek }}</strong>
+                                            <div class="fw-bold text-dark fs-6">{{ $item->nama_instruktur }}</div>
+                                            <div class="text-muted" style="font-size: 12px;"><i class="fas fa-building me-1"></i> {{ $item->wilayah_instansi }}</div>
+                                            <div class="text-muted" style="font-size: 12px;"><i class="fas fa-phone-alt me-1"></i> {{ $item->no_telepon }}</div>
                                         </td>
                                         <td>
+                                            <div class="mb-2">
+                                                <span class="badge badge-soft-primary">{{ $item->bidang_ahli }}</span>
+                                            </div>
                                             @if($item->link_cv)
-                                                <a href="{{ $item->link_cv }}" target="_blank" class="btn btn-sm btn-outline-info rounded-pill hover-lift shadow-sm"><i class="fas fa-link"></i> CV</a>
+                                                <a href="{{ $item->link_cv }}" target="_blank" class="btn btn-xs btn-outline-info rounded-pill hover-lift shadow-sm"><i class="fas fa-link me-1"></i> Buka CV</a>
                                             @else
-                                                -
+                                                <span class="text-muted" style="font-size: 11px;">(Tidak ada CV)</span>
                                             @endif
                                         </td>
                                         <td>
-                                            <div class="fw-bold text-dark">{{ !empty($item->user->nama_lengkap) ? $item->user->nama_lengkap : $item->user->name }}</div>
-                                            <small class="text-muted"><i class="far fa-calendar-alt"></i> {{ $item->created_at->format('d/m/Y H:i') }}</small>
+                                            <div class="fw-bold text-success mb-1">Rp {{ number_format($item->rate_harga, 0, ',', '.') }}</div>
+                                            <div class="text-muted" style="font-size: 12px;">
+                                                <i class="fas fa-university me-1"></i> {{ $item->bank }} - <strong>{{ $item->no_rek }}</strong>
+                                            </div>
+                                        </td>
+                                        <td>
+                                            <div class="fw-bold text-dark" style="font-size: 13px;">{{ !empty($item->user->nama_lengkap) ? $item->user->nama_lengkap : $item->user->name }}</div>
+                                            <div class="text-muted" style="font-size: 11px;"><i class="far fa-clock me-1"></i> {{ $item->created_at->format('d/m/Y H:i') }}</div>
                                         </td>
                                         <td>
                                             <div class="d-flex gap-2 justify-content-center">
