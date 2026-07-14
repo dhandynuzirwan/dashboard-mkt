@@ -322,9 +322,14 @@
                 </div>
                 <div class="modal-body">
                     <div class="row">
+                        <div class="col-md-12 mb-3">
+                            <div class="alert alert-info py-2" style="font-size: 12px;">
+                                <i class="fas fa-lightbulb me-1"></i> <strong>Tips:</strong> Anda dapat men-copy 1 baris dari Excel (Nama, Instansi, Telp, Bidang, Rate, Bank, Rekening, Link CV) lalu <strong>Paste</strong> pada kolom "Nama Instruktur" di bawah untuk mengisi formulir secara otomatis.
+                            </div>
+                        </div>
                         <div class="col-md-6 mb-3">
                             <label class="label-modern">Nama Instruktur <span class="text-danger">*</span></label>
-                            <input type="text" class="form-control form-control-sm input-modern" name="nama_instruktur" required>
+                            <input type="text" class="form-control form-control-sm input-modern" name="nama_instruktur" id="nama_instruktur_add" placeholder="Paste data Excel di sini..." required>
                         </div>
                         <div class="col-md-6 mb-3">
                             <label class="label-modern">Wilayah/Instansi <span class="text-danger">*</span></label>
@@ -428,6 +433,39 @@
             let val = $(this).val();
             if (val) {
                 $(this).closest('.mb-3').find('.input-currency-hidden').val(val.replace(/\./g, ''));
+            }
+        });
+
+        // ==========================================
+        // AUTOFILL PASTE EXCEL PADA MODAL TAMBAH
+        // ==========================================
+        $('#nama_instruktur_add').on('paste', function(e) {
+            var clipboardData = e.originalEvent.clipboardData || window.clipboardData;
+            var pastedData = clipboardData.getData('Text');
+            
+            // Periksa jika mengandung tab (ciri khas copy dari Excel)
+            if (pastedData.indexOf('\t') !== -1) {
+                e.preventDefault(); 
+                
+                // Pisahkan string berdasarkan tab
+                var columns = pastedData.trim().split('\t');
+                
+                if (columns.length > 0) $(this).val(columns[0].trim());
+                if (columns.length > 1) $('#tambahModal [name="wilayah_instansi"]').val(columns[1].trim());
+                if (columns.length > 2) $('#tambahModal [name="no_telepon"]').val(columns[2].trim());
+                if (columns.length > 3) $('#tambahModal [name="bidang_ahli"]').val(columns[3].trim());
+                if (columns.length > 4) {
+                    var rate = columns[4].trim().replace(/[^0-9]/g, ''); // Ambil angkanya saja
+                    var rateInput = $('#tambahModal [name="rate_harga_display"]');
+                    rateInput.val(rate);
+                    rateInput.trigger('keyup'); // Memicu format mata uang dan hidden value
+                }
+                if (columns.length > 5) $('#tambahModal [name="bank"]').val(columns[5].trim());
+                if (columns.length > 6) $('#tambahModal [name="no_rek"]').val(columns[6].trim());
+                if (columns.length > 7) $('#tambahModal [name="link_cv"]').val(columns[7].trim());
+                
+                // Notifikasi ringan (Opsional, jika ada library notify)
+                console.log("Data berhasil diparsing dari Excel");
             }
         });
 
