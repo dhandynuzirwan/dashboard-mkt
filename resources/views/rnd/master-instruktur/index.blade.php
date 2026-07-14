@@ -408,7 +408,7 @@
 @endsection
 
 @push('scripts')
-<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+<script src="{{ asset('assets/js/plugin/chart.js/chart.min.js') }}"></script>
 <script>
     $(document).ready(function() {
         // Currency Auto Formatting
@@ -491,11 +491,17 @@
                 options: {
                     responsive: true,
                     maintainAspectRatio: false,
+                    legend: { display: false },
                     scales: {
-                        y: {
-                            beginAtZero: true,
-                            ticks: { stepSize: 1 }
-                        }
+                        yAxes: [{
+                            ticks: {
+                                beginAtZero: true,
+                                stepSize: 1
+                            }
+                        }],
+                        xAxes: [{
+                            gridLines: { display: false }
+                        }]
                     }
                 }
             });
@@ -518,18 +524,14 @@
                 options: {
                     responsive: true,
                     maintainAspectRatio: false,
-                    cutout: '75%',
-                    plugins: {
-                        legend: {
-                            position: 'bottom',
-                            labels: {
-                                usePointStyle: true,
-                                boxWidth: 8,
-                                padding: 20,
-                                font: {
-                                    size: 11
-                                }
-                            }
+                    cutoutPercentage: 75,
+                    legend: {
+                        position: 'bottom',
+                        labels: {
+                            usePointStyle: true,
+                            boxWidth: 8,
+                            padding: 20,
+                            fontSize: 11
                         }
                     }
                 }
