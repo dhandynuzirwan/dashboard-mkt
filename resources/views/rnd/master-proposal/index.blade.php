@@ -409,6 +409,12 @@
 
 <script>
     $(document).ready(function() {
+        if (typeof Chart === 'undefined') {
+            console.error("Chart.js gagal dimuat dari asset lokal.");
+            alert("Chart.js gagal dimuat. Kemungkinan URL asset salah (404) atau cache belum dibersihkan (php artisan view:clear).");
+            return;
+        }
+
         // Init Select2
         $('.select2-kategori').select2({
             tags: true,
@@ -443,7 +449,7 @@
                     borderColor: '#1d7af3',
                     borderWidth: 1,
                     borderRadius: 4,
-                    data: {{ json_encode($chartValues) }},
+                    data: {!! json_encode($chartValues) !!},
                 }]
             },
             options: {

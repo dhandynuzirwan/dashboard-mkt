@@ -411,6 +411,12 @@
 <script src="{{ asset('assets/js/plugin/chart.js/chart.min.js') }}"></script>
 <script>
     $(document).ready(function() {
+        if (typeof Chart === 'undefined') {
+            console.error("Chart.js gagal dimuat dari asset lokal.");
+            alert("Chart.js gagal dimuat. Kemungkinan URL asset salah (404) atau cache belum dibersihkan (php artisan view:clear).");
+            return;
+        }
+
         // Currency Auto Formatting
         $('.input-currency').on('keyup', function(e) {
             let val = $(this).val();
@@ -485,7 +491,7 @@
                         label: "Jumlah Instruktur Baru",
                         backgroundColor: '#1d7af3',
                         borderColor: '#1d7af3',
-                        data: {{ json_encode($chartValues) }},
+                        data: {!! json_encode($chartValues) !!},
                     }]
                 },
                 options: {
