@@ -19,7 +19,7 @@ class MasterInstrukturController extends Controller
         });
 
         $query->when($request->bidang_ahli, function ($q) use ($request) {
-            $q->where('bidang_ahli', $request->bidang_ahli);
+            $q->where('bidang_ahli', 'like', '%' . $request->bidang_ahli . '%');
         });
 
         if ($request->start_date && $request->end_date) {
@@ -36,13 +36,21 @@ class MasterInstrukturController extends Controller
         $totalStat = MasterInstruktur::count();
         $avgRate = MasterInstruktur::avg('rate_harga') ?? 0;
         
-        $bidangTerbanyak = MasterInstruktur::select('bidang_ahli')
-            ->selectRaw('COUNT(*) as total')
-            ->groupBy('bidang_ahli')
-            ->orderByDesc('total')
-            ->first();
-        $bidangTop = $bidangTerbanyak ? $bidangTerbanyak->bidang_ahli : '-';
-        $bidangTopCount = $bidangTerbanyak ? $bidangTerbanyak->total : 0;
+        $allBidang = MasterInstruktur::pluck('bidang_ahli')->toArray();
+        $bidangCounts = [];
+        foreach($allBidang as $b_str) {
+            if(!$b_str) continue;
+            $b_arr = array_map('trim', explode(',', $b_str));
+            foreach($b_arr as $b) {
+                if(!empty($b)) {
+                    $bidangCounts[$b] = ($bidangCounts[$b] ?? 0) + 1;
+                }
+            }
+        }
+        arsort($bidangCounts);
+        
+        $bidangTop = count($bidangCounts) > 0 ? array_key_first($bidangCounts) : '-';
+        $bidangTopCount = count($bidangCounts) > 0 ? $bidangCounts[$bidangTop] : 0;
 
         // --- DATA UNTUK GRAFIK ---
         // Bar Chart: Input per bulan
@@ -58,14 +66,12 @@ class MasterInstrukturController extends Controller
         }
 
         // Doughnut Chart: Komposisi Bidang Ahli
-        $bidangStats = MasterInstruktur::select('bidang_ahli', \DB::raw('count(*) as total'))
-                                      ->groupBy('bidang_ahli')
-                                      ->get();
-        $bidangLabels = $bidangStats->pluck('bidang_ahli')->toArray();
-        $bidangValues = $bidangStats->pluck('total')->toArray();
+        $bidangLabels = array_keys($bidangCounts);
+        $bidangValues = array_values($bidangCounts);
 
         // Data untuk Dropdown Filter
-        $listBidang = MasterInstruktur::select('bidang_ahli')->distinct()->pluck('bidang_ahli');
+        $listBidang = $bidangLabels;
+        sort($listBidang);
 
         return view('rnd.master-instruktur.index', compact(
             'instrukturs', 

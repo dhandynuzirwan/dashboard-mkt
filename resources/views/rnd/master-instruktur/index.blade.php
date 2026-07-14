@@ -205,7 +205,11 @@
                                         </td>
                                         <td>
                                             <div class="mb-2">
-                                                <span class="badge badge-soft-primary">{{ $item->bidang_ahli }}</span>
+                                                @foreach(array_map('trim', explode(',', $item->bidang_ahli)) as $bidang)
+                                                    @if(!empty($bidang))
+                                                        <span class="badge badge-soft-primary me-1 mb-1">{{ $bidang }}</span>
+                                                    @endif
+                                                @endforeach
                                             </div>
                                             @if($item->link_cv)
                                                 <a href="{{ $item->link_cv }}" target="_blank" class="btn btn-xs btn-outline-info rounded-pill hover-lift shadow-sm"><i class="fas fa-link me-1"></i> Buka CV</a>
@@ -266,7 +270,7 @@
                                                             </div>
                                                             <div class="col-md-6 mb-3">
                                                                 <label class="label-modern">Bidang Ahli <span class="text-danger">*</span></label>
-                                                                <input type="text" class="form-control form-control-sm input-modern" name="bidang_ahli" value="{{ $item->bidang_ahli }}" required>
+                                                                <input type="text" class="form-control form-control-sm input-modern" name="bidang_ahli" value="{{ $item->bidang_ahli }}" placeholder="Pisahkan dengan koma jika lebih dari 1" required>
                                                             </div>
                                                             <div class="col-md-6 mb-3">
                                                                 <label class="label-modern">Rate Harga (Rp)</label>
@@ -341,7 +345,7 @@
                         </div>
                         <div class="col-md-6 mb-3">
                             <label class="label-modern">Bidang Ahli <span class="text-danger">*</span></label>
-                            <input type="text" class="form-control form-control-sm input-modern" name="bidang_ahli" required>
+                            <input type="text" class="form-control form-control-sm input-modern" name="bidang_ahli" placeholder="Pisahkan dengan koma jika lebih dari 1" required>
                         </div>
                         <div class="col-md-6 mb-3">
                             <label class="label-modern">Rate Harga (Rp)</label>
