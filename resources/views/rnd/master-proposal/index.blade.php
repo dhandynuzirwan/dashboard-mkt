@@ -184,17 +184,16 @@
         {{-- TABLE SECTION --}}
         <div class="row">
             <div class="col-md-12">
-                <div class="card card-modern fade-in shadow-sm">
-                    <div class="card-header border-0 pb-0 pt-4 px-4 d-flex justify-content-between align-items-center">
-                        <h4 class="card-title fw-bold text-dark mb-0">Daftar Proposal</h4>
-                        <button class="btn btn-primary btn-round btn-sm hover-lift shadow-sm fw-bold" data-bs-toggle="modal" data-bs-target="#tambahModal">
-                            <i class="fa fa-plus me-1"></i> Tambah Proposal
-                        </button>
-                    </div>
-                    <div class="card-body px-4 pt-3 pb-4">
+                <div class="d-flex flex-wrap justify-content-between align-items-center mb-3 fade-in">
+                    <button class="btn btn-primary btn-sm btn-round fw-bold shadow-sm hover-lift" data-bs-toggle="modal" data-bs-target="#tambahModal">
+                        <i class="fa fa-plus me-1"></i> Tambah Proposal Baru
+                    </button>
+                </div>
+                <div class="card card-modern fade-in border-0 shadow-sm mb-4">
+                    <div class="card-body p-0">
                         <div class="table-responsive">
                             <table class="table table-modern table-hover align-middle mb-0">
-                                <thead>
+                                <thead class="bg-light">
                                     <tr>
                                         <th width="5%">No</th>
                                         <th width="35%">Judul & Kategori</th>
@@ -230,14 +229,14 @@
                                         </td>
                                         <td class="text-center">
                                             <div class="d-flex justify-content-center gap-2">
-                                                <button type="button" data-bs-toggle="modal" data-bs-target="#editModal{{ $item->id }}" class="btn btn-icon btn-round btn-light btn-sm hover-lift text-primary" title="Edit">
-                                                    <i class="fa fa-edit"></i>
+                                                <button type="button" data-bs-toggle="modal" data-bs-target="#editModal{{ $item->id }}" class="btn btn-sm btn-primary text-white rounded-pill hover-lift shadow-sm px-3" title="Edit">
+                                                    <i class="fa fa-edit me-1"></i> Edit
                                                 </button>
-                                                <form action="{{ route('master-proposal.destroy', $item->id) }}" method="POST" class="d-inline" onsubmit="return confirm('Yakin ingin menghapus proposal ini?');">
+                                                <form action="{{ route('master-proposal.destroy', $item->id) }}" method="POST" class="d-inline m-0" onsubmit="return confirm('Yakin ingin menghapus proposal ini?');">
                                                     @csrf
                                                     @method('DELETE')
-                                                    <button type="submit" class="btn btn-icon btn-round btn-light btn-sm hover-lift text-danger" title="Hapus">
-                                                        <i class="fa fa-trash"></i>
+                                                    <button type="submit" class="btn btn-sm btn-danger text-white rounded-pill hover-lift shadow-sm px-3" title="Hapus">
+                                                        <i class="fa fa-trash-alt me-1"></i> Hapus
                                                     </button>
                                                 </form>
                                             </div>
@@ -310,7 +309,7 @@
                         </div>
                         
                         {{-- PAGINATION --}}
-                        <div class="mt-4">
+                        <div class="mt-4 px-3 pb-3">
                             {{ $proposals->links('pagination::bootstrap-5') }}
                         </div>
 
