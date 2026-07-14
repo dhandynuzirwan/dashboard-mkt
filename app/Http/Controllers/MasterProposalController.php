@@ -14,8 +14,11 @@ class MasterProposalController extends Controller
 
         // Fitur Pencarian & Filter
         $query->when($request->search, function ($q) use ($request) {
-            $q->where('judul_proposal', 'like', '%' . $request->search . '%')
-              ->orWhere('lembaga', 'like', '%' . $request->search . '%');
+            $q->where('judul_proposal', 'like', '%' . $request->search . '%');
+        });
+
+        $query->when($request->lembaga, function ($q) use ($request) {
+            $q->where('lembaga', $request->lembaga);
         });
 
         $query->when($request->kategori, function ($q) use ($request) {
@@ -59,6 +62,7 @@ class MasterProposalController extends Controller
 
         // Data untuk Dropdown Filter
         $listKategori = MasterProposal::select('kategori')->distinct()->pluck('kategori');
+        $listLembaga = MasterProposal::select('lembaga')->distinct()->pluck('lembaga');
 
         return view('rnd.master-proposal.index', compact(
             'proposals', 
@@ -68,7 +72,8 @@ class MasterProposalController extends Controller
             'chartValues', 
             'kategoriLabels', 
             'kategoriValues', 
-            'listKategori'
+            'listKategori',
+            'listLembaga'
         ));
     }
 

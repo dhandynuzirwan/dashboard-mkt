@@ -134,11 +134,20 @@
                         </div>
                         <form method="GET" action="{{ route('master-proposal.index') }}">
                             <div class="row g-3">
-                                <div class="col-md-4">
-                                    <label class="label-modern">Cari Judul / Lembaga</label>
-                                    <input type="text" class="form-control form-control-sm input-modern" name="search" value="{{ request('search') }}" placeholder="Ketik kata kunci...">
+                                <div class="col-md-3">
+                                    <label class="label-modern">Cari Judul Proposal</label>
+                                    <input type="text" class="form-control form-control-sm input-modern" name="search" value="{{ request('search') }}" placeholder="Ketik judul...">
                                 </div>
-                                <div class="col-md-4">
+                                <div class="col-md-3">
+                                    <label class="label-modern">Lembaga</label>
+                                    <select class="form-select form-select-sm input-modern" name="lembaga">
+                                        <option value="">Semua Lembaga</option>
+                                        @foreach($listLembaga as $lmbg)
+                                            <option value="{{ $lmbg }}" {{ request('lembaga') == $lmbg ? 'selected' : '' }}>{{ $lmbg }}</option>
+                                        @endforeach
+                                    </select>
+                                </div>
+                                <div class="col-md-3">
                                     <label class="label-modern">Kategori</label>
                                     <select class="form-select form-select-sm input-modern" name="kategori">
                                         <option value="">Semua Kategori</option>
@@ -147,7 +156,7 @@
                                         @endforeach
                                     </select>
                                 </div>
-                                <div class="col-md-4">
+                                <div class="col-md-3">
                                     <label class="label-modern">Rentang Tanggal Input</label>
                                     <div class="d-flex">
                                         <input type="date" class="form-control form-control-sm input-modern" name="start_date" value="{{ request('start_date') }}">
