@@ -56,7 +56,7 @@ class MasterInstrukturController extends Controller
         // Bar Chart: Input per bulan
         $chartData = MasterInstruktur::selectRaw('MONTH(created_at) as month, count(*) as total')
                                   ->whereYear('created_at', date('Y'))
-                                  ->groupBy('month')
+                                  ->groupBy(\DB::raw('MONTH(created_at)'))
                                   ->pluck('total', 'month')
                                   ->toArray();
                                   
