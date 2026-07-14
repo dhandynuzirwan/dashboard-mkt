@@ -362,6 +362,36 @@
         </form>
     </div>
 </div>
+<style>
+    /* CSS MODERNISASI UI */
+    .card-modern { border-radius: 16px; border: 1px solid #eef2f7; box-shadow: 0 4px 15px rgba(0,0,0,0.03); background: #ffffff; transition: all 0.3s ease; }
+    .hover-lift { transition: transform 0.2s ease, box-shadow 0.2s ease; }
+    .hover-lift:hover { transform: translateY(-3px); box-shadow: 0 10px 20px rgba(0,0,0,0.08) !important; }
+    
+    .icon-modern { width: 48px; height: 48px; border-radius: 12px; display: flex; align-items: center; justify-content: center; font-size: 20px; }
+    
+    .bg-primary-subtle { background-color: #e0eaff !important; }
+    .bg-success-subtle { background-color: #dcfce7 !important; }
+    .bg-info-subtle { background-color: #cff4fc !important; }
+    .bg-warning-subtle { background-color: #fef08a !important; }
+    
+    .badge-soft-primary { background-color: #e0eaff; color: #3b82f6; }
+    .badge-soft-success { background-color: #dcfce7; color: #16a34a; }
+    .badge-soft-warning { background-color: #fef08a; color: #b45309; }
+    .badge-soft-info { background-color: #cff4fc; color: #0891b2; }
+    
+    /* Table Modern */
+    .table-modern th { text-transform: uppercase; font-size: 11px; letter-spacing: 0.5px; color: #64748b; background: #f8fafc; border-bottom: 2px solid #e2e8f0 !important; padding: 12px 16px; }
+    .table-modern td { padding: 14px 16px; border-bottom: 1px solid #f1f5f9; }
+    
+    /* Form Modern */
+    .label-modern { font-weight: 700; color: #64748b; font-size: 11px; text-transform: uppercase; letter-spacing: 0.5px; display: block; margin-bottom: 6px; }
+    .input-modern { border: 1px solid #cbd5e1; border-radius: 10px; color: #334155; }
+    .input-modern:focus { border-color: #3b82f6; box-shadow: 0 0 0 4px rgba(59, 130, 246, 0.1) !important; }
+    
+    .fade-in { animation: fadeIn 0.6s ease-in-out; }
+    @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+</style>
 @endsection
 
 @push('scripts')
