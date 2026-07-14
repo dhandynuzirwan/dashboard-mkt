@@ -84,12 +84,12 @@ class MasterInstrukturController extends Controller
     {
         $request->validate([
             'nama_instruktur' => 'required|string|max:255',
-            'wilayah_instansi' => 'required|string|max:255',
+            'wilayah_instansi' => 'nullable|string|max:255',
             'no_telepon' => 'required|string|max:20',
             'bidang_ahli' => 'required|string|max:255',
-            'rate_harga' => 'required|numeric',
-            'no_rek' => 'required|string|max:255',
-            'bank' => 'required|string|max:255',
+            'rate_harga' => 'nullable|numeric',
+            'no_rek' => 'nullable|string|max:255',
+            'bank' => 'nullable|string|max:255',
             'link_cv' => 'nullable|url',
         ]);
 
@@ -112,12 +112,12 @@ class MasterInstrukturController extends Controller
     {
         $request->validate([
             'nama_instruktur' => 'required|string|max:255',
-            'wilayah_instansi' => 'required|string|max:255',
+            'wilayah_instansi' => 'nullable|string|max:255',
             'no_telepon' => 'required|string|max:20',
             'bidang_ahli' => 'required|string|max:255',
-            'rate_harga' => 'required|numeric',
-            'no_rek' => 'required|string|max:255',
-            'bank' => 'required|string|max:255',
+            'rate_harga' => 'nullable|numeric',
+            'no_rek' => 'nullable|string|max:255',
+            'bank' => 'nullable|string|max:255',
             'link_cv' => 'nullable|url',
         ]);
 

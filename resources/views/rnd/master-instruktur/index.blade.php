@@ -257,8 +257,8 @@
                                                                 <input type="text" class="form-control form-control-sm input-modern" name="nama_instruktur" value="{{ $item->nama_instruktur }}" required>
                                                             </div>
                                                             <div class="col-md-6 mb-3">
-                                                                <label class="label-modern">Wilayah/Instansi <span class="text-danger">*</span></label>
-                                                                <input type="text" class="form-control form-control-sm input-modern" name="wilayah_instansi" value="{{ $item->wilayah_instansi }}" required>
+                                                                <label class="label-modern">Wilayah/Instansi</label>
+                                                                <input type="text" class="form-control form-control-sm input-modern" name="wilayah_instansi" value="{{ $item->wilayah_instansi }}">
                                                             </div>
                                                             <div class="col-md-6 mb-3">
                                                                 <label class="label-modern">Nomor Telepon <span class="text-danger">*</span></label>
@@ -269,17 +269,17 @@
                                                                 <input type="text" class="form-control form-control-sm input-modern" name="bidang_ahli" value="{{ $item->bidang_ahli }}" required>
                                                             </div>
                                                             <div class="col-md-6 mb-3">
-                                                                <label class="label-modern">Rate Harga (Rp) <span class="text-danger">*</span></label>
-                                                                <input type="text" class="form-control form-control-sm input-modern input-currency" name="rate_harga_display" value="{{ number_format($item->rate_harga, 0, ',', '.') }}" required>
+                                                                <label class="label-modern">Rate Harga (Rp)</label>
+                                                                <input type="text" class="form-control form-control-sm input-modern input-currency" name="rate_harga_display" value="{{ number_format($item->rate_harga, 0, ',', '.') }}">
                                                                 <input type="hidden" name="rate_harga" class="input-currency-hidden" value="{{ $item->rate_harga }}">
                                                             </div>
                                                             <div class="col-md-6 mb-3">
-                                                                <label class="label-modern">Nama Bank <span class="text-danger">*</span></label>
-                                                                <input type="text" class="form-control form-control-sm input-modern" name="bank" value="{{ $item->bank }}" required>
+                                                                <label class="label-modern">Nama Bank</label>
+                                                                <input type="text" class="form-control form-control-sm input-modern" name="bank" value="{{ $item->bank }}">
                                                             </div>
                                                             <div class="col-md-6 mb-3">
-                                                                <label class="label-modern">No Rekening <span class="text-danger">*</span></label>
-                                                                <input type="text" class="form-control form-control-sm input-modern" name="no_rek" value="{{ $item->no_rek }}" required>
+                                                                <label class="label-modern">No Rekening</label>
+                                                                <input type="text" class="form-control form-control-sm input-modern" name="no_rek" value="{{ $item->no_rek }}">
                                                             </div>
                                                             <div class="col-md-6 mb-3">
                                                                 <label class="label-modern">Link CV (Opsional)</label>
@@ -332,8 +332,8 @@
                             <input type="text" class="form-control form-control-sm input-modern" name="nama_instruktur" id="nama_instruktur_add" placeholder="Paste data Excel di sini..." required>
                         </div>
                         <div class="col-md-6 mb-3">
-                            <label class="label-modern">Wilayah/Instansi <span class="text-danger">*</span></label>
-                            <input type="text" class="form-control form-control-sm input-modern" name="wilayah_instansi" required>
+                            <label class="label-modern">Wilayah/Instansi</label>
+                            <input type="text" class="form-control form-control-sm input-modern" name="wilayah_instansi">
                         </div>
                         <div class="col-md-6 mb-3">
                             <label class="label-modern">Nomor Telepon <span class="text-danger">*</span></label>
@@ -344,17 +344,17 @@
                             <input type="text" class="form-control form-control-sm input-modern" name="bidang_ahli" required>
                         </div>
                         <div class="col-md-6 mb-3">
-                            <label class="label-modern">Rate Harga (Rp) <span class="text-danger">*</span></label>
-                            <input type="text" class="form-control form-control-sm input-modern input-currency" name="rate_harga_display" required>
+                            <label class="label-modern">Rate Harga (Rp)</label>
+                            <input type="text" class="form-control form-control-sm input-modern input-currency" name="rate_harga_display">
                             <input type="hidden" name="rate_harga" class="input-currency-hidden">
                         </div>
                         <div class="col-md-6 mb-3">
-                            <label class="label-modern">Nama Bank <span class="text-danger">*</span></label>
-                            <input type="text" class="form-control form-control-sm input-modern" name="bank" required>
+                            <label class="label-modern">Nama Bank</label>
+                            <input type="text" class="form-control form-control-sm input-modern" name="bank">
                         </div>
                         <div class="col-md-6 mb-3">
-                            <label class="label-modern">No Rekening <span class="text-danger">*</span></label>
-                            <input type="text" class="form-control form-control-sm input-modern" name="no_rek" required>
+                            <label class="label-modern">No Rekening</label>
+                            <input type="text" class="form-control form-control-sm input-modern" name="no_rek">
                         </div>
                         <div class="col-md-6 mb-3">
                             <label class="label-modern">Link CV (Opsional)</label>
