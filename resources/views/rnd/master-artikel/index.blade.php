@@ -65,9 +65,18 @@
                         <div class="card-title fw-bold text-dark" style="font-size: 15px;">Statistik Input Artikel per Bulan (Tahun Ini)</div>
                     </div>
                     <div class="card-body pt-2">
-                        <div class="chart-container" style="min-height: 250px">
-                            <canvas id="statisticsChart"></canvas>
-                        </div>
+                        @if(array_sum($chartValues) > 0)
+                            <div class="chart-container" style="min-height: 250px">
+                                <canvas id="statisticsChart"></canvas>
+                            </div>
+                        @else
+                            <div class="d-flex justify-content-center align-items-center h-100" style="min-height: 250px;">
+                                <div class="text-center text-muted">
+                                    <i class="fas fa-chart-bar mb-2" style="font-size: 2rem; opacity: 0.5;"></i>
+                                    <p class="mb-0">Belum ada data statistik untuk tahun ini.</p>
+                                </div>
+                            </div>
+                        @endif
                     </div>
                 </div>
             </div>
@@ -77,9 +86,18 @@
                         <div class="card-title fw-bold text-dark" style="font-size: 15px;">Komposisi Kategori</div>
                     </div>
                     <div class="card-body pt-2 d-flex justify-content-center align-items-center">
-                        <div class="chart-container" style="min-height: 250px; width: 100%;">
-                            <canvas id="kategoriChart"></canvas>
-                        </div>
+                        @if(count($kategoriValues) > 0)
+                            <div class="chart-container" style="min-height: 250px; width: 100%;">
+                                <canvas id="kategoriChart"></canvas>
+                            </div>
+                        @else
+                            <div class="d-flex justify-content-center align-items-center h-100" style="min-height: 250px; width: 100%;">
+                                <div class="text-center text-muted">
+                                    <i class="fas fa-chart-pie mb-2" style="font-size: 2rem; opacity: 0.5;"></i>
+                                    <p class="mb-0">Belum ada data komposisi kategori.</p>
+                                </div>
+                            </div>
+                        @endif
                     </div>
                 </div>
             </div>
@@ -403,61 +421,67 @@
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <script>
     $(document).ready(function() {
-        var ctx = document.getElementById('statisticsChart').getContext('2d');
-        var ctxKategori = document.getElementById('kategoriChart').getContext('2d');
-        var kategoriChart = new Chart(ctxKategori, {
-            type: 'doughnut',
-            data: {
-                labels: {!! json_encode($kategoriLabels) !!},
-                datasets: [{
-                    data: {!! json_encode($kategoriValues) !!},
-                    backgroundColor: ['#3b82f6', '#10b981', '#f59e0b', '#ef4444', '#8b5cf6', '#ec4899', '#14b8a6', '#f97316', '#06b6d4', '#64748b'],
-                    borderWidth: 0,
-                    hoverOffset: 4
-                }]
-            },
-            options: {
-                responsive: true,
-                maintainAspectRatio: false,
-                cutout: '75%',
-                plugins: {
-                    legend: {
-                        position: 'bottom',
-                        labels: {
-                            usePointStyle: true,
-                            boxWidth: 8,
-                            padding: 20,
-                            font: {
-                                size: 11
+        var elStat = document.getElementById('statisticsChart');
+        if (elStat) {
+            var ctx = elStat.getContext('2d');
+            var statisticsChart = new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    labels: ['Jan', 'Feb', 'Mar', 'Apr', 'Mei', 'Jun', 'Jul', 'Agu', 'Sep', 'Okt', 'Nov', 'Des'],
+                    datasets: [{
+                        label: "Jumlah Artikel Baru",
+                        backgroundColor: '#1d7af3',
+                        borderColor: '#1d7af3',
+                        data: {{ json_encode($chartValues) }},
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            ticks: { stepSize: 1 }
+                        }
+                    }
+                }
+            });
+        }
+
+        var elKategori = document.getElementById('kategoriChart');
+        if (elKategori) {
+            var ctxKategori = elKategori.getContext('2d');
+            var kategoriChart = new Chart(ctxKategori, {
+                type: 'doughnut',
+                data: {
+                    labels: {!! json_encode($kategoriLabels) !!},
+                    datasets: [{
+                        data: {!! json_encode($kategoriValues) !!},
+                        backgroundColor: ['#3b82f6', '#10b981', '#f59e0b', '#ef4444', '#8b5cf6', '#ec4899', '#14b8a6', '#f97316', '#06b6d4', '#64748b'],
+                        borderWidth: 0,
+                        hoverOffset: 4
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    cutout: '75%',
+                    plugins: {
+                        legend: {
+                            position: 'bottom',
+                            labels: {
+                                usePointStyle: true,
+                                boxWidth: 8,
+                                padding: 20,
+                                font: {
+                                    size: 11
+                                }
                             }
                         }
                     }
                 }
-            }
-        });
-
-        var statisticsChart = new Chart(ctx, {
-            type: 'bar',
-            data: {
-                labels: ['Jan', 'Feb', 'Mar', 'Apr', 'Mei', 'Jun', 'Jul', 'Agu', 'Sep', 'Okt', 'Nov', 'Des'],
-                datasets: [{
-                    label: "Jumlah Artikel Baru",
-                    backgroundColor: '#1d7af3',
-                    borderColor: '#1d7af3',
-                    data: {{ json_encode($chartValues) }},
-                }]
-            },
-            options: {
-                responsive: true,
-                maintainAspectRatio: false,
-                scales: {
-                    y: {
-                        beginAtZero: true,
-                        ticks: { stepSize: 1 }
-                    }
-                }
-            }
-        });
+            });
+        }
     });
 </script>
 
