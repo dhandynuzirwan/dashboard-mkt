@@ -67,7 +67,7 @@
                     </div>
                     <div class="card-body pt-2">
                         @if(array_sum($chartValues) > 0)
-                            <div class="chart-container" style="min-height: 250px">
+                            <div class="chart-container" style="position: relative; height: 250px; width: 100%;">
                                 <canvas id="statisticsChart"></canvas>
                             </div>
                         @else
@@ -88,7 +88,7 @@
                     </div>
                     <div class="card-body pt-2 d-flex justify-content-center align-items-center">
                         @if(count($bidangValues) > 0)
-                            <div class="chart-container" style="min-height: 250px; width: 100%;">
+                            <div class="chart-container" style="position: relative; height: 250px; width: 100%;">
                                 <canvas id="kategoriChart"></canvas>
                             </div>
                         @else
@@ -408,7 +408,7 @@
 @endsection
 
 @push('scripts')
-<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
 <script>
     $(document).ready(function() {
         // Currency Auto Formatting
