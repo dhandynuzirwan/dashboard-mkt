@@ -7,11 +7,45 @@ use Illuminate\Http\Request;
 
 class MasterInstrukturController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
-        $instrukturs = MasterInstruktur::with('user')->latest()->get();
+        $query = MasterInstruktur::with('user');
+
+        // Fitur Pencarian & Filter
+        $query->when($request->search, function ($q) use ($request) {
+            $q->where('nama_instruktur', 'like', '%' . $request->search . '%')
+              ->orWhere('bidang_ahli', 'like', '%' . $request->search . '%')
+              ->orWhere('wilayah_instansi', 'like', '%' . $request->search . '%');
+        });
+
+        $query->when($request->bidang_ahli, function ($q) use ($request) {
+            $q->where('bidang_ahli', $request->bidang_ahli);
+        });
+
+        if ($request->start_date && $request->end_date) {
+            $query->whereBetween('created_at', [$request->start_date . ' 00:00:00', $request->end_date . ' 23:59:59']);
+        } elseif ($request->start_date) {
+            $query->whereDate('created_at', '>=', $request->start_date);
+        } elseif ($request->end_date) {
+            $query->whereDate('created_at', '<=', $request->end_date);
+        }
+
+        $instrukturs = $query->latest()->paginate(10)->withQueryString();
         
+        // --- DATA UNTUK STAT CARDS ---
         $totalStat = MasterInstruktur::count();
+        $avgRate = MasterInstruktur::avg('rate_harga') ?? 0;
+        
+        $bidangTerbanyak = MasterInstruktur::select('bidang_ahli')
+            ->selectRaw('COUNT(*) as total')
+            ->groupBy('bidang_ahli')
+            ->orderByDesc('total')
+            ->first();
+        $bidangTop = $bidangTerbanyak ? $bidangTerbanyak->bidang_ahli : '-';
+        $bidangTopCount = $bidangTerbanyak ? $bidangTerbanyak->total : 0;
+
+        // --- DATA UNTUK GRAFIK ---
+        // Bar Chart: Input per bulan
         $chartData = MasterInstruktur::selectRaw('MONTH(created_at) as month, count(*) as total')
                                   ->whereYear('created_at', date('Y'))
                                   ->groupBy('month')
@@ -23,7 +57,27 @@ class MasterInstrukturController extends Controller
             $chartValues[] = $chartData[$i] ?? 0;
         }
 
-        return view('rnd.master-instruktur.index', compact('instrukturs', 'totalStat', 'chartValues'));
+        // Doughnut Chart: Komposisi Bidang Ahli
+        $bidangStats = MasterInstruktur::select('bidang_ahli', \DB::raw('count(*) as total'))
+                                      ->groupBy('bidang_ahli')
+                                      ->get();
+        $bidangLabels = $bidangStats->pluck('bidang_ahli')->toArray();
+        $bidangValues = $bidangStats->pluck('total')->toArray();
+
+        // Data untuk Dropdown Filter
+        $listBidang = MasterInstruktur::select('bidang_ahli')->distinct()->pluck('bidang_ahli');
+
+        return view('rnd.master-instruktur.index', compact(
+            'instrukturs', 
+            'totalStat', 
+            'avgRate', 
+            'bidangTop', 
+            'bidangTopCount', 
+            'chartValues', 
+            'bidangLabels', 
+            'bidangValues', 
+            'listBidang'
+        ));
     }
 
     public function store(Request $request)
