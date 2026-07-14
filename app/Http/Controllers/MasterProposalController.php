@@ -8,11 +8,37 @@ use Illuminate\Support\Facades\Storage;
 
 class MasterProposalController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
-        $proposals = MasterProposal::with('user')->latest()->get();
+        $query = MasterProposal::with('user');
+
+        // Fitur Pencarian & Filter
+        $query->when($request->search, function ($q) use ($request) {
+            $q->where('judul_proposal', 'like', '%' . $request->search . '%')
+              ->orWhere('lembaga', 'like', '%' . $request->search . '%');
+        });
+
+        $query->when($request->kategori, function ($q) use ($request) {
+            $q->where('kategori', $request->kategori);
+        });
+
+        if ($request->start_date && $request->end_date) {
+            $query->whereBetween('created_at', [$request->start_date . ' 00:00:00', $request->end_date . ' 23:59:59']);
+        } elseif ($request->start_date) {
+            $query->whereDate('created_at', '>=', $request->start_date);
+        } elseif ($request->end_date) {
+            $query->whereDate('created_at', '<=', $request->end_date);
+        }
+
+        $proposals = $query->latest()->paginate(10)->withQueryString();
         
-        $totalStat = MasterProposal::count();
+        // --- DATA UNTUK STAT CARDS ---
+        $totalBnsp = MasterProposal::where('lembaga', 'like', '%BNSP%')->count();
+        $totalKemnaker = MasterProposal::where('lembaga', 'like', '%KEMNAKER%')->count();
+        $totalSoftskill = MasterProposal::where('lembaga', 'like', '%SOFTSKILL%')->count();
+
+        // --- DATA UNTUK GRAFIK ---
+        // Bar Chart: Input per bulan
         $chartData = MasterProposal::selectRaw('MONTH(created_at) as month, count(*) as total')
                                   ->whereYear('created_at', date('Y'))
                                   ->groupBy('month')
@@ -24,7 +50,26 @@ class MasterProposalController extends Controller
             $chartValues[] = $chartData[$i] ?? 0;
         }
 
-        return view('rnd.master-proposal.index', compact('proposals', 'totalStat', 'chartValues'));
+        // Doughnut Chart: Komposisi Kategori
+        $kategoriStats = MasterProposal::select('kategori', \DB::raw('count(*) as total'))
+                                      ->groupBy('kategori')
+                                      ->get();
+        $kategoriLabels = $kategoriStats->pluck('kategori')->toArray();
+        $kategoriValues = $kategoriStats->pluck('total')->toArray();
+
+        // Data untuk Dropdown Filter
+        $listKategori = MasterProposal::select('kategori')->distinct()->pluck('kategori');
+
+        return view('rnd.master-proposal.index', compact(
+            'proposals', 
+            'totalBnsp', 
+            'totalKemnaker', 
+            'totalSoftskill', 
+            'chartValues', 
+            'kategoriLabels', 
+            'kategoriValues', 
+            'listKategori'
+        ));
     }
 
     public function store(Request $request)
