@@ -97,9 +97,22 @@
                             ];
                         @endphp
 
-                        <span class="badge {{ $current_status['class'] }} px-3 py-2 shadow-sm" style="border-radius: 6px; letter-spacing: 0.5px;">
-                            {{ $current_status['label'] }}
-                        </span>
+                        <div class="mb-2">
+                            <small class="text-muted d-block mb-1" style="font-size: 10px; font-weight: bold; text-transform: uppercase;">Status Penawaran:</small>
+                            <span class="badge {{ $current_status['class'] }} px-3 py-2 shadow-sm" style="border-radius: 6px; letter-spacing: 0.5px;">
+                                {{ $current_status['label'] }}
+                            </span>
+                        </div>
+                        
+                        <div class="mt-3 pt-2 border-top border-light">
+                            <small class="text-muted d-block mb-1" style="font-size: 10px; font-weight: bold; text-transform: uppercase;">Status Prospek Akhir:</small>
+                            @php
+                                $isMasukPenawaran = strtoupper($d->prospek->status ?? '') === 'MASUK PENAWARAN';
+                            @endphp
+                            <span class="badge {{ $isMasukPenawaran ? 'bg-primary' : 'bg-light text-dark border' }} shadow-sm" style="border-radius: 6px; font-size: 10px;">
+                                {{ $d->prospek->status ?? 'BELUM ADA STATUS' }}
+                            </span>
+                        </div>
                     </td>
                 </tr>
             @empty
