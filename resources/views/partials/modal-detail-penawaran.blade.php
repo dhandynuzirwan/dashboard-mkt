@@ -2,10 +2,11 @@
     <table class="table table-hover table-borderless align-middle border-start border-end border-bottom rounded-3 overflow-hidden shadow-sm" style="font-size: 13px;">
         <thead class="bg-light text-secondary" style="border-bottom: 2px solid #e9ecef;">
             <tr>
-                <th class="ps-4 py-3" width="25%">INFO PROSPEK</th>
-                <th width="35%">DETAIL PELATIHAN</th>
-                <th width="25%">NILAI PENAWARAN</th>
+                <th class="ps-4 py-3" width="20%">INFO PROSPEK</th>
+                <th width="30%">DETAIL PELATIHAN</th>
+                <th width="20%">NILAI PENAWARAN</th>
                 <th class="text-center py-3" width="15%">STATUS</th>
+                <th class="text-center py-3 pe-4" width="15%">AKSI</th>
             </tr>
         </thead>
         @php
@@ -114,10 +115,22 @@
                             </span>
                         </div>
                     </td>
+
+                    {{-- Kolom 5: Aksi --}}
+                    <td class="text-center py-3 pe-4">
+                        <div class="d-flex flex-column gap-2">
+                            <a href="{{ route('prospek.edit', $d->prospek_id) }}" target="_blank" class="btn btn-sm btn-outline-primary shadow-sm" style="font-size: 10px; border-radius: 6px;">
+                                <i class="fas fa-edit me-1"></i> Edit Prospek
+                            </a>
+                            <a href="{{ route('cta.edit', $d->id) }}" target="_blank" class="btn btn-sm btn-outline-info shadow-sm" style="font-size: 10px; border-radius: 6px;">
+                                <i class="fas fa-edit me-1"></i> Edit CTA
+                            </a>
+                        </div>
+                    </td>
                 </tr>
             @empty
                 <tr>
-                    <td colspan="4" class="text-center py-5 text-muted bg-light">
+                    <td colspan="5" class="text-center py-5 text-muted bg-light">
                         <i class="fas fa-file-invoice-dollar fs-1 text-secondary opacity-50 mb-3 d-block"></i>
                         <p class="mb-0 fw-medium">Tidak ada data yang sudah diisi nominal penawarannya.</p>
                     </td>
@@ -129,7 +142,7 @@
         @if($filteredDetails->count() > 0)
         <tfoot class="bg-light" style="border-top: 2px solid #e2e8f0;">
             <tr>
-                <td colspan="2" class="text-end py-3 pe-4 fw-bolder text-dark" style="font-size: 13px;">
+                <td colspan="3" class="text-end py-3 pe-4 fw-bolder text-dark" style="font-size: 13px;">
                     TOTAL NILAI PENAWARAN:
                 </td>
                 <td colspan="2" class="py-3 text-start">
