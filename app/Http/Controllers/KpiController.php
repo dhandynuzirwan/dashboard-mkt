@@ -116,35 +116,38 @@ class KpiController extends Controller
                 ->pluck('total', 'prospek_id');
 
             // 1. UPDATE DATA (Jumlah Prospek + CTA) -> dari DashboardController
-            $baseCtaQuery = \App\Models\Cta::whereHas('prospek', function ($q) use ($user, $start, $end) {
-                $q->where('marketing_id', $user->id)
-                  ->whereBetween('tanggal_prospek', [$start . " 00:00:00", $end . " 23:59:59"]); 
-            });
-            $jumlahCtaBase = (clone $baseCtaQuery)->count();
-            $jumlahCtaBerstatus = (clone $baseCtaQuery)
-                ->whereNotNull('status_penawaran')
-                ->where('status_penawaran', '!=', '')
-                ->count();
-            $totalUpdateData = $jumlahCtaBase + $jumlahCtaBerstatus;
-            
-            // 2. STATUS AKHIR PEROLEHAN DATA
             $hitungStatus = function($statusName) use ($prospeks, $ctasCount) {
                 return $prospeks->where('status', $statusName)->sum(function ($p) use ($ctasCount) {
                     $jmlCta = $ctasCount[$p->id] ?? 0;
                     return $jmlCta > 0 ? $jmlCta : 1; 
                 });
             };
-            
-            $statusResmi = [
-                'DATA TIDAK VALID & TIDAK TERHUBUNG', 'TIDAK RESPON', 'DAPAT NO WA HRD',
-                'KIRIM COMPRO', 'MANJA', 'MANJA ULANG', 'REQUEST PERMINTAAN PELATIHAN',
-                'BELUM ADA KEBUTUHAN', 'REQUES PERPANJANGAN SERTIFIKAT',
-                'PENAWARAN HARDFILE', 'TIDAK MENERIMA PENAWARAN', 'DAPAT NO TELP',
-                'SUDAH ADA VENDOR KERJASAMA', 'HOLD', 'DAPAT EMAIL'
+
+            // 1. UPDATE DATA
+            $statusUpdateData = [
+                'BELUM ADA KEBUTUHAN', 
+                'TIDAK RESPON', 
+                'DATA TIDAK VALID & TIDAK TERHUBUNG'
             ];
+            $totalUpdateData = 0;
+            foreach($statusUpdateData as $st) {
+                $totalUpdateData += $hitungStatus($st);
+            }
             
+            // 2. STATUS AKHIR PEROLEHAN DATA
+            $statusAkhirData = [
+                'DAPAT NO WA HRD',
+                'KIRIM COMPRO',
+                'MANJA',
+                'MANJA ULANG',
+                'REQUEST PERMINTAAN PELATIHAN',
+                'PENAWARAN HARDFILE',
+                'TIDAK MENERIMA PENAWARAN',
+                'SUDAH ADA VENDOR KERJASAMA',
+                'DAPAT EMAIL'
+            ];
             $totalAkhirData = 0;
-            foreach($statusResmi as $st) {
+            foreach($statusAkhirData as $st) {
                 $totalAkhirData += $hitungStatus($st);
             }
 
