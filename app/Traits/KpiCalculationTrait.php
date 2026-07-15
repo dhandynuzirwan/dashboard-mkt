@@ -94,9 +94,9 @@ trait KpiCalculationTrait
         $bobotAkhir = 30;
         $bobotPenawaran = 50;
 
-        $skorUpdate = min(1, $totalUpdateData / $maxDataUpdate) * $bobotUpdate;
-        $skorAkhir = min(1, $totalAkhirData / $maxDataAkhir) * $bobotAkhir;
-        $skorPenawaran = min(1, $totalPenawaran / $maxDataPenawaran) * $bobotPenawaran;
+        $skorUpdate = (min($totalUpdateData, $maxDataUpdate) / 100) * $bobotUpdate;
+        $skorAkhir = (min($totalAkhirData, $maxDataAkhir) / 100) * $bobotAkhir;
+        $skorPenawaran = (min($totalPenawaran, $maxDataPenawaran) / 100) * $bobotPenawaran;
 
         $user->progress_ach = $skorUpdate + $skorAkhir + $skorPenawaran;
         

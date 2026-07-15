@@ -140,14 +140,19 @@ class SalaryController extends Controller
         // 3. UPDATE PENAWARAN
         $totalPenawaran = (clone $baseCta)->whereNotNull('status_penawaran')->where('status_penawaran', '!=', '')->count();
 
-        // PEMBOBOTAN
+         // PEMBOBOTAN
         $maxDataUpdate = 115;
         $maxDataAkhir = 172;
         $maxDataPenawaran = 287;
-        $skorUpdate = min(1, $totalUpdateData / $maxDataUpdate) * 20;
-        $skorAkhir = min(1, $totalAkhirData / $maxDataAkhir) * 30;
-        $skorPenawaran = min(1, $totalPenawaran / $maxDataPenawaran) * 50;
 
+        $bobotUpdate = 20;
+        $bobotAkhir = 30;
+        $bobotPenawaran = 50;
+
+        $skorUpdate = (min($totalUpdateData, $maxDataUpdate) / 100) * $bobotUpdate;
+        $skorAkhir = (min($totalAkhirData, $maxDataAkhir) / 100) * $bobotAkhir;
+        $skorPenawaran = (min($totalPenawaran, $maxDataPenawaran) / 100) * $bobotPenawaran;
+        
         $persenProg = $skorUpdate + $skorAkhir + $skorPenawaran; // Skala 100%
         $progKpi = ($persenProg / 100) * 30;
 
