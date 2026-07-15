@@ -65,7 +65,7 @@
         </div>
 
         {{-- ================= STATISTIC CARDS (MODERN UI) ================= --}}
-        @if(auth()->user()->role === 'superadmin')
+        @if(in_array(auth()->user()->role, ['superadmin', 'spv']))
         <div class="row mb-3 fade-in">
             {{-- Total Penawaran --}}
             <div class="col-sm-6 col-md-3 mb-3">

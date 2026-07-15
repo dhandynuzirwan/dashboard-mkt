@@ -41,7 +41,7 @@
                                 <label class="form-label fw-bold">Target Minimal HPP (Bulan: {{ \Carbon\Carbon::createFromFormat('Y-m', $bulan_tahun)->translatedFormat('F Y') }})</label>
                                 <div class="input-group">
                                     <span class="input-group-text bg-light fw-bold">Rp</span>
-                                    <input type="text" id="target_minimal_display" class="form-control form-control-lg fw-bold text-primary format-rupiah" value="{{ number_format($target_minimal, 0, ',', '.') }}" required>
+                                    <input type="text" id="target_minimal_display" class="form-control form-control-lg fw-bold text-primary format-rupiah" value="{{ number_format($target_minimal, 0, ',', '.') }}" required {{ auth()->user()->role !== 'superadmin' ? 'readonly' : '' }}>
                                     <input type="hidden" name="target_minimal" id="target_minimal_real" value="{{ $target_minimal }}">
                                 </div>
                                 <small class="text-muted mt-2 d-block">Angka ini akan ditampilkan sebagai patokan target minimal perusahaan pada layar On Display Monitor.</small>
@@ -51,7 +51,7 @@
                                 <label class="form-label fw-bold">HPP / Bulan</label>
                                 <div class="input-group">
                                     <span class="input-group-text bg-light fw-bold">Rp</span>
-                                    <input type="text" id="hpp_per_bulan_display" class="form-control form-control-lg fw-bold text-success format-rupiah" value="{{ number_format($hpp_per_bulan ?? 0, 0, ',', '.') }}" required>
+                                    <input type="text" id="hpp_per_bulan_display" class="form-control form-control-lg fw-bold text-success format-rupiah" value="{{ number_format($hpp_per_bulan ?? 0, 0, ',', '.') }}" required {{ auth()->user()->role !== 'superadmin' ? 'readonly' : '' }}>
                                     <input type="hidden" name="hpp_per_bulan" id="hpp_per_bulan_real" value="{{ $hpp_per_bulan ?? 0 }}">
                                 </div>
                                 <small class="text-muted mt-2 d-block">Angka ini digunakan untuk menghitung persentase HPP di layar Data KPI Superadmin.</small>

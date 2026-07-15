@@ -212,7 +212,7 @@
                                                 @endforeach
                                             </div>
                                             @if($item->link_cv)
-                                                <a href="{{ $item->link_cv }}" target="_blank" class="btn btn-xs btn-outline-info rounded-pill hover-lift shadow-sm"><i class="fas fa-link me-1"></i> Buka CV</a>
+                                                <a href="{{ filter_var($item->link_cv, FILTER_VALIDATE_URL) ? $item->link_cv : asset('storage/' . $item->link_cv) }}" target="_blank" class="btn btn-xs btn-outline-info rounded-pill hover-lift shadow-sm"><i class="fas fa-link me-1"></i> Buka CV</a>
                                             @else
                                                 <span class="text-muted" style="font-size: 11px;">(Tidak ada CV)</span>
                                             @endif
@@ -246,7 +246,7 @@
                                     <!-- Edit Modal -->
                                     <div class="modal fade" id="editModal{{ $item->id }}" tabindex="-1" aria-hidden="true">
                                         <div class="modal-dialog modal-lg">
-                                            <form action="{{ route('master-instruktur.update', $item->id) }}" method="POST">
+                                            <form action="{{ route('master-instruktur.update', $item->id) }}" method="POST" enctype="multipart/form-data">
                                                 @csrf
                                                 @method('PUT')
                                                 <div class="modal-content">
@@ -286,8 +286,11 @@
                                                                 <input type="text" class="form-control form-control-sm input-modern" name="no_rek" value="{{ $item->no_rek }}">
                                                             </div>
                                                             <div class="col-md-6 mb-3">
-                                                                <label class="label-modern">Link CV (Opsional)</label>
-                                                                <input type="url" class="form-control form-control-sm input-modern" name="link_cv" value="{{ $item->link_cv }}">
+                                                                <label class="label-modern">Upload CV (PDF, Maks 2MB) (Opsional)</label>
+                                                                <input type="file" class="form-control form-control-sm input-modern" name="link_cv" accept=".pdf">
+                                                                @if($item->link_cv)
+                                                                    <small class="text-muted d-block mt-1"><a href="{{ filter_var($item->link_cv, FILTER_VALIDATE_URL) ? $item->link_cv : asset('storage/' . $item->link_cv) }}" target="_blank">Lihat CV Saat Ini</a></small>
+                                                                @endif
                                                             </div>
                                                         </div>
                                                     </div>
@@ -317,7 +320,7 @@
 <!-- Tambah Modal -->
 <div class="modal fade" id="tambahModal" tabindex="-1" aria-hidden="true">
     <div class="modal-dialog modal-lg">
-        <form action="{{ route('master-instruktur.store') }}" method="POST">
+        <form action="{{ route('master-instruktur.store') }}" method="POST" enctype="multipart/form-data">
             @csrf
             <div class="modal-content">
                 <div class="modal-header">
@@ -361,8 +364,8 @@
                             <input type="text" class="form-control form-control-sm input-modern" name="no_rek">
                         </div>
                         <div class="col-md-6 mb-3">
-                            <label class="label-modern">Link CV (Opsional)</label>
-                            <input type="url" class="form-control form-control-sm input-modern" name="link_cv">
+                            <label class="label-modern">Upload CV (PDF, Maks 2MB) (Opsional)</label>
+                            <input type="file" class="form-control form-control-sm input-modern" name="link_cv" accept=".pdf">
                         </div>
                     </div>
                 </div>

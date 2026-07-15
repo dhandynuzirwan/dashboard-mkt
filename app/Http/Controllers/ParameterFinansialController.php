@@ -23,6 +23,10 @@ class ParameterFinansialController extends Controller
 
     public function update(Request $request)
     {
+        if (auth()->user()->role !== 'superadmin') {
+            return redirect()->back()->with('error', 'Hanya Superadmin yang dapat mengubah Nilai Target Omset.');
+        }
+
         $request->validate([
             'bulan_tahun' => 'required|date_format:Y-m',
             'target_minimal' => 'required|numeric|min:0',

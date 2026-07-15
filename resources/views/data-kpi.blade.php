@@ -184,7 +184,6 @@
             }
         </style>
 
-        @if(auth()->user()->role !== 'marketing')
         {{-- ================= CARD DATA KPI (MICRO CARDS 4x3) ================= --}}
         <div class="row">
             @foreach ($marketings as $m)
@@ -292,7 +291,6 @@
                 </div>
             @endif
         </div>
-        @endif
 
         {{-- ================= TABEL BREAKDOWN KPI ================= --}}
         <div class="card card-round shadow-sm border-0 mt-2 mb-4 fade-in">

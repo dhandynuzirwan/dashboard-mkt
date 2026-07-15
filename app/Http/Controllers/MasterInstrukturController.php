@@ -96,8 +96,13 @@ class MasterInstrukturController extends Controller
             'rate_harga' => 'nullable|numeric',
             'no_rek' => 'nullable|string|max:255',
             'bank' => 'nullable|string|max:255',
-            'link_cv' => 'nullable|url',
+            'link_cv' => 'nullable|file|mimes:pdf|max:2048',
         ]);
+
+        $link_cv_path = null;
+        if ($request->hasFile('link_cv')) {
+            $link_cv_path = $request->file('link_cv')->store('cv_instruktur', 'public');
+        }
 
         MasterInstruktur::create([
             'nama_instruktur' => $request->nama_instruktur,
@@ -107,7 +112,7 @@ class MasterInstrukturController extends Controller
             'rate_harga' => $request->rate_harga,
             'no_rek' => $request->no_rek,
             'bank' => $request->bank,
-            'link_cv' => $request->link_cv,
+            'link_cv' => $link_cv_path,
             'user_id' => auth()->id(),
         ]);
 
@@ -124,10 +129,15 @@ class MasterInstrukturController extends Controller
             'rate_harga' => 'nullable|numeric',
             'no_rek' => 'nullable|string|max:255',
             'bank' => 'nullable|string|max:255',
-            'link_cv' => 'nullable|url',
+            'link_cv' => 'nullable|file|mimes:pdf|max:2048',
         ]);
 
         $instruktur = MasterInstruktur::findOrFail($id);
+
+        $link_cv_path = $instruktur->link_cv;
+        if ($request->hasFile('link_cv')) {
+            $link_cv_path = $request->file('link_cv')->store('cv_instruktur', 'public');
+        }
         $instruktur->update([
             'nama_instruktur' => $request->nama_instruktur,
             'wilayah_instansi' => $request->wilayah_instansi,
@@ -136,7 +146,7 @@ class MasterInstrukturController extends Controller
             'rate_harga' => $request->rate_harga,
             'no_rek' => $request->no_rek,
             'bank' => $request->bank,
-            'link_cv' => $request->link_cv,
+            'link_cv' => $link_cv_path,
         ]);
 
         return redirect()->route('master-instruktur.index')->with('success', 'Data Instruktur berhasil diupdate.');
