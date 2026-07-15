@@ -84,7 +84,9 @@ trait KpiCalculationTrait
             $q->where("marketing_id", $user->id)
               ->whereBetween("tanggal_prospek", [$start . " 00:00:00", $end . " 23:59:59"]); 
         })->get();
-        $totalPenawaran = $cta->whereNotNull("status_penawaran")->where("status_penawaran", "!=", "")->count();
+        $totalPenawaranBase = $cta->whereNotNull("status_penawaran")->where("status_penawaran", "!=", "")->count();
+        $tambahanMasukPenawaran = $hitungStatus("MASUK PENAWARAN");
+        $totalPenawaran = $totalPenawaranBase + $tambahanMasukPenawaran;
 
         $maxDataUpdate = 115;
         $maxDataAkhir = 172;

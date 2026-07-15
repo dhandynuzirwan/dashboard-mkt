@@ -138,7 +138,9 @@ class SalaryController extends Controller
         }
 
         // 3. UPDATE PENAWARAN
-        $totalPenawaran = (clone $baseCta)->whereNotNull('status_penawaran')->where('status_penawaran', '!=', '')->count();
+        $totalPenawaranBase = (clone $baseCta)->whereNotNull('status_penawaran')->where('status_penawaran', '!=', '')->count();
+        $tambahanMasukPenawaran = $hitungStatus('MASUK PENAWARAN');
+        $totalPenawaran = $totalPenawaranBase + $tambahanMasukPenawaran;
 
          // PEMBOBOTAN
         $maxDataUpdate = 115;

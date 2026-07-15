@@ -153,7 +153,9 @@ class KpiController extends Controller
                 $q->where('marketing_id', $user->id)
                   ->whereBetween('tanggal_prospek', [$start . " 00:00:00", $end . " 23:59:59"]); 
             })->get();
-            $totalPenawaran = $cta->whereNotNull('status_penawaran')->where('status_penawaran', '!=', '')->count();
+            $totalPenawaranBase = $cta->whereNotNull('status_penawaran')->where('status_penawaran', '!=', '')->count();
+            $tambahanMasukPenawaran = $hitungStatus('MASUK PENAWARAN');
+            $totalPenawaran = $totalPenawaranBase + $tambahanMasukPenawaran;
 
             // PEMBOBOTAN
             $maxDataUpdate = 115;
