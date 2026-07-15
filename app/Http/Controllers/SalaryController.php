@@ -149,10 +149,16 @@ class SalaryController extends Controller
         $bobotAkhir = 30;
         $bobotPenawaran = 50;
 
-        $skorUpdate = (min($totalUpdateData, $maxDataUpdate) / 100) * $bobotUpdate;
-        $skorAkhir = (min($totalAkhirData, $maxDataAkhir) / 100) * $bobotAkhir;
-        $skorPenawaran = (min($totalPenawaran, $maxDataPenawaran) / 100) * $bobotPenawaran;
-        
+        // Dibagi 100, tetapi hasil tidak boleh melebihi bobot masing-masing
+        // $skorUpdate = min((($totalUpdateData / 100) * $bobotUpdate), $bobotUpdate);
+        // $skorAkhir = min((($totalAkhirData / 100) * $bobotAkhir), $bobotAkhir);
+        // $skorPenawaran = min((($totalPenawaran / 100) * $bobotPenawaran), $bobotPenawaran);
+
+        // Atau batasi dulu jumlah datanya
+        $skorUpdate = min((min($totalUpdateData, $maxDataUpdate) / 100) * $bobotUpdate, $bobotUpdate);
+        $skorAkhir = min((min($totalAkhirData, $maxDataAkhir) / 100) * $bobotAkhir, $bobotAkhir);
+        $skorPenawaran = min((min($totalPenawaran, $maxDataPenawaran) / 100) * $bobotPenawaran, $bobotPenawaran);
+
         $persenProg = $skorUpdate + $skorAkhir + $skorPenawaran; // Skala 100%
         $progKpi = ($persenProg / 100) * 30;
 
