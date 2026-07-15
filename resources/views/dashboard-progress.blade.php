@@ -721,13 +721,14 @@
                         <th>Hold</th>
                         <th>Kalah Harga</th>
                         <th>Cancel</th>
-                        <th class="pe-4 text-primary" style="width: 12%;">Total Follow Up</th>
+                        <th class="text-primary" style="width: 12%;">Total Follow Up</th>
+                        <th class="pe-4 text-success" style="width: 12%;">Total Semua</th>
                     </tr>
                 </thead>
                 <tbody style="font-size: 13px;">
                     @php
                         $t_masuk_penawaran = $t_perpanjangan = 0;
-                        $t_review = $t_deal = $t_hold_penawaran = $t_kalah = $t_cancel = $t_total_followup = 0;
+                        $t_review = $t_deal = $t_hold_penawaran = $t_kalah = $t_cancel = $t_total_followup = $t_total_semua = 0;
                     @endphp
 
                     @foreach ($marketings as $m)
@@ -745,10 +746,13 @@
                             <td><span class="badge badge-soft-warning text-dark px-2.5 py-1.5 rounded-pill fw-bold">{{ $m->hold }}</span></td>
                             <td><span class="badge badge-soft-danger px-2.5 py-1.5 rounded-pill fw-bold">{{ $m->kalah }}</span></td>
                             <td><span class="badge badge-soft-danger px-2.5 py-1.5 rounded-pill fw-bold">{{ $m->cancel }}</span></td>
-                            <td class="pe-4">
+                            <td>
                                 <button class="btn btn-sm btn-primary btn-round btn-detail fw-bold px-2 py-1 shadow-sm hover-lift" style="font-size: 11px;" data-id="{{ $m->id }}">
                                     {{ $m->total_penawaran }} Detail
                                 </button>
+                            </td>
+                            <td class="pe-4 fw-bolder text-success fs-6">
+                                {{ ($m->count_penawaran ?? 0) + $m->total_penawaran }}
                             </td>
                         </tr>
                         @php
@@ -760,6 +764,7 @@
                             $t_kalah += $m->kalah;
                             $t_cancel += $m->cancel;
                             $t_total_followup += $m->total_penawaran;
+                            $t_total_semua += ($m->count_penawaran ?? 0) + $m->total_penawaran;
                         @endphp
                     @endforeach
 
@@ -772,7 +777,8 @@
                         <td>{{ $t_hold_penawaran }}</td>
                         <td>{{ $t_kalah }}</td>
                         <td>{{ $t_cancel }}</td>
-                        <td class="pe-4 text-primary" style="font-size: 12px;">{{ $t_total_followup }} Detail</td>
+                        <td class="text-primary" style="font-size: 12px;">{{ $t_total_followup }} Detail</td>
+                        <td class="pe-4 text-success fs-6">{{ $t_total_semua }}</td>
                     </tr>
                 </tbody>
             </table>
