@@ -417,15 +417,36 @@ class DashboardController extends Controller
 
         $filterStatus = $request->query('filter_status');
 
-        $details = \App\Models\Cta::whereHas('prospek', function ($q) use ($id, $startDate, $endDate, $filterStatus) {
-            $q->where('marketing_id', $id)
-              ->whereBetween('tanggal_prospek', [$startDate, $endDate]);
-            if ($filterStatus) {
-                $q->where('status', $filterStatus);
+        if ($filterStatus) {
+            $details = collect();
+            $prospeks = \App\Models\Prospek::where('marketing_id', $id)
+                ->whereBetween('tanggal_prospek', [$startDate, $endDate])
+                ->where('status', $filterStatus)
+                ->with('cta')
+                ->get();
+            
+            foreach($prospeks as $p) {
+                if ($p->cta->count() > 0) {
+                    foreach($p->cta as $c) {
+                        $c->setRelation('prospek', $p);
+                        $details->push($c);
+                    }
+                } else {
+                    $dummyCta = new \App\Models\Cta();
+                    $dummyCta->prospek_id = $p->id;
+                    $dummyCta->id = null;
+                    $dummyCta->setRelation('prospek', $p);
+                    $details->push($dummyCta);
+                }
             }
-        })
-            ->with('prospek')
-            ->get();
+        } else {
+            $details = \App\Models\Cta::whereHas('prospek', function ($q) use ($id, $startDate, $endDate) {
+                $q->where('marketing_id', $id)
+                  ->whereBetween('tanggal_prospek', [$startDate, $endDate]);
+            })
+                ->with('prospek')
+                ->get();
+        }
 
         return view('partials.modal-detail-penawaran', compact('details'));
     }

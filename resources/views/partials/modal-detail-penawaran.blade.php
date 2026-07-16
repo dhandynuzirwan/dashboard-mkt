@@ -133,9 +133,11 @@
                             <a href="{{ route('prospek.edit', $d->prospek_id) }}" target="_blank" class="btn btn-sm btn-outline-primary shadow-sm" style="font-size: 10px; border-radius: 6px;">
                                 <i class="fas fa-edit me-1"></i> Edit Prospek
                             </a>
-                            <a href="{{ route('cta.edit', $d->id) }}" target="_blank" class="btn btn-sm btn-outline-info shadow-sm" style="font-size: 10px; border-radius: 6px;">
-                                <i class="fas fa-edit me-1"></i> Edit CTA
-                            </a>
+                            @if($d->id)
+                                <a href="{{ route('cta.edit', $d->id) }}" target="_blank" class="btn btn-sm btn-outline-info shadow-sm" style="font-size: 10px; border-radius: 6px;">
+                                    <i class="fas fa-edit me-1"></i> Edit CTA
+                                </a>
+                            @endif
                         </div>
                     </td>
                 </tr>
