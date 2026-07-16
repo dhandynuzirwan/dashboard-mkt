@@ -804,7 +804,7 @@
 
 {{-- Modal Penawaran (Diisi via AJAX dari Controller) --}}
 <div class="modal fade" id="modalDetail" tabindex="-1" aria-hidden="true">
-    <div class="modal-dialog modal-lg modal-dialog-centered">
+    <div class="modal-dialog modal-xl modal-dialog-centered">
         <div class="modal-content card-modern shadow-lg">
             <div class="modal-header border-bottom-0 pb-0">
                 <h5 class="modal-title fw-bolder text-dark">
