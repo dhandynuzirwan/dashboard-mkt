@@ -415,9 +415,14 @@ class DashboardController extends Controller
         $startDate = \Carbon\Carbon::parse($start)->startOfDay();
         $endDate = \Carbon\Carbon::parse($end)->endOfDay();
 
-        $details = \App\Models\Cta::whereHas('prospek', function ($q) use ($id, $startDate, $endDate) {
+        $filterStatus = $request->query('filter_status');
+
+        $details = \App\Models\Cta::whereHas('prospek', function ($q) use ($id, $startDate, $endDate, $filterStatus) {
             $q->where('marketing_id', $id)
               ->whereBetween('tanggal_prospek', [$startDate, $endDate]);
+            if ($filterStatus) {
+                $q->where('status', $filterStatus);
+            }
         })
             ->with('prospek')
             ->get();

@@ -739,7 +739,16 @@
                                     <i class="fas fa-id-badge me-1 opacity-75"></i> {{ $m->name }}
                                 </span>
                             </td>
-                            <td class="fw-bold text-primary">{!! $renderLink($m->count_penawaran ?? 0, $m->id, 'MASUK PENAWARAN') !!}</td>
+                            <td class="fw-bold text-primary">
+                                @if(($m->count_penawaran ?? 0) > 0)
+                                    <a href="javascript:void(0)" class="text-decoration-none btn-detail" 
+                                       data-id="{{ $m->id }}" data-status="MASUK PENAWARAN">
+                                       {{ $m->count_penawaran ?? 0 }}
+                                    </a>
+                                @else
+                                    -
+                                @endif
+                            </td>
                             {{-- <td>{!! $renderLink($m->count_perpanjangan ?? 0, $m->id, 'REQUES PERPANJANGAN SERTIFIKAT') !!}</td> --}}
                             <td><span class="badge badge-soft-info px-2.5 py-1.5 rounded-pill fw-bold">{{ $m->review }}</span></td>
                             <td><span class="badge badge-soft-success px-2.5 py-1.5 rounded-pill fw-bold">{{ $m->deal }}</span></td>
@@ -1004,12 +1013,13 @@
             document.querySelectorAll('.btn-detail').forEach(button => {
                 button.addEventListener('click', function() {
                     const mId = this.getAttribute('data-id');
+                    const status = this.getAttribute('data-status') || '';
                     const modalBody = document.getElementById('detailBody');
                     
                     modalDetail.show();
                     modalBody.innerHTML = `<div class="text-center py-4"><div class="spinner-border text-warning" role="status"></div><p class="mt-2 text-muted small">Memuat data penawaran...</p></div>`;
 
-                    fetch(`/marketing-detail/${mId}?start={{ $start }}&end={{ $end }}`)
+                    fetch(`/marketing-detail/${mId}?start={{ $start }}&end={{ $end }}&filter_status=${status}`)
                         .then(response => response.text())
                         .then(html => { modalBody.innerHTML = html; })
                         .catch(error => { modalBody.innerHTML = '<p class="text-center text-danger py-4">Gagal memuat data.</p>'; });

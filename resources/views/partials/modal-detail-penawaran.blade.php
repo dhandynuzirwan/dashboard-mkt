@@ -11,9 +11,14 @@
         </thead>
         @php
             // 1. FILTER CERDAS: Hanya ambil data yang harga_penawarannya sudah diisi dan lebih dari 0
-            $filteredDetails = $details->filter(function($d) {
-                return !empty($d->harga_penawaran) && $d->harga_penawaran > 0;
-            }); 
+            // KECUALI jika difilter berdasarkan status prospek (agar user bisa melihat CTA yang kosong/belum ada harga/status penawaran)
+            if(request()->has('filter_status') && request()->query('filter_status') != '') {
+                $filteredDetails = $details;
+            } else {
+                $filteredDetails = $details->filter(function($d) {
+                    return !empty($d->harga_penawaran) && $d->harga_penawaran > 0;
+                }); 
+            }
             
             // 2. Hitung Grand Total otomatis
             $grandTotal = $filteredDetails->sum(function($d) {
