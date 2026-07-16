@@ -2,11 +2,12 @@
     <table class="table table-hover table-borderless align-middle border-start border-end border-bottom rounded-3 overflow-hidden shadow-sm" style="font-size: 13px;">
         <thead class="bg-light text-secondary" style="border-bottom: 2px solid #e9ecef;">
             <tr>
-                <th class="ps-4 py-3" width="20%">INFO PROSPEK</th>
+                <th class="text-center py-3" width="5%">NO</th>
+                <th class="ps-3 py-3" width="20%">INFO PROSPEK</th>
                 <th width="30%">DETAIL PELATIHAN</th>
                 <th width="20%">NILAI PENAWARAN</th>
-                <th class="text-center py-3" width="15%">STATUS</th>
-                <th class="text-center py-3 pe-4" width="15%">AKSI</th>
+                <th class="text-center py-3" width="13%">STATUS</th>
+                <th class="text-center py-3 pe-4" width="12%">AKSI</th>
             </tr>
         </thead>
         @php
@@ -27,11 +28,16 @@
         @endphp
         <tbody>
             {{-- Loop data yang sudah difilter (Hanya yang punya harga) --}}
-            @forelse($filteredDetails as $d)
+            @forelse($filteredDetails as $index => $d)
                 <tr class="border-bottom">
                     
+                    {{-- Kolom Nomor --}}
+                    <td class="text-center py-3 fw-bold text-muted">
+                        {{ $index + 1 }}
+                    </td>
+
                     {{-- Kolom 1: Perusahaan & Tanggal --}}
-                    <td class="ps-4 py-3">
+                    <td class="ps-3 py-3">
                         <div class="fw-bold text-dark" style="font-size: 14px;">{{ $d->prospek->perusahaan ?? 'N/A' }}</div>
                         <small class="text-muted mt-1 d-block">
                             <i class="fas fa-calendar-alt me-1 text-primary"></i> 
@@ -99,7 +105,7 @@
                             $statusKey = strtolower($d->status_penawaran ?? '');
                             $current_status = $status_labels[$statusKey] ?? [
                                 'label' => empty($d->status_penawaran) ? 'BELUM ADA STATUS' : ucwords(str_replace('_', ' ', $d->status_penawaran)), 
-                                'class' => 'bg-secondary'
+                                'class' => empty($d->status_penawaran) ? 'bg-light text-secondary border' : 'bg-secondary'
                             ];
                         @endphp
 
@@ -135,7 +141,7 @@
                 </tr>
             @empty
                 <tr>
-                    <td colspan="5" class="text-center py-5 text-muted bg-light">
+                    <td colspan="6" class="text-center py-5 text-muted bg-light">
                         <i class="fas fa-file-invoice-dollar fs-1 text-secondary opacity-50 mb-3 d-block"></i>
                         <p class="mb-0 fw-medium">Tidak ada data yang sudah diisi nominal penawarannya.</p>
                     </td>
@@ -147,7 +153,7 @@
         @if($filteredDetails->count() > 0)
         <tfoot class="bg-light" style="border-top: 2px solid #e2e8f0;">
             <tr>
-                <td colspan="3" class="text-end py-3 pe-4 fw-bolder text-dark" style="font-size: 13px;">
+                <td colspan="4" class="text-end py-3 pe-4 fw-bolder text-dark" style="font-size: 13px;">
                     TOTAL NILAI PENAWARAN:
                 </td>
                 <td colspan="2" class="py-3 text-start">
