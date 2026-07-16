@@ -422,12 +422,12 @@ class DashboardController extends Controller
             $prospeks = \App\Models\Prospek::where('marketing_id', $id)
                 ->whereBetween('tanggal_prospek', [$startDate, $endDate])
                 ->where('status', $filterStatus)
-                ->with('cta')
+                ->with('ctas')
                 ->get();
             
             foreach($prospeks as $p) {
-                if ($p->cta->count() > 0) {
-                    foreach($p->cta as $c) {
+                if ($p->ctas->count() > 0) {
+                    foreach($p->ctas as $c) {
                         $c->setRelation('prospek', $p);
                         $details->push($c);
                     }
