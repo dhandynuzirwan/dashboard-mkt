@@ -105,7 +105,7 @@
                             $statusKey = strtolower($d->status_penawaran ?? '');
                             $current_status = $status_labels[$statusKey] ?? [
                                 'label' => empty($d->status_penawaran) ? 'BELUM ADA STATUS' : ucwords(str_replace('_', ' ', $d->status_penawaran)), 
-                                'class' => empty($d->status_penawaran) ? 'bg-light text-secondary border' : 'bg-secondary'
+                                'class' => empty($d->status_penawaran) ? 'bg-light text-muted border' : 'bg-secondary'
                             ];
                         @endphp
 
