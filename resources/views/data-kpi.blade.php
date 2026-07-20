@@ -333,16 +333,16 @@
                                 
                                 <td>
 
-                                    <div class="d-flex justify-content-between mb-1" style="max-width: 200px;">
-                                        <span class="text-muted">Update Data:</span> <span class="fw-bold">{{ $m->detail_update_data }} Data</span>
+                                    <div class="d-flex justify-content-between mb-1" style="max-width: 250px;">
+                                        <span class="text-muted">Update Data (20%):</span> <span class="fw-bold">{{ $m->detail_update_data }} Data ({{ number_format($m->skor_update, 1) }}%)</span>
                                     </div>
-                                    <div class="d-flex justify-content-between mb-1" style="max-width: 200px;">
-                                        <span class="text-muted">Akhir Data:</span> <span class="fw-bold">{{ $m->detail_akhir_data }} Data</span>
+                                    <div class="d-flex justify-content-between mb-1" style="max-width: 250px;">
+                                        <span class="text-muted">Akhir Data (30%):</span> <span class="fw-bold">{{ $m->detail_akhir_data }} Data ({{ number_format($m->skor_akhir, 1) }}%)</span>
                                     </div>
-                                    <div class="d-flex justify-content-between mb-1" style="max-width: 200px;">
-                                        <span class="text-muted">Penawaran:</span> <span class="fw-bold">{{ $m->detail_penawaran }} Data</span>
+                                    <div class="d-flex justify-content-between mb-1" style="max-width: 250px;">
+                                        <span class="text-muted">Penawaran (50%):</span> <span class="fw-bold">{{ $m->detail_penawaran }} Data ({{ number_format($m->skor_penawaran, 1) }}%)</span>
                                     </div>
-                                    <div class="d-flex justify-content-between mt-2 pt-1 border-top border-light" style="max-width: 200px;">
+                                    <div class="d-flex justify-content-between mt-2 pt-1 border-top border-light" style="max-width: 250px;">
                                         <span class="fw-bold">Total Progress:</span> <span class="fw-bolder text-warning">{{ number_format($m->progress_kpi, 1) }}%</span>
                                     </div>
                                 </td>
