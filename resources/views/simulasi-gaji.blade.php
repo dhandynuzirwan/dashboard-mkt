@@ -73,8 +73,8 @@
                     <div class="card-body p-3">
                         <div class="row align-items-center">
                             <div class="col-icon">
-                                <div class="icon-big text-center icon-white rounded-circle">
-                                    <i class="fas fa-wallet"></i>
+                                <div class="icon-big text-center rounded-circle">
+                                    <i class="fas fa-wallet text-white"></i>
                                 </div>
                             </div>
                             <div class="col col-stats ms-3 ms-sm-0">
@@ -93,8 +93,8 @@
                     <div class="card-body p-3">
                         <div class="row align-items-center">
                             <div class="col-icon">
-                                <div class="icon-big text-center icon-white rounded-circle">
-                                    <i class="fas fa-chart-line"></i>
+                                <div class="icon-big text-center rounded-circle">
+                                    <i class="fas fa-chart-line text-white"></i>
                                 </div>
                             </div>
                             <div class="col col-stats ms-3 ms-sm-0">
@@ -113,8 +113,8 @@
                     <div class="card-body p-3">
                         <div class="row align-items-center">
                             <div class="col-icon">
-                                <div class="icon-big text-center icon-white rounded-circle">
-                                    <i class="fas fa-coins"></i>
+                                <div class="icon-big text-center rounded-circle">
+                                    <i class="fas fa-coins text-white"></i>
                                 </div>
                             </div>
                             <div class="col col-stats ms-3 ms-sm-0">
