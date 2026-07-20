@@ -259,6 +259,8 @@ class SalaryController extends Controller
         $total_fee_dikeluarkan = 0;
         $rasio_fee_revenue = 0;
         $rasio_gaji_revenue = 0;
+        $total_income = 0;
+        $total_thp = 0;
 
         if (auth()->user()->role === 'superadmin') {
             $total_kpi_avg = $marketings->count() > 0 ? $marketings->avg('kpi_persen') : 0;
@@ -283,7 +285,8 @@ class SalaryController extends Controller
         return view('simulasi-gaji', compact(
             'marketings', 'hariEfektif', 'start', 'end', 'all_marketing',
             'total_kpi_avg', 'total_fee_marketing', 'komisi_spv', 'komisi_tl',
-            'total_fee_dikeluarkan', 'rasio_fee_revenue', 'rasio_gaji_revenue'
+            'total_fee_dikeluarkan', 'rasio_fee_revenue', 'rasio_gaji_revenue',
+            'total_income', 'total_thp'
         ));
     }
     

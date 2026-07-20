@@ -65,6 +65,71 @@
             </div>
         </div>
 
+        @if(auth()->user()->role !== 'marketing')
+        {{-- ================= STAT CARDS SUPERADMIN ================= --}}
+        <div class="row fade-in mb-3">
+            <div class="col-sm-6 col-md-4">
+                <div class="card card-stats card-round shadow-sm border-0 mb-4" style="background: linear-gradient(135deg, #10b981 0%, #059669 100%);">
+                    <div class="card-body p-3">
+                        <div class="row align-items-center">
+                            <div class="col-icon">
+                                <div class="icon-big text-center icon-white rounded-circle">
+                                    <i class="fas fa-wallet"></i>
+                                </div>
+                            </div>
+                            <div class="col col-stats ms-3 ms-sm-0">
+                                <div class="numbers text-white">
+                                    <p class="card-category text-white mb-1 fw-bold text-uppercase" style="font-size: 11px; opacity: 0.8;">Total Take Home Pay</p>
+                                    <h4 class="card-title text-white fw-bolder mb-0 fs-5">Rp {{ number_format($total_thp, 0, ',', '.') }}</h4>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="col-sm-6 col-md-4">
+                <div class="card card-stats card-round shadow-sm border-0 mb-4" style="background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%);">
+                    <div class="card-body p-3">
+                        <div class="row align-items-center">
+                            <div class="col-icon">
+                                <div class="icon-big text-center icon-white rounded-circle">
+                                    <i class="fas fa-chart-line"></i>
+                                </div>
+                            </div>
+                            <div class="col col-stats ms-3 ms-sm-0">
+                                <div class="numbers text-white">
+                                    <p class="card-category text-white mb-1 fw-bold text-uppercase" style="font-size: 11px; opacity: 0.8;">Total Income</p>
+                                    <h4 class="card-title text-white fw-bolder mb-0 fs-5">Rp {{ number_format($total_income, 0, ',', '.') }}</h4>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-sm-6 col-md-4">
+                <div class="card card-stats card-round shadow-sm border-0 mb-4" style="background: linear-gradient(135deg, #8b5cf6 0%, #7c3aed 100%);">
+                    <div class="card-body p-3">
+                        <div class="row align-items-center">
+                            <div class="col-icon">
+                                <div class="icon-big text-center icon-white rounded-circle">
+                                    <i class="fas fa-coins"></i>
+                                </div>
+                            </div>
+                            <div class="col col-stats ms-3 ms-sm-0">
+                                <div class="numbers text-white">
+                                    <p class="card-category text-white mb-1 fw-bold text-uppercase" style="font-size: 11px; opacity: 0.8;">Total Fee Marketing</p>
+                                    <h4 class="card-title text-white fw-bolder mb-0 fs-5">Rp {{ number_format($total_fee_marketing, 0, ',', '.') }}</h4>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        @endif
+
         {{-- ================= STYLES UNTUK MICRO CARDS ================= --}}
 <style>
     .micro-card-wrapper {
