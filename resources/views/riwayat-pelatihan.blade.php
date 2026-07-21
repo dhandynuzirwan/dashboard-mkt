@@ -775,7 +775,7 @@
                                         </div>
                                     </div>
                                     <div class="col-sm-4">
-                                        <div class="text-muted small fw-bold mb-2">Status Pengiriman Sertifikat</div>
+                                        <div class="text-muted small fw-bold mb-2">Status Pengiriman</div>
                                         <div>
                                             @if($item->status_pengiriman == 'Dikirim')
                                                 <span class="badge bg-primary-subtle text-primary px-3 py-2 fs-6 w-100 text-start shadow-sm"><i class="fas fa-truck me-1"></i> Dikirim</span>
