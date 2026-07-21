@@ -730,16 +730,17 @@
                                 <div class="row g-3 mt-0 mb-3">
                                     <div class="col-sm-6">
                                         <div class="text-muted small fw-bold mb-2">Status Pengiriman Sertifikat</div>
-                                        <form action="{{ route('riwayat.pelatihan.update', $item->id) }}" method="POST" class="d-inline">
-                                            @csrf
-                                            @method('PUT')
-                                            <select name="status_pengiriman" class="form-select form-select-sm fw-bold bg-dark text-white border-0 shadow-sm px-3 py-2 fs-6 rounded-3" onchange="this.form.submit()" style="width: 100%; appearance: none; cursor: pointer;">
-                                                <option value="Belum Info" {{ ($item->status_pengiriman == 'Belum Info' || !$item->status_pengiriman) ? 'selected' : '' }}>Belum Info</option>
-                                                <option value="Diproses" {{ $item->status_pengiriman == 'Diproses' ? 'selected' : '' }}>Diproses</option>
-                                                <option value="Dikirim" {{ $item->status_pengiriman == 'Dikirim' ? 'selected' : '' }}>Dikirim</option>
-                                                <option value="Diterima" {{ $item->status_pengiriman == 'Diterima' ? 'selected' : '' }}>Diterima</option>
-                                            </select>
-                                        </form>
+                                        <div>
+                                            @if($item->status_pengiriman == 'Dikirim')
+                                                <span class="badge bg-primary-subtle text-primary px-3 py-2 fs-6 w-100 text-start shadow-sm"><i class="fas fa-truck me-1"></i> Dikirim</span>
+                                            @elseif($item->status_pengiriman == 'Diterima')
+                                                <span class="badge bg-success-subtle text-success px-3 py-2 fs-6 w-100 text-start shadow-sm"><i class="fas fa-box-open me-1"></i> Diterima</span>
+                                            @elseif($item->status_pengiriman == 'Diproses')
+                                                <span class="badge bg-warning-subtle text-warning-emphasis px-3 py-2 fs-6 w-100 text-start shadow-sm"><i class="fas fa-box me-1"></i> Diproses</span>
+                                            @else
+                                                <span class="badge bg-secondary-subtle text-secondary px-3 py-2 fs-6 w-100 text-start shadow-sm"><i class="fas fa-minus-circle me-1"></i> Belum Info</span>
+                                            @endif
+                                        </div>
                                     </div>
                                 </div>
                                 
@@ -769,16 +770,7 @@
                                     <div class="d-flex justify-content-between align-items-center mb-3 position-relative z-1">
                                         <div>
                                             <div class="text-info-emphasis small fw-bold mb-1">Status Paket</div>
-                                            <form action="{{ route('riwayat.pelatihan.update', $item->id) }}" method="POST" class="d-inline">
-                                                @csrf
-                                                @method('PUT')
-                                                <select name="status_pengiriman" class="form-select form-select-sm fw-bold bg-dark text-white border-0 shadow-sm px-3 py-2 fs-6 rounded-3" onchange="this.form.submit()" style="width: auto; min-width: 140px; appearance: none; cursor: pointer; text-align: center;">
-                                                    <option value="Belum Info" {{ ($item->status_pengiriman == 'Belum Info' || !$item->status_pengiriman) ? 'selected' : '' }}>Belum Info</option>
-                                                    <option value="Diproses" {{ $item->status_pengiriman == 'Diproses' ? 'selected' : '' }}>Diproses</option>
-                                                    <option value="Dikirim" {{ $item->status_pengiriman == 'Dikirim' ? 'selected' : '' }}>Dikirim</option>
-                                                    <option value="Diterima" {{ $item->status_pengiriman == 'Diterima' ? 'selected' : '' }}>Diterima</option>
-                                                </select>
-                                            </form>
+                                            <span class="badge bg-dark px-3 py-2 fs-6 shadow-sm">{{ $item->status_pengiriman ?? 'Belum Info' }}</span>
                                         </div>
                                         <div class="text-end">
                                             <div class="text-info-emphasis small fw-bold mb-1">Nomor Resi</div>
