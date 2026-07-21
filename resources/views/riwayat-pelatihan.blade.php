@@ -704,7 +704,7 @@
                                     <button type="button" class="btn btn-sm btn-light border py-1 px-2 rounded-3" data-bs-toggle="modal" data-bs-target="#editSertifikasiModal{{ $item->id }}"><i class="fas fa-edit text-warning"></i> Edit Sertifikasi</button>
                                 </div>
                                 <div class="row g-3 mb-3">
-                                    <div class="col-sm-6">
+                                    <div class="col-sm-4">
                                         <div class="text-muted small fw-bold mb-2">Status Kompetensi</div>
                                         <div>
                                             @if($item->status_kompeten == 'Kompeten')
@@ -716,7 +716,7 @@
                                             @endif
                                         </div>
                                     </div>
-                                    <div class="col-sm-6">
+                                    <div class="col-sm-4">
                                         <div class="text-muted small fw-bold mb-2">Status Sertifikat</div>
                                         <div>
                                             @if($item->status_sertif == 'Sudah Terbit')
@@ -726,9 +726,7 @@
                                             @endif
                                         </div>
                                     </div>
-                                </div>
-                                <div class="row g-3 mt-0 mb-3">
-                                    <div class="col-sm-6">
+                                    <div class="col-sm-4">
                                         <div class="text-muted small fw-bold mb-2">Status Pengiriman Sertifikat</div>
                                         <div>
                                             @if($item->status_pengiriman == 'Dikirim')
