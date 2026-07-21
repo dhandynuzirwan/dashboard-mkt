@@ -36,6 +36,7 @@ class RiwayatPelatihan extends Model
         'marketing',
         'pic',
         'status_kompeten',
+        'bukti_kompeten',
         'status_sertif',
         'scan_sertif',
         'keterangan_tambahan',

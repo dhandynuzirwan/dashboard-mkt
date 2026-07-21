@@ -98,10 +98,10 @@ class RiwayatPelatihanController extends Controller
 
     public function store(Request $request)
     {
-        $data = $request->except(['_token', 'cv', 'modul', 'laporan_pic', 'scan_sertif', 'foto']);
+        $data = $request->except(['_token', 'cv', 'modul', 'laporan_pic', 'scan_sertif', 'foto', 'bukti_kompeten']);
 
         // Handle file uploads
-        $fileFields = ['cv', 'modul', 'laporan_pic', 'scan_sertif', 'foto'];
+        $fileFields = ['cv', 'modul', 'laporan_pic', 'scan_sertif', 'foto', 'bukti_kompeten'];
         foreach ($fileFields as $field) {
             if ($request->hasFile($field)) {
                 $file = $request->file($field);
@@ -136,7 +136,7 @@ class RiwayatPelatihanController extends Controller
         $data = $request->except(['_token', '_method', 'block']);
 
         // Handle file uploads if any
-        $fileFields = ['cv', 'modul', 'laporan_pic', 'scan_sertif', 'foto'];
+        $fileFields = ['cv', 'modul', 'laporan_pic', 'scan_sertif', 'foto', 'bukti_kompeten'];
         foreach ($fileFields as $field) {
             if ($request->hasFile($field)) {
                 $file = $request->file($field);

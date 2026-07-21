@@ -961,11 +961,18 @@
                     <div class="modal-body p-4">
                         <div class="mb-3">
                             <label class="form-label small fw-bold">Status Kompeten</label>
-                            <select name="status_kompeten" class="form-select rounded-3">
+                            <select name="status_kompeten" class="form-select rounded-3" onchange="toggleBuktiKompeten(this, {{ $item->id }})">
                                 <option value="" {{ empty($item->status_kompeten) ? 'selected' : '' }}>Pilih...</option>
                                 <option value="Kompeten" {{ $item->status_kompeten == 'Kompeten' ? 'selected' : '' }}>Kompeten</option>
                                 <option value="Belum" {{ $item->status_kompeten == 'Belum' ? 'selected' : '' }}>Belum Kompeten</option>
                             </select>
+                        </div>
+                        <div class="mb-3" id="bukti-kompeten-container-{{ $item->id }}" style="display: {{ $item->status_kompeten == 'Kompeten' ? 'block' : 'none' }};">
+                            <label class="form-label small fw-bold">Upload Bukti Kompeten (PDF)</label>
+                            <input type="file" name="bukti_kompeten" class="form-control form-control-sm" accept=".pdf">
+                            @if($item->bukti_kompeten)
+                                <a href="{{ asset('storage/' . $item->bukti_kompeten) }}" target="_blank" class="small mt-1 d-inline-block text-primary"><i class="fas fa-file-pdf me-1"></i> Lihat Bukti Saat Ini</a>
+                            @endif
                         </div>
                         <div class="mb-3">
                             <label class="form-label small fw-bold">Status Sertifikat</label>
@@ -1560,5 +1567,17 @@
         });
 
     });
+
+    function toggleBuktiKompeten(selectElement, id) {
+        const container = document.getElementById('bukti-kompeten-container-' + id);
+        if(container) {
+            if(selectElement.value === 'Kompeten') {
+                container.style.display = 'block';
+            } else {
+                container.style.display = 'none';
+            }
+        }
+    }
+    window.toggleBuktiKompeten = toggleBuktiKompeten;
 </script>
 @endpush
