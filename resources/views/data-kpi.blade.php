@@ -313,8 +313,8 @@
                             <tr>
                                 <td class="ps-4">
                                     <div class="mb-2">
-                                        @if($m->foto)
-                                            <img src="{{ asset('storage/' . $m->foto) }}" alt="Foto" class="rounded-circle shadow-sm border" style="width: 40px; height: 40px; object-fit: cover;">
+                                        @if($m->foto_profil)
+                                            <img src="{{ asset('storage/' . $m->foto_profil) }}" alt="Foto" class="rounded-circle shadow-sm border" style="width: 40px; height: 40px; object-fit: cover;">
                                         @else
                                             <div class="rounded-circle shadow-sm bg-primary-subtle border border-primary border-opacity-25 d-flex justify-content-center align-items-center text-primary fw-bold" style="width: 40px; height: 40px; font-size: 16px;">
                                                 {{ strtoupper(substr($m->name, 0, 1)) }}
