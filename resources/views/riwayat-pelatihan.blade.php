@@ -749,18 +749,36 @@
                                     
                                     @php
                                         $isLaporanLate = false;
-                                        if (!$item->laporan_pic && $item->tanggal_selesai) {
+                                        if ($item->tanggal_selesai) {
                                             $tglSelesai = \Carbon\Carbon::parse($item->tanggal_selesai)->startOfDay();
-                                            $now = \Carbon\Carbon::now()->startOfDay();
-                                            if (str_contains(strtoupper($item->jenis), 'BNSP') && $now->gt($tglSelesai->copy()->addDays(2))) {
+                                            $uploadTime = \Carbon\Carbon::now();
+                                            
+                                            if ($item->laporan_pic) {
+                                                $path = public_path($item->laporan_pic);
+                                                $storagePath = storage_path('app/public/' . str_replace('storage/', '', $item->laporan_pic));
+                                                
+                                                if (file_exists($path)) {
+                                                    $uploadTime = \Carbon\Carbon::createFromTimestamp(filemtime($path));
+                                                } elseif (file_exists($storagePath)) {
+                                                    $uploadTime = \Carbon\Carbon::createFromTimestamp(filemtime($storagePath));
+                                                }
+                                            }
+                                            $uploadTime = $uploadTime->startOfDay();
+                                            
+                                            if (str_contains(strtoupper($item->jenis), 'BNSP') && $uploadTime->gt($tglSelesai->copy()->addDays(2))) {
                                                 $isLaporanLate = true;
-                                            } elseif (str_contains(strtoupper($item->jenis), 'KEMNAKER') && $now->gt($tglSelesai->copy()->addDays(7))) {
+                                            } elseif (str_contains(strtoupper($item->jenis), 'KEMNAKER') && $uploadTime->gt($tglSelesai->copy()->addDays(7))) {
                                                 $isLaporanLate = true;
                                             }
                                         }
                                     @endphp
                                     @if($item->laporan_pic)
-                                        <a href="{{ getFileUrl($item->laporan_pic) }}" target="_blank" class="btn btn-sm btn-white border fw-bold hover-lift px-3"><i class="fas fa-file-alt text-success me-1"></i> Laporan</a>
+                                        <a href="{{ getFileUrl($item->laporan_pic) }}" target="_blank" class="btn btn-sm btn-white border fw-bold hover-lift px-3">
+                                            <i class="fas fa-file-alt text-success me-1"></i> Laporan
+                                            @if($isLaporanLate)
+                                                <span class="badge bg-warning text-dark ms-1" style="font-size: 0.65rem;">Telat</span>
+                                            @endif
+                                        </a>
                                     @elseif($isLaporanLate)
                                         <span class="btn btn-sm btn-warning-subtle text-warning-emphasis border fw-bold px-3" title="Terlambat Upload Laporan!"><i class="fas fa-exclamation-triangle me-1"></i> Laporan Telat</span>
                                     @endif
