@@ -132,6 +132,35 @@
                     </div>
                     
                     <div class="col-md-6">
+                        @if(Auth::user()->role === 'superadmin')
+                        {{-- 4. Permintaan Perizinan (Khusus Superadmin) --}}
+                        <div class="card border-0 shadow-sm rounded-4 mb-4 fade-in" style="animation-delay: 0.4s; height: 100%;">
+                            <div class="card-header bg-white border-0 pt-4 pb-0 px-4 d-flex justify-content-between align-items-center">
+                                <h5 class="fw-bold mb-0"><i class="fas fa-tasks text-primary me-2"></i> Permintaan Perizinan</h5>
+                                <span class="badge bg-danger rounded-pill">{{ count($pendingPerizinan) }} Pending</span>
+                            </div>
+                            <div class="card-body p-4 pt-3">
+                                <ul class="list-unstyled mb-0 position-relative">
+                                    @if(count($pendingPerizinan) > 0)
+                                        <div class="position-absolute border-start border-2 border-light" style="top: 10px; bottom: 10px; left: 5px; z-index: 1;"></div>
+                                        
+                                        @foreach($pendingPerizinan as $p)
+                                        <li class="position-relative ps-4 mb-4 z-2">
+                                            <div class="position-absolute bg-{{ $p['color'] }} border border-white border-2 rounded-circle" style="width: 14px; height: 14px; left: -1px; top: 3px;"></div>
+                                            <div class="small text-muted mb-1">{{ \Carbon\Carbon::parse($p['waktu'])->diffForHumans() }} &bull; <span class="fw-semibold text-dark">{{ $p['tipe'] }}</span></div>
+                                            <div class="small fw-semibold text-dark">Diajukan oleh: {{ $p['nama'] }}</div>
+                                        </li>
+                                        @endforeach
+                                    @else
+                                        <li class="text-center py-4 text-muted">
+                                            <i class="fas fa-check-circle fs-1 text-light mb-2 d-block"></i>
+                                            <span class="small">Tidak ada permintaan yang pending.</span>
+                                        </li>
+                                    @endif
+                                </ul>
+                            </div>
+                        </div>
+                        @else
                         {{-- 4. Aktivitas Terbaru (Dinamis) --}}
                         <div class="card border-0 shadow-sm rounded-4 mb-4 fade-in" style="animation-delay: 0.4s; height: 100%;">
                             <div class="card-header bg-white border-0 pt-4 pb-0 px-4">
@@ -159,6 +188,7 @@
                                 </ul>
                             </div>
                         </div>
+                        @endif
                     </div>
                 </div>
 
