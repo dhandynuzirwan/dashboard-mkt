@@ -163,31 +163,7 @@
                             </thead>
                             <tbody>
                                 @forelse($riwayat as $index => $item)
-                                @php
-                                    $laporanLateText = '';
-                                    if ($item->tanggal_selesai) {
-                                        $tglSelesai = \Carbon\Carbon::parse($item->tanggal_selesai)->startOfDay();
-                                        $uploadTime = \Carbon\Carbon::now();
-                                        
-                                        if ($item->laporan_pic) {
-                                            $path = public_path($item->laporan_pic);
-                                            $storagePath = storage_path('app/public/' . str_replace('storage/', '', $item->laporan_pic));
-                                            
-                                            if (file_exists($path)) {
-                                                $uploadTime = \Carbon\Carbon::createFromTimestamp(filemtime($path));
-                                            } elseif (file_exists($storagePath)) {
-                                                $uploadTime = \Carbon\Carbon::createFromTimestamp(filemtime($storagePath));
-                                            }
-                                        }
-                                        $uploadTime = $uploadTime->startOfDay();
-                                        
-                                        if (str_contains(strtoupper($item->jenis), 'BNSP') && $uploadTime->gt($tglSelesai->copy()->addDays(2))) {
-                                            $laporanLateText = 'Terlambat, Laporan BNSP terakhir H+2';
-                                        } elseif (str_contains(strtoupper($item->jenis), 'KEMNAKER') && $uploadTime->gt($tglSelesai->copy()->addDays(7))) {
-                                            $laporanLateText = 'Terlambat, Laporan KEMNAKER terakhir H+7';
-                                        }
-                                    }
-                                @endphp
+
                                 <tr>
                                     <td class="text-center fw-bold text-muted">{{ $riwayat->firstItem() + $index }}</td>
                                     
@@ -555,6 +531,31 @@
 
 {{-- Looping Khusus Untuk Render Modals (Diluar Tabel) --}}
 @foreach($riwayat as $item)
+    @php
+        $laporanLateText = '';
+        if ($item->tanggal_selesai) {
+            $tglSelesai = \Carbon\Carbon::parse($item->tanggal_selesai)->startOfDay();
+            $uploadTime = \Carbon\Carbon::now();
+            
+            if ($item->laporan_pic) {
+                $path = public_path($item->laporan_pic);
+                $storagePath = storage_path('app/public/' . str_replace('storage/', '', $item->laporan_pic));
+                
+                if (file_exists($path)) {
+                    $uploadTime = \Carbon\Carbon::createFromTimestamp(filemtime($path));
+                } elseif (file_exists($storagePath)) {
+                    $uploadTime = \Carbon\Carbon::createFromTimestamp(filemtime($storagePath));
+                }
+            }
+            $uploadTime = $uploadTime->startOfDay();
+            
+            if (str_contains(strtoupper($item->jenis), 'BNSP') && $uploadTime->gt($tglSelesai->copy()->addDays(2))) {
+                $laporanLateText = 'Terlambat, Laporan BNSP terakhir H+2';
+            } elseif (str_contains(strtoupper($item->jenis), 'KEMNAKER') && $uploadTime->gt($tglSelesai->copy()->addDays(7))) {
+                $laporanLateText = 'Terlambat, Laporan KEMNAKER terakhir H+7';
+            }
+        }
+    @endphp
     {{-- Modal Detail --}}
     <div class="modal fade" id="detailModal{{ $item->id }}" tabindex="-1" aria-hidden="true">
         <div class="modal-dialog modal-xl modal-dialog-centered modal-dialog-scrollable">
