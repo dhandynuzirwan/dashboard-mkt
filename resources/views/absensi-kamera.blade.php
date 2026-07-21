@@ -244,12 +244,20 @@
                         document.getElementById('formAbsensi').submit();
                     },
                     function(err) {
-                        // Jika user menolak izin lokasi (Deny)
-                        alert("Gagal! Anda wajib mengizinkan akses lokasi/GPS untuk melakukan absensi.");
+                        let pesanError = "Gagal mendapatkan lokasi.";
+                        if (err.code === 1) { // PERMISSION_DENIED
+                            pesanError = "Akses lokasi ditolak. Pastikan Anda mengizinkan akses lokasi/GPS pada browser (Chrome/Safari) untuk situs ini.";
+                        } else if (err.code === 2) { // POSITION_UNAVAILABLE
+                            pesanError = "Informasi lokasi tidak tersedia. Pastikan GPS HP menyala.";
+                        } else if (err.code === 3) { // TIMEOUT
+                            pesanError = "Waktu pencarian lokasi habis (timeout). Sinyal GPS mungkin lemah, coba di area terbuka.";
+                        }
+                        
+                        alert(pesanError + " (Kode Error: " + err.code + ")");
                         btnSubmit.innerHTML = originalText;
                         btnSubmit.disabled = false;
                     },
-                    { enableHighAccuracy: true, timeout: 10000, maximumAge: 0 } // Memaksa GPS mencari titik paling akurat
+                    { enableHighAccuracy: true, timeout: 15000, maximumAge: 0 } // Memaksa GPS mencari titik paling akurat
                 );
             } else {
                 alert("Browser atau perangkat Anda tidak mendukung fitur lokasi GPS.");
