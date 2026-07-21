@@ -696,14 +696,32 @@
                                 <div class="bg-light rounded-4 p-4 border">
                                     <div class="row g-3">
                                         <div class="col-sm-6">
-                                            <div class="text-muted small fw-bold mb-1">Nama Trainer</div>
+                                            <div class="text-muted small fw-bold mb-1">Trainer</div>
                                             <div class="fw-bold text-dark">{{ $item->nama_trainer ?? '-' }}</div>
-                                            <div class="text-success small fw-bold"><i class="fab fa-whatsapp"></i> {{ $item->wa_trainer ?? '-' }}</div>
+                                            @if(!empty($item->wa_trainer))
+                                                <div class="text-success small fw-bold mb-1"><i class="fab fa-whatsapp"></i> {{ $item->wa_trainer }}</div>
+                                            @endif
+                                            <div class="mt-2 d-flex flex-wrap gap-1">
+                                                @if($item->cv)
+                                                    <a href="{{ getFileUrl($item->cv) }}" target="_blank" class="badge bg-danger text-white text-decoration-none px-2 py-1"><i class="fas fa-file-pdf me-1"></i> CV Trainer</a>
+                                                @endif
+                                                @if($item->modul)
+                                                    <a href="{{ getFileUrl($item->modul) }}" target="_blank" class="badge bg-primary text-white text-decoration-none px-2 py-1"><i class="fas fa-file-download me-1"></i> Modul</a>
+                                                @endif
+                                            </div>
                                         </div>
                                         <div class="col-sm-6">
                                             <div class="text-muted small fw-bold mb-1">LSP & Asesor</div>
-                                            <div class="fw-bold text-dark">{{ $item->nama_asesor ?? '-' }}</div>
-                                            <div class="text-muted small"><i class="fas fa-building"></i> {{ $item->nama_lsp ?? '-' }}</div>
+                                            <div class="fw-bold text-dark mb-1">{{ $item->nama_asesor ?? '-' }}
+                                                @if(!empty($item->wa_asesor))
+                                                    <span class="text-success small fw-bold ms-1"><i class="fab fa-whatsapp"></i> {{ $item->wa_asesor }}</span>
+                                                @endif
+                                            </div>
+                                            <div class="text-muted small fw-bold"><i class="fas fa-building"></i> {{ $item->nama_lsp ?? '-' }}
+                                                @if(!empty($item->kontak_lsp))
+                                                    <span class="ms-1 fw-normal">({{ $item->kontak_lsp }})</span>
+                                                @endif
+                                            </div>
                                         </div>
                                         <div class="col-12 border-top my-2"></div>
                                         <div class="col-sm-6">
@@ -1073,7 +1091,7 @@
                     <h5 class="modal-title fw-bold text-dark"><i class="fas fa-edit text-success me-2"></i> Edit Tim Eksekutor</h5>
                     <button type="button" class="btn-close shadow-none" data-bs-dismiss="modal"></button>
                 </div>
-                <form action="{{ route('riwayat.pelatihan.update', $item->id) }}" method="POST">
+                <form action="{{ route('riwayat.pelatihan.update', $item->id) }}" method="POST" enctype="multipart/form-data">
                     @csrf @method('PUT')
                     <input type="hidden" name="block" value="tim">
                     <div class="modal-body p-4">
@@ -1087,12 +1105,35 @@
                                 <input type="text" name="wa_trainer" class="form-control rounded-3" value="{{ $item->wa_trainer }}">
                             </div>
                             <div class="col-md-6">
+                                <label class="form-label small fw-bold">Upload CV Trainer (PDF)</label>
+                                <input type="file" name="cv" class="form-control rounded-3" accept=".pdf,.doc,.docx">
+                                @if($item->cv)
+                                    <div class="small mt-1 text-success"><i class="fas fa-check-circle"></i> File sudah ada. Abaikan jika tidak diubah.</div>
+                                @endif
+                            </div>
+                            <div class="col-md-6">
+                                <label class="form-label small fw-bold">Upload Modul</label>
+                                <input type="file" name="modul" class="form-control rounded-3">
+                                @if($item->modul)
+                                    <div class="small mt-1 text-success"><i class="fas fa-check-circle"></i> File sudah ada. Abaikan jika tidak diubah.</div>
+                                @endif
+                            </div>
+                            <div class="col-12"><hr class="text-muted opacity-25"></div>
+                            <div class="col-md-6">
                                 <label class="form-label small fw-bold">Nama LSP</label>
                                 <input type="text" name="nama_lsp" class="form-control rounded-3" value="{{ $item->nama_lsp }}">
                             </div>
                             <div class="col-md-6">
+                                <label class="form-label small fw-bold">Kontak LSP</label>
+                                <input type="text" name="kontak_lsp" class="form-control rounded-3" value="{{ $item->kontak_lsp }}">
+                            </div>
+                            <div class="col-md-6">
                                 <label class="form-label small fw-bold">Nama Asesor</label>
                                 <input type="text" name="nama_asesor" class="form-control rounded-3" value="{{ $item->nama_asesor }}">
+                            </div>
+                            <div class="col-md-6">
+                                <label class="form-label small fw-bold">WA Asesor</label>
+                                <input type="text" name="wa_asesor" class="form-control rounded-3" value="{{ $item->wa_asesor }}">
                             </div>
                             <div class="col-md-6">
                                 <label class="form-label small fw-bold">PIC Kegiatan</label>
