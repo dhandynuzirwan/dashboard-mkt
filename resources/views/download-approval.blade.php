@@ -35,7 +35,7 @@
             
                                 {{-- 🔥 KOLOM AKSI YANG TADI SAYA BERIKAN 🔥 --}}
                                 <td class="text-center">
-                                    @if($req->status == 'pending' && in_array(auth()->user()->role, ['superadmin', 'admin']))
+                                    @if($req->status == 'pending' && in_array(auth()->user()->role, ['superadmin']))
                                         <form action="{{ route('download.approve', $req->id) }}" method="POST" class="d-inline">
                                             @csrf <button class="btn btn-success btn-sm btn-round shadow-sm"><i class="fas fa-check"></i></button>
                                         </form>
@@ -50,7 +50,7 @@
                                         </a>
                                     @endif
                                     
-                                    @if($req->status == 'pending' && !in_array(auth()->user()->role, ['superadmin', 'admin']))
+                                    @if($req->status == 'pending' && !in_array(auth()->user()->role, ['superadmin']))
                                         <span class="text-muted small fst-italic"><i class="fas fa-hourglass-half me-1"></i> Menunggu...</span>
                                     @endif
                                 </td>

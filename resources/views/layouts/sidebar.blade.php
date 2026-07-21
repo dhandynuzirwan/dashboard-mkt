@@ -291,8 +291,8 @@
                 <li class="nav-item {{ $isDownload ? 'active' : '' }}">
                     <a href="{{ route('download.approval') }}">
                         <i class="fas fa-file-download"></i>
-                        <p>{{ in_array($role, ['superadmin', 'admin']) ? 'Download Approval' : 'Riwayat Download' }}</p>
-                        @if ($pendingCount > 0 && in_array($role, ['superadmin', 'admin']))
+                        <p>{{ in_array($role, ['superadmin']) ? 'Download Approval' : 'Riwayat Download' }}</p>
+                        @if ($pendingCount > 0 && in_array($role, ['superadmin']))
                             <span class="badge badge-danger">{{ $pendingCount }}</span>
                         @endif
                     </a>

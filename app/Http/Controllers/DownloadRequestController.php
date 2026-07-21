@@ -44,7 +44,7 @@ class DownloadRequestController extends Controller
         $user->unreadNotifications->markAsRead();
 
         // Logika Pintar: Jika Superadmin/Admin -> Tampilkan Semua. Jika User -> Tampilkan miliknya.
-        if (in_array($user->role, ['superadmin', 'admin'])) {
+        if (in_array($user->role, ['superadmin'])) {
             $requests = DownloadRequest::with('user')->orderBy('created_at', 'desc')->paginate(10);
         } else {
             $requests = DownloadRequest::with('user')
@@ -92,7 +92,7 @@ class DownloadRequestController extends Controller
         }
 
         // Superadmin/Admin bisa download semua. User hanya bisa download miliknya.
-        if ($req->user_id != auth()->id() && !in_array(auth()->user()->role, ['superadmin', 'admin'])) {
+        if ($req->user_id != auth()->id() && !in_array(auth()->user()->role, ['superadmin'])) {
             abort(403, 'Anda tidak memiliki akses untuk mendownload file ini.');
         }
 
