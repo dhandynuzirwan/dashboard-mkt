@@ -536,6 +536,17 @@
             <div class="modal-content border-0 shadow-lg rounded-4">
                 
                 {{-- Header Modal --}}
+                @php
+                    if (!function_exists('getFileUrl')) {
+                        function getFileUrl($path) {
+                            if (!$path) return '#';
+                            if (str_starts_with($path, 'http')) return $path;
+                            if (str_starts_with($path, 'uploads/operasional')) return asset($path);
+                            if (str_starts_with($path, 'storage/')) return asset($path);
+                            return asset('storage/' . $path);
+                        }
+                    }
+                @endphp
                 <div class="modal-header border-bottom-0 pb-0 px-4 pt-4">
                     <h5 class="modal-title fw-black text-dark"><i class="fas fa-file-invoice me-2 text-primary"></i> Detail Informasi Pelatihan</h5>
                     <button type="button" class="btn-close shadow-none" data-bs-dismiss="modal" aria-label="Close"></button>
@@ -719,11 +730,11 @@
                                 
                                 <div class="text-muted small fw-bold mb-2 mt-4">Unduh Berkas Pendukung</div>
                                 <div class="d-flex flex-wrap gap-2">
-                                    @if($item->cv)<a href="{{ asset($item->cv) }}" target="_blank" class="btn btn-sm btn-white border fw-bold hover-lift px-3"><i class="fas fa-file-pdf text-danger me-1"></i> CV</a>@endif
-                                    @if($item->modul)<a href="{{ asset($item->modul) }}" target="_blank" class="btn btn-sm btn-white border fw-bold hover-lift px-3"><i class="fas fa-book text-primary me-1"></i> Modul</a>@endif
-                                    @if($item->laporan_pic)<a href="{{ asset($item->laporan_pic) }}" target="_blank" class="btn btn-sm btn-white border fw-bold hover-lift px-3"><i class="fas fa-file-alt text-success me-1"></i> Laporan</a>@endif
-                                    @if($item->scan_sertif)<a href="{{ asset($item->scan_sertif) }}" target="_blank" class="btn btn-sm btn-white border fw-bold hover-lift px-3"><i class="fas fa-award text-warning me-1"></i> Scan Sertif</a>@endif
-                                    @if($item->bukti_kompeten)<a href="{{ asset('storage/' . $item->bukti_kompeten) }}" target="_blank" class="btn btn-sm btn-white border fw-bold hover-lift px-3"><i class="fas fa-check-circle text-info me-1"></i> Bukti Kompeten</a>@endif
+                                    @if($item->cv)<a href="{{ getFileUrl($item->cv) }}" target="_blank" class="btn btn-sm btn-white border fw-bold hover-lift px-3"><i class="fas fa-file-pdf text-danger me-1"></i> CV</a>@endif
+                                    @if($item->modul)<a href="{{ getFileUrl($item->modul) }}" target="_blank" class="btn btn-sm btn-white border fw-bold hover-lift px-3"><i class="fas fa-book text-primary me-1"></i> Modul</a>@endif
+                                    @if($item->laporan_pic)<a href="{{ getFileUrl($item->laporan_pic) }}" target="_blank" class="btn btn-sm btn-white border fw-bold hover-lift px-3"><i class="fas fa-file-alt text-success me-1"></i> Laporan</a>@endif
+                                    @if($item->scan_sertif)<a href="{{ getFileUrl($item->scan_sertif) }}" target="_blank" class="btn btn-sm btn-white border fw-bold hover-lift px-3"><i class="fas fa-award text-warning me-1"></i> Scan Sertif</a>@endif
+                                    @if($item->bukti_kompeten)<a href="{{ getFileUrl($item->bukti_kompeten) }}" target="_blank" class="btn btn-sm btn-white border fw-bold hover-lift px-3"><i class="fas fa-check-circle text-info me-1"></i> Bukti Kompeten</a>@endif
                                     
                                     @if(!$item->cv && !$item->modul && !$item->laporan_pic && !$item->scan_sertif && !$item->bukti_kompeten)
                                         <span class="text-muted fst-italic bg-light px-3 py-2 rounded-3 w-100 text-center border">Belum ada berkas yang diunggah.</span>
@@ -768,7 +779,7 @@
                                         
                                         @if($item->foto)
                                         <div class="col-12 mt-3">
-                                            <a href="{{ asset($item->foto) }}" target="_blank" class="btn btn-info text-white rounded-pill px-4 fw-bold shadow-sm w-100"><i class="fas fa-image me-2"></i> Lihat Foto Bukti Resi</a>
+                                            <a href="{{ getFileUrl($item->foto) }}" target="_blank" class="btn btn-info text-white rounded-pill px-4 fw-bold shadow-sm w-100"><i class="fas fa-image me-2"></i> Lihat Foto Bukti Resi</a>
                                         </div>
                                         @endif
                                     </div>
@@ -972,7 +983,7 @@
                             <label class="form-label small fw-bold">Upload Bukti Kompeten (PDF)</label>
                             <input type="file" name="bukti_kompeten" class="form-control form-control-sm" accept=".pdf">
                             @if($item->bukti_kompeten)
-                                <a href="{{ asset('storage/' . $item->bukti_kompeten) }}" target="_blank" class="small mt-1 d-inline-block text-primary"><i class="fas fa-file-pdf me-1"></i> Lihat Bukti Saat Ini</a>
+                                <a href="{{ getFileUrl($item->bukti_kompeten) }}" target="_blank" class="small mt-1 d-inline-block text-primary"><i class="fas fa-file-pdf me-1"></i> Lihat Bukti Saat Ini</a>
                             @endif
                         </div>
                         <div class="mb-3">
