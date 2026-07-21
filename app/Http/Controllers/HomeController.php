@@ -28,15 +28,28 @@ class HomeController extends Controller
             ->get();
 
         // 2. Logika Aktivitas Feed (Timeline)
-        $feed = \App\Models\ActivityLog::where('user_id', $user->id)
-            ->orderBy('updated_at', 'desc')
+        $feedQuery = \App\Models\ActivityLog::query();
+        
+        if (in_array($user->role, ['spv', 'spv_marketing', 'superadmin'])) {
+            $targetRoles = ['rnd', 'admin', 'admin_marketing'];
+            $otherIds = \App\Models\User::whereIn('role', $targetRoles)->pluck('id')->toArray();
+            $targetIds = array_merge([$user->id], $otherIds);
+            $feedQuery->whereIn('user_id', $targetIds);
+        } else {
+            $feedQuery->where('user_id', $user->id);
+        }
+
+        $feed = $feedQuery->orderBy('updated_at', 'desc')
             ->take(5)
             ->get()
             ->map(function($log) {
+                $userActor = \App\Models\User::find($log->user_id);
+                $actorName = $userActor ? ($userActor->nama_lengkap ?? $userActor->name) : 'Sistem';
+                
                 return [
                     'type' => $log->type,
                     'color' => $log->color,
-                    'title' => $log->title,
+                    'title' => $log->title . ' (' . $actorName . ')',
                     'time' => $log->updated_at,
                 ];
             });
