@@ -367,8 +367,8 @@
                                         <span class="fw-bold">Total Revenue:</span> <span class="fw-bolder text-success">{{ number_format($m->revenue_kpi, 1) }}%</span>
                                     </div>
                                     @php
-                                        // Kalkulasi Nilai KPI Rp Berdasarkan Ruleset (60jt threshold)
-                                        $kpi_rp = ($m->revenue_actual < 60000000) ? $m->revenue_actual * 0.40 : $m->revenue_actual * 0.60;
+                                        // Kalkulasi Nilai KPI Rp Berdasarkan Ruleset (KPI >= 70 threshold)
+                                        $kpi_rp = ($m->total_kpi < 70) ? $m->revenue_actual * 0.40 : $m->revenue_actual * 0.60;
                                     @endphp
                                      {{-- 
                                     <div class="d-flex justify-content-between mt-1 pt-1" style="max-width: 220px;">

@@ -181,7 +181,7 @@ class SalaryController extends Controller
         $totalKpi = $absensiKpi + $progKpi + $revKpi;
 
         // G. Hitung Nominal Gaji Akhir (NEW LOGIC)
-        $kpi_rp = ($income < 60000000) ? ($income * 0.40) : ($income * 0.60);
+        $kpi_rp = ($totalKpi < 70) ? ($income * 0.40) : ($income * 0.60);
 
         if ($income < 30000000) {
             $fee_mkt = 0;

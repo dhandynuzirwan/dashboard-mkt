@@ -237,7 +237,7 @@ class KpiController extends Controller
             $total_fee_marketing = 0;
             foreach ($marketings as $m) {
                 $income = $m->revenue_actual;
-                $kpi_rp = ($income < 60000000) ? ($income * 0.40) : ($income * 0.60);
+                $kpi_rp = ($m->total_kpi < 70) ? ($income * 0.40) : ($income * 0.60);
                 if ($income >= 30000000) {
                     $fee_mkt = ($m->total_kpi < 70) ? ($kpi_rp * 0.02) : ($kpi_rp * 0.05);
                     $total_fee_marketing += $fee_mkt;
