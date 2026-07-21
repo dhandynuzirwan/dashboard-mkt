@@ -312,6 +312,15 @@
                             @foreach ($marketings as $m)
                             <tr>
                                 <td class="ps-4">
+                                    <div class="mb-2">
+                                        @if($m->foto)
+                                            <img src="{{ asset('storage/' . $m->foto) }}" alt="Foto" class="rounded-circle shadow-sm border" style="width: 40px; height: 40px; object-fit: cover;">
+                                        @else
+                                            <div class="rounded-circle shadow-sm bg-primary-subtle border border-primary border-opacity-25 d-flex justify-content-center align-items-center text-primary fw-bold" style="width: 40px; height: 40px; font-size: 16px;">
+                                                {{ strtoupper(substr($m->name, 0, 1)) }}
+                                            </div>
+                                        @endif
+                                    </div>
                                     <div class="fw-bolder text-dark" style="font-size: 13px;">{{ $m->nama_lengkap ?? $m->name }}</div>
                                     <span class="badge bg-primary-subtle text-primary border border-primary border-opacity-25 mt-1">{{ $m->name }}</span>
                                 </td>
@@ -361,9 +370,11 @@
                                         // Kalkulasi Nilai KPI Rp Berdasarkan Ruleset (60jt threshold)
                                         $kpi_rp = ($m->revenue_actual < 60000000) ? $m->revenue_actual * 0.40 : $m->revenue_actual * 0.60;
                                     @endphp
+                                     {{-- 
                                     <div class="d-flex justify-content-between mt-1 pt-1" style="max-width: 220px;">
                                         <span class="fw-bold">Nilai Revenue:</span> <span class="fw-bolder text-dark">Rp {{ number_format($kpi_rp, 0, ',', '.') }}</span>
                                     </div>
+                                    --}}
                                 </td>
                             </tr>
                             @endforeach
