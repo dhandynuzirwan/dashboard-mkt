@@ -839,6 +839,30 @@
                         </div>
                     </div>
 
+                    {{-- Block: Dokumentasi --}}
+                    <div class="mt-4 pt-4 border-top">
+                        <div class="d-flex justify-content-between align-items-center mb-3">
+                            <h6 class="fw-bolder text-dark mb-0"><i class="fas fa-camera-retro text-primary me-2"></i> Dokumentasi Pelatihan</h6>
+                            <button type="button" class="btn btn-sm btn-primary rounded-pill px-3 fw-bold shadow-sm" data-bs-toggle="modal" data-bs-target="#galeriModal{{ $item->id }}">
+                                <i class="fas fa-images me-1"></i> Lihat Galeri & Upload
+                            </button>
+                        </div>
+                        <div class="bg-light rounded-4 p-4 text-center border">
+                            @php
+                                $dokumentasiCount = is_array($item->dokumentasi) ? count($item->dokumentasi) : 0;
+                            @endphp
+                            @if($dokumentasiCount > 0)
+                                <div class="fs-1 text-primary mb-2"><i class="fas fa-photo-video"></i></div>
+                                <h5 class="fw-bold text-dark">{{ $dokumentasiCount }} File Dokumentasi Tersedia</h5>
+                                <p class="text-muted small mb-0">Klik tombol di atas untuk melihat atau mengelola galeri foto dan video kegiatan.</p>
+                            @else
+                                <div class="fs-1 text-muted mb-2 opacity-50"><i class="fas fa-folder-open"></i></div>
+                                <h6 class="fw-bold text-muted">Belum Ada Dokumentasi</h6>
+                                <p class="text-muted small mb-0">Anda bisa menambahkan hingga 15 foto/video kegiatan.</p>
+                            @endif
+                        </div>
+                    </div>
+
                     {{-- Block: Catatan (Full Width di bawah) --}}
                     @if($item->catatan || $item->keterangan_tambahan)
                     <div class="mt-4 pt-4 border-top">
@@ -858,6 +882,86 @@
                 {{-- Footer Modal --}}
                 <div class="modal-footer bg-light border-top-0 py-3 px-4 rounded-bottom-4">
                     <button type="button" class="btn btn-secondary btn-lg rounded-pill px-5 fw-bold shadow-sm" data-bs-dismiss="modal">Tutup</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    {{-- Modal Galeri Dokumentasi --}}
+    <div class="modal fade" id="galeriModal{{ $item->id }}" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog modal-xl modal-dialog-centered modal-dialog-scrollable">
+            <div class="modal-content border-0 shadow-lg rounded-4">
+                <div class="modal-header border-bottom-0 pb-0 px-4 pt-4">
+                    <h5 class="modal-title fw-black text-dark"><i class="fas fa-images me-2 text-primary"></i> Galeri Dokumentasi Kegiatan</h5>
+                    <button type="button" class="btn-close shadow-none" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body p-4 bg-light">
+                    {{-- Grid Galeri --}}
+                    @php
+                        $dokumentasi = is_array($item->dokumentasi) ? $item->dokumentasi : [];
+                    @endphp
+                    
+                    @if(count($dokumentasi) > 0)
+                        <div class="row g-3 mb-4">
+                            @foreach($dokumentasi as $i => $file)
+                                <div class="col-md-3 col-sm-4 col-6">
+                                    <div class="card border-0 shadow-sm rounded-4 h-100 overflow-hidden position-relative">
+                                        @php
+                                            $ext = strtolower(pathinfo($file, PATHINFO_EXTENSION));
+                                            $isVideo = in_array($ext, ['mp4', 'webm', 'ogg', 'mov', 'avi']);
+                                            $url = getFileUrl($file);
+                                        @endphp
+                                        
+                                        @if($isVideo)
+                                            <video src="{{ $url }}" class="w-100 h-100 object-fit-cover" controls style="min-height: 150px; max-height: 150px;"></video>
+                                        @else
+                                            <a href="{{ $url }}" target="_blank">
+                                                <img src="{{ $url }}" class="w-100 h-100 object-fit-cover" style="min-height: 150px; max-height: 150px;" alt="Dokumentasi">
+                                            </a>
+                                        @endif
+                                        
+                                        {{-- Tombol Hapus (Absolute) --}}
+                                        <form action="{{ route('riwayat.pelatihan.deleteDokumentasi', ['id' => $item->id, 'index' => $i]) }}" method="POST" class="position-absolute" style="top: 10px; right: 10px; z-index: 2;">
+                                            @csrf
+                                            @method('DELETE')
+                                            <button type="submit" class="btn btn-sm btn-danger rounded-circle shadow-sm" onclick="return confirm('Hapus file ini?')" style="width: 30px; height: 30px; padding: 0; line-height: 1;">
+                                                <i class="fas fa-trash-alt"></i>
+                                            </button>
+                                        </form>
+                                    </div>
+                                </div>
+                            @endforeach
+                        </div>
+                    @else
+                        <div class="text-center py-5 mb-4">
+                            <i class="fas fa-folder-open text-muted opacity-25" style="font-size: 4rem;"></i>
+                            <p class="text-muted mt-3 mb-0">Belum ada foto/video dokumentasi.</p>
+                        </div>
+                    @endif
+
+                    {{-- Form Upload Dokumentasi --}}
+                    <div class="card border border-primary border-opacity-25 rounded-4 shadow-sm">
+                        <div class="card-body p-4">
+                            <h6 class="fw-bold text-dark mb-3"><i class="fas fa-cloud-upload-alt text-primary me-2"></i> Tambah Dokumentasi Baru</h6>
+                            <form action="{{ route('riwayat.pelatihan.update', $item->id) }}" method="POST" enctype="multipart/form-data">
+                                @csrf @method('PUT')
+                                <input type="hidden" name="block" value="dokumentasi">
+                                
+                                <div class="mb-3">
+                                    <label class="form-label small text-muted">Pilih File (Bisa pilih banyak file sekaligus. Foto max 5MB, Video max 20MB)</label>
+                                    <input type="file" name="dokumentasi_files[]" class="form-control rounded-3" multiple accept="image/*,video/*" required>
+                                </div>
+                                <div class="text-end">
+                                    <button type="submit" class="btn btn-primary rounded-pill px-4 fw-bold shadow-sm">
+                                        <i class="fas fa-upload me-1"></i> Upload File
+                                    </button>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer bg-white border-top-0 py-3 px-4 rounded-bottom-4">
+                    <button type="button" class="btn btn-secondary rounded-pill px-4 fw-bold shadow-sm" data-bs-dismiss="modal">Tutup Galeri</button>
                 </div>
             </div>
         </div>

@@ -173,6 +173,7 @@ Route::middleware('auth')->group(function () {
             Route::put('/riwayat-pelatihan/{id}/peserta/{index}', [RiwayatPelatihanController::class, 'updatePeserta'])->name('riwayat.pelatihan.updatePeserta');
             Route::post('/riwayat-pelatihan/{id}/tambah-peserta-massal', [RiwayatPelatihanController::class, 'tambahPesertaMassal'])->name('riwayat.pelatihan.tambahPesertaMassal');
             Route::delete('/riwayat-pelatihan/{id}/peserta/{index}', [RiwayatPelatihanController::class, 'hapusPeserta'])->name('riwayat.pelatihan.hapusPeserta');
+            Route::delete('/riwayat-pelatihan/{id}/dokumentasi/{index}', [RiwayatPelatihanController::class, 'deleteDokumentasi'])->name('riwayat.pelatihan.deleteDokumentasi');
         });
 
 

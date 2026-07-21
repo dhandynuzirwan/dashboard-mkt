@@ -49,7 +49,12 @@ class RiwayatPelatihan extends Model
         'status_pengiriman',
         'tanggal_diterima',
         'foto',
-        'catatan'
+        'catatan',
+        'dokumentasi'
+    ];
+
+    protected $casts = [
+        'dokumentasi' => 'array',
     ];
 
     public function getNamaPesertaArrayAttribute()

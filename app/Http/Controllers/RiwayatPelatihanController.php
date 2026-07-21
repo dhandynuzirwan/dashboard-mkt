@@ -133,7 +133,7 @@ class RiwayatPelatihanController extends Controller
     public function update(Request $request, $id)
     {
         $riwayat = RiwayatPelatihan::findOrFail($id);
-        $data = $request->except(['_token', '_method', 'block']);
+        $data = $request->except(['_token', '_method', 'block', 'dokumentasi_files']);
 
         // Handle file uploads if any
         $fileFields = ['cv', 'modul', 'laporan_pic', 'scan_sertif', 'foto', 'bukti_kompeten'];
@@ -142,6 +142,17 @@ class RiwayatPelatihanController extends Controller
                 $file = $request->file($field);
                 $path = $file->store('uploads/riwayat_pelatihan', 'public');
                 $data[$field] = $path;
+            }
+        }
+
+        if ($request->block == 'dokumentasi') {
+            $dokumentasiFiles = $riwayat->dokumentasi ?? [];
+            if ($request->hasFile('dokumentasi_files')) {
+                foreach ($request->file('dokumentasi_files') as $file) {
+                    $path = $file->store('uploads/riwayat_pelatihan/dokumentasi', 'public');
+                    $dokumentasiFiles[] = $path;
+                }
+                $data['dokumentasi'] = $dokumentasiFiles;
             }
         }
 
@@ -274,5 +285,23 @@ class RiwayatPelatihanController extends Controller
         }
 
         return redirect()->back()->with('success', 'Data peserta berhasil dihapus.');
+    }
+
+    public function deleteDokumentasi($id, $index)
+    {
+        $riwayat = RiwayatPelatihan::findOrFail($id);
+        $dokumentasi = $riwayat->dokumentasi ?? [];
+        
+        if (isset($dokumentasi[$index])) {
+            $path = $dokumentasi[$index];
+            if (\Storage::disk('public')->exists($path)) {
+                \Storage::disk('public')->delete($path);
+            }
+            unset($dokumentasi[$index]);
+            $riwayat->update(['dokumentasi' => array_values($dokumentasi)]);
+            return redirect()->back()->with('success', 'File dokumentasi berhasil dihapus.');
+        }
+
+        return redirect()->back()->with('error', 'File tidak ditemukan.');
     }
 }
