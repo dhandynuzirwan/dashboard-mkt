@@ -893,14 +893,20 @@
             <div class="modal-content border-0 shadow-lg rounded-4">
                 <div class="modal-header border-bottom-0 pb-0 px-4 pt-4">
                     <h5 class="modal-title fw-black text-dark"><i class="fas fa-images me-2 text-primary"></i> Galeri Dokumentasi Kegiatan</h5>
-                    <button type="button" class="btn-close shadow-none" data-bs-dismiss="modal" aria-label="Close"></button>
-                </div>
-                <div class="modal-body p-4 bg-light">
-                    {{-- Grid Galeri --}}
                     @php
                         $dokumentasi = is_array($item->dokumentasi) ? $item->dokumentasi : [];
                     @endphp
-                    
+                    <div class="d-flex align-items-center">
+                        @if(count($dokumentasi) > 0)
+                            <a href="{{ route('riwayat.pelatihan.downloadDokumentasiZip', $item->id) }}" class="btn btn-sm btn-success rounded-pill px-3 fw-bold shadow-sm me-3">
+                                <i class="fas fa-file-archive me-1"></i> Download ZIP
+                            </a>
+                        @endif
+                        <button type="button" class="btn-close shadow-none" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                </div>
+                <div class="modal-body p-4 bg-light">
+                    {{-- Grid Galeri --}}
                     @if(count($dokumentasi) > 0)
                         <div class="row g-3 mb-4">
                             @foreach($dokumentasi as $i => $file)

@@ -304,4 +304,35 @@ class RiwayatPelatihanController extends Controller
 
         return redirect()->back()->with('error', 'File tidak ditemukan.');
     }
+
+    public function downloadDokumentasiZip($id)
+    {
+        $riwayat = RiwayatPelatihan::findOrFail($id);
+        $dokumentasi = $riwayat->dokumentasi ?? [];
+        
+        if (empty($dokumentasi)) {
+            return redirect()->back()->with('error', 'Belum ada dokumentasi untuk diunduh.');
+        }
+
+        $zip = new \ZipArchive();
+        $zipFileName = 'Dokumentasi_Pelatihan_' . preg_replace('/[^A-Za-z0-9\-]/', '_', $riwayat->judul_pelatihan) . '_' . date('Ymd_His') . '.zip';
+        $zipPath = storage_path('app/public/' . $zipFileName);
+
+        if ($zip->open($zipPath, \ZipArchive::CREATE | \ZipArchive::OVERWRITE) === TRUE) {
+            foreach ($dokumentasi as $index => $file) {
+                $filePath = storage_path('app/public/' . $file);
+                if (file_exists($filePath)) {
+                    $ext = pathinfo($filePath, PATHINFO_EXTENSION);
+                    $zip->addFile($filePath, 'Dokumentasi_' . ($index + 1) . '.' . $ext);
+                }
+            }
+            $zip->close();
+        }
+
+        if (file_exists($zipPath)) {
+            return response()->download($zipPath)->deleteFileAfterSend(true);
+        }
+
+        return redirect()->back()->with('error', 'Gagal membuat file ZIP.');
+    }
 }
