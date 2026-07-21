@@ -727,6 +727,21 @@
                                         </div>
                                     </div>
                                 </div>
+                                <div class="row g-3 mt-0 mb-3">
+                                    <div class="col-sm-6">
+                                        <div class="text-muted small fw-bold mb-2">Status Pengiriman Sertifikat</div>
+                                        <form action="{{ route('riwayat.pelatihan.update', $item->id) }}" method="POST" class="d-inline">
+                                            @csrf
+                                            @method('PUT')
+                                            <select name="status_pengiriman" class="form-select form-select-sm fw-bold bg-dark text-white border-0 shadow-sm px-3 py-2 fs-6 rounded-3" onchange="this.form.submit()" style="width: 100%; appearance: none; cursor: pointer;">
+                                                <option value="Belum Info" {{ ($item->status_pengiriman == 'Belum Info' || !$item->status_pengiriman) ? 'selected' : '' }}>Belum Info</option>
+                                                <option value="Diproses" {{ $item->status_pengiriman == 'Diproses' ? 'selected' : '' }}>Diproses</option>
+                                                <option value="Dikirim" {{ $item->status_pengiriman == 'Dikirim' ? 'selected' : '' }}>Dikirim</option>
+                                                <option value="Diterima" {{ $item->status_pengiriman == 'Diterima' ? 'selected' : '' }}>Diterima</option>
+                                            </select>
+                                        </form>
+                                    </div>
+                                </div>
                                 
                                 <div class="text-muted small fw-bold mb-2 mt-4">Unduh Berkas Pendukung</div>
                                 <div class="d-flex flex-wrap gap-2">
@@ -1004,6 +1019,15 @@
                                 <option value="" {{ empty($item->status_sertif) ? 'selected' : '' }}>Pilih...</option>
                                 <option value="Sudah Terbit" {{ $item->status_sertif == 'Sudah Terbit' ? 'selected' : '' }}>Sudah Terbit</option>
                                 <option value="Belum Terbit" {{ $item->status_sertif == 'Belum Terbit' ? 'selected' : '' }}>Belum Terbit</option>
+                            </select>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label small fw-bold">Status Pengiriman Sertifikat</label>
+                            <select name="status_pengiriman" class="form-select rounded-3">
+                                <option value="" {{ empty($item->status_pengiriman) ? 'selected' : '' }}>Pilih...</option>
+                                <option value="Diproses" {{ $item->status_pengiriman == 'Diproses' ? 'selected' : '' }}>Diproses</option>
+                                <option value="Dikirim" {{ $item->status_pengiriman == 'Dikirim' ? 'selected' : '' }}>Dikirim</option>
+                                <option value="Diterima" {{ $item->status_pengiriman == 'Diterima' ? 'selected' : '' }}>Diterima</option>
                             </select>
                         </div>
                         <div class="mb-3">
