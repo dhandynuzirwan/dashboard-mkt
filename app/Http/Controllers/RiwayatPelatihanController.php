@@ -287,7 +287,7 @@ class RiwayatPelatihanController extends Controller
         return redirect()->back()->with('success', 'Data peserta berhasil dihapus.');
     }
 
-    public function deleteDokumentasi($id, $index)
+    public function deleteDokumentasi(\Illuminate\Http\Request $request, $id, $index)
     {
         $riwayat = RiwayatPelatihan::findOrFail($id);
         $dokumentasi = $riwayat->dokumentasi ?? [];
@@ -299,9 +299,16 @@ class RiwayatPelatihanController extends Controller
             }
             unset($dokumentasi[$index]);
             $riwayat->update(['dokumentasi' => array_values($dokumentasi)]);
+            
+            if ($request->ajax() || $request->wantsJson()) {
+                return response()->json(['success' => true, 'message' => 'File berhasil dihapus.']);
+            }
             return redirect()->back()->with('success', 'File dokumentasi berhasil dihapus.');
         }
 
+        if ($request->ajax() || $request->wantsJson()) {
+            return response()->json(['success' => false, 'message' => 'File tidak ditemukan.'], 404);
+        }
         return redirect()->back()->with('error', 'File tidak ditemukan.');
     }
 

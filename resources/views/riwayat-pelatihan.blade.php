@@ -926,14 +926,13 @@
                                             </a>
                                         @endif
                                         
-                                        {{-- Tombol Hapus (Absolute) --}}
-                                        <form action="{{ route('riwayat.pelatihan.deleteDokumentasi', ['id' => $item->id, 'index' => $i]) }}" method="POST" class="position-absolute" style="top: 10px; right: 10px; z-index: 2;">
-                                            @csrf
-                                            @method('DELETE')
-                                            <button type="submit" class="btn btn-sm btn-danger rounded-circle shadow-sm" onclick="return confirm('Hapus file ini?')" style="width: 30px; height: 30px; padding: 0; line-height: 1;">
-                                                <i class="fas fa-trash-alt"></i>
-                                            </button>
-                                        </form>
+                                        {{-- Tombol Hapus (AJAX) --}}
+                                        <button type="button" class="btn btn-sm btn-danger rounded-circle shadow-sm position-absolute" 
+                                            onclick="hapusDokumentasi(this, '{{ route('riwayat.pelatihan.deleteDokumentasi', ['id' => $item->id, 'index' => $i]) }}')"
+                                            style="top: 10px; right: 10px; z-index: 2; width: 30px; height: 30px; padding: 0; line-height: 1;"
+                                            title="Hapus file">
+                                            <i class="fas fa-trash-alt"></i>
+                                        </button>
                                     </div>
                                 </div>
                             @endforeach
@@ -1793,5 +1792,75 @@
         }
     }
     window.toggleBuktiKompeten = toggleBuktiKompeten;
+</script>
+
+<script>
+    function hapusDokumentasi(btn, url) {
+        if (typeof Swal !== 'undefined') {
+            Swal.fire({
+                title: 'Yakin hapus file ini?',
+                text: "File akan dihapus secara permanen dari galeri!",
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#d33',
+                cancelButtonColor: '#3085d6',
+                confirmButtonText: 'Ya, Hapus!'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    prosesHapus(btn, url);
+                }
+            });
+        } else {
+            if (confirm('Apakah Anda yakin ingin menghapus foto/video ini secara permanen?')) {
+                prosesHapus(btn, url);
+            }
+        }
+    }
+
+    function prosesHapus(btn, url) {
+        let card = btn.closest('.col-md-3');
+        let originalHtml = btn.innerHTML;
+        btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i>';
+        btn.disabled = true;
+        card.style.opacity = '0.7';
+        
+        fetch(url, {
+            method: 'DELETE',
+            headers: {
+                'X-CSRF-TOKEN': '{{ csrf_token() }}',
+                'Accept': 'application/json'
+            }
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                card.remove();
+                if (typeof Swal !== 'undefined') {
+                    Swal.fire('Terhapus!', data.message, 'success');
+                }
+            } else {
+                if (typeof Swal !== 'undefined') {
+                    Swal.fire('Gagal!', data.message || 'File tidak ditemukan', 'error');
+                } else {
+                    alert('Gagal: ' + (data.message || 'File tidak ditemukan'));
+                }
+                btn.innerHTML = originalHtml;
+                btn.disabled = false;
+                card.style.opacity = '1';
+            }
+        })
+        .catch(err => {
+            console.error(err);
+            if (typeof Swal !== 'undefined') {
+                Swal.fire('Error!', 'Terjadi kesalahan jaringan.', 'error');
+            } else {
+                alert('Terjadi kesalahan jaringan.');
+            }
+            btn.innerHTML = originalHtml;
+            btn.disabled = false;
+            card.style.opacity = '1';
+        });
+    }
+    window.hapusDokumentasi = hapusDokumentasi;
 </script>
 @endpush
