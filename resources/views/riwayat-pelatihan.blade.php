@@ -421,7 +421,7 @@
                   <div class="card-body p-4">
                       <div class="row g-3">
                           <div class="col-md-4">
-                              <label class="form-label fw-bold small">PIC Operasional</label>
+                              <label class="form-label fw-bold small">PIC Kegiatan</label>
                               <select name="pic" class="form-select rounded-3">
                                   <option value="">Pilih PIC...</option>
                                   @foreach($users as $user)
@@ -670,8 +670,8 @@
                                         </div>
                                         <div class="col-12 border-top my-2"></div>
                                         <div class="col-sm-6">
-                                            <div class="text-muted small fw-bold mb-1">PIC Operasional</div>
-                                            <div class="fw-bolder text-primary fs-6">{{ $item->pic ?? '-' }}</div>
+                                            <div class="text-muted small fw-bold mb-1">PIC Kegiatan</div>
+                                            <div class="fw-bolder text-primary fs-6">{{ \App\Models\User::where('name', $item->pic)->value('nama_lengkap') ?: ($item->pic ?? '-') }}</div>
                                         </div>
                                         <div class="col-sm-6">
                                             <div class="text-muted small fw-bold mb-1">Tanggal Asesmen</div>
@@ -925,7 +925,7 @@
                                 <input type="text" name="nama_asesor" class="form-control rounded-3" value="{{ $item->nama_asesor }}">
                             </div>
                             <div class="col-md-6">
-                                <label class="form-label small fw-bold">PIC Operasional</label>
+                                <label class="form-label small fw-bold">PIC Kegiatan</label>
                                 <select name="pic" class="form-select rounded-3">
                                     <option value="">Pilih...</option>
                                     @foreach($users as $usr)
