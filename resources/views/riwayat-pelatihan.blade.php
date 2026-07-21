@@ -1074,7 +1074,12 @@
                             </div>
                             <div class="col-md-4">
                                 <label class="form-label small fw-bold">Status Pengiriman</label>
-                                <input type="text" name="status_pengiriman" class="form-control rounded-3" value="{{ $item->status_pengiriman }}" placeholder="Misal: Sedang Dikirim">
+                                <select name="status_pengiriman" class="form-select rounded-3">
+                                    <option value="" {{ empty($item->status_pengiriman) ? 'selected' : '' }}>Pilih...</option>
+                                    <option value="Diproses" {{ $item->status_pengiriman == 'Diproses' ? 'selected' : '' }}>Diproses</option>
+                                    <option value="Dikirim" {{ $item->status_pengiriman == 'Dikirim' ? 'selected' : '' }}>Dikirim</option>
+                                    <option value="Diterima" {{ $item->status_pengiriman == 'Diterima' ? 'selected' : '' }}>Diterima</option>
+                                </select>
                             </div>
                             <div class="col-md-4">
                                 <label class="form-label small fw-bold">Tanggal Kirim</label>
