@@ -754,7 +754,16 @@
                                     <div class="d-flex justify-content-between align-items-center mb-3 position-relative z-1">
                                         <div>
                                             <div class="text-info-emphasis small fw-bold mb-1">Status Paket</div>
-                                            <span class="badge bg-dark px-3 py-2 fs-6 shadow-sm">{{ $item->status_pengiriman ?? 'Belum Info' }}</span>
+                                            <form action="{{ route('riwayat.pelatihan.update', $item->id) }}" method="POST" class="d-inline">
+                                                @csrf
+                                                @method('PUT')
+                                                <select name="status_pengiriman" class="form-select form-select-sm fw-bold bg-dark text-white border-0 shadow-sm px-3 py-2 fs-6 rounded-3" onchange="this.form.submit()" style="width: auto; min-width: 140px; appearance: none; cursor: pointer; text-align: center;">
+                                                    <option value="Belum Info" {{ ($item->status_pengiriman == 'Belum Info' || !$item->status_pengiriman) ? 'selected' : '' }}>Belum Info</option>
+                                                    <option value="Diproses" {{ $item->status_pengiriman == 'Diproses' ? 'selected' : '' }}>Diproses</option>
+                                                    <option value="Dikirim" {{ $item->status_pengiriman == 'Dikirim' ? 'selected' : '' }}>Dikirim</option>
+                                                    <option value="Diterima" {{ $item->status_pengiriman == 'Diterima' ? 'selected' : '' }}>Diterima</option>
+                                                </select>
+                                            </form>
                                         </div>
                                         <div class="text-end">
                                             <div class="text-info-emphasis small fw-bold mb-1">Nomor Resi</div>
