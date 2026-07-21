@@ -989,10 +989,13 @@
                             </select>
                         </div>
                         <div class="mb-3" id="bukti-kompeten-container-{{ $item->id }}" style="display: {{ $item->status_kompeten == 'Kompeten' ? 'block' : 'none' }};">
-                            <label class="form-label small fw-bold">Upload Bukti Kompeten (PDF)</label>
+                            <label class="form-label small fw-bold">Upload Bukti Kompeten (PDF, Maks 30MB)</label>
                             <input type="file" name="bukti_kompeten" class="form-control form-control-sm" accept=".pdf">
                             @if($item->bukti_kompeten)
-                                <a href="{{ getFileUrl($item->bukti_kompeten) }}" target="_blank" class="small mt-1 d-inline-block text-primary"><i class="fas fa-file-pdf me-1"></i> Lihat Bukti Saat Ini</a>
+                                <div class="d-flex align-items-center mt-1">
+                                    <a href="{{ getFileUrl($item->bukti_kompeten) }}" target="_blank" class="small text-primary me-3"><i class="fas fa-file-pdf me-1"></i> Lihat Bukti Saat Ini</a>
+                                    <span class="small text-success"><i class="fas fa-check-circle me-1"></i> Sudah diunggah (Kosongkan jika tidak diubah)</span>
+                                </div>
                             @endif
                         </div>
                         <div class="mb-3">
@@ -1005,13 +1008,25 @@
                         </div>
                         <div class="mb-3">
                             <label class="form-label small fw-bold">Upload Berkas Tambahan</label>
-                            <div class="mb-2">
-                                <label class="small text-muted">Scan Sertifikat</label>
-                                <input type="file" name="scan_sertif" class="form-control form-control-sm">
+                            <div class="mb-3">
+                                <label class="small text-muted">Scan Sertifikat (PDF, Maks 30MB)</label>
+                                <input type="file" name="scan_sertif" class="form-control form-control-sm" accept=".pdf">
+                                @if($item->scan_sertif)
+                                    <div class="d-flex align-items-center mt-1">
+                                        <a href="{{ getFileUrl($item->scan_sertif) }}" target="_blank" class="small text-primary me-3"><i class="fas fa-file-pdf me-1"></i> Lihat Sertifikat Saat Ini</a>
+                                        <span class="small text-success"><i class="fas fa-check-circle me-1"></i> Sudah diunggah (Kosongkan jika tidak diubah)</span>
+                                    </div>
+                                @endif
                             </div>
                             <div class="mb-2">
-                                <label class="small text-muted">Laporan PIC</label>
-                                <input type="file" name="laporan_pic" class="form-control form-control-sm">
+                                <label class="small text-muted">Laporan PIC (PDF, Maks 30MB)</label>
+                                <input type="file" name="laporan_pic" class="form-control form-control-sm" accept=".pdf">
+                                @if($item->laporan_pic)
+                                    <div class="d-flex align-items-center mt-1">
+                                        <a href="{{ getFileUrl($item->laporan_pic) }}" target="_blank" class="small text-primary me-3"><i class="fas fa-file-pdf me-1"></i> Lihat Laporan Saat Ini</a>
+                                        <span class="small text-success"><i class="fas fa-check-circle me-1"></i> Sudah diunggah (Kosongkan jika tidak diubah)</span>
+                                    </div>
+                                @endif
                             </div>
                         </div>
                         <div class="mb-0">
