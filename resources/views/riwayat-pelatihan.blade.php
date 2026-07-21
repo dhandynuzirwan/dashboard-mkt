@@ -1094,7 +1094,7 @@
                                 <input type="text" name="no_resi" class="form-control rounded-3" value="{{ $item->no_resi }}">
                             </div>
                             <div class="col-md-6">
-                                <label class="form-label small fw-bold">Foto Bukti / Resi (Maks 30MB)</label>
+                                <label class="form-label small fw-bold">Foto Bukti / Resi (Maks 2MB)</label>
                                 <input type="file" name="foto" class="form-control rounded-3" accept="image/*,.pdf">
                                 @if($item->foto)
                                     <div class="d-flex align-items-center mt-1">
