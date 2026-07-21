@@ -220,6 +220,7 @@ Route::middleware('auth')->group(function () {
         Route::post('/download-request', [DownloadRequestController::class, 'store'])->name('download.request');
         Route::get('/download-file/{id}', [DownloadRequestController::class, 'download'])->name('download.file');
         Route::get('/my-downloads', [DownloadRequestController::class, 'myRequests'])->name('download.my');
+        Route::get('/download-approval', [DownloadRequestController::class, 'index'])->name('download.approval');
         
         Route::get('/panduan', [App\Http\Controllers\PanduanController::class, 'index'])->name('panduan.index');
     });
@@ -300,7 +301,6 @@ Route::middleware('auth')->group(function () {
     // 5. KHUSUS SUPERADMIN & WEB DEV (User Management, Approval, Absensi, Advanced Payroll)
     Route::middleware('role:superadmin,web_dev')->group(function () {
         // Approval Download
-        Route::get('/download-approval', [DownloadRequestController::class, 'index'])->name('download.approval');
         Route::post('/download-approve/{id}', [DownloadRequestController::class, 'approve'])->name('download.approve');
         Route::post('/download-reject/{id}', [DownloadRequestController::class, 'reject'])->name('download.reject');
 
