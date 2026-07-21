@@ -260,8 +260,40 @@ class HomeController extends Controller
             }
         }
 
+        // 2.6 Logika Permintaan Perizinan (Hanya untuk superadmin)
+        $pendingPerizinan = collect([]);
+        if (in_array($userRole, ['superadmin'])) {
+            $cutis = \App\Models\Perizinan::where('status', 'pending')->with('user')->get()->map(function($c) {
+                return [
+                    'tipe' => 'Izin Cuti/Absen',
+                    'nama' => $c->user->nama_lengkap ?? $c->user->name,
+                    'waktu' => $c->created_at,
+                    'color' => 'warning'
+                ];
+            });
+            $unduhs = \App\Models\DownloadRequest::where('status', 'pending')->with('user')->get()->map(function($d) {
+                return [
+                    'tipe' => 'Izin Unduh Data',
+                    'nama' => $d->user->nama_lengkap ?? $d->user->name,
+                    'waktu' => $d->created_at,
+                    'color' => 'info'
+                ];
+            });
+            // Akses Halaman (Dummy)
+            $akses = collect([
+                [
+                    'tipe' => 'Izin Akses Halaman',
+                    'nama' => 'Jhon Doe (Dummy)',
+                    'waktu' => now()->subHours(2),
+                    'color' => 'danger'
+                ]
+            ]);
+
+            $pendingPerizinan = $cutis->concat($unduhs)->concat($akses)->sortByDesc('waktu')->take(5);
+        }
+
         return view('home', compact('quickAccess', 
-            'pengumuman', 'feed', 'hadir', 'telat', 'absen', 'attendanceRate', 'calendarEvents', 'upcomingAgendas', 'statusHariIni'
+            'pengumuman', 'feed', 'hadir', 'telat', 'absen', 'attendanceRate', 'calendarEvents', 'upcomingAgendas', 'statusHariIni', 'pendingPerizinan'
         ));
     }
 }
