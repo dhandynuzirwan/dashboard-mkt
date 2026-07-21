@@ -163,6 +163,31 @@
                             </thead>
                             <tbody>
                                 @forelse($riwayat as $index => $item)
+                                @php
+                                    $isLaporanLate = false;
+                                    if ($item->tanggal_selesai) {
+                                        $tglSelesai = \Carbon\Carbon::parse($item->tanggal_selesai)->startOfDay();
+                                        $uploadTime = \Carbon\Carbon::now();
+                                        
+                                        if ($item->laporan_pic) {
+                                            $path = public_path($item->laporan_pic);
+                                            $storagePath = storage_path('app/public/' . str_replace('storage/', '', $item->laporan_pic));
+                                            
+                                            if (file_exists($path)) {
+                                                $uploadTime = \Carbon\Carbon::createFromTimestamp(filemtime($path));
+                                            } elseif (file_exists($storagePath)) {
+                                                $uploadTime = \Carbon\Carbon::createFromTimestamp(filemtime($storagePath));
+                                            }
+                                        }
+                                        $uploadTime = $uploadTime->startOfDay();
+                                        
+                                        if (str_contains(strtoupper($item->jenis), 'BNSP') && $uploadTime->gt($tglSelesai->copy()->addDays(2))) {
+                                            $isLaporanLate = true;
+                                        } elseif (str_contains(strtoupper($item->jenis), 'KEMNAKER') && $uploadTime->gt($tglSelesai->copy()->addDays(7))) {
+                                            $isLaporanLate = true;
+                                        }
+                                    }
+                                @endphp
                                 <tr>
                                     <td class="text-center fw-bold text-muted">{{ $riwayat->firstItem() + $index }}</td>
                                     
@@ -747,31 +772,6 @@
                                     @if($item->cv)<a href="{{ getFileUrl($item->cv) }}" target="_blank" class="btn btn-sm btn-white border fw-bold hover-lift px-3"><i class="fas fa-file-pdf text-danger me-1"></i> CV</a>@endif
                                     @if($item->modul)<a href="{{ getFileUrl($item->modul) }}" target="_blank" class="btn btn-sm btn-white border fw-bold hover-lift px-3"><i class="fas fa-book text-primary me-1"></i> Modul</a>@endif
                                     
-                                    @php
-                                        $isLaporanLate = false;
-                                        if ($item->tanggal_selesai) {
-                                            $tglSelesai = \Carbon\Carbon::parse($item->tanggal_selesai)->startOfDay();
-                                            $uploadTime = \Carbon\Carbon::now();
-                                            
-                                            if ($item->laporan_pic) {
-                                                $path = public_path($item->laporan_pic);
-                                                $storagePath = storage_path('app/public/' . str_replace('storage/', '', $item->laporan_pic));
-                                                
-                                                if (file_exists($path)) {
-                                                    $uploadTime = \Carbon\Carbon::createFromTimestamp(filemtime($path));
-                                                } elseif (file_exists($storagePath)) {
-                                                    $uploadTime = \Carbon\Carbon::createFromTimestamp(filemtime($storagePath));
-                                                }
-                                            }
-                                            $uploadTime = $uploadTime->startOfDay();
-                                            
-                                            if (str_contains(strtoupper($item->jenis), 'BNSP') && $uploadTime->gt($tglSelesai->copy()->addDays(2))) {
-                                                $isLaporanLate = true;
-                                            } elseif (str_contains(strtoupper($item->jenis), 'KEMNAKER') && $uploadTime->gt($tglSelesai->copy()->addDays(7))) {
-                                                $isLaporanLate = true;
-                                            }
-                                        }
-                                    @endphp
                                     @if($item->laporan_pic)
                                         <a href="{{ getFileUrl($item->laporan_pic) }}" target="_blank" class="btn btn-sm btn-white border fw-bold hover-lift px-3">
                                             <i class="fas fa-file-alt text-success me-1"></i> Laporan
@@ -1074,6 +1074,13 @@
                                     <div class="d-flex align-items-center mt-1">
                                         <a href="{{ getFileUrl($item->laporan_pic) }}" target="_blank" class="small text-primary me-3"><i class="fas fa-file-pdf me-1"></i> Lihat Laporan Saat Ini</a>
                                         <span class="small text-success"><i class="fas fa-check-circle me-1"></i> Sudah diunggah (Kosongkan jika tidak diubah)</span>
+                                        @if($isLaporanLate)
+                                            <span class="badge bg-warning text-dark ms-2"><i class="fas fa-exclamation-triangle"></i> Telat Upload</span>
+                                        @endif
+                                    </div>
+                                @elseif($isLaporanLate)
+                                    <div class="mt-1">
+                                        <span class="badge bg-warning text-dark"><i class="fas fa-exclamation-triangle"></i> Terlambat Upload Laporan!</span>
                                     </div>
                                 @endif
                             </div>
