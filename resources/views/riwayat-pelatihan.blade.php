@@ -164,7 +164,7 @@
                             <tbody>
                                 @forelse($riwayat as $index => $item)
                                 @php
-                                    $isLaporanLate = false;
+                                    $laporanLateText = '';
                                     if ($item->tanggal_selesai) {
                                         $tglSelesai = \Carbon\Carbon::parse($item->tanggal_selesai)->startOfDay();
                                         $uploadTime = \Carbon\Carbon::now();
@@ -182,9 +182,9 @@
                                         $uploadTime = $uploadTime->startOfDay();
                                         
                                         if (str_contains(strtoupper($item->jenis), 'BNSP') && $uploadTime->gt($tglSelesai->copy()->addDays(2))) {
-                                            $isLaporanLate = true;
+                                            $laporanLateText = 'Terlambat, Laporan BNSP terakhir H+2';
                                         } elseif (str_contains(strtoupper($item->jenis), 'KEMNAKER') && $uploadTime->gt($tglSelesai->copy()->addDays(7))) {
-                                            $isLaporanLate = true;
+                                            $laporanLateText = 'Terlambat, Laporan KEMNAKER terakhir H+7';
                                         }
                                     }
                                 @endphp
@@ -775,17 +775,17 @@
                                     @if($item->laporan_pic)
                                         <a href="{{ getFileUrl($item->laporan_pic) }}" target="_blank" class="btn btn-sm btn-white border fw-bold hover-lift px-3">
                                             <i class="fas fa-file-alt text-success me-1"></i> Laporan
-                                            @if($isLaporanLate)
-                                                <span class="badge bg-warning text-dark ms-1" style="font-size: 0.65rem;">Telat</span>
+                                            @if($laporanLateText)
+                                                <span class="badge bg-warning-subtle text-warning-emphasis border border-warning ms-1" style="font-size: 0.65rem;">{{ $laporanLateText }}</span>
                                             @endif
                                         </a>
-                                    @elseif($isLaporanLate)
-                                        <span class="btn btn-sm btn-warning-subtle text-warning-emphasis border fw-bold px-3" title="Terlambat Upload Laporan!"><i class="fas fa-exclamation-triangle me-1"></i> Laporan Telat</span>
+                                    @elseif($laporanLateText)
+                                        <span class="btn btn-sm bg-warning-subtle text-warning-emphasis border border-warning fw-bold px-3"><i class="fas fa-exclamation-triangle me-1"></i> {{ $laporanLateText }}</span>
                                     @endif
                                     @if($item->scan_sertif)<a href="{{ getFileUrl($item->scan_sertif) }}" target="_blank" class="btn btn-sm btn-white border fw-bold hover-lift px-3"><i class="fas fa-award text-warning me-1"></i> Scan Sertif</a>@endif
                                     @if($item->bukti_kompeten)<a href="{{ getFileUrl($item->bukti_kompeten) }}" target="_blank" class="btn btn-sm btn-white border fw-bold hover-lift px-3"><i class="fas fa-check-circle text-info me-1"></i> Bukti Kompeten</a>@endif
                                     
-                                    @if(!$item->cv && !$item->modul && !$item->laporan_pic && !$item->scan_sertif && !$item->bukti_kompeten && !$isLaporanLate)
+                                    @if(!$item->cv && !$item->modul && !$item->laporan_pic && !$item->scan_sertif && !$item->bukti_kompeten && !$laporanLateText)
                                         <span class="text-muted fst-italic bg-light px-3 py-2 rounded-3 w-100 text-center border">Belum ada berkas yang diunggah.</span>
                                     @endif
                                 </div>
@@ -1074,13 +1074,13 @@
                                     <div class="d-flex align-items-center mt-1">
                                         <a href="{{ getFileUrl($item->laporan_pic) }}" target="_blank" class="small text-primary me-3"><i class="fas fa-file-pdf me-1"></i> Lihat Laporan Saat Ini</a>
                                         <span class="small text-success"><i class="fas fa-check-circle me-1"></i> Sudah diunggah (Kosongkan jika tidak diubah)</span>
-                                        @if($isLaporanLate)
-                                            <span class="badge bg-warning text-dark ms-2"><i class="fas fa-exclamation-triangle"></i> Telat Upload</span>
+                                        @if($laporanLateText)
+                                            <span class="badge bg-warning-subtle text-warning-emphasis border border-warning ms-2"><i class="fas fa-exclamation-triangle"></i> {{ $laporanLateText }}</span>
                                         @endif
                                     </div>
-                                @elseif($isLaporanLate)
+                                @elseif($laporanLateText)
                                     <div class="mt-1">
-                                        <span class="badge bg-warning text-dark"><i class="fas fa-exclamation-triangle"></i> Terlambat Upload Laporan!</span>
+                                        <span class="badge bg-warning-subtle text-warning-emphasis border border-warning"><i class="fas fa-exclamation-triangle"></i> {{ $laporanLateText }}</span>
                                     </div>
                                 @endif
                             </div>
