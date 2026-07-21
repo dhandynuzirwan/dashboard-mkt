@@ -385,10 +385,12 @@
                               <label class="form-label fw-bold small">Upload CV Trainer (PDF)</label>
                               <input type="file" name="cv" class="form-control rounded-3" accept=".pdf,.doc,.docx">
                           </div>
+                          <!-- 
                           <div class="col-md-6">
                               <label class="form-label fw-bold small">Upload Modul</label>
                               <input type="file" name="modul" class="form-control rounded-3">
                           </div>
+                          -->
                           <div class="col-12"><hr class="text-muted opacity-25"></div>
                           <div class="col-md-6">
                               <label class="form-label fw-bold small">Nama LSP</label>
@@ -705,9 +707,11 @@
                                                 @if($item->cv)
                                                     <a href="{{ getFileUrl($item->cv) }}" target="_blank" class="badge bg-danger text-white text-decoration-none px-2 py-1"><i class="fas fa-file-pdf me-1"></i> CV Trainer</a>
                                                 @endif
+                                                <!--
                                                 @if($item->modul)
                                                     <a href="{{ getFileUrl($item->modul) }}" target="_blank" class="badge bg-primary text-white text-decoration-none px-2 py-1"><i class="fas fa-file-download me-1"></i> Modul</a>
                                                 @endif
+                                                -->
                                             </div>
                                         </div>
                                         <div class="col-sm-6">
@@ -789,7 +793,7 @@
                                 <div class="text-muted small fw-bold mb-2 mt-4">Unduh Berkas Pendukung</div>
                                 <div class="d-flex flex-wrap gap-2">
                                     @if($item->cv)<a href="{{ getFileUrl($item->cv) }}" target="_blank" class="btn btn-sm btn-white border fw-bold hover-lift px-3"><i class="fas fa-file-pdf text-danger me-1"></i> CV</a>@endif
-                                    @if($item->modul)<a href="{{ getFileUrl($item->modul) }}" target="_blank" class="btn btn-sm btn-white border fw-bold hover-lift px-3"><i class="fas fa-book text-primary me-1"></i> Modul</a>@endif
+                                    <!-- @if($item->modul)<a href="{{ getFileUrl($item->modul) }}" target="_blank" class="btn btn-sm btn-white border fw-bold hover-lift px-3"><i class="fas fa-book text-primary me-1"></i> Modul</a>@endif -->
                                     
                                     @if($item->laporan_pic)
                                         <a href="{{ getFileUrl($item->laporan_pic) }}" target="_blank" class="btn btn-sm btn-white border fw-bold hover-lift px-3">
@@ -1111,6 +1115,7 @@
                                     <div class="small mt-1 text-success"><i class="fas fa-check-circle"></i> File sudah ada. Abaikan jika tidak diubah.</div>
                                 @endif
                             </div>
+                            <!--
                             <div class="col-md-6">
                                 <label class="form-label small fw-bold">Upload Modul</label>
                                 <input type="file" name="modul" class="form-control rounded-3">
@@ -1118,6 +1123,7 @@
                                     <div class="small mt-1 text-success"><i class="fas fa-check-circle"></i> File sudah ada. Abaikan jika tidak diubah.</div>
                                 @endif
                             </div>
+                            -->
                             <div class="col-12"><hr class="text-muted opacity-25"></div>
                             <div class="col-md-6">
                                 <label class="form-label small fw-bold">Nama LSP</label>
