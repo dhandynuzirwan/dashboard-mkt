@@ -1094,8 +1094,14 @@
                                 <input type="text" name="no_resi" class="form-control rounded-3" value="{{ $item->no_resi }}">
                             </div>
                             <div class="col-md-6">
-                                <label class="form-label small fw-bold">Foto Bukti / Resi</label>
-                                <input type="file" name="foto" class="form-control rounded-3">
+                                <label class="form-label small fw-bold">Foto Bukti / Resi (Maks 30MB)</label>
+                                <input type="file" name="foto" class="form-control rounded-3" accept="image/*,.pdf">
+                                @if($item->foto)
+                                    <div class="d-flex align-items-center mt-1">
+                                        <a href="{{ getFileUrl($item->foto) }}" target="_blank" class="small text-primary me-3"><i class="fas fa-image me-1"></i> Lihat Foto Saat Ini</a>
+                                        <span class="small text-success"><i class="fas fa-check-circle me-1"></i> Sudah diunggah (Kosongkan jika tidak diubah)</span>
+                                    </div>
+                                @endif
                             </div>
                             <div class="col-md-12">
                                 <label class="form-label small fw-bold">Catatan Logistik</label>
