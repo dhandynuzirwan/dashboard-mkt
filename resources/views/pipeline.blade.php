@@ -732,7 +732,12 @@
                                                     <div class="fw-bold text-primary mb-1">{{ $itemCta->judul_permintaan }}</div>
                                                     <span class="badge badge-soft-info mb-1">{{ strtoupper($itemCta->sertifikasi) }}</span>
                                                     <small class="text-dark d-block fw-medium lh-sm mt-1" style="max-width: 250px;">{{ $itemCta->skema }}</small>
-                                                    <span class="badge bg-light text-dark border mt-2"><i class="fas fa-users text-muted me-1"></i> {{ $itemCta->jumlah_peserta }} Peserta</span>
+                                                    <div class="d-flex flex-wrap gap-2 mt-2">
+                                                        <span class="badge bg-light text-dark border"><i class="fas fa-users text-muted me-1"></i> {{ $itemCta->jumlah_peserta }} Peserta</span>
+                                                        @if($itemCta->tanggal_pelaksanaan)
+                                                            <span class="badge bg-light text-dark border"><i class="far fa-calendar-check text-muted me-1"></i> {{ \Carbon\Carbon::parse($itemCta->tanggal_pelaksanaan)->format('d M Y') }}</span>
+                                                        @endif
+                                                    </div>
                                                 </td>
                                                 <td class="align-middle">
                                                     <div class="d-flex justify-content-between mb-1 small">
