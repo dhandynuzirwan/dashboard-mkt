@@ -33,6 +33,17 @@
                 $dealCount = in_array($role, ['team_leader', 'operasional'])
                     ? auth()->user()->unreadNotifications->where('type', 'App\Notifications\NewDealNotification')->count()
                     : 0;
+
+                $lemburPendingCount = 0;
+                if (in_array($role, ['spv_marketing', 'team_leader'])) {
+                    $lemburPendingCount = \App\Models\PengajuanLembur::where('status_spv', 'pending')->count();
+                } elseif ($role === 'hrd') {
+                    $lemburPendingCount = \App\Models\PengajuanLembur::where('status_spv', 'approved')
+                        ->where('status_hrd', 'pending')->count();
+                } elseif ($role === 'superadmin') {
+                    $lemburPendingCount = \App\Models\PengajuanLembur::where('status_hrd', 'approved')
+                        ->where('status_direktur', 'pending')->count();
+                }
             @endphp
             
             <ul class="nav nav-secondary">
@@ -321,6 +332,9 @@
                     <a href="{{ route('approval-lembur.index') }}">
                         <i class="fas fa-clock"></i>
                         <p>Approval Lembur</p>
+                        @if($lemburPendingCount > 0)
+                            <span class="badge badge-warning">{{ $lemburPendingCount }}</span>
+                        @endif
                     </a>
                 </li>
                 @endif
