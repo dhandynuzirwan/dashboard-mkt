@@ -83,7 +83,7 @@
                     <div class="col-md-6">
                         {{-- 3. Panel Pengumuman (Dinamis) --}}
                         <div class="card border-0 shadow-sm rounded-4 mb-4 fade-in" style="animation-delay: 0.3s; height: 100%;">
-                            <div class="card-header bg-white border-0 pt-4 pb-0 px-4">
+                            <div class="card-header bg-white border-0 pt-4 pb-0 px-4 rounded-top-4">
                                 <h5 class="fw-bold mb-0"><i class="fas fa-bullhorn text-danger me-2"></i> Papan Pengumuman</h5>
                             </div>
                             <div class="card-body p-4">
@@ -135,7 +135,7 @@
                         @if(Auth::user()->role === 'superadmin')
                         {{-- 4. Permintaan Perizinan (Khusus Superadmin) --}}
                         <div class="card border-0 shadow-sm rounded-4 mb-4 fade-in" style="animation-delay: 0.4s; height: 100%;">
-                            <div class="card-header bg-white border-0 pt-4 pb-0 px-4 d-flex justify-content-between align-items-center">
+                            <div class="card-header bg-white border-0 pt-4 pb-0 px-4 d-flex justify-content-between align-items-center rounded-top-4">
                                 <h5 class="fw-bold mb-0"><i class="fas fa-tasks text-primary me-2"></i> Permintaan Perizinan</h5>
                                 <span class="badge bg-danger rounded-pill">{{ count($pendingPerizinan) }} Pending</span>
                             </div>
@@ -163,7 +163,7 @@
                         @else
                         {{-- 4. Aktivitas Terbaru (Dinamis) --}}
                         <div class="card border-0 shadow-sm rounded-4 mb-4 fade-in" style="animation-delay: 0.4s; height: 100%;">
-                            <div class="card-header bg-white border-0 pt-4 pb-0 px-4">
+                            <div class="card-header bg-white border-0 pt-4 pb-0 px-4 rounded-top-4">
                                 <h5 class="fw-bold mb-0"><i class="fas fa-list text-info me-2"></i> Aktivitas Feed</h5>
                             </div>
                             <div class="card-body p-4 pt-3">
@@ -263,7 +263,7 @@
 
                 {{-- 2. Kalender Dinamis --}}
                 <div class="card border-0 shadow-sm rounded-4 mb-4">
-                    <div class="card-header bg-white border-0 pt-4 pb-0 px-4">
+                    <div class="card-header bg-white border-0 pt-4 pb-0 px-4 rounded-top-4">
                         <h6 class="fw-bold mb-0"><i class="fas fa-calendar-alt text-primary me-2"></i> Kalender Agenda</h6>
                     </div>
                     <div class="card-body p-4">
