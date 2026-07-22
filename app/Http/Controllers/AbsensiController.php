@@ -123,6 +123,7 @@ class AbsensiController extends Controller
             }
         }
         
+        $listDoughnutHadir = $listDoughnutHadir->sortByDesc('tanggal')->values();
         $listDoughnutTelat = $listDoughnutTelat->sortByDesc('tanggal')->values();
         $doughnutHadir = $listDoughnutHadir->count();
         $doughnutTelat = $listDoughnutTelat->count();
