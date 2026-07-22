@@ -678,4 +678,16 @@ class AbsensiController extends Controller
         
         return redirect()->back()->with('success', 'Data absensi yang tidak valid telah ditolak dan dihapus.');
     }
+
+    public function syncFingerspot()
+    {
+        try {
+            // Tarik data hari ini dan kemarin
+            \Illuminate\Support\Facades\Artisan::call('absensi:sync', ['--days' => 1]);
+            return back()->with('success', 'Berhasil melakukan sinkronisasi data absensi dari mesin Fingerspot.');
+        } catch (\Exception $e) {
+            \Illuminate\Support\Facades\Log::error('Manual Sync API Error: ' . $e->getMessage());
+            return back()->with('error', 'Gagal melakukan sinkronisasi: ' . $e->getMessage());
+        }
+    }
 }

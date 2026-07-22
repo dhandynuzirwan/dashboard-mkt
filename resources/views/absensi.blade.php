@@ -209,7 +209,13 @@
         </div>
 
         {{-- tombol import --}}
-        <div class="mb-3 d-flex gap-2">
+        <div class="mb-3 d-flex gap-2 flex-wrap">
+            <form action="{{ route('absensi.sync') }}" method="POST" class="m-0 p-0 d-inline">
+                @csrf
+                <button type="submit" class="btn btn-primary btn-sm btn-round" onclick="return confirm('Tarik data absensi terbaru dari mesin Fingerspot secara langsung?')">
+                    <i class="fas fa-sync me-1"></i> Tarik Data Mesin
+                </button>
+            </form>
             <button class="btn btn-success btn-sm btn-round" data-bs-toggle="modal" data-bs-target="#modalImport">
                 <i class="fas fa-file-import me-1"></i> Import Absensi
             </button>
