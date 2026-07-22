@@ -111,6 +111,16 @@ Route::middleware('auth')->group(function () {
     Route::get('/pengajuan-izin', [\App\Http\Controllers\PengajuanIzinController::class, 'index'])->name('pengajuan-izin.index');
     Route::get('/pengajuan-izin/create', [\App\Http\Controllers\PengajuanIzinController::class, 'create'])->name('pengajuan-izin.create');
     Route::post('/pengajuan-izin', [\App\Http\Controllers\PengajuanIzinController::class, 'store'])->name('pengajuan-izin.store');
+
+    // ================= RUTE PENGAJUAN LEMBUR =================
+    Route::get('/pengajuan-lembur', [\App\Http\Controllers\PengajuanLemburController::class, 'index'])->name('pengajuan-lembur.index');
+    Route::get('/pengajuan-lembur/create', [\App\Http\Controllers\PengajuanLemburController::class, 'create'])->name('pengajuan-lembur.create');
+    Route::post('/pengajuan-lembur', [\App\Http\Controllers\PengajuanLemburController::class, 'store'])->name('pengajuan-lembur.store');
+    Route::get('/pengajuan-lembur/{id}/pdf', [\App\Http\Controllers\PengajuanLemburController::class, 'printPdf'])->name('pengajuan-lembur.pdf');
+    
+    Route::get('/approval-lembur', [\App\Http\Controllers\PengajuanLemburController::class, 'approvalIndex'])->name('approval-lembur.index');
+    Route::post('/approval-lembur/{id}/approve', [\App\Http\Controllers\PengajuanLemburController::class, 'approve'])->name('approval-lembur.approve');
+    Route::post('/approval-lembur/{id}/reject', [\App\Http\Controllers\PengajuanLemburController::class, 'reject'])->name('approval-lembur.reject');
     
     // ================= RUTE BRANKAS AKUN =================
     // Menggunakan Route::resource agar otomatis membuat rute index, store, dan destroy

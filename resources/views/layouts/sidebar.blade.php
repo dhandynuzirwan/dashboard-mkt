@@ -62,6 +62,11 @@
                                     <span class="sub-item">Pengajuan Izin / Cuti</span>
                                 </a>
                             </li>
+                            <li class="{{ request()->routeIs('pengajuan-lembur.*') ? 'active' : '' }}">
+                                <a href="{{ route('pengajuan-lembur.index') }}">
+                                    <span class="sub-item">Pengajuan Lembur</span>
+                                </a>
+                            </li>
                         </ul>
                     </div>
                 </li>
@@ -309,6 +314,16 @@
                         @endif
                     </a>
                 </li>
+                
+                {{-- ================= MENU APPROVAL LEMBUR ================= --}}
+                @if(in_array($role, ['team_leader', 'spv_marketing', 'hrd', 'superadmin']))
+                <li class="nav-item {{ request()->routeIs('approval-lembur.*') ? 'active' : '' }}">
+                    <a href="{{ route('approval-lembur.index') }}">
+                        <i class="fas fa-clock"></i>
+                        <p>Approval Lembur</p>
+                    </a>
+                </li>
+                @endif
                 {{-- ================= MENU MODUL PELATIHAN ================= --}}
                 @if(in_array($role, ['superadmin', 'graphic', 'team_leader', 'admin', 'rnd']))
                 @php $isModul = request()->routeIs(['modul.index']); @endphp
