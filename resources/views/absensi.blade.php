@@ -460,10 +460,7 @@
                                             <tbody>
                                                 @foreach($users as $user)
                                                 <tr>
-                                                    <td>
-                                                        <div class="small text-muted fw-bold">{{ $user->name }}</div>
-                                                        <div class="text-dark">{{ $user->nama_lengkap ?? '-' }}</div>
-                                                    </td>
+                                                    <td>{{ $user->name }}</td>
                                                     <td>
                                                         <input type="text" name="fingerspot_id[{{ $user->id }}]" 
                                                                value="{{ $user->fingerspot_id }}" 
