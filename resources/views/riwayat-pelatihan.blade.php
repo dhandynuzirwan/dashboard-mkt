@@ -978,8 +978,9 @@
                                 <input type="hidden" name="block" value="dokumentasi">
                                 
                                 <div class="mb-3">
-                                    <label class="form-label small text-muted">Pilih File (Bisa pilih banyak file sekaligus. Foto max 5MB, Video max 20MB)</label>
-                                    <input type="file" name="dokumentasi_files[]" class="form-control rounded-3" multiple accept="image/*,video/*" required>
+                                    <label class="form-label small text-muted">Pilih File (Bisa pilih berulang kali. Foto max 5MB, Video max 20MB)</label>
+                                    <input type="file" id="dokumentasiInput{{ $item->id }}" class="form-control rounded-3" multiple accept="image/*,video/*" onchange="handleFileSelect(event, {{ $item->id }})">
+                                    <div id="fileQueuePreview{{ $item->id }}" class="mt-2 d-flex flex-wrap gap-2"></div>
                                 </div>
                                 <div class="text-end">
                                     <button type="submit" class="btn btn-primary rounded-pill px-4 fw-bold shadow-sm" id="btnSubmitUpload{{ $item->id }}">
@@ -1913,10 +1914,68 @@
     }
     window.hapusDokumentasi = hapusDokumentasi;
 
+    window.queuedFiles = window.queuedFiles || {};
+
+    function initFileQueue(id) {
+        if (!window.queuedFiles[id]) {
+            window.queuedFiles[id] = [];
+        }
+    }
+
+    function handleFileSelect(event, id) {
+        initFileQueue(id);
+        let files = event.target.files;
+        for (let i = 0; i < files.length; i++) {
+            window.queuedFiles[id].push(files[i]);
+        }
+        event.target.value = ''; // Reset input to allow selecting the same file again if needed
+        renderQueuePreview(id);
+    }
+    window.handleFileSelect = handleFileSelect;
+
+    function renderQueuePreview(id) {
+        let previewContainer = document.getElementById('fileQueuePreview' + id);
+        if (!previewContainer) return;
+        previewContainer.innerHTML = '';
+        window.queuedFiles[id].forEach((file, index) => {
+            let size = (file.size / 1024 / 1024).toFixed(2);
+            previewContainer.innerHTML += `
+                <span class="badge bg-secondary-subtle text-secondary border d-flex align-items-center gap-2 p-2 shadow-sm rounded-pill">
+                    <span class="text-truncate" style="max-width: 150px;" title="${file.name}">${file.name}</span> (${size}MB)
+                    <i class="fas fa-times text-danger ms-1" style="cursor:pointer;" onclick="removeQueuedFile(${id}, ${index})" title="Batal tambah"></i>
+                </span>
+            `;
+        });
+    }
+
+    function removeQueuedFile(id, index) {
+        window.queuedFiles[id].splice(index, 1);
+        renderQueuePreview(id);
+    }
+    window.removeQueuedFile = removeQueuedFile;
+
     function uploadDokumentasiAjax(event, form, id, deleteUrlTemplate) {
         event.preventDefault();
         
+        initFileQueue(id);
+        let files = window.queuedFiles[id];
+        
+        if (files.length === 0) {
+            if (typeof Swal !== 'undefined') {
+                Swal.fire('Perhatian', 'Pilih minimal satu file untuk diunggah.', 'warning');
+            } else {
+                alert('Pilih minimal satu file untuk diunggah.');
+            }
+            return;
+        }
+
         let formData = new FormData(form);
+        // Hapus input file default (jika ada) dan ganti dengan antrean file
+        formData.delete('dokumentasi_files[]');
+        files.forEach(file => {
+            formData.append('dokumentasi_files[]', file);
+        });
+
         let submitBtn = document.getElementById('btnSubmitUpload' + id);
         let originalHtml = submitBtn.innerHTML;
         
@@ -1981,6 +2040,9 @@
                     if(gridContainer) gridContainer.insertAdjacentHTML('beforeend', cardHtml);
                 });
                 
+                // Bersihkan antrean
+                window.queuedFiles[id] = [];
+                renderQueuePreview(id);
                 form.reset();
             } else {
                 if (typeof Swal !== 'undefined') {
