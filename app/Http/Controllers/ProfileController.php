@@ -21,6 +21,10 @@ class ProfileController extends Controller
         $request->validate([
             'nama_lengkap' => 'nullable|string|max:255',
             'no_hp'        => 'nullable|string|max:20',
+            'nik'          => 'nullable|string|max:50',
+            'tanggal_lahir'=> 'nullable|date',
+            'tanggal_kontrak_baru' => 'nullable|date',
+            'tanggal_kontrak_berakhir' => 'nullable|date',
             'foto_profil'  => 'nullable|image|mimes:jpeg,png,jpg,webp|max:2048',
             'deal_sound'   => 'nullable|file|mimes:mp3,wav|max:5120', // Maks 5MB
         ]);
@@ -29,6 +33,10 @@ class ProfileController extends Controller
         $dataToUpdate = [
             'nama_lengkap' => $request->nama_lengkap,
             'no_hp'        => $request->no_hp,
+            'nik'          => $request->nik,
+            'tanggal_lahir'=> $request->tanggal_lahir,
+            'tanggal_kontrak_baru' => $request->tanggal_kontrak_baru,
+            'tanggal_kontrak_berakhir' => $request->tanggal_kontrak_berakhir,
         ];
 
         // Logika Upload Foto Profil

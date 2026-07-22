@@ -78,7 +78,7 @@
                             @enderror
                         </div>
 
-                        <div class="form-group mb-5 px-0">
+                        <div class="form-group mb-4 px-0">
                             <label class="form-label fw-bold text-dark mb-1" style="font-size: 13px;">Nomor HP / WhatsApp</label>
                             <div class="input-icon">
                                 <span class="input-icon-addon">
@@ -89,6 +89,63 @@
                             @error('no_hp')
                                 <div class="invalid-feedback d-block fw-bold" style="font-size: 12px;">{{ $message }}</div>
                             @enderror
+                        </div>
+
+                        <div class="form-group mb-4 px-0">
+                            <label class="form-label fw-bold text-dark mb-1" style="font-size: 13px;">Nomor Induk Kependudukan (NIK)</label>
+                            <div class="input-icon">
+                                <span class="input-icon-addon">
+                                    <i class="fas fa-id-badge text-secondary opacity-75"></i>
+                                </span>
+                                <input type="text" name="nik" class="form-control ps-5 @error('nik') is-invalid @enderror" value="{{ old('nik', $user->nik) }}" placeholder="Masukkan 16 digit NIK">
+                            </div>
+                            @error('nik')
+                                <div class="invalid-feedback d-block fw-bold" style="font-size: 12px;">{{ $message }}</div>
+                            @enderror
+                        </div>
+
+                        <div class="form-group mb-4 px-0">
+                            <label class="form-label fw-bold text-dark mb-1" style="font-size: 13px;">Tanggal Lahir</label>
+                            <div class="input-icon">
+                                <span class="input-icon-addon">
+                                    <i class="fas fa-calendar-day text-warning opacity-75"></i>
+                                </span>
+                                <input type="date" name="tanggal_lahir" class="form-control ps-5 @error('tanggal_lahir') is-invalid @enderror" value="{{ old('tanggal_lahir', $user->tanggal_lahir) }}">
+                            </div>
+                            @error('tanggal_lahir')
+                                <div class="invalid-feedback d-block fw-bold" style="font-size: 12px;">{{ $message }}</div>
+                            @enderror
+                        </div>
+
+                        <div class="row mb-3">
+                            <div class="col-md-6">
+                                <div class="form-group mb-4 px-0">
+                                    <label class="form-label fw-bold text-dark mb-1" style="font-size: 13px;">Kontrak Baru</label>
+                                    <div class="input-icon">
+                                        <span class="input-icon-addon">
+                                            <i class="fas fa-file-signature text-success opacity-75"></i>
+                                        </span>
+                                        <input type="date" name="tanggal_kontrak_baru" class="form-control ps-5 @error('tanggal_kontrak_baru') is-invalid @enderror" value="{{ old('tanggal_kontrak_baru', $user->tanggal_kontrak_baru) }}">
+                                    </div>
+                                    @error('tanggal_kontrak_baru')
+                                        <div class="invalid-feedback d-block fw-bold" style="font-size: 12px;">{{ $message }}</div>
+                                    @enderror
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-group mb-4 px-0">
+                                    <label class="form-label fw-bold text-dark mb-1" style="font-size: 13px;">Kontrak Berakhir</label>
+                                    <div class="input-icon">
+                                        <span class="input-icon-addon">
+                                            <i class="fas fa-file-excel text-danger opacity-75"></i>
+                                        </span>
+                                        <input type="date" name="tanggal_kontrak_berakhir" class="form-control ps-5 @error('tanggal_kontrak_berakhir') is-invalid @enderror" value="{{ old('tanggal_kontrak_berakhir', $user->tanggal_kontrak_berakhir) }}">
+                                    </div>
+                                    @error('tanggal_kontrak_berakhir')
+                                        <div class="invalid-feedback d-block fw-bold" style="font-size: 12px;">{{ $message }}</div>
+                                    @enderror
+                                </div>
+                            </div>
                         </div>
 
                         @if($user->role === 'marketing')
