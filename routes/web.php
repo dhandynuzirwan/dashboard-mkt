@@ -141,7 +141,7 @@ Route::middleware('auth')->group(function () {
     */
     // --- MENU PERFORMANCE (Khusus Superadmin, Webdev, SPV) ---
     // Asumsi kamu menggunakan middleware 'role' (sesuaikan jika menggunakan middleware/penamaan lain)
-    Route::middleware('role:superadmin,web_dev,spv_marketing,admin,rnd')->group(function () {
+    Route::middleware('role:superadmin,web_dev,spv_marketing,admin,rnd,performance')->group(function () {
         Route::get('/dashboard-progress', [DashboardController::class, 'index'])->name('dashboard.progress');
         // Placeholder untuk On Display Monitor
         // Route On Display Monitor
@@ -150,7 +150,7 @@ Route::middleware('auth')->group(function () {
     });
 
     // 0. KHUSUS MENU OPERASIONAL (Superadmin, Web Developer, Operasional, Team Leader, SPV)
-    Route::middleware('role:superadmin,web_dev,operasional,team_leader,spv_marketing,graphic')->group(function () {
+    Route::middleware('role:superadmin,web_dev,operasional,team_leader,spv_marketing,graphic,performance')->group(function () {
         
         // Portal Back Office (Links)
         Route::get('/operational', [OperationalController::class, 'index'])->name('operational');
@@ -165,7 +165,7 @@ Route::middleware('auth')->group(function () {
         Route::put('/monitoring-pelatihan/{id}', [OperationalController::class, 'updatePelatihanBerjalan'])->name('monitoring.pelatihan.update');
         Route::delete('/monitoring-pelatihan/{id}', [OperationalController::class, 'destroyPelatihanBerjalan'])->name('operational.pelatihan-berjalan.destroy');
 
-        Route::middleware('role:superadmin,web_dev,team_leader,operasional,spv_marketing,graphic')->group(function () {
+        Route::middleware('role:superadmin,web_dev,team_leader,operasional,spv_marketing,graphic,performance')->group(function () {
             Route::get('/riwayat-pelatihan', [RiwayatPelatihanController::class, 'index'])->name('riwayat.pelatihan');
             Route::post('/riwayat-pelatihan', [RiwayatPelatihanController::class, 'store'])->name('riwayat.pelatihan.store');
             Route::put('/riwayat-pelatihan/{id}', [RiwayatPelatihanController::class, 'update'])->name('riwayat.pelatihan.update');
@@ -216,7 +216,7 @@ Route::middleware('auth')->group(function () {
     });
 
     // 1. FITUR UMUM (Superadmin, Web Dev, Admin, Marketing, RnD, Digital Marketing)
-    Route::middleware('role:superadmin,web_dev,spv_marketing,admin,marketing,rnd,digitalmarketing,operasional,team_leader,graphic')->group(function () {
+    Route::middleware('role:superadmin,web_dev,spv_marketing,admin,marketing,rnd,digitalmarketing,operasional,team_leader,graphic,performance')->group(function () {
         
         
         Route::post('/download-request', [DownloadRequestController::class, 'store'])->name('download.request');
@@ -228,17 +228,17 @@ Route::middleware('auth')->group(function () {
     });
 
     // 2. ANALYTICS & REPORTING
-    Route::middleware('role:superadmin,web_dev,spv_marketing,marketing')->group(function () {
+    Route::middleware('role:superadmin,web_dev,spv_marketing,marketing,performance')->group(function () {
         Route::get('/data-kpi', [KpiController::class, 'index'])->name('data-kpi');
     });
 
-    Route::middleware('role:superadmin,web_dev,marketing')->group(function () {
+    Route::middleware('role:superadmin,web_dev,marketing,performance')->group(function () {
         Route::get('/revenue', [RevenueController::class, 'index'])->name('revenue');
         Route::get('/simulasi-gaji', [SalaryController::class, 'index'])->name('simulasi-gaji');
     });
 
     // 2. MONITORING BISNIS (Superadmin, Web Dev, Admin, Marketing)
-    Route::middleware('role:superadmin,web_dev,spv_marketing,admin,marketing')->group(function () {
+    Route::middleware('role:superadmin,web_dev,spv_marketing,admin,marketing,performance')->group(function () {
         Route::get('/pipeline', [ProspekController::class, 'index'])->name('prospek.index');
         Route::get('/pipeline-alias', [ProspekController::class, 'index'])->name('pipeline');
         
@@ -250,7 +250,7 @@ Route::middleware('auth')->group(function () {
     });
 
     // 3. PENGELOLAAN DATA & TRAINING (Superadmin, Web Dev, Admin, RnD, Digital Marketing)
-    Route::middleware('role:superadmin,web_dev,spv_marketing,admin,rnd,digitalmarketing')->group(function () {
+    Route::middleware('role:superadmin,web_dev,spv_marketing,admin,rnd,digitalmarketing,performance')->group(function () {
         Route::get('/data-masuk', [DataMasukController::class, 'index'])->name('data-masuk.index');
         Route::get('/form-data-masuk', [DataMasukController::class, 'create'])->name('form-data-masuk');
         Route::post('/data-masuk/store', [DataMasukController::class, 'store'])->name('data-masuk.store');
@@ -372,7 +372,7 @@ Route::middleware('auth')->group(function () {
     });
 
     // Parameter Finansial / Nilai Target Omset
-    Route::middleware('role:superadmin,spv_marketing')->group(function () {
+    Route::middleware('role:superadmin,spv_marketing,performance')->group(function () {
         Route::get('/parameter-finansial', [ParameterFinansialController::class, 'index'])->name('parameter-finansial.index');
     });
     

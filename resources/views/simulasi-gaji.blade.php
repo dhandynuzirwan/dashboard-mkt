@@ -65,7 +65,7 @@
             </div>
         </div>
 
-        @if(auth()->user()->role !== 'marketing')
+        @if(!in_array(auth()->user()->role, ['marketing', 'performance']))
         {{-- ================= STAT CARDS SUPERADMIN ================= --}}
         <div class="row fade-in mb-3">
             <div class="col-sm-6 col-md-4">
@@ -329,7 +329,7 @@
             </div>
         </div>
     </div>
-@else
+@elseif(auth()->user()->role !== 'performance')
     {{-- TAMPILAN MICRO CARDS 4x3 (UNTUK SUPERADMIN / ROLE LAIN) --}}
 <div class="row fade-in mb-4">
     @foreach ($marketings as $m)
@@ -413,7 +413,7 @@
     @endif
 </div>
 @endif
-@if(auth()->user()->role === 'superadmin')
+@if(in_array(auth()->user()->role, ['superadmin', 'performance']))
 {{-- ================= TABEL SUMMARY KHUSUS SUPERADMIN (RINGKAS) ================= --}}
 <div class="row fade-in mb-3">
     <div class="col-12">
