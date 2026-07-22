@@ -929,48 +929,51 @@
                 </div>
                 <div class="modal-body p-4 bg-light">
                     {{-- Grid Galeri --}}
-                    @if(count($dokumentasi) > 0)
-                        <div class="row g-3 mb-4">
-                            @foreach($dokumentasi as $i => $file)
-                                <div class="col-md-3 col-sm-4 col-6">
-                                    <div class="card border-0 shadow-sm rounded-4 h-100 overflow-hidden position-relative">
-                                        @php
-                                            $ext = strtolower(pathinfo($file, PATHINFO_EXTENSION));
-                                            $isVideo = in_array($ext, ['mp4', 'webm', 'ogg', 'mov', 'avi']);
-                                            $url = getFileUrl($file);
-                                        @endphp
-                                        
-                                        @if($isVideo)
-                                            <video src="{{ $url }}" class="w-100 h-100 object-fit-cover" controls style="min-height: 150px; max-height: 150px;"></video>
-                                        @else
-                                            <a href="{{ $url }}" target="_blank">
-                                                <img src="{{ $url }}" class="w-100 h-100 object-fit-cover" style="min-height: 150px; max-height: 150px;" alt="Dokumentasi">
-                                            </a>
-                                        @endif
-                                        
-                                        {{-- Tombol Hapus (AJAX) --}}
-                                        <button type="button" class="btn btn-sm btn-danger rounded-circle shadow-sm position-absolute" 
-                                            onclick="hapusDokumentasi(this, '{{ route('riwayat.pelatihan.deleteDokumentasi', ['id' => $item->id, 'index' => $i]) }}')"
-                                            style="top: 10px; right: 10px; z-index: 2; width: 30px; height: 30px; padding: 0; line-height: 1;"
-                                            title="Hapus file">
-                                            <i class="fas fa-trash-alt"></i>
-                                        </button>
+                    <div id="galeriContainer{{ $item->id }}">
+                        @if(count($dokumentasi) > 0)
+                            <div class="row g-3 mb-4" id="galeriGrid{{ $item->id }}">
+                                @foreach($dokumentasi as $i => $file)
+                                    <div class="col-md-3 col-sm-4 col-6">
+                                        <div class="card border-0 shadow-sm rounded-4 h-100 overflow-hidden position-relative">
+                                            @php
+                                                $ext = strtolower(pathinfo($file, PATHINFO_EXTENSION));
+                                                $isVideo = in_array($ext, ['mp4', 'webm', 'ogg', 'mov', 'avi']);
+                                                $url = getFileUrl($file);
+                                            @endphp
+                                            
+                                            @if($isVideo)
+                                                <video src="{{ $url }}" class="w-100 h-100 object-fit-cover" controls style="min-height: 150px; max-height: 150px;"></video>
+                                            @else
+                                                <a href="{{ $url }}" target="_blank">
+                                                    <img src="{{ $url }}" class="w-100 h-100 object-fit-cover" style="min-height: 150px; max-height: 150px;" alt="Dokumentasi">
+                                                </a>
+                                            @endif
+                                            
+                                            {{-- Tombol Hapus (AJAX) --}}
+                                            <button type="button" class="btn btn-sm btn-danger rounded-circle shadow-sm position-absolute" 
+                                                onclick="hapusDokumentasi(this, '{{ route('riwayat.pelatihan.deleteDokumentasi', ['id' => $item->id, 'index' => $i]) }}')"
+                                                style="top: 10px; right: 10px; z-index: 2; width: 30px; height: 30px; padding: 0; line-height: 1;"
+                                                title="Hapus file">
+                                                <i class="fas fa-trash-alt"></i>
+                                            </button>
+                                        </div>
                                     </div>
-                                </div>
-                            @endforeach
-                        </div>
-                    @else
-                        <div class="text-center py-5 mb-4">
-                            <i class="fas fa-folder-open text-muted opacity-25" style="font-size: 4rem;"></i>
-                            <p class="text-muted mt-3 mb-0">Belum ada foto/video dokumentasi.</p>
-                        </div>
-                    @endif
+                                @endforeach
+                            </div>
+                        @else
+                            <div class="row g-3 mb-4" id="galeriGrid{{ $item->id }}" style="display: none;"></div>
+                            <div class="text-center py-5 mb-4" id="galeriEmpty{{ $item->id }}">
+                                <i class="fas fa-folder-open text-muted opacity-25" style="font-size: 4rem;"></i>
+                                <p class="text-muted mt-3 mb-0">Belum ada foto/video dokumentasi.</p>
+                            </div>
+                        @endif
+                    </div>
 
                     {{-- Form Upload Dokumentasi --}}
                     <div class="card border border-primary border-opacity-25 rounded-4 shadow-sm">
                         <div class="card-body p-4">
                             <h6 class="fw-bold text-dark mb-3"><i class="fas fa-cloud-upload-alt text-primary me-2"></i> Tambah Dokumentasi Baru</h6>
-                            <form action="{{ route('riwayat.pelatihan.update', $item->id) }}" method="POST" enctype="multipart/form-data">
+                            <form id="formUploadDokumentasi{{ $item->id }}" action="{{ route('riwayat.pelatihan.update', $item->id) }}" method="POST" enctype="multipart/form-data" onsubmit="uploadDokumentasiAjax(event, this, {{ $item->id }}, '{{ route('riwayat.pelatihan.deleteDokumentasi', ['id' => $item->id, 'index' => '__INDEX__']) }}')">
                                 @csrf @method('PUT')
                                 <input type="hidden" name="block" value="dokumentasi">
                                 
@@ -979,7 +982,7 @@
                                     <input type="file" name="dokumentasi_files[]" class="form-control rounded-3" multiple accept="image/*,video/*" required>
                                 </div>
                                 <div class="text-end">
-                                    <button type="submit" class="btn btn-primary rounded-pill px-4 fw-bold shadow-sm">
+                                    <button type="submit" class="btn btn-primary rounded-pill px-4 fw-bold shadow-sm" id="btnSubmitUpload{{ $item->id }}">
                                         <i class="fas fa-upload me-1"></i> Upload File
                                     </button>
                                 </div>
@@ -1909,5 +1912,97 @@
         });
     }
     window.hapusDokumentasi = hapusDokumentasi;
+
+    function uploadDokumentasiAjax(event, form, id, deleteUrlTemplate) {
+        event.preventDefault();
+        
+        let formData = new FormData(form);
+        let submitBtn = document.getElementById('btnSubmitUpload' + id);
+        let originalHtml = submitBtn.innerHTML;
+        
+        submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin me-1"></i> Mengunggah...';
+        submitBtn.disabled = true;
+        
+        fetch(form.action, {
+            method: 'POST',
+            body: formData,
+            headers: {
+                'X-Requested-With': 'XMLHttpRequest',
+                'Accept': 'application/json'
+            }
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                if (typeof Swal !== 'undefined') {
+                    Swal.fire({
+                        title: 'Berhasil!',
+                        text: data.message,
+                        icon: 'success',
+                        timer: 1500,
+                        showConfirmButton: false
+                    });
+                }
+                
+                let gridContainer = document.getElementById('galeriGrid' + id);
+                let emptyState = document.getElementById('galeriEmpty' + id);
+                
+                if (emptyState) emptyState.style.display = 'none';
+                if (gridContainer) gridContainer.style.display = ''; 
+                
+                data.files.forEach(file => {
+                    let ext = file.path.split('.').pop().toLowerCase();
+                    let isVideo = ['mp4', 'webm', 'ogg', 'mov', 'avi'].includes(ext);
+                    let mediaHtml = '';
+                    
+                    if (isVideo) {
+                        mediaHtml = `<video src="${file.url}" class="w-100 h-100 object-fit-cover" controls style="min-height: 150px; max-height: 150px;"></video>`;
+                    } else {
+                        mediaHtml = `<a href="${file.url}" target="_blank">
+                                        <img src="${file.url}" class="w-100 h-100 object-fit-cover" style="min-height: 150px; max-height: 150px;" alt="Dokumentasi">
+                                     </a>`;
+                    }
+                    
+                    let deleteUrl = deleteUrlTemplate.replace('__INDEX__', file.index);
+                    
+                    let cardHtml = `
+                        <div class="col-md-3 col-sm-4 col-6">
+                            <div class="card border-0 shadow-sm rounded-4 h-100 overflow-hidden position-relative">
+                                ${mediaHtml}
+                                <button type="button" class="btn btn-sm btn-danger rounded-circle shadow-sm position-absolute" 
+                                    onclick="hapusDokumentasi(this, '${deleteUrl}')"
+                                    style="top: 10px; right: 10px; z-index: 2; width: 30px; height: 30px; padding: 0; line-height: 1;"
+                                    title="Hapus file">
+                                    <i class="fas fa-trash-alt"></i>
+                                </button>
+                            </div>
+                        </div>
+                    `;
+                    if(gridContainer) gridContainer.insertAdjacentHTML('beforeend', cardHtml);
+                });
+                
+                form.reset();
+            } else {
+                if (typeof Swal !== 'undefined') {
+                    Swal.fire('Gagal!', data.message || 'Terjadi kesalahan', 'error');
+                } else {
+                    alert('Gagal: ' + (data.message || 'Terjadi kesalahan'));
+                }
+            }
+        })
+        .catch(error => {
+            console.error(error);
+            if (typeof Swal !== 'undefined') {
+                Swal.fire('Error!', 'Terjadi kesalahan jaringan.', 'error');
+            } else {
+                alert('Terjadi kesalahan jaringan.');
+            }
+        })
+        .finally(() => {
+            submitBtn.innerHTML = originalHtml;
+            submitBtn.disabled = false;
+        });
+    }
+    window.uploadDokumentasiAjax = uploadDokumentasiAjax;
 </script>
 @endpush

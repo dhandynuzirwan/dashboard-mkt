@@ -147,12 +147,29 @@ class RiwayatPelatihanController extends Controller
 
         if ($request->block == 'dokumentasi') {
             $dokumentasiFiles = $riwayat->dokumentasi ?? [];
+            $newFiles = [];
             if ($request->hasFile('dokumentasi_files')) {
                 foreach ($request->file('dokumentasi_files') as $file) {
                     $path = $file->store('uploads/riwayat_pelatihan/dokumentasi', 'public');
                     $dokumentasiFiles[] = $path;
+                    $newFiles[] = [
+                        'path' => $path,
+                        'url' => asset('storage/' . $path),
+                        'index' => count($dokumentasiFiles) - 1,
+                        'filename' => basename($path)
+                    ];
                 }
                 $data['dokumentasi'] = $dokumentasiFiles;
+                $riwayat->update($data);
+
+                if ($request->ajax() || $request->wantsJson()) {
+                    return response()->json([
+                        'success' => true,
+                        'message' => 'Dokumentasi berhasil diunggah',
+                        'files' => $newFiles
+                    ]);
+                }
+                return redirect()->back()->with('success', 'Data berhasil diperbarui.');
             }
         }
 
