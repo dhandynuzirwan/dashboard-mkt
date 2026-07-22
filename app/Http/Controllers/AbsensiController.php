@@ -62,7 +62,7 @@ class AbsensiController extends Controller
         // ==========================================
         // 4. DATA LAINNYA
         // ==========================================
-        $users = User::all();
+        $users = User::orderBy('name', 'asc')->get();
         $holidays = \App\Models\Holiday::orderBy('tanggal', 'desc')
                 ->paginate(10, ['*'], 'page_libur') 
                 ->withQueryString();
