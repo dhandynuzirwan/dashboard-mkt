@@ -126,6 +126,7 @@
                                         <option value="graphic" {{ old('role', $user->role) == 'graphic' ? 'selected' : '' }}>Tim Grafis (Graphic)</option>
                                         <option value="pic" {{ old('role', $user->role) == 'pic' ? 'selected' : '' }}>PIC Khusus</option>
                                         <option value="finance" {{ old('role', $user->role) == 'finance' ? 'selected' : '' }}>Finance & Tax</option>
+                                        <option value="performance" {{ old('role', $user->role) == 'performance' ? 'selected' : '' }}>Performance</option>
                                     </select>
                                 </div>
                         
