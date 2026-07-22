@@ -181,6 +181,8 @@ class AbsensiController extends Controller
             $currentDate->addDay();
         }
         
+        // Sort descending by tanggal terbaru
+        $listDoughnutAbsen = $listDoughnutAbsen->sortByDesc('tanggal')->values();
         $doughnutAbsen = $listDoughnutAbsen->count();
 
         // --- Line Chart (6 Bulan Terakhir - Dikunci) ---
