@@ -231,6 +231,35 @@
                         </div>
                     </div>
                 </div>
+
+                {{-- ==================================================== --}}
+                {{-- TAMBAHAN: INFO PENAWARAN LAIN --}}
+                {{-- ==================================================== --}}
+                <div class="col-md-12 mt-3">
+                    <div class="alert alert-info">
+                        <h6 class="fw-bold mb-2"><i class="fas fa-info-circle"></i> Info Penawaran Perusahaan Ini</h6>
+                        
+                        @if(isset($penawaranLainnya) && $penawaranLainnya->count() > 0)
+                            <p class="mb-2 small">Perusahaan <strong>{{ $prospek->perusahaan }}</strong> sudah memiliki {{ $penawaranLainnya->count() }} penawaran:</p>
+                            <ul class="mb-0 small">
+                                @foreach($penawaranLainnya as $lain)
+                                    <li>
+                                        <strong>{{ $lain->judul_permintaan }}</strong> 
+                                        - Status: 
+                                        <span class="text-uppercase fw-bold text-{{ $lain->status_penawaran == 'deal' ? 'success' : 'primary' }}">
+                                            {{ str_replace('_', ' ', $lain->status_penawaran ?? 'Review') }}
+                                        </span>
+                                        <a href="{{ route('cta.edit', $lain->id) }}" class="ms-2 text-decoration-underline">Edit Data Ini</a>
+                                    </li>
+                                @endforeach
+                            </ul>
+                        @else
+                            <p class="mb-0 small">Belum ada penawaran judul pelatihan untuk perusahaan ini.</p>
+                        @endif
+                    </div>
+                </div>
+                {{-- ==================================================== --}}
+
             </div>
         </div>
     </div>

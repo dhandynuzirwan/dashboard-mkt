@@ -89,9 +89,11 @@ class CtaController extends Controller
         // 9. Eksekusi Next & Prev
         $prevProspek = (clone $query)->where('id', '<', $prospek_id)->orderBy('id', 'desc')->first();
         $nextProspek = (clone $query)->where('id', '>', $prospek_id)->orderBy('id', 'asc')->first();
+        
+        $penawaranLainnya = Cta::where('prospek_id', $prospek_id)->latest()->get();
         // --------------------------------------
 
-        return view('form-cta', compact('prospek', 'trainings', 'prevProspek', 'nextProspek', 'existingCtaCount'));
+        return view('form-cta', compact('prospek', 'trainings', 'prevProspek', 'nextProspek', 'existingCtaCount', 'penawaranLainnya'));
     }
 
     public function store(Request $request)
