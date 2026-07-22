@@ -11,6 +11,11 @@ class OperationalPendaftaranController extends Controller
 {
     public function index(Request $request)
     {
+        // Tandai notifikasi sudah dibaca saat membuka halaman ini
+        if (auth()->check()) {
+            auth()->user()->unreadNotifications->where('type', 'App\Notifications\NewDealNotification')->markAsRead();
+        }
+
         // ==========================================
         // TAB 1: DATA PROSPEK DEAL (Tracking)
         // ==========================================

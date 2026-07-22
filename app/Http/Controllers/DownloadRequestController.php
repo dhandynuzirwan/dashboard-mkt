@@ -41,7 +41,10 @@ class DownloadRequestController extends Controller
         $user = auth()->user();
 
         // Tandai notifikasi sudah dibaca saat membuka halaman ini
-        $user->unreadNotifications->markAsRead();
+        $user->unreadNotifications->where('type', 'App\Notifications\DownloadApprovedNotification')->markAsRead();
+        if ($user->role === 'superadmin') {
+            $user->unreadNotifications->where('type', 'App\Notifications\NewDownloadRequestNotification')->markAsRead();
+        }
 
         // Logika Pintar: Jika Superadmin/Admin -> Tampilkan Semua. Jika User -> Tampilkan miliknya.
         if (in_array($user->role, ['superadmin'])) {

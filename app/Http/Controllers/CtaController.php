@@ -132,10 +132,14 @@ class CtaController extends Controller
         }
         
         // 1. Eksekusi Simpan
-        Cta::create($validated);
+        $cta = Cta::create($validated);
         
         // 2. Jika status langsung deal
         if ($request->status_penawaran == 'deal') {
+            $usersToNotify = \App\Models\User::whereIn('role', ['team_leader', 'operasional'])->get();
+            foreach ($usersToNotify as $user) {
+                $user->notify(new \App\Notifications\NewDealNotification($cta, $prospek));
+            }
             // Gunakan back() agar tetap di Form Tambah (Bisa langsung tambah judul ke-2)
             return back()->with('deal_congrats', 'Closing Mantap! Selamat atas Project barunya!');
         }
@@ -198,6 +202,11 @@ class CtaController extends Controller
 
         // 2. Jika status berubah jadi deal
         if ($request->status_penawaran == 'deal' && $statusLama != 'deal') {
+            $cta->load('prospek');
+            $usersToNotify = \App\Models\User::whereIn('role', ['team_leader', 'operasional'])->get();
+            foreach ($usersToNotify as $user) {
+                $user->notify(new \App\Notifications\NewDealNotification($cta, $cta->prospek));
+            }
             return back()->with('deal_congrats', 'Gokil! Project Deal baru berhasil diamankan!');
         }
 
@@ -394,7 +403,7 @@ class CtaController extends Controller
                 }
     
                 // 4. SIMPAN DATA KE TABEL CTA
-                Cta::create([
+                $cta = Cta::create([
                     'prospek_id'       => $prospek->id,
                     'judul_permintaan' => $row['judul_permintaan'] ?? null,
                     'jumlah_peserta'   => $jumlah,
@@ -410,6 +419,13 @@ class CtaController extends Controller
                     'keterangan'       => $keterangan,
                     'tanggal_pelaksanaan' => $row['tanggal_pelaksanaan'] ?? null,
                 ]);
+
+                if (isset($row['status_penawaran']) && $row['status_penawaran'] === 'deal') {
+                    $usersToNotify = \App\Models\User::whereIn('role', ['team_leader', 'operasional'])->get();
+                    foreach ($usersToNotify as $user) {
+                        $user->notify(new \App\Notifications\NewDealNotification($cta, $prospek));
+                    }
+                }
     
                 $countSuccess++;
             } else {

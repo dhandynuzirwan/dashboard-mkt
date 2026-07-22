@@ -27,7 +27,11 @@
                     : 0;
 
                 $approvedCount = $role !== 'superadmin' 
-                    ? auth()->user()->unreadNotifications->count() 
+                    ? auth()->user()->unreadNotifications->where('type', 'App\Notifications\DownloadApprovedNotification')->count() 
+                    : 0;
+                    
+                $dealCount = in_array($role, ['team_leader', 'operasional'])
+                    ? auth()->user()->unreadNotifications->where('type', 'App\Notifications\NewDealNotification')->count()
                     : 0;
             @endphp
             
@@ -253,6 +257,9 @@
                                     <li class="{{ request()->routeIs('operational.data-pendaftaran') ? 'active' : '' }}">
                                         <a href="{{ route('operational.data-pendaftaran') }}">
                                             <span class="sub-item">Registrasi Peserta</span>
+                                            @if ($dealCount > 0)
+                                                <span class="badge badge-success">{{ $dealCount }}</span>
+                                            @endif
                                         </a>
                                     </li>
                                 @endif
