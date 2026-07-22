@@ -19,10 +19,28 @@
             padding: 40px;
             box-shadow: 0 0 10px rgba(0,0,0,0.1);
         }
+        .kop-surat {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 2px solid #000;
+            padding-bottom: 15px;
+            margin-bottom: 20px;
+        }
+        .kop-surat .logo img {
+            height: 60px;
+        }
+        .kop-surat .doc-info table {
+            width: auto;
+            margin-bottom: 0;
+            font-size: 12px;
+        }
+        .kop-surat .doc-info table td {
+            padding: 2px 5px;
+            font-weight: bold;
+        }
         .header {
             text-align: center;
-            border-bottom: 2px solid #000;
-            padding-bottom: 20px;
             margin-bottom: 30px;
         }
         .header h2 {
@@ -108,7 +126,27 @@
 </head>
 <body onload="window.print()">
     <div class="container">
-        <div class="header">
+        <div class="kop-surat">
+            <div class="logo">
+                <img src="{{ asset('assets/img/arsa/arsa_logo.webp') }}" alt="Logo">
+            </div>
+            <div class="doc-info">
+                <table>
+                    <tr>
+                        <td>No Doc</td>
+                        <td>:</td>
+                        <td>AJP/SOP-HRD/FH{{ $lembur->id }}</td>
+                    </tr>
+                    <tr>
+                        <td>Tanggal Terbit</td>
+                        <td>:</td>
+                        <td>{{ \Carbon\Carbon::parse($lembur->updated_at)->format('d M Y') }}</td>
+                    </tr>
+                </table>
+            </div>
+        </div>
+        
+        <div class="header" style="border-bottom: 0; padding-bottom: 0; margin-bottom: 10px;">
             <h2>FORMULIR PENGAJUAN LEMBUR</h2>
             <p>Dokumen Internal Perusahaan</p>
         </div>
