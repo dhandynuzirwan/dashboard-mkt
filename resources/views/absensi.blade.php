@@ -406,7 +406,10 @@
                                             @forelse($perizinans as $izin)
                                             <tr>
                                                 <td>{{ \Carbon\Carbon::parse($izin->tanggal)->format('d/m/Y') }}</td>
-                                                <td class="fw-bold">{{ $izin->user->name }}</td>
+                                                <td>
+                                                    <div class="small text-muted fw-bold">{{ $izin->user->name }}</div>
+                                                    <div class="text-dark">{{ $izin->user->nama_lengkap ?? '-' }}</div>
+                                                </td>
                                                 <td>{{ $izin->jenis }}</td>
                                                 <td><small>{{ $izin->keterangan ?? '-' }}</small></td>
                                                 <td class="text-center">
