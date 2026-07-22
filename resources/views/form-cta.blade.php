@@ -236,26 +236,35 @@
                 {{-- TAMBAHAN: INFO PENAWARAN LAIN --}}
                 {{-- ==================================================== --}}
                 <div class="col-md-12 mt-3">
-                    <div class="alert alert-info">
-                        <h6 class="fw-bold mb-2"><i class="fas fa-info-circle"></i> Info Penawaran Perusahaan Ini</h6>
-                        
-                        @if(isset($penawaranLainnya) && $penawaranLainnya->count() > 0)
-                            <p class="mb-2 small">Perusahaan <strong>{{ $prospek->perusahaan }}</strong> sudah memiliki {{ $penawaranLainnya->count() }} penawaran:</p>
-                            <ul class="mb-0 small">
-                                @foreach($penawaranLainnya as $lain)
-                                    <li>
-                                        <strong>{{ $lain->judul_permintaan }}</strong> 
-                                        - Status: 
-                                        <span class="text-uppercase fw-bold text-{{ $lain->status_penawaran == 'deal' ? 'success' : 'primary' }}">
-                                            {{ str_replace('_', ' ', $lain->status_penawaran ?? 'Review') }}
-                                        </span>
-                                        <a href="{{ route('cta.edit', $lain->id) }}" class="ms-2 text-decoration-underline">Edit Data Ini</a>
-                                    </li>
-                                @endforeach
-                            </ul>
-                        @else
-                            <p class="mb-0 small">Belum ada penawaran judul pelatihan untuk perusahaan ini.</p>
-                        @endif
+                    <div class="alert alert-info d-flex justify-content-between align-items-start">
+                        <div>
+                            <h6 class="fw-bold mb-2"><i class="fas fa-info-circle"></i> Info Penawaran Perusahaan Ini</h6>
+                            
+                            @if(isset($penawaranLainnya) && $penawaranLainnya->count() > 0)
+                                <p class="mb-2 small">Perusahaan <strong>{{ $prospek->perusahaan }}</strong> sudah memiliki {{ $penawaranLainnya->count() }} penawaran:</p>
+                                <ul class="mb-0 small">
+                                    @foreach($penawaranLainnya as $lain)
+                                        <li>
+                                            <strong>{{ $lain->judul_permintaan }}</strong> 
+                                            - Status: 
+                                            <span class="text-uppercase fw-bold text-{{ $lain->status_penawaran == 'deal' ? 'success' : 'primary' }}">
+                                                {{ str_replace('_', ' ', $lain->status_penawaran ?? 'Review') }}
+                                            </span>
+                                            <a href="{{ route('cta.edit', $lain->id) }}" class="ms-2 text-decoration-underline">Edit Data Ini</a>
+                                        </li>
+                                    @endforeach
+                                </ul>
+                            @else
+                                <p class="mb-0 small">Belum ada penawaran judul pelatihan untuk perusahaan ini.</p>
+                            @endif
+                        </div>
+
+                        {{-- TOMBOL TAMBAH CTA BARU --}}
+                        <div class="ms-3">
+                            <a href="{{ route('form-cta', $prospek->id) }}" class="btn btn-sm btn-primary shadow-sm">
+                                <i class="fas fa-plus me-1"></i> Tambah Penawaran Baru
+                            </a>
+                        </div>
                     </div>
                 </div>
                 {{-- ==================================================== --}}
