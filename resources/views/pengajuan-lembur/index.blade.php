@@ -31,7 +31,7 @@
                                 <th class="px-4 py-3">Tanggal Lembur</th>
                                 <th>Jam</th>
                                 <th>Tugas</th>
-                                <th class="text-center">Status SPV</th>
+                                <th class="text-center">Status SPV/TLO</th>
                                 <th class="text-center">Status HRD</th>
                                 <th class="text-center">Status Direktur</th>
                                 <th>Aksi</th>
