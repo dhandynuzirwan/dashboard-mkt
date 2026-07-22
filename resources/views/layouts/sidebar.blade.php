@@ -26,7 +26,7 @@
                     ? \App\Models\DownloadRequest::where('status', 'pending')->count() 
                     : 0;
 
-                $approvedCount = $role === 'marketing' 
+                $approvedCount = $role !== 'superadmin' 
                     ? auth()->user()->unreadNotifications->count() 
                     : 0;
             @endphp
@@ -296,6 +296,9 @@
                         <p>{{ in_array($role, ['superadmin']) ? 'Download Approval' : 'Riwayat Download' }}</p>
                         @if ($pendingCount > 0 && in_array($role, ['superadmin']))
                             <span class="badge badge-danger">{{ $pendingCount }}</span>
+                        @endif
+                        @if ($approvedCount > 0 && $role !== 'superadmin')
+                            <span class="badge badge-success">{{ $approvedCount }}</span>
                         @endif
                     </a>
                 </li>
