@@ -12,7 +12,11 @@ class Prospek extends Model
     protected $fillable = [
         'marketing_id', 'tanggal_prospek', 'perusahaan', 'telp', 'telp_baru', 'email', 
         'jabatan', 'nama_pic', 'wa_pic', 'wa_baru', 'lokasi', 
-        'sumber', 'update_terakhir', 'status', 'deskripsi', 'catatan'
+        'sumber', 'update_terakhir', 'status', 'deskripsi', 'catatan', 'komentar_operasional'
+    ];
+
+    protected $casts = [
+        'komentar_operasional' => 'array',
     ];
 
     // Relasi ke user (Marketing)

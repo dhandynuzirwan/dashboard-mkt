@@ -53,7 +53,10 @@ class PelatihanBerjalan extends Model
         'background_zoom',
         'link_zoom_pelatihan',
         'link_zoom_asesmen',
-        'rundown_pelatihan'
+        'rundown_pelatihan',
+        'komentar_superadmin',
+        'komentar_spv_marketing',
+        'komentar_team_leader'
     ];
 
     public function training()

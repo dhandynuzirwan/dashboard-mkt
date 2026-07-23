@@ -27,7 +27,7 @@
                         </div>
                         <div>
                             <p class="text-muted fw-bold mb-1" style="font-size: 11px; text-transform: uppercase;">Pelatihan Running</p>
-                            <h3 class="fw-bolder text-dark mb-0 lh-1">5 <span style="font-size: 14px;" class="text-muted fw-medium">Kelas</span></h3>
+                            <h3 class="fw-bolder text-dark mb-0 lh-1">{{ $statRunning ?? 0 }} <span style="font-size: 14px;" class="text-muted fw-medium">Kelas</span></h3>
                         </div>
                     </div>
                 </div>
@@ -41,7 +41,7 @@
                         </div>
                         <div>
                             <p class="text-muted fw-bold mb-1" style="font-size: 11px; text-transform: uppercase;">Validasi Admin</p>
-                            <h3 class="fw-bolder text-dark mb-0 lh-1">3 <span style="font-size: 14px;" class="text-muted fw-medium">Pending</span></h3>
+                            <h3 class="fw-bolder text-dark mb-0 lh-1">{{ $statValidasi ?? 0 }} <span style="font-size: 14px;" class="text-muted fw-medium">Kelas</span></h3>
                         </div>
                     </div>
                 </div>
@@ -55,7 +55,7 @@
                         </div>
                         <div>
                             <p class="text-muted fw-bold mb-1" style="font-size: 11px; text-transform: uppercase;">Sertifikat OGP</p>
-                            <h3 class="fw-bolder text-dark mb-0 lh-1">12 <span style="font-size: 14px;" class="text-muted fw-medium">Batch</span></h3>
+                            <h3 class="fw-bolder text-dark mb-0 lh-1">{{ $statOgp ?? 0 }} <span style="font-size: 14px;" class="text-muted fw-medium">Batch</span></h3>
                         </div>
                     </div>
                 </div>
@@ -69,7 +69,7 @@
                         </div>
                         <div>
                             <p class="text-muted fw-bold mb-1" style="font-size: 11px; text-transform: uppercase;">Sertifikat Dikirim</p>
-                            <h3 class="fw-bolder text-dark mb-0 lh-1">8 <span style="font-size: 14px;" class="text-muted fw-medium">Resi</span></h3>
+                            <h3 class="fw-bolder text-dark mb-0 lh-1">{{ $statDikirim ?? 0 }} <span style="font-size: 14px;" class="text-muted fw-medium">Resi</span></h3>
                         </div>
                     </div>
                 </div>
@@ -83,8 +83,16 @@
                 <button class="nav-link active text-nowrap" id="pills-pelaksanaan-tab" data-bs-toggle="tab" data-bs-target="#pills-pelaksanaan" type="button" role="tab">
                     <i class="fas fa-chalkboard-teacher me-1"></i> 1. Pelaksanaan & Jadwal
                 </button>
+                @php
+                    $totalKomentar = $pelatihans->filter(function($p) {
+                        return !empty($p->komentar_superadmin) || !empty($p->komentar_spv_marketing) || !empty($p->komentar_team_leader);
+                    })->count();
+                @endphp
                 <button class="nav-link text-nowrap" id="pills-administrasi-tab" data-bs-toggle="tab" data-bs-target="#pills-administrasi" type="button" role="tab">
                     <i class="fas fa-file-signature me-1"></i> 2. Administrasi & Evaluasi
+                    @if($totalKomentar > 0)
+                        <span class="badge bg-danger rounded-pill ms-1 pulse" style="font-size: 10px;">{{ $totalKomentar }}</span>
+                    @endif
                 </button>
                 <button class="nav-link text-nowrap" id="pills-sertifikat-tab" data-bs-toggle="tab" data-bs-target="#pills-sertifikat" type="button" role="tab">
                     <i class="fas fa-award me-1"></i> 3. Monitoring Sertifikat
@@ -175,12 +183,20 @@
                                             $badgeInfo = $statusBadgeMap[$pelatihan->status_kelas] ?? $statusBadgeMap['persiapan'];
                                         @endphp
                                     <tr>
-                                        <td class="ps-4">
+                                        <td class="ps-4 cell-relative">
                                             @if($isSyncRiwayat)
-                                            <div class="mb-1"><span class="badge bg-secondary border border-secondary text-white" style="font-size: 9px;"><i class="fas fa-sync-alt me-1"></i> Hasil Sync Riwayat</span></div>
+                                            <div class="mb-1 d-flex justify-content-between align-items-center">
+                                                <span class="badge bg-secondary border border-secondary text-white" style="font-size: 9px;"><i class="fas fa-sync-alt me-1"></i> Hasil Sync Riwayat</span>
+                                                <button class="btn btn-sm btn-edit-absolute hover-lift" title="Edit Judul & Sertifikasi" data-bs-toggle="modal" data-bs-target="#modalUpdateInfoRiwayat-{{ $pelatihan->id }}"><i class="fas fa-pen"></i></button>
+                                            </div>
                                             @endif
-                                            <div class="fw-bolder text-dark" style="font-size: 14px;">{{ optional($pelatihan->training)->nama_training ?? 'Belum Ada Pelatihan' }}</div>
-                                            <div class="fw-bold text-primary mt-1 mb-2" style="font-size: 13px;"><i class="fas fa-certificate me-1"></i> {{ $sertifikasi }}</div>
+                                            <div class="fw-bolder text-dark" style="font-size: 14px;">
+                                                {{ $isSyncRiwayat ? ($pelatihan->riwayat->judul_pelatihan ?? (optional($pelatihan->training)->nama_training ?? 'Belum Ada Pelatihan')) : (optional($pelatihan->training)->nama_training ?? 'Belum Ada Pelatihan') }}
+                                            </div>
+                                            <div class="fw-bold text-primary mt-1 mb-2" style="font-size: 13px;">
+                                                <i class="fas fa-certificate me-1"></i> 
+                                                {{ $isSyncRiwayat ? ($pelatihan->riwayat->jenis ?? (optional($pelatihan->training)->nama_training ?? 'Lainnya')) : $sertifikasi }}
+                                            </div>
                                             
                                             <div class="d-flex flex-column gap-1 bg-light p-2 rounded border border-light">
                                                 @forelse($marketingData as $mkt => $count)
@@ -330,13 +346,14 @@
                         </div>
 
                         <div class="table-responsive">
-                            <table class="table table-modern table-hover align-middle mb-0" style="min-width: 1400px;">
+                            <table class="table table-modern table-hover align-middle mb-0" style="min-width: 2000px;">
                                 <thead class="bg-light sticky-top">
                                     <tr>
                                         <th class="ps-4" width="300">Sertifikasi, Judul & Klien</th>
                                         <th width="250">Validasi Administrasi</th>
                                         <th width="350">Link Laporan (Internal & Lembaga)</th>
                                         <th width="350">Evaluasi Pelaksanaan</th>
+                                        <th width="300">Komentar / Feedback</th>
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -362,10 +379,15 @@
                                         <tr>
                                             <td class="ps-4">
                                                 <div class="fw-bolder text-dark" style="font-size: 14px;">{{ optional($pelatihan->training)->nama_training ?? 'Belum Ada Pelatihan' }}</div>
-                                                <div class="text-primary fw-bold mt-1" style="font-size: 13px;"><i class="fas fa-certificate me-1"></i> {{ $sertifikasi }}</div>
+                                                <div class="d-flex align-items-center gap-2 mt-1">
+                                                    <span class="text-primary fw-bold" style="font-size: 13px;"><i class="fas fa-certificate me-1"></i> {{ $sertifikasi }}</span>
+                                                    @if($pelatihan->komentar_superadmin || $pelatihan->komentar_spv_marketing || $pelatihan->komentar_team_leader)
+                                                        <span class="badge bg-danger-subtle text-danger border border-danger-subtle" style="font-size: 10px;"><i class="fas fa-comment-dots me-1"></i> Ada Komentar</span>
+                                                    @endif
+                                                </div>
                                             </td>
                                             @if($skema == 'titip vendor lain')
-                                            <td colspan="3" class="text-center bg-gray-50 border-start">
+                                            <td colspan="4" class="text-center bg-gray-50 border-start">
                                                 <div class="py-3">
                                                     <span class="badge badge-soft-warning border border-warning text-dark px-3 py-2" style="font-size: 13px;">
                                                         <i class="fas fa-building me-2"></i> Titip Vendor Lain
@@ -435,6 +457,64 @@
                                                     </button>
                                                 </div>
                                                 @endif
+                                            </td>
+                                            <td>
+                                                <div class="d-flex flex-column gap-2">
+                                                    @if($pelatihan->komentar_superadmin || $pelatihan->komentar_spv_marketing || $pelatihan->komentar_team_leader)
+                                                        @php
+                                                            // Helper to extract JSON or fallback to raw string
+                                                            $parseKomentar = function($raw) {
+                                                                if (!$raw) return null;
+                                                                $decoded = json_decode($raw, true);
+                                                                if (is_array($decoded) && isset($decoded['text'])) {
+                                                                    return (object) $decoded;
+                                                                }
+                                                                return (object) ['name' => null, 'text' => $raw];
+                                                            };
+                                                            $k_sa = $parseKomentar($pelatihan->komentar_superadmin);
+                                                            $k_spv = $parseKomentar($pelatihan->komentar_spv_marketing);
+                                                            $k_tl = $parseKomentar($pelatihan->komentar_team_leader);
+                                                        @endphp
+                                                    
+                                                        @if($k_sa)
+                                                        <div class="bg-primary-subtle border border-primary-subtle p-2 rounded-3">
+                                                            <div class="d-flex align-items-center justify-content-between mb-1">
+                                                                <span class="badge bg-primary px-2 py-1"><i class="fas fa-user-shield me-1"></i> {{ $k_sa->name ?? 'Superadmin' }}</span>
+                                                            </div>
+                                                            <p class="mb-0 text-dark small" style="white-space: normal; line-height: 1.4;">{{ $k_sa->text }}</p>
+                                                        </div>
+                                                        @endif
+                                                        
+                                                        @if($k_spv)
+                                                        <div class="bg-warning-subtle border border-warning-subtle p-2 rounded-3">
+                                                            <div class="d-flex align-items-center justify-content-between mb-1">
+                                                                <span class="badge bg-warning text-dark px-2 py-1"><i class="fas fa-bullhorn me-1"></i> {{ $k_spv->name ?? 'SPV Marketing' }}</span>
+                                                            </div>
+                                                            <p class="mb-0 text-dark small" style="white-space: normal; line-height: 1.4;">{{ $k_spv->text }}</p>
+                                                        </div>
+                                                        @endif
+                                                        
+                                                        @if($k_tl)
+                                                        <div class="bg-info-subtle border border-info-subtle p-2 rounded-3">
+                                                            <div class="d-flex align-items-center justify-content-between mb-1">
+                                                                <span class="badge bg-info px-2 py-1"><i class="fas fa-users me-1"></i> {{ $k_tl->name ?? 'Team Leader' }}</span>
+                                                            </div>
+                                                            <p class="mb-0 text-dark small" style="white-space: normal; line-height: 1.4;">{{ $k_tl->text }}</p>
+                                                        </div>
+                                                        @endif
+                                                        
+                                                        <button class="btn btn-sm btn-white border shadow-sm fw-bold w-100 text-dark mt-1" data-bs-toggle="modal" data-bs-target="#modalUpdateKomentar-{{ $pelatihan->id }}">
+                                                            <i class="fas fa-pen me-1"></i> Edit Komentar
+                                                        </button>
+                                                    @else
+                                                        <div class="bg-light border border-dashed p-3 rounded-4 text-center">
+                                                            <p class="mb-2 text-muted small fw-bold">Belum ada komentar.</p>
+                                                            <button class="btn btn-sm btn-white border btn-round shadow-sm hover-lift text-dark fw-bold px-3" data-bs-toggle="modal" data-bs-target="#modalUpdateKomentar-{{ $pelatihan->id }}">
+                                                                <i class="fas fa-plus me-1"></i> Tambah
+                                                            </button>
+                                                        </div>
+                                                    @endif
+                                                </div>
                                             </td>
                                             @endif
                                         </tr>
@@ -589,6 +669,39 @@
 
 {{-- Modal 1: Update Jadwal & Lokasi Pelaksanaan --}}
 @foreach($pelatihans as $pelatihan)
+{{-- Modal: Update Info Riwayat (Khusus Hasil Sync Riwayat) --}}
+<div class="modal fade" id="modalUpdateInfoRiwayat-{{ $pelatihan->id }}" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <form method="POST" action="{{ route('monitoring.pelatihan.update', $pelatihan->id) }}" class="modal-content border-0 shadow-lg" style="border-radius: 20px;">
+            @csrf
+            @method('PUT')
+            <div class="modal-header border-bottom pb-3 pt-4 px-4 bg-light" style="border-radius: 20px 20px 0 0;">
+                <h5 class="modal-title fw-bolder text-dark"><i class="fas fa-edit text-primary me-2"></i> Edit Judul & Sertifikasi</h5>
+                <button type="button" class="btn-close shadow-none" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body px-4 pt-4 pb-4">
+                <div class="alert alert-info border-info bg-light-info text-info p-3 rounded" style="font-size: 13px;">
+                    <i class="fas fa-info-circle me-2"></i> Perubahan di sini akan otomatis mengubah data di <b>Riwayat Pelatihan</b>.
+                </div>
+                <div class="row g-3">
+                    <div class="col-12 mt-3">
+                        <label class="label-modern">Judul Pelatihan <span class="text-danger">*</span></label>
+                        <input type="text" name="judul_pelatihan" value="{{ $pelatihan->riwayat->judul_pelatihan ?? optional($pelatihan->training)->nama_training }}" class="form-control input-modern shadow-none" required placeholder="Masukkan judul pelatihan">
+                    </div>
+                    <div class="col-12 mt-3">
+                        <label class="label-modern">Sertifikasi / Jenis</label>
+                        <input type="text" name="jenis" value="{{ $pelatihan->riwayat->jenis ?? '' }}" class="form-control input-modern shadow-none" placeholder="Contoh: Sertifikat KEMNAKER / Sertifikat BNSP">
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer border-top bg-light py-3 px-4" style="border-radius: 0 0 20px 20px;">
+                <button type="button" class="btn btn-white border btn-round fw-bold text-dark px-4 shadow-none" data-bs-dismiss="modal">Batal</button>
+                <button type="submit" class="btn btn-primary btn-round fw-bold px-4 shadow-sm hover-lift">Simpan Data</button>
+            </div>
+        </form>
+    </div>
+</div>
+
 {{-- Modal 1: Update Jadwal & Lokasi --}}
 <div class="modal fade" id="modalUpdateJadwal-{{ $pelatihan->id }}" tabindex="-1" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered">
@@ -1045,6 +1158,59 @@
             </div>
             <div class="modal-footer border-top bg-light py-3 px-4" style="border-radius: 0 0 20px 20px;">
                 <button type="submit" class="btn btn-warning text-dark fw-bold btn-round w-100 shadow-sm">Simpan Evaluasi</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+{{-- MODAL UPDATE KOMENTAR (SUPERADMIN, SPV MARKETING, TEAM LEADER) --}}
+<div class="modal fade" id="modalUpdateKomentar-{{ $pelatihan->id }}" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <form action="{{ route('monitoring.pelatihan.update', $pelatihan->id) }}" method="POST" class="modal-content border-0 shadow-lg" style="border-radius: 20px;">
+            @csrf
+            @method('PUT')
+            <div class="modal-header border-bottom pb-3 pt-4 px-4 bg-light" style="border-radius: 20px 20px 0 0;">
+                <h5 class="modal-title fw-bolder text-dark"><i class="fas fa-comments text-primary me-2"></i> Komentar / Feedback</h5>
+                <button type="button" class="btn-close shadow-none" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body px-4 pt-4 pb-4">
+                @php 
+                    $userRole = auth()->user()->role; 
+                    
+                    $parseKomentarText = function($raw) {
+                        if (!$raw) return '';
+                        $decoded = json_decode($raw, true);
+                        return (is_array($decoded) && isset($decoded['text'])) ? $decoded['text'] : $raw;
+                    };
+                @endphp
+                
+                @if($userRole == 'superadmin')
+                <div class="mb-3">
+                    <label class="label-modern text-primary"><i class="fas fa-user-shield me-1"></i> Komentar Superadmin</label>
+                    <textarea name="komentar_superadmin" class="form-control input-modern shadow-none border-primary-subtle" rows="3" placeholder="Tambahkan komentar superadmin...">{{ $parseKomentarText($pelatihan->komentar_superadmin) }}</textarea>
+                </div>
+                @elseif($userRole == 'spv_marketing')
+                <div class="mb-3">
+                    <label class="label-modern text-warning-dark"><i class="fas fa-bullhorn me-1"></i> Komentar SPV Marketing</label>
+                    <textarea name="komentar_spv_marketing" class="form-control input-modern shadow-none border-warning-subtle" rows="3" placeholder="Tambahkan komentar SPV Marketing...">{{ $parseKomentarText($pelatihan->komentar_spv_marketing) }}</textarea>
+                </div>
+                @elseif($userRole == 'team_leader')
+                <div class="mb-0">
+                    <label class="label-modern text-info"><i class="fas fa-users me-1"></i> Komentar Team Leader</label>
+                    <textarea name="komentar_team_leader" class="form-control input-modern shadow-none border-info-subtle" rows="3" placeholder="Tambahkan komentar Team Leader...">{{ $parseKomentarText($pelatihan->komentar_team_leader) }}</textarea>
+                </div>
+                @else
+                <div class="alert alert-warning mb-0 text-center">
+                    <i class="fas fa-exclamation-triangle me-2"></i> Hanya pimpinan yang dapat mengubah komentar.
+                </div>
+                @endif
+            </div>
+            <div class="modal-footer border-top bg-light py-3 px-4" style="border-radius: 0 0 20px 20px;">
+                @if(in_array($userRole, ['superadmin', 'spv_marketing', 'team_leader']))
+                    <button type="submit" class="btn btn-primary fw-bold btn-round w-100 shadow-sm hover-lift">Simpan Komentar</button>
+                @else
+                    <button type="button" class="btn btn-secondary fw-bold btn-round w-100 shadow-sm" data-bs-dismiss="modal">Tutup</button>
+                @endif
             </div>
         </form>
     </div>

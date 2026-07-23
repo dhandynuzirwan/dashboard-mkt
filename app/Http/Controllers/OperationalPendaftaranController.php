@@ -60,16 +60,21 @@ class OperationalPendaftaranController extends Controller
             $ctaIds = $prospek->ctas->pluck('id')->toArray();
             $prospek->terdaftar = \App\Models\PendaftaranPribadi::whereIn('cta_id', $ctaIds)->count();
             
-            $prospek->kurang = max(0, $prospek->target_peserta - $prospek->terdaftar);
-            $prospek->is_lengkap = $prospek->terdaftar >= $prospek->target_peserta;
-
-            $persentase = ($prospek->target_peserta > 0) ? round(($prospek->terdaftar / $prospek->target_peserta) * 100) : 0;
-            $prospek->persentase = $persentase > 100 ? 100 : $persentase;
-            
             // Ambil CTA pertama sebagai perwakilan untuk link kolektif/detail CTA
             $firstCta = $prospek->ctas->first();
             $prospek->first_cta_id = $firstCta ? $firstCta->id : null;
             $prospek->judul_permintaan = $firstCta ? $firstCta->judul_permintaan : null;
+            
+            if ($firstCta && strtolower($firstCta->skema) == 'titip vendor lain') {
+                $prospek->is_lengkap = ($firstCta->status_registrasi_manual == 'selesai');
+                $prospek->persentase = $prospek->is_lengkap ? 100 : 0;
+            } else {
+                $prospek->kurang = max(0, $prospek->target_peserta - $prospek->terdaftar);
+                $prospek->is_lengkap = $prospek->terdaftar >= $prospek->target_peserta;
+
+                $persentase = ($prospek->target_peserta > 0) ? round(($prospek->terdaftar / $prospek->target_peserta) * 100) : 0;
+                $prospek->persentase = $persentase > 100 ? 100 : $persentase;
+            }
 
             return $prospek;
         });
@@ -199,5 +204,79 @@ class OperationalPendaftaranController extends Controller
         $pendaftaran->delete();
 
         return redirect()->back()->with('success', "Data pendaftaran atas nama $nama berhasil dihapus.");
+    }
+
+    public function updateStatusVendor(Request $request, $cta_id)
+    {
+        $request->validate([
+            'status_registrasi_manual' => 'required|in:belum_lengkap,selesai',
+        ]);
+
+        $cta = \App\Models\Cta::findOrFail($cta_id);
+        $cta->update([
+            'status_registrasi_manual' => $request->status_registrasi_manual
+        ]);
+
+        if ($request->status_registrasi_manual == 'selesai') {
+            $namaTraining = $cta->judul_permintaan ?? 'Pelatihan';
+            $trainingModel = \App\Models\MasterTraining::where('nama_training', $namaTraining)->first();
+            if (!$trainingModel && $namaTraining !== 'Pelatihan' && $namaTraining !== '-') {
+                $trainingModel = \App\Models\MasterTraining::where('nama_training', 'LIKE', '%' . $namaTraining . '%')
+                                    ->orWhereRaw('? LIKE CONCAT("%", nama_training, "%")', [$namaTraining])
+                                    ->first();
+            }
+            $trainingId = $trainingModel ? $trainingModel->id : null;
+
+            if ($trainingId && $cta->tanggal_pelaksanaan) {
+                \App\Models\PelatihanBerjalan::firstOrCreate(
+                    [
+                        'master_training_id' => $trainingId,
+                        'tanggal_pelatihan'  => $cta->tanggal_pelaksanaan,
+                    ],
+                    [
+                        'status_kelas'       => 'persiapan',
+                        'lokasi'             => $cta->skema ?? 'Titip Vendor Lain',
+                        'tanggal_selesai'    => $cta->tanggal_selesai
+                    ]
+                );
+            }
+        }
+
+        return redirect()->back()->with('success', 'Status pendaftaran (titip vendor) berhasil diperbarui.');
+    }
+
+    public function updateKomentar(Request $request, $prospek_id)
+    {
+        $request->validate([
+            'komentar' => 'nullable|string'
+        ]);
+
+        $prospek = \App\Models\Prospek::findOrFail($prospek_id);
+        
+        $role = auth()->user()->role;
+        $name = auth()->user()->nama_lengkap;
+        
+        if (!in_array($role, ['superadmin', 'spv_marketing', 'team_leader'])) {
+            return redirect()->back()->with('error', 'Anda tidak memiliki akses untuk memberikan komentar.');
+        }
+
+        $komentarData = is_string($prospek->komentar_operasional) ? json_decode($prospek->komentar_operasional, true) : $prospek->komentar_operasional;
+        $komentarData = is_array($komentarData) ? $komentarData : [];
+
+        $komentarData[$role] = [
+            'name' => $name,
+            'text' => $request->komentar
+        ];
+
+        // Jika string kosong, hapus dari json
+        if (empty(trim($request->komentar))) {
+            unset($komentarData[$role]);
+        }
+
+        $prospek->update([
+            'komentar_operasional' => count($komentarData) > 0 ? $komentarData : null
+        ]);
+
+        return redirect()->back()->with('success', 'Komentar berhasil diperbarui.');
     }
 }

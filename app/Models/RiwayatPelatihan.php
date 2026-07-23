@@ -51,7 +51,10 @@ class RiwayatPelatihan extends Model
         'tanggal_diterima',
         'foto',
         'catatan',
-        'dokumentasi'
+        'dokumentasi',
+        'komentar_superadmin',
+        'komentar_spv_marketing',
+        'komentar_team_leader'
     ];
 
     protected $casts = [

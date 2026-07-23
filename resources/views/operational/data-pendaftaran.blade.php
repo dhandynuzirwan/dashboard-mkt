@@ -235,6 +235,7 @@
                                         <th width="150">Marketing</th>
                                         <th width="220">Progress Pendaftaran</th>
                                         <th class="text-center" width="130">Status Pendaftar</th>
+                                        <th width="220">Komentar</th>
                                         <th class="text-center pe-4" width="100">Aksi</th>
                                     </tr>
                                 </thead>
@@ -266,7 +267,19 @@
                                                     &bull; {{ $cta->judul_permintaan ?? '-' }}
                                                 </span>
                                             @endforeach
-                                            <span class="badge badge-soft-info border px-2 py-1 text-uppercase">{{ $deal->ctas->first()->sertifikasi ?? 'Internal' }}</span>
+                                            <div class="d-flex flex-wrap gap-1 mt-1">
+                                                <span class="badge badge-soft-info border px-2 py-1 text-uppercase">{{ $deal->ctas->first()->sertifikasi ?? 'Internal' }}</span>
+                                                <span class="badge badge-soft-primary border px-2 py-1 text-uppercase">{{ $deal->ctas->first()->skema ?? 'Skema Tidak Diketahui' }}</span>
+                                            </div>
+                                            @if($deal->ctas->first()->tanggal_pelaksanaan)
+                                            <div class="mt-2 text-muted fw-bold" style="font-size: 11px;">
+                                                <i class="far fa-calendar-alt me-1 text-secondary"></i>
+                                                {{ \Carbon\Carbon::parse($deal->ctas->first()->tanggal_pelaksanaan)->format('d M Y') }}
+                                                @if($deal->ctas->first()->tanggal_selesai)
+                                                    - {{ \Carbon\Carbon::parse($deal->ctas->first()->tanggal_selesai)->format('d M Y') }}
+                                                @endif
+                                            </div>
+                                            @endif
                                         </td>
 
                                         {{-- 4. Marketing PIC --}}
@@ -316,9 +329,90 @@
                                                 <span class="badge bg-success border border-success rounded-pill px-3 py-1 shadow-sm">Lengkap</span>
                                             @elseif(isset($deal->terdaftar) && $deal->terdaftar > 0)
                                                 <span class="badge badge-soft-warning text-dark border border-warning rounded-pill px-3 py-1 shadow-sm">Belum Lengkap</span>
+                                            @elseif($deal->ctas->first() && strtolower($deal->ctas->first()->skema) == 'titip vendor lain')
+                                                <span class="badge badge-soft-warning text-dark border border-warning rounded-pill px-3 py-1 shadow-sm">Belum Lengkap</span>
                                             @else
                                                 <span class="badge badge-soft-danger border border-danger rounded-pill px-3 py-1 shadow-sm">Belum Daftar</span>
                                             @endif
+                                        </td>
+
+                                        {{-- 6.5 Komentar Operasional --}}
+                                        <td>
+                                            @php
+                                                $komentar = is_string($deal->komentar_operasional) ? json_decode($deal->komentar_operasional, true) : $deal->komentar_operasional;
+                                                $komentar = is_array($komentar) ? $komentar : [];
+                                            @endphp
+                                            
+                                            @if(!empty($komentar))
+                                                @foreach(['superadmin' => ['bg' => 'primary', 'icon' => 'user-shield'], 'spv_marketing' => ['bg' => 'warning', 'icon' => 'bullhorn'], 'team_leader' => ['bg' => 'info', 'icon' => 'users']] as $role => $cfg)
+                                                    @if(isset($komentar[$role]) && !empty($komentar[$role]['text']))
+                                                        <div class="bg-{{ $cfg['bg'] }}-subtle border border-{{ $cfg['bg'] }}-subtle p-2 rounded-3 mb-1">
+                                                            <div class="d-flex align-items-center justify-content-between mb-1">
+                                                                <span class="badge bg-{{ $cfg['bg'] }} text-{{ $role == 'spv_marketing' ? 'dark' : 'white' }} px-2 py-1"><i class="fas fa-{{ $cfg['icon'] }} me-1"></i> {{ $komentar[$role]['name'] ?? ucfirst(str_replace('_', ' ', $role)) }}</span>
+                                                            </div>
+                                                            <p class="mb-0 text-dark small" style="white-space: normal; line-height: 1.4;">{{ $komentar[$role]['text'] }}</p>
+                                                        </div>
+                                                    @endif
+                                                @endforeach
+                                                <button class="btn btn-sm btn-white border shadow-sm fw-bold w-100 text-dark mt-1" data-bs-toggle="modal" data-bs-target="#modalUpdateKomentarProspek-{{ $deal->id }}">
+                                                    <i class="fas fa-pen me-1"></i> Edit
+                                                </button>
+                                            @else
+                                                <div class="bg-light border border-dashed p-3 rounded-4 text-center">
+                                                    <p class="mb-2 text-muted small fw-bold">Belum ada komentar.</p>
+                                                    <button class="btn btn-sm btn-white border btn-round shadow-sm hover-lift text-dark fw-bold px-3" data-bs-toggle="modal" data-bs-target="#modalUpdateKomentarProspek-{{ $deal->id }}">
+                                                        <i class="fas fa-plus me-1"></i> Tambah
+                                                    </button>
+                                                </div>
+                                            @endif
+
+                                            {{-- MODAL KOMENTAR --}}
+                                            <div class="modal fade text-start" id="modalUpdateKomentarProspek-{{ $deal->id }}" tabindex="-1" aria-hidden="true">
+                                                <div class="modal-dialog modal-dialog-centered">
+                                                    <form action="{{ route('operational.pendaftaran.update-komentar', $deal->id) }}" method="POST" class="modal-content border-0 shadow-lg" style="border-radius: 20px;">
+                                                        @csrf
+                                                        @method('PUT')
+                                                        <div class="modal-header border-bottom pb-3 pt-4 px-4 bg-light" style="border-radius: 20px 20px 0 0;">
+                                                            <h5 class="modal-title fw-bolder text-dark"><i class="fas fa-comments text-primary me-2"></i> Komentar / Feedback Prospek</h5>
+                                                            <button type="button" class="btn-close shadow-none" data-bs-dismiss="modal"></button>
+                                                        </div>
+                                                        <div class="modal-body px-4 pt-4 pb-4">
+                                                            @php 
+                                                                $userRole = auth()->user()->role; 
+                                                                $textKomentar = isset($komentar[$userRole]) ? $komentar[$userRole]['text'] : '';
+                                                            @endphp
+                                                            
+                                                            @if($userRole == 'superadmin')
+                                                            <div class="mb-3">
+                                                                <label class="label-modern text-primary"><i class="fas fa-user-shield me-1"></i> Komentar Superadmin</label>
+                                                                <textarea name="komentar" class="form-control input-modern shadow-none border-primary-subtle" rows="3" placeholder="Tambahkan komentar superadmin...">{{ $textKomentar }}</textarea>
+                                                            </div>
+                                                            @elseif($userRole == 'spv_marketing')
+                                                            <div class="mb-3">
+                                                                <label class="label-modern text-warning-dark"><i class="fas fa-bullhorn me-1"></i> Komentar SPV Marketing</label>
+                                                                <textarea name="komentar" class="form-control input-modern shadow-none border-warning-subtle" rows="3" placeholder="Tambahkan komentar SPV Marketing...">{{ $textKomentar }}</textarea>
+                                                            </div>
+                                                            @elseif($userRole == 'team_leader')
+                                                            <div class="mb-0">
+                                                                <label class="label-modern text-info"><i class="fas fa-users me-1"></i> Komentar Team Leader</label>
+                                                                <textarea name="komentar" class="form-control input-modern shadow-none border-info-subtle" rows="3" placeholder="Tambahkan komentar Team Leader...">{{ $textKomentar }}</textarea>
+                                                            </div>
+                                                            @else
+                                                            <div class="alert alert-warning mb-0 text-center">
+                                                                <i class="fas fa-exclamation-triangle me-2"></i> Hanya pimpinan yang dapat mengubah komentar.
+                                                            </div>
+                                                            @endif
+                                                        </div>
+                                                        <div class="modal-footer border-top bg-light py-3 px-4" style="border-radius: 0 0 20px 20px;">
+                                                            @if(in_array($userRole, ['superadmin', 'spv_marketing', 'team_leader']))
+                                                                <button type="submit" class="btn btn-primary fw-bold btn-round w-100 shadow-sm hover-lift">Simpan Komentar</button>
+                                                            @else
+                                                                <button type="button" class="btn btn-secondary fw-bold btn-round w-100 shadow-sm" data-bs-dismiss="modal">Tutup</button>
+                                                            @endif
+                                                        </div>
+                                                    </form>
+                                                </div>
+                                            </div>
                                         </td>
 
                                         {{-- 7. Aksi --}}
@@ -339,7 +433,11 @@
                                                 $trainingId = $trainingModel ? $trainingModel->id : '';
 
                                                 // 3. Susun URL Registrasi Dinamis
-                                                if ($isKolektif) {
+                                                $isTitipVendor = ($deal->ctas->first() && strtolower($deal->ctas->first()->skema) == 'titip vendor lain');
+                                                if ($isTitipVendor) {
+                                                    $btnColor = 'btn-secondary';
+                                                    $btnText  = 'Ubah Status';
+                                                } elseif ($isKolektif) {
                                                     $urlRegistrasi = route('portal.pendaftaran.kolektif', [
                                                         'cta_id'      => $deal->first_cta_id,
                                                         'training_id' => $trainingId,
@@ -357,23 +455,61 @@
                                                 }
 
                                                 // 4. Susun template pesan WhatsApp untuk klien
-                                                $noWa = preg_replace('/[^0-9]/', '', $deal->prospek->no_wa ?? $deal->prospek->wa_pic ?? '');
-                                                $pesanWa = "Halo Terima kasih telah memilih Arsa Training.\n\nBerikut adalah link resmi pendaftaran untuk program pelatihan *".$namaTraining."*:\n".$urlRegistrasi."\n\nMohon untuk segera melengkapi formulir pendaftaran di atas. Terima kasih.";
-                                                $linkWa  = "https://wa.me/".$noWa."?text=".urlencode($pesanWa);
+                                                if (!$isTitipVendor) {
+                                                    $noWa = preg_replace('/[^0-9]/', '', $deal->prospek->no_wa ?? $deal->prospek->wa_pic ?? '');
+                                                    $pesanWa = "Halo Terima kasih telah memilih Arsa Training.\n\nBerikut adalah link resmi pendaftaran untuk program pelatihan *".$namaTraining."*:\n".$urlRegistrasi."\n\nMohon untuk segera melengkapi formulir pendaftaran di atas. Terima kasih.";
+                                                    $linkWa  = "https://wa.me/".$noWa."?text=".urlencode($pesanWa);
+                                                }
                                             @endphp
 
                                             <div class="d-flex gap-1 justify-content-center">
-                                                <button type="button" class="btn {{ $btnColor }} btn-sm btn-round fw-bold shadow-sm" 
-                                                        onclick="salinLinkRegistrasi('{{ $urlRegistrasi }}')" title="Salin Link Pendaftaran">
-                                                    <i class="fas fa-link me-1"></i> {{ $btnText }}
-                                                </button>
+                                                @if($isTitipVendor)
+                                                    <button type="button" class="btn {{ $btnColor }} btn-sm btn-round fw-bold shadow-sm" 
+                                                            data-bs-toggle="modal" data-bs-target="#modalUpdateStatusVendor-{{ $deal->first_cta_id }}" title="Ubah Status Registrasi">
+                                                        <i class="fas fa-sync-alt me-1"></i> {{ $btnText }}
+                                                    </button>
+                                                @else
+                                                    <button type="button" class="btn {{ $btnColor }} btn-sm btn-round fw-bold shadow-sm" 
+                                                            onclick="salinLinkRegistrasi('{{ $urlRegistrasi }}')" title="Salin Link Pendaftaran">
+                                                        <i class="fas fa-link me-1"></i> {{ $btnText }}
+                                                    </button>
+                                                @endif
 
                                                 <a href="{{ route('cta.edit', $deal->first_cta_id) }}" target="_blank" class="btn btn-warning btn-sm btn-round fw-bold shadow-sm text-dark" title="Detail CTA">
                                                     <i class="fas fa-edit"></i>
                                                 </a>
                                             </div>
+                                            {{-- MODAL UBAH STATUS VENDOR --}}
+                                            @if($isTitipVendor && $deal->first_cta_id)
+                                            <div class="modal fade text-start" id="modalUpdateStatusVendor-{{ $deal->first_cta_id }}" tabindex="-1" aria-hidden="true">
+                                                <div class="modal-dialog modal-dialog-centered">
+                                                    <form action="{{ route('operational.pendaftaran.update-status-vendor', $deal->first_cta_id) }}" method="POST" class="modal-content border-0 shadow-lg" style="border-radius: 20px;">
+                                                        @csrf
+                                                        @method('PUT')
+                                                        <div class="modal-header border-bottom pb-3 pt-4 px-4 bg-light" style="border-radius: 20px 20px 0 0;">
+                                                            <h5 class="modal-title fw-bolder text-dark"><i class="fas fa-sync-alt text-primary me-2"></i> Ubah Status Registrasi Vendor</h5>
+                                                            <button type="button" class="btn-close shadow-none" data-bs-dismiss="modal"></button>
+                                                        </div>
+                                                        <div class="modal-body px-4 pt-4 pb-4">
+                                                            <div class="mb-0">
+                                                                <label class="label-modern fw-bold mb-2 text-dark">Status Data Peserta (Titip Vendor)</label>
+                                                                <select name="status_registrasi_manual" class="form-select shadow-none">
+                                                                    <option value="belum_lengkap" {{ $deal->ctas->first()->status_registrasi_manual != 'selesai' ? 'selected' : '' }}>Belum Lengkap</option>
+                                                                    <option value="selesai" {{ $deal->ctas->first()->status_registrasi_manual == 'selesai' ? 'selected' : '' }}>Selesai Diinput / Lengkap</option>
+                                                                </select>
+                                                                <small class="text-muted d-block mt-2">Karena peserta ini adalah titip vendor lain, form registrasi tidak digunakan. Ubah status secara manual untuk menandai progres.</small>
+                                                            </div>
+                                                        </div>
+                                                        <div class="modal-footer border-top bg-light py-3 px-4" style="border-radius: 0 0 20px 20px;">
+                                                            <button type="submit" class="btn btn-primary fw-bold btn-round w-100 shadow-sm hover-lift">Simpan Status</button>
+                                                        </div>
+                                                    </form>
+                                                </div>
+                                            </div>
+                                            @endif
                                         </td>
                                     </tr>
+
                                     @empty
                                     <tr>
                                         <td colspan="6" class="text-center py-5 text-muted">

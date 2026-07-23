@@ -367,7 +367,7 @@ class RiwayatPelatihanController extends Controller
         return redirect()->back()->with('error', 'Gagal membuat file ZIP.');
     }
 
-    private function syncToPelatihanBerjalan($riwayat)
+    public function syncToPelatihanBerjalan($riwayat)
     {
         $pelatihanData = [
             'tanggal_pelatihan' => $riwayat->tanggal_mulai,
@@ -396,6 +396,9 @@ class RiwayatPelatihanController extends Controller
             'keterangan_tambahan' => $riwayat->keterangan_tambahan,
             'cv' => $riwayat->cv,
             'modul' => $riwayat->modul,
+            'komentar_superadmin' => $riwayat->komentar_superadmin,
+            'komentar_spv_marketing' => $riwayat->komentar_spv_marketing,
+            'komentar_team_leader' => $riwayat->komentar_team_leader,
             'riwayat_pelatihan_id' => $riwayat->id,
         ];
 

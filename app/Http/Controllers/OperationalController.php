@@ -139,8 +139,15 @@ class OperationalController extends Controller implements HasMiddleware
             ->get();
             
         $users = \App\Models\User::all();
+        
+        // Menghitung Statistik
+        $statRunning = $pelatihans->where('status_kelas', 'running')->count();
+        // Validasi Admin: misalnya kelas yang statusnya persiapan
+        $statValidasi = $pelatihans->where('status_kelas', 'persiapan')->count();
+        $statOgp = $pelatihans->where('status_sertifikat', 'OGP')->count();
+        $statDikirim = $pelatihans->where('status_pengiriman', 'Dikirim')->count();
             
-        return view('operational.monitoring-pelatihan', compact('pelatihans', 'users'));
+        return view('operational.monitoring-pelatihan', compact('pelatihans', 'users', 'statRunning', 'statValidasi', 'statOgp', 'statDikirim'));
     }
 
     // Menampilkan Halaman Monitoring Pelatihan TV (Display Monitor)
@@ -247,6 +254,27 @@ class OperationalController extends Controller implements HasMiddleware
             $data['checklist_validasi'] = json_encode($data['checklist_validasi']);
         }
 
+        // Handle judul_pelatihan dan jenis (Sync from Pelatihan Berjalan to Riwayat)
+        if ($request->has('judul_pelatihan')) {
+            $masterTraining = \App\Models\MasterTraining::where('nama_training', $request->judul_pelatihan)->first();
+            $data['master_training_id'] = $masterTraining ? $masterTraining->id : null;
+        }
+
+        // Handle komentar format JSON
+        $komentarFields = ['komentar_superadmin', 'komentar_spv_marketing', 'komentar_team_leader'];
+        foreach ($komentarFields as $kf) {
+            if ($request->has($kf)) {
+                if (!empty($request->$kf)) {
+                    $data[$kf] = json_encode([
+                        'name' => auth()->user()->nama_lengkap ?? auth()->user()->name,
+                        'text' => $request->$kf
+                    ]);
+                } else {
+                    $data[$kf] = null;
+                }
+            }
+        }
+
         $pelatihan->update($data);
         
         // Trigger 2-Way Sync
@@ -266,7 +294,7 @@ class OperationalController extends Controller implements HasMiddleware
         }
 
         $riwayatData = [
-            'judul_pelatihan' => $pelatihan->training->nama_training ?? null,
+            'judul_pelatihan' => $request->has('judul_pelatihan') ? $request->judul_pelatihan : ($pelatihan->training->nama_training ?? null),
             'metode' => $pelatihan->lokasi ?? null,
             'tanggal_mulai' => $pelatihan->tanggal_pelatihan,
             'tanggal_selesai' => $pelatihan->tanggal_selesai,
@@ -293,8 +321,15 @@ class OperationalController extends Controller implements HasMiddleware
             'foto' => $pelatihan->foto_tanda_terima ?? $pelatihan->foto_resi,
             'catatan' => $pelatihan->catatan_pengiriman,
             'keterangan_tambahan' => $pelatihan->keterangan_tambahan,
+            'komentar_superadmin' => $pelatihan->komentar_superadmin,
+            'komentar_spv_marketing' => $pelatihan->komentar_spv_marketing,
+            'komentar_team_leader' => $pelatihan->komentar_team_leader,
             'pelatihan_berjalan_id' => $pelatihan->id,
         ];
+
+        if ($request->has('jenis')) {
+            $riwayatData['jenis'] = $request->jenis;
+        }
 
         // Only override participants if this was originally from Registration Flow,
         // to avoid overwriting manually synced JSON participants from Riwayat.

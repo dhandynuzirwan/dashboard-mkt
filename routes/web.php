@@ -192,6 +192,8 @@ Route::middleware('auth')->group(function () {
             Route::get('/data-pendaftaran', [OperationalPendaftaranController::class, 'index'])->name('operational.data-pendaftaran');
             Route::post('/data-pendaftaran/verify/{id}', [OperationalPendaftaranController::class, 'verify'])->name('operational.pendaftaran.verify');
             Route::delete('/data-pendaftaran/{id}', [OperationalPendaftaranController::class, 'destroy'])->name('operational.pendaftaran.destroy');
+            Route::put('/data-pendaftaran/update-status-vendor/{id}', [OperationalPendaftaranController::class, 'updateStatusVendor'])->name('operational.pendaftaran.update-status-vendor');
+            Route::put('/data-pendaftaran/update-komentar/{id}', [OperationalPendaftaranController::class, 'updateKomentar'])->name('operational.pendaftaran.update-komentar');
         });
 
         // Aktivitas Harian
