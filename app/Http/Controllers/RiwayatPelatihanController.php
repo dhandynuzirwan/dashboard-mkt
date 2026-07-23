@@ -125,7 +125,9 @@ class RiwayatPelatihanController extends Controller
             $data['marketing'] = json_encode(array_values($request->marketing));
         }
 
-        RiwayatPelatihan::create($data);
+        $riwayat = RiwayatPelatihan::create($data);
+
+        $this->syncToPelatihanBerjalan($riwayat);
 
         return redirect()->route('riwayat.pelatihan')->with('success', 'Data Riwayat Pelatihan berhasil ditambahkan.');
     }
@@ -190,6 +192,8 @@ class RiwayatPelatihanController extends Controller
 
         $riwayat->update($data);
 
+        $this->syncToPelatihanBerjalan($riwayat);
+
         return redirect()->back()->with('success', 'Data berhasil diperbarui.');
     }
 
@@ -233,6 +237,7 @@ class RiwayatPelatihanController extends Controller
             $riwayat->marketing = json_encode(array_values($mkts));
             
             $riwayat->save();
+            $this->syncToPelatihanBerjalan($riwayat);
         }
 
         return redirect()->back()->with('success', 'Data peserta berhasil diperbarui.');
@@ -268,6 +273,7 @@ class RiwayatPelatihanController extends Controller
         $riwayat->jumlah_peserta = count($pesertas);
 
         $riwayat->save();
+        $this->syncToPelatihanBerjalan($riwayat);
 
         return redirect()->back()->with('success', 'Data peserta berhasil ditambahkan.');
     }
@@ -299,6 +305,7 @@ class RiwayatPelatihanController extends Controller
             $riwayat->jumlah_peserta = count($pesertas);
 
             $riwayat->save();
+            $this->syncToPelatihanBerjalan($riwayat);
         }
 
         return redirect()->back()->with('success', 'Data peserta berhasil dihapus.');
@@ -358,5 +365,61 @@ class RiwayatPelatihanController extends Controller
         }
 
         return redirect()->back()->with('error', 'Gagal membuat file ZIP.');
+    }
+
+    private function syncToPelatihanBerjalan($riwayat)
+    {
+        $pelatihanData = [
+            'tanggal_pelatihan' => $riwayat->tanggal_mulai,
+            'tanggal_selesai' => $riwayat->tanggal_selesai,
+            'tanggal_asesmen' => $riwayat->tanggal_asesmen,
+            'lokasi' => $riwayat->metode,
+            'instruktur' => $riwayat->nama_trainer,
+            'wa_trainer' => $riwayat->wa_trainer,
+            'asesor' => $riwayat->nama_asesor,
+            'wa_asesor' => $riwayat->wa_asesor,
+            'pjk3' => $riwayat->nama_lsp,
+            'kontak_lsp' => $riwayat->kontak_lsp,
+            'pic_operasional' => $riwayat->pic,
+            'status_sertifikat' => $riwayat->status_sertif,
+            'file_scan_sertifikat' => $riwayat->scan_sertif,
+            'nama_penerima' => $riwayat->nama_penerima,
+            'wa_penerima' => $riwayat->wa_penerima,
+            'isi_paket' => $riwayat->isi_paket,
+            'alamat_pengiriman' => $riwayat->alamat_pengiriman,
+            'tanggal_kirim' => $riwayat->tanggal_kirim,
+            'resi_pengiriman' => $riwayat->no_resi,
+            'status_pengiriman' => $riwayat->status_pengiriman,
+            'tanggal_diterima' => $riwayat->tanggal_diterima,
+            'foto_tanda_terima' => $riwayat->foto,
+            'catatan_pengiriman' => $riwayat->catatan,
+            'keterangan_tambahan' => $riwayat->keterangan_tambahan,
+            'cv' => $riwayat->cv,
+            'modul' => $riwayat->modul,
+            'riwayat_pelatihan_id' => $riwayat->id,
+        ];
+
+        if ($riwayat->pelatihan_berjalan_id) {
+            \App\Models\PelatihanBerjalan::where('id', $riwayat->pelatihan_berjalan_id)->update($pelatihanData);
+        } else {
+            // Find Master Training loosely
+            $masterTraining = null;
+            if ($riwayat->judul_pelatihan) {
+                $masterTraining = \App\Models\MasterTraining::where('nama_training', $riwayat->judul_pelatihan)->first();
+            }
+            $pelatihanData['master_training_id'] = $masterTraining ? $masterTraining->id : null;
+            $pelatihanData['status_kelas'] = 'selesai'; // Default for synced from Riwayat
+
+            $pelatihan = \App\Models\PelatihanBerjalan::where('riwayat_pelatihan_id', $riwayat->id)->first();
+            if ($pelatihan) {
+                $pelatihan->update($pelatihanData);
+                if (!$riwayat->pelatihan_berjalan_id) {
+                    $riwayat->updateQuietly(['pelatihan_berjalan_id' => $pelatihan->id]);
+                }
+            } else {
+                $newPelatihan = \App\Models\PelatihanBerjalan::create($pelatihanData);
+                $riwayat->updateQuietly(['pelatihan_berjalan_id' => $newPelatihan->id]);
+            }
+        }
     }
 }

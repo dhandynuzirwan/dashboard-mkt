@@ -12,6 +12,7 @@ class RiwayatPelatihan extends Model
     protected $table = 'riwayat_pelatihans';
 
     protected $fillable = [
+        'pelatihan_berjalan_id',
         'tanggal_mulai',
         'tanggal_selesai',
         'jenis',
@@ -85,5 +86,10 @@ class RiwayatPelatihan extends Model
             return $decoded;
         }
         return array_map('trim', explode(',', $value));
+    }
+
+    public function pelatihanBerjalan()
+    {
+        return $this->belongsTo(PelatihanBerjalan::class, 'pelatihan_berjalan_id');
     }
 }

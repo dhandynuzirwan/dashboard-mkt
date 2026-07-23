@@ -119,20 +119,37 @@
                                             $pesertaList = $pelatihan->pendaftaranPribadis;
                                             $marketingData = [];
                                             $sertifikasi = 'Lainnya';
-
-                                            foreach($pesertaList as $p) {
-                                                if ($p->tipe_pendaftaran == 'kolektif' && $p->kolektif && $p->kolektif->cta && $p->kolektif->cta->prospek) {
-                                                    $mktName = $p->kolektif->cta->prospek->marketing->name ?? 'Unknown';
-                                                } else if ($p->cta && $p->cta->prospek) {
-                                                    $mktName = $p->cta->prospek->marketing->name ?? 'Unknown';
-                                                } else {
-                                                    $mktName = 'Unknown';
-                                                }
+                                            $isSyncRiwayat = false;
+                                            
+                                            if ($pesertaList->isEmpty() && $pelatihan->riwayat) {
+                                                $isSyncRiwayat = true;
+                                                $sertifikasi = $pelatihan->training->nama_training ?? 'Lainnya';
                                                 
-                                                if(!isset($marketingData[$mktName])) {
-                                                    $marketingData[$mktName] = 0;
+                                                $marketingJson = json_decode($pelatihan->riwayat->marketing, true);
+                                                if (is_array($marketingJson)) {
+                                                    foreach($marketingJson as $mkt) {
+                                                        $mktName = $mkt ?: 'Unknown';
+                                                        if(!isset($marketingData[$mktName])) {
+                                                            $marketingData[$mktName] = 0;
+                                                        }
+                                                        $marketingData[$mktName]++;
+                                                    }
                                                 }
-                                                $marketingData[$mktName]++;
+                                            } else {
+                                                foreach($pesertaList as $p) {
+                                                    if ($p->tipe_pendaftaran == 'kolektif' && $p->kolektif && $p->kolektif->cta && $p->kolektif->cta->prospek) {
+                                                        $mktName = $p->kolektif->cta->prospek->marketing->name ?? 'Unknown';
+                                                    } else if ($p->cta && $p->cta->prospek) {
+                                                        $mktName = $p->cta->prospek->marketing->name ?? 'Unknown';
+                                                    } else {
+                                                        $mktName = 'Unknown';
+                                                    }
+                                                    
+                                                    if(!isset($marketingData[$mktName])) {
+                                                        $marketingData[$mktName] = 0;
+                                                    }
+                                                    $marketingData[$mktName]++;
+                                                }
                                             }
 
                                             $firstPendaftaran = $pesertaList->first();
@@ -146,6 +163,7 @@
                                                     $skema = strtolower($firstPendaftaran->cta->skema);
                                                 }
                                             }
+
                                             
                                             // Badge Status Kelas
                                             $statusBadgeMap = [
@@ -158,6 +176,9 @@
                                         @endphp
                                     <tr>
                                         <td class="ps-4">
+                                            @if($isSyncRiwayat)
+                                            <div class="mb-1"><span class="badge bg-secondary border border-secondary text-white" style="font-size: 9px;"><i class="fas fa-sync-alt me-1"></i> Hasil Sync Riwayat</span></div>
+                                            @endif
                                             <div class="fw-bolder text-dark" style="font-size: 14px;">{{ optional($pelatihan->training)->nama_training ?? 'Belum Ada Pelatihan' }}</div>
                                             <div class="fw-bold text-primary mt-1 mb-2" style="font-size: 13px;"><i class="fas fa-certificate me-1"></i> {{ $sertifikasi }}</div>
                                             
@@ -746,29 +767,52 @@
                             </tr>
                         </thead>
                         <tbody>
-                            @forelse($pelatihan->pendaftaranPribadis as $p)
+                            @if($pelatihan->pendaftaranPribadis->isEmpty() && $pelatihan->riwayat)
                                 @php
-                                    if ($p->tipe_pendaftaran == 'kolektif' && $p->kolektif && $p->kolektif->cta && $p->kolektif->cta->prospek) {
-                                        $mktName = $p->kolektif->cta->prospek->marketing->name ?? 'Unknown';
-                                    } else if ($p->cta && $p->cta->prospek) {
-                                        $mktName = $p->cta->prospek->marketing->name ?? 'Unknown';
-                                    } else {
-                                        $mktName = 'Unknown';
-                                    }
+                                    $namaArray = json_decode($pelatihan->riwayat->nama_peserta, true) ?? [];
+                                    $instansiArray = json_decode($pelatihan->riwayat->instansi_peserta, true) ?? [];
+                                    $waArray = json_decode($pelatihan->riwayat->wa_peserta, true) ?? [];
+                                    $mktArray = json_decode($pelatihan->riwayat->marketing, true) ?? [];
                                 @endphp
-                                <tr>
-                                    <td class="ps-4 fw-bold text-dark" style="font-size: 13px;">{{ $p->nama_lengkap }}</td>
-                                    <td style="font-size: 12px;">{{ $p->tanggal_lahir ? \Carbon\Carbon::parse($p->tanggal_lahir)->translatedFormat('d M Y') : '-' }}</td>
-                                    <td style="font-size: 12px;" class="text-truncate" style="max-width: 200px;" title="{{ $p->alamat_perusahaan }}">{{ Str::limit($p->alamat_perusahaan, 30) }}</td>
-                                    <td style="font-size: 12px;"><a href="https://wa.me/{{ preg_replace('/[^0-9]/', '', $p->no_wa) }}" target="_blank" class="text-success fw-bold text-decoration-none"><i class="fab fa-whatsapp me-1"></i> {{ $p->no_wa }}</a></td>
-                                    <td style="font-size: 12px;">{{ $p->perusahaan }}</td>
-                                    <td class="pe-4" style="font-size: 12px;"><span class="badge bg-light text-dark border">{{ $mktName }}</span></td>
-                                </tr>
-                            @empty
-                                <tr>
-                                    <td colspan="6" class="text-center text-muted py-4">Belum ada data peserta.</td>
-                                </tr>
-                            @endforelse
+                                @forelse($namaArray as $index => $nama)
+                                    <tr>
+                                        <td class="ps-4 fw-bold text-dark" style="font-size: 13px;">{{ $nama }}</td>
+                                        <td style="font-size: 12px;">-</td>
+                                        <td style="font-size: 12px;" class="text-truncate" style="max-width: 200px;">-</td>
+                                        <td style="font-size: 12px;"><a href="https://wa.me/{{ preg_replace('/[^0-9]/', '', $waArray[$index] ?? '') }}" target="_blank" class="text-success fw-bold text-decoration-none"><i class="fab fa-whatsapp me-1"></i> {{ $waArray[$index] ?? '-' }}</a></td>
+                                        <td style="font-size: 12px;">{{ $instansiArray[$index] ?? '-' }}</td>
+                                        <td class="pe-4" style="font-size: 12px;"><span class="badge bg-light text-dark border">{{ $mktArray[$index] ?? 'Unknown' }}</span></td>
+                                    </tr>
+                                @empty
+                                    <tr>
+                                        <td colspan="6" class="text-center text-muted py-4">Belum ada data peserta.</td>
+                                    </tr>
+                                @endforelse
+                            @else
+                                @forelse($pelatihan->pendaftaranPribadis as $p)
+                                    @php
+                                        if ($p->tipe_pendaftaran == 'kolektif' && $p->kolektif && $p->kolektif->cta && $p->kolektif->cta->prospek) {
+                                            $mktName = $p->kolektif->cta->prospek->marketing->name ?? 'Unknown';
+                                        } else if ($p->cta && $p->cta->prospek) {
+                                            $mktName = $p->cta->prospek->marketing->name ?? 'Unknown';
+                                        } else {
+                                            $mktName = 'Unknown';
+                                        }
+                                    @endphp
+                                    <tr>
+                                        <td class="ps-4 fw-bold text-dark" style="font-size: 13px;">{{ $p->nama_lengkap }}</td>
+                                        <td style="font-size: 12px;">{{ $p->tanggal_lahir ? \Carbon\Carbon::parse($p->tanggal_lahir)->translatedFormat('d M Y') : '-' }}</td>
+                                        <td style="font-size: 12px;" class="text-truncate" style="max-width: 200px;" title="{{ $p->alamat_perusahaan }}">{{ Str::limit($p->alamat_perusahaan, 30) }}</td>
+                                        <td style="font-size: 12px;"><a href="https://wa.me/{{ preg_replace('/[^0-9]/', '', $p->no_wa) }}" target="_blank" class="text-success fw-bold text-decoration-none"><i class="fab fa-whatsapp me-1"></i> {{ $p->no_wa }}</a></td>
+                                        <td style="font-size: 12px;">{{ $p->perusahaan }}</td>
+                                        <td class="pe-4" style="font-size: 12px;"><span class="badge bg-light text-dark border">{{ $mktName }}</span></td>
+                                    </tr>
+                                @empty
+                                    <tr>
+                                        <td colspan="6" class="text-center text-muted py-4">Belum ada data peserta.</td>
+                                    </tr>
+                                @endforelse
+                            @endif
                         </tbody>
                     </table>
                 </div>

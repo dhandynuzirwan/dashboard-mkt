@@ -126,6 +126,7 @@ class OperationalController extends Controller implements HasMiddleware
     {
         $pelatihans = \App\Models\PelatihanBerjalan::with([
             'training', 
+            'riwayat',
             'pendaftaranPribadis.cta.prospek.marketing',
             'pendaftaranPribadis.kolektif.cta.prospek.marketing'
         ])
@@ -243,59 +244,76 @@ class OperationalController extends Controller implements HasMiddleware
 
         $pelatihan->update($data);
         
-        // Trigger if Selesai
-        if ($pelatihan->status_kelas === 'selesai' && $pelatihan->wasChanged('status_kelas')) {
-            $pesertas = $pelatihan->pendaftaranPribadis()->with('cta.prospek.marketing')->get();
-            $nama_peserta = [];
-            $instansi_peserta = [];
-            $wa_peserta = [];
-            $marketing = [];
+        // Trigger 2-Way Sync
+        $pesertas = $pelatihan->pendaftaranPribadis()->with('cta.prospek.marketing')->get();
+        $nama_peserta = [];
+        $instansi_peserta = [];
+        $wa_peserta = [];
+        $marketing = [];
 
-            foreach ($pesertas as $peserta) {
-                $nama_peserta[] = $peserta->nama_lengkap;
-                $instansi_peserta[] = $peserta->perusahaan ?? 'Pribadi';
-                $wa_peserta[] = $peserta->no_wa;
-                $marketing[] = ($peserta->cta && $peserta->cta->prospek && $peserta->cta->prospek->marketing) 
-                                ? $peserta->cta->prospek->marketing->name 
-                                : '-';
+        foreach ($pesertas as $peserta) {
+            $nama_peserta[] = $peserta->nama_lengkap;
+            $instansi_peserta[] = $peserta->perusahaan ?? 'Pribadi';
+            $wa_peserta[] = $peserta->no_wa;
+            $marketing[] = ($peserta->cta && $peserta->cta->prospek && $peserta->cta->prospek->marketing) 
+                            ? $peserta->cta->prospek->marketing->name 
+                            : '-';
+        }
+
+        $riwayatData = [
+            'judul_pelatihan' => $pelatihan->training->nama_training ?? null,
+            'metode' => $pelatihan->lokasi ?? null,
+            'tanggal_mulai' => $pelatihan->tanggal_pelatihan,
+            'tanggal_selesai' => $pelatihan->tanggal_selesai,
+            'tanggal_asesmen' => $pelatihan->tanggal_asesmen,
+            'nama_trainer' => $pelatihan->instruktur,
+            'wa_trainer' => $pelatihan->wa_trainer,
+            'cv' => $pelatihan->cv,
+            'modul' => $pelatihan->modul,
+            'nama_asesor' => $pelatihan->asesor,
+            'wa_asesor' => $pelatihan->wa_asesor,
+            'nama_lsp' => $pelatihan->pjk3,
+            'kontak_lsp' => $pelatihan->kontak_lsp,
+            'pic' => $pelatihan->pic_operasional,
+            'status_sertif' => $pelatihan->status_sertifikat ?? 'Belum Terbit',
+            'scan_sertif' => $pelatihan->file_scan_sertifikat,
+            'nama_penerima' => $pelatihan->nama_penerima,
+            'wa_penerima' => $pelatihan->wa_penerima,
+            'isi_paket' => $pelatihan->isi_paket,
+            'alamat_pengiriman' => $pelatihan->alamat_pengiriman,
+            'tanggal_kirim' => $pelatihan->tanggal_kirim,
+            'no_resi' => $pelatihan->resi_pengiriman,
+            'status_pengiriman' => $pelatihan->status_pengiriman,
+            'tanggal_diterima' => $pelatihan->tanggal_diterima,
+            'foto' => $pelatihan->foto_tanda_terima ?? $pelatihan->foto_resi,
+            'catatan' => $pelatihan->catatan_pengiriman,
+            'keterangan_tambahan' => $pelatihan->keterangan_tambahan,
+            'pelatihan_berjalan_id' => $pelatihan->id,
+        ];
+
+        // Only override participants if this was originally from Registration Flow,
+        // to avoid overwriting manually synced JSON participants from Riwayat.
+        if ($pesertas->count() > 0 || !$pelatihan->riwayat_pelatihan_id) {
+            $riwayatData['jumlah_peserta'] = $pesertas->count();
+            $riwayatData['nama_peserta'] = json_encode($nama_peserta);
+            $riwayatData['instansi_peserta'] = json_encode($instansi_peserta);
+            $riwayatData['wa_peserta'] = json_encode($wa_peserta);
+            $riwayatData['marketing'] = json_encode($marketing);
+        }
+
+        if ($pelatihan->riwayat_pelatihan_id) {
+            \App\Models\RiwayatPelatihan::where('id', $pelatihan->riwayat_pelatihan_id)->update($riwayatData);
+        } else {
+            $riwayat = \App\Models\RiwayatPelatihan::where('pelatihan_berjalan_id', $pelatihan->id)->first();
+            if ($riwayat) {
+                $riwayat->update($riwayatData);
+                if (!$pelatihan->riwayat_pelatihan_id) {
+                    $pelatihan->updateQuietly(['riwayat_pelatihan_id' => $riwayat->id]);
+                }
+            } else {
+                $newRiwayat = \App\Models\RiwayatPelatihan::create($riwayatData);
+                $pelatihan->updateQuietly(['riwayat_pelatihan_id' => $newRiwayat->id]);
             }
-
-            \App\Models\RiwayatPelatihan::create([
-                'judul_pelatihan' => $pelatihan->training->nama_training ?? null,
-                'jenis' => null,
-                'metode' => $pelatihan->lokasi ?? null,
-                'tanggal_mulai' => $pelatihan->tanggal_pelatihan,
-                'tanggal_selesai' => $pelatihan->tanggal_selesai,
-                'tanggal_asesmen' => $pelatihan->tanggal_asesmen,
-                'nama_trainer' => $pelatihan->instruktur,
-                'wa_trainer' => $pelatihan->wa_trainer,
-                'cv' => $pelatihan->cv,
-                'modul' => $pelatihan->modul,
-                'nama_asesor' => $pelatihan->asesor,
-                'wa_asesor' => $pelatihan->wa_asesor,
-                'nama_lsp' => $pelatihan->pjk3,
-                'kontak_lsp' => $pelatihan->kontak_lsp,
-                'jumlah_peserta' => $pesertas->count(),
-                'nama_peserta' => json_encode($nama_peserta),
-                'instansi_peserta' => json_encode($instansi_peserta),
-                'wa_peserta' => json_encode($wa_peserta),
-                'marketing' => json_encode($marketing),
-                'pic' => $pelatihan->pic_operasional,
-                'status_sertif' => $pelatihan->status_sertifikat ?? 'Belum Terbit',
-                'scan_sertif' => $pelatihan->file_scan_sertifikat,
-                'status_kompeten' => 'Belum',
-                'nama_penerima' => $pelatihan->nama_penerima,
-                'wa_penerima' => $pelatihan->wa_penerima,
-                'isi_paket' => $pelatihan->isi_paket,
-                'alamat_pengiriman' => $pelatihan->alamat_pengiriman,
-                'tanggal_kirim' => $pelatihan->tanggal_kirim,
-                'no_resi' => $pelatihan->resi_pengiriman,
-                'status_pengiriman' => $pelatihan->status_pengiriman,
-                'tanggal_diterima' => $pelatihan->tanggal_diterima,
-                'foto' => $pelatihan->foto_tanda_terima ?? $pelatihan->foto_resi,
-                'catatan' => $pelatihan->catatan_pengiriman,
-                'keterangan_tambahan' => $pelatihan->keterangan_tambahan,
-            ]);
         }
         
         return redirect()->back()->with('success', 'Data Pelatihan Berjalan berhasil diperbarui!');

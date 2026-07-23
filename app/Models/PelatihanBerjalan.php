@@ -7,6 +7,7 @@ use Illuminate\Database\Eloquent\Model;
 class PelatihanBerjalan extends Model
 {
     protected $fillable = [
+        'riwayat_pelatihan_id',
         'master_training_id',
         'tanggal_pelatihan',
         'tanggal_asesmen',
@@ -58,6 +59,11 @@ class PelatihanBerjalan extends Model
     public function training()
     {
         return $this->belongsTo(MasterTraining::class, 'master_training_id');
+    }
+
+    public function riwayat()
+    {
+        return $this->belongsTo(RiwayatPelatihan::class, 'riwayat_pelatihan_id');
     }
 
     public function pendaftaranPribadis()
