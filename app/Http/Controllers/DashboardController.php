@@ -393,6 +393,7 @@ class DashboardController extends Controller
         $ctaHistories = collect();
         if (in_array(auth()->user()->role, ['superadmin', 'spv_marketing', 'performance'])) {
             $ctaHistories = \App\Models\CtaHistory::with(['user', 'cta.prospek.marketing'])
+                ->whereDate('created_at', \Carbon\Carbon::today())
                 ->orderBy('created_at', 'desc')
                 ->limit(50)
                 ->get();

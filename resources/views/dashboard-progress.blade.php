@@ -157,7 +157,7 @@
                         <i class="fas fa-exclamation-triangle text-warning me-2"></i>
                         <span class="text-dark fw-medium" style="font-size: 13px;">Terdapat <strong>{{ $ctaHistories->count() }}</strong> riwayat perubahan pada data Deal (Harga Penawaran / Harga Vendor / Pembatalan Status).</span>
                     </div>
-                    <button type="button" class="btn btn-sm btn-warning fw-bold text-dark border-0 px-3" data-bs-toggle="modal" data-bs-target="#modalCtaHistory">
+                    <button type="button" class="btn btn-sm fw-bold border-0 px-3 hover-lift" style="background-color: #fca5a5; color: #ffffff; border-radius: 6px; letter-spacing: 0.3px;" data-bs-toggle="modal" data-bs-target="#modalCtaHistory">
                         Lihat Perubahan
                     </button>
                 </div>
