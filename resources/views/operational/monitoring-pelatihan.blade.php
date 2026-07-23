@@ -172,7 +172,10 @@
                                                 }
                                             }
 
-                                            
+                                            if (empty($skema) && strtolower($pelatihan->lokasi) == 'titip vendor lain') {
+                                                $skema = 'titip vendor lain';
+                                            }
+
                                             // Badge Status Kelas
                                             $statusBadgeMap = [
                                                 'persiapan' => ['class' => 'bg-warning text-dark', 'text' => 'Persiapan'],
@@ -371,6 +374,11 @@
                                                     $skema = strtolower($firstPendaftaran->cta->skema);
                                                 }
                                             }
+                                            
+                                            if (empty($skema) && strtolower($pelatihan->lokasi) == 'titip vendor lain') {
+                                                $skema = 'titip vendor lain';
+                                            }
+
                                             $checklist = json_decode($pelatihan->checklist_validasi, true) ?? [];
                                             $progress = count($checklist);
                                             $percent = $progress > 0 ? round(($progress / 21) * 100) : 0;

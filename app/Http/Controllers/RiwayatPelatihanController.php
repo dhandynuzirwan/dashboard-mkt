@@ -171,7 +171,7 @@ class RiwayatPelatihanController extends Controller
                         'files' => $newFiles
                     ]);
                 }
-                return redirect()->back()->with('success', 'Data berhasil diperbarui.');
+                return redirect()->back()->with('success', 'Data berhasil diperbarui.')->with('open_modal', 'detailModal' . $id);
             }
         }
 
@@ -194,7 +194,7 @@ class RiwayatPelatihanController extends Controller
 
         $this->syncToPelatihanBerjalan($riwayat);
 
-        return redirect()->back()->with('success', 'Data berhasil diperbarui.');
+        return redirect()->back()->with('success', 'Data berhasil diperbarui.')->with('open_modal', 'detailModal' . $id);
     }
 
     private function getJsonArray($value)
@@ -240,7 +240,7 @@ class RiwayatPelatihanController extends Controller
             $this->syncToPelatihanBerjalan($riwayat);
         }
 
-        return redirect()->back()->with('success', 'Data peserta berhasil diperbarui.');
+        return redirect()->back()->with('success', 'Data peserta berhasil diperbarui.')->with('open_modal', 'detailModal' . $id);
     }
 
     public function tambahPesertaMassal(Request $request, $id)
@@ -275,7 +275,7 @@ class RiwayatPelatihanController extends Controller
         $riwayat->save();
         $this->syncToPelatihanBerjalan($riwayat);
 
-        return redirect()->back()->with('success', 'Data peserta berhasil ditambahkan.');
+        return redirect()->back()->with('success', 'Data peserta berhasil ditambahkan.')->with('open_modal', 'detailModal' . $id);
     }
 
     public function hapusPeserta($id, $index)
@@ -308,7 +308,7 @@ class RiwayatPelatihanController extends Controller
             $this->syncToPelatihanBerjalan($riwayat);
         }
 
-        return redirect()->back()->with('success', 'Data peserta berhasil dihapus.');
+        return redirect()->back()->with('success', 'Data peserta berhasil dihapus.')->with('open_modal', 'detailModal' . $id);
     }
 
     public function deleteDokumentasi(\Illuminate\Http\Request $request, $id, $index)
@@ -327,7 +327,7 @@ class RiwayatPelatihanController extends Controller
             if ($request->ajax() || $request->wantsJson()) {
                 return response()->json(['success' => true, 'message' => 'File berhasil dihapus.']);
             }
-            return redirect()->back()->with('success', 'File dokumentasi berhasil dihapus.');
+            return redirect()->back()->with('success', 'File dokumentasi berhasil dihapus.')->with('open_modal', 'detailModal' . $id);
         }
 
         if ($request->ajax() || $request->wantsJson()) {

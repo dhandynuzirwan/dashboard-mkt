@@ -2067,4 +2067,17 @@
     }
     window.uploadDokumentasiAjax = uploadDokumentasiAjax;
 </script>
+
+@if(session('open_modal'))
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        var modalId = '{{ session("open_modal") }}';
+        var myModalEl = document.getElementById(modalId);
+        if (myModalEl) {
+            var myModal = new bootstrap.Modal(myModalEl);
+            myModal.show();
+        }
+    });
+</script>
+@endif
 @endpush
