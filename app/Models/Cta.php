@@ -36,5 +36,25 @@ class Cta extends Model
             $user = \Illuminate\Support\Facades\Auth::user()->name ?? 'Sistem';
             \App\Models\ActivityLog::log('insert_cta', 'Marketing', 'warning', "{$user} menambahkan {count} CTA (Call to Action) baru");
         });
+
+        static::updated(function ($cta) {
+            // We only care about tracking if it's currently a deal or was a deal
+            if ($cta->getOriginal('status_penawaran') === 'deal' || $cta->status_penawaran === 'deal') {
+                $fieldsToTrack = ['harga_penawaran', 'harga_vendor', 'status_penawaran'];
+                $userId = \Illuminate\Support\Facades\Auth::id();
+
+                foreach ($fieldsToTrack as $field) {
+                    if ($cta->isDirty($field)) {
+                        \App\Models\CtaHistory::create([
+                            'cta_id' => $cta->id,
+                            'user_id' => $userId,
+                            'field' => $field,
+                            'old_value' => $cta->getOriginal($field),
+                            'new_value' => $cta->$field,
+                        ]);
+                    }
+                }
+            }
+        });
     }
 }

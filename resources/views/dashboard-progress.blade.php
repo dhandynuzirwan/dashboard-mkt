@@ -537,6 +537,70 @@
             </div>
         </div>
 
+        @if(isset($ctaHistories) && $ctaHistories->isNotEmpty())
+        <div class="card card-modern border-0 shadow-sm mb-4 fade-in">
+            <div class="card-header bg-transparent border-bottom pt-4 px-4 pb-3">
+                <h6 class="card-title fw-bolder mb-0 text-dark"><i class="fas fa-history text-primary me-2"></i> Riwayat Perubahan Data Deal</h6>
+            </div>
+            <div class="card-body p-0">
+                <div class="table-responsive" style="max-height: 400px; overflow-y: auto;">
+                    <table class="table table-modern table-hover align-middle mb-0">
+                        <thead class="bg-light sticky-top" style="z-index: 1;">
+                            <tr>
+                                <th class="text-start ps-4">Waktu</th>
+                                <th class="text-start">Oleh</th>
+                                <th class="text-start">Prospek / Perusahaan</th>
+                                <th class="text-start pe-4">Detail Perubahan</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach ($ctaHistories as $hist)
+                                <tr>
+                                    <td class="text-start ps-4 text-muted small" style="white-space: nowrap;">
+                                        {{ $hist->created_at->translatedFormat('d M Y H:i') }}
+                                    </td>
+                                    <td class="text-start fw-bolder text-dark" style="white-space: nowrap;">
+                                        {{ optional($hist->user)->name ?? '-' }}
+                                    </td>
+                                    <td class="text-start">
+                                        @if($hist->cta && $hist->cta->prospek)
+                                            <div class="fw-bolder text-dark">{{ $hist->cta->prospek->perusahaan }}</div>
+                                            <span class="badge bg-primary-subtle text-primary border border-primary-subtle mt-1" style="font-size: 10px;">
+                                                PIC: {{ $hist->cta->prospek->nama_pic ?? '-' }}
+                                            </span>
+                                        @else
+                                            -
+                                        @endif
+                                    </td>
+                                    <td class="text-start pe-4">
+                                        @if($hist->field === 'harga_penawaran')
+                                            <span class="badge bg-warning-subtle text-warning border border-warning-subtle mb-1"><i class="fas fa-tag"></i> Harga Penawaran</span><br>
+                                            <span class="text-muted text-decoration-line-through">Rp {{ number_format((float)$hist->old_value, 0, ',', '.') }}</span> 
+                                            <i class="fas fa-arrow-right mx-1 text-secondary"></i> 
+                                            <span class="fw-bolder text-success">Rp {{ number_format((float)$hist->new_value, 0, ',', '.') }}</span>
+                                        @elseif($hist->field === 'harga_vendor')
+                                            <span class="badge bg-danger-subtle text-danger border border-danger-subtle mb-1"><i class="fas fa-building"></i> Harga Vendor</span><br>
+                                            <span class="text-muted text-decoration-line-through">Rp {{ number_format((float)$hist->old_value, 0, ',', '.') }}</span> 
+                                            <i class="fas fa-arrow-right mx-1 text-secondary"></i> 
+                                            <span class="fw-bolder text-success">Rp {{ number_format((float)$hist->new_value, 0, ',', '.') }}</span>
+                                        @elseif($hist->field === 'status_penawaran')
+                                            <span class="badge bg-info-subtle text-info border border-info-subtle mb-1"><i class="fas fa-info-circle"></i> Status Penawaran</span><br>
+                                            <span class="badge bg-secondary">{{ strtoupper($hist->old_value) }}</span> 
+                                            <i class="fas fa-arrow-right mx-1 text-secondary"></i> 
+                                            <span class="badge {{ $hist->new_value == 'deal' ? 'bg-success' : 'bg-danger' }}">{{ strtoupper($hist->new_value) }}</span>
+                                        @else
+                                            {{ $hist->field }}: {{ $hist->old_value }} -> {{ $hist->new_value }}
+                                        @endif
+                                    </td>
+                                </tr>
+                            @endforeach
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+        @endif
+
         {{-- ================= 1. TABEL UPDATE DATA ================= --}}
         <div class="card card-modern border-0 shadow-sm mb-4 fade-in">
             <div class="card-header bg-transparent border-bottom pt-4 px-4 pb-3">

@@ -390,13 +390,22 @@ class DashboardController extends Controller
         }
         // ================= 🔥 END DATA PETA 🔥 =================
 
+        $ctaHistories = collect();
+        if (in_array(auth()->user()->role, ['superadmin', 'spv_marketing', 'performance'])) {
+            $ctaHistories = \App\Models\CtaHistory::with(['user', 'cta.prospek.marketing'])
+                ->orderBy('created_at', 'desc')
+                ->limit(50)
+                ->get();
+        }
+
         return view('dashboard-progress', compact(
             'marketings', 'all_marketing', 'start', 'end',
             'pieLabels', 'pieDataDeal', 'pieDataPenawaran', 
             'lineLabels6Months', 'lineDatasetsPenawaran6Months', 'lineDatasetsDeal6Months', 
             'lineLabelsThisMonth', 'lineDatasetsPenawaranThisMonth', 'lineDatasetsDealThisMonth',
             'stat_total_qty', 'stat_deal_qty', 'stat_total_nilai', 'stat_deal_nilai', 
-            'showReminder', 'showSuccessReminder', 'dataMasukToday', 'targetDataMasuk', 'mapData'
+            'showReminder', 'showSuccessReminder', 'dataMasukToday', 'targetDataMasuk', 'mapData',
+            'ctaHistories'
         ));
     }
 
