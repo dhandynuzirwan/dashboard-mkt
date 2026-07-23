@@ -124,12 +124,17 @@ class OperationalController extends Controller implements HasMiddleware
     // Menampilkan Halaman Monitoring Pelatihan
     public function monitoringPelatihan()
     {
+        $currentMonth = \Carbon\Carbon::now()->month;
+        $currentYear = \Carbon\Carbon::now()->year;
+
         $pelatihans = \App\Models\PelatihanBerjalan::with([
             'training', 
             'riwayat',
             'pendaftaranPribadis.cta.prospek.marketing',
             'pendaftaranPribadis.kolektif.cta.prospek.marketing'
         ])
+            ->whereMonth('tanggal_pelatihan', $currentMonth)
+            ->whereYear('tanggal_pelatihan', $currentYear)
             ->orderBy('tanggal_pelatihan', 'desc')
             ->get();
             
