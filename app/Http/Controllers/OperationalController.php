@@ -165,6 +165,9 @@ class OperationalController extends Controller implements HasMiddleware
             'pendaftaranPribadis.kolektif.cta.prospek.marketing'
         ])
         ->whereIn('status_kelas', ['persiapan', 'running'])
+        ->whereMonth('tanggal_pelatihan', date('m'))
+        ->whereYear('tanggal_pelatihan', date('Y'))
+        ->orderByRaw("CASE WHEN status_kelas = 'running' THEN 1 ELSE 0 END")
         ->orderBy('tanggal_pelatihan', 'asc')
         ->get();
 
