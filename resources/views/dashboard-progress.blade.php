@@ -146,6 +146,24 @@
                 </div>
             </div>
         </div>
+        </div>
+        @endif
+
+        {{-- ================= NOTIFIKASI PERUBAHAN DEAL ================= --}}
+        @if(isset($ctaHistories) && $ctaHistories->isNotEmpty())
+        <div class="row mb-4 fade-in">
+            <div class="col-12">
+                <div class="alert alert-warning border-warning-subtle shadow-sm d-flex align-items-center justify-content-between mb-0 py-2">
+                    <div>
+                        <i class="fas fa-exclamation-triangle text-warning me-2"></i>
+                        <span class="text-dark fw-medium" style="font-size: 13px;">Terdapat <strong>{{ $ctaHistories->count() }}</strong> riwayat perubahan pada data Deal (Harga Penawaran / Harga Vendor / Pembatalan Status).</span>
+                    </div>
+                    <button type="button" class="btn btn-sm btn-warning fw-bold text-dark border-0 px-3" data-bs-toggle="modal" data-bs-target="#modalCtaHistory">
+                        Lihat Perubahan
+                    </button>
+                </div>
+            </div>
+        </div>
         @endif
 
         {{-- ================= FILTER SECTION (MODERN STYLE) ================= --}}
@@ -537,76 +555,6 @@
             </div>
         </div>
 
-        @if(isset($ctaHistories) && $ctaHistories->isNotEmpty())
-        <div class="card card-modern border-0 shadow-sm mb-4 fade-in">
-            <div class="card-header bg-transparent border-bottom pt-4 px-4 pb-3">
-                <h6 class="card-title fw-bolder mb-0 text-dark"><i class="fas fa-history text-primary me-2"></i> Riwayat Perubahan Data Deal</h6>
-            </div>
-            <div class="card-body p-0">
-                <div class="table-responsive" style="max-height: 400px; overflow-y: auto;">
-                    <table class="table table-modern table-hover align-middle mb-0">
-                        <thead class="bg-light sticky-top" style="z-index: 1;">
-                            <tr>
-                                <th class="text-start ps-4">Waktu</th>
-                                <th class="text-start">Diubah Oleh</th>
-                                <th class="text-start">Informasi Deal</th>
-                                <th class="text-start pe-4">Detail Perubahan</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            @foreach ($ctaHistories as $hist)
-                                <tr>
-                                    <td class="text-start ps-4 text-muted small" style="white-space: nowrap;">
-                                        {{ $hist->created_at->translatedFormat('d M Y H:i') }}
-                                    </td>
-                                    <td class="text-start fw-bolder text-dark" style="white-space: nowrap;">
-                                        {{ optional($hist->user)->name ?? '-' }}
-                                    </td>
-                                    <td class="text-start">
-                                        @if($hist->cta && $hist->cta->prospek)
-                                            <div class="fw-bolder text-dark mb-1" style="font-size: 14px;">{{ $hist->cta->prospek->perusahaan }}</div>
-                                            <div class="text-primary fw-bold mb-1" style="font-size: 12px;"><i class="fas fa-book me-1"></i> {{ $hist->cta->judul_permintaan ?? '-' }}</div>
-                                            <div class="d-flex flex-wrap gap-1 mt-1">
-                                                <span class="badge bg-secondary-subtle text-secondary border border-secondary-subtle" style="font-size: 10px;">
-                                                    <i class="fas fa-user-tie me-1"></i> {{ optional($hist->cta->prospek->marketing)->name ?? '-' }}
-                                                </span>
-                                                <span class="badge bg-info-subtle text-info border border-info-subtle" style="font-size: 10px;">
-                                                    <i class="fas fa-calendar-alt me-1"></i> {{ \Carbon\Carbon::parse($hist->cta->prospek->tanggal_prospek)->translatedFormat('d M Y') }}
-                                                </span>
-                                            </div>
-                                        @else
-                                            -
-                                        @endif
-                                    </td>
-                                    <td class="text-start pe-4">
-                                        @if($hist->field === 'harga_penawaran')
-                                            <span class="badge bg-warning-subtle text-warning border border-warning-subtle mb-1"><i class="fas fa-tag"></i> Harga Penawaran</span><br>
-                                            <span class="text-muted text-decoration-line-through">Rp {{ number_format((float)$hist->old_value, 0, ',', '.') }}</span> 
-                                            <i class="fas fa-arrow-right mx-1 text-secondary"></i> 
-                                            <span class="fw-bolder text-success">Rp {{ number_format((float)$hist->new_value, 0, ',', '.') }}</span>
-                                        @elseif($hist->field === 'harga_vendor')
-                                            <span class="badge bg-danger-subtle text-danger border border-danger-subtle mb-1"><i class="fas fa-building"></i> Harga Vendor</span><br>
-                                            <span class="text-muted text-decoration-line-through">Rp {{ number_format((float)$hist->old_value, 0, ',', '.') }}</span> 
-                                            <i class="fas fa-arrow-right mx-1 text-secondary"></i> 
-                                            <span class="fw-bolder text-success">Rp {{ number_format((float)$hist->new_value, 0, ',', '.') }}</span>
-                                        @elseif($hist->field === 'status_penawaran')
-                                            <span class="badge bg-info-subtle text-info border border-info-subtle mb-1"><i class="fas fa-info-circle"></i> Status Penawaran</span><br>
-                                            <span class="badge bg-secondary">{{ strtoupper($hist->old_value) }}</span> 
-                                            <i class="fas fa-arrow-right mx-1 text-secondary"></i> 
-                                            <span class="badge {{ $hist->new_value == 'deal' ? 'bg-success' : 'bg-danger' }}">{{ strtoupper($hist->new_value) }}</span>
-                                        @else
-                                            {{ $hist->field }}: {{ $hist->old_value }} -> {{ $hist->new_value }}
-                                        @endif
-                                    </td>
-                                </tr>
-                            @endforeach
-                        </tbody>
-                    </table>
-                </div>
-            </div>
-        </div>
-        @endif
-
         {{-- ================= 1. TABEL UPDATE DATA ================= --}}
         <div class="card card-modern border-0 shadow-sm mb-4 fade-in">
             <div class="card-header bg-transparent border-bottom pt-4 px-4 pb-3">
@@ -886,6 +834,87 @@
         </div>
     </div>
 </div>
+
+@if(isset($ctaHistories) && $ctaHistories->isNotEmpty())
+{{-- Modal CTA History --}}
+<div class="modal fade" id="modalCtaHistory" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-xl modal-dialog-centered modal-dialog-scrollable">
+        <div class="modal-content card-modern shadow-lg border-0">
+            <div class="modal-header border-bottom pb-3 bg-light">
+                <h5 class="modal-title fw-bolder text-dark mb-0">
+                    <i class="fas fa-history text-primary me-2"></i>Riwayat Perubahan Data Deal
+                </h5>
+                <button type="button" class="btn-close shadow-none" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body p-0">
+                <div class="table-responsive">
+                    <table class="table table-modern table-hover align-middle mb-0">
+                        <thead class="bg-light sticky-top" style="z-index: 1;">
+                            <tr>
+                                <th class="text-start ps-4">Waktu</th>
+                                <th class="text-start">Diubah Oleh</th>
+                                <th class="text-start">Informasi Deal</th>
+                                <th class="text-start pe-4">Detail Perubahan</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach ($ctaHistories as $hist)
+                                <tr>
+                                    <td class="text-start ps-4 text-muted small" style="white-space: nowrap;">
+                                        {{ $hist->created_at->translatedFormat('d M Y H:i') }}
+                                    </td>
+                                    <td class="text-start fw-bolder text-dark" style="white-space: nowrap;">
+                                        {{ optional($hist->user)->name ?? '-' }}
+                                    </td>
+                                    <td class="text-start">
+                                        @if($hist->cta && $hist->cta->prospek)
+                                            <div class="fw-bolder text-dark mb-1" style="font-size: 14px;">{{ $hist->cta->prospek->perusahaan }}</div>
+                                            <div class="text-primary fw-bold mb-1" style="font-size: 12px;"><i class="fas fa-book me-1"></i> {{ $hist->cta->judul_permintaan ?? '-' }}</div>
+                                            <div class="d-flex flex-wrap gap-1 mt-1">
+                                                <span class="badge bg-secondary-subtle text-secondary border border-secondary-subtle" style="font-size: 10px;">
+                                                    <i class="fas fa-user-tie me-1"></i> {{ optional($hist->cta->prospek->marketing)->name ?? '-' }}
+                                                </span>
+                                                <span class="badge bg-info-subtle text-info border border-info-subtle" style="font-size: 10px;">
+                                                    <i class="fas fa-calendar-alt me-1"></i> {{ \Carbon\Carbon::parse($hist->cta->prospek->tanggal_prospek)->translatedFormat('d M Y') }}
+                                                </span>
+                                            </div>
+                                        @else
+                                            -
+                                        @endif
+                                    </td>
+                                    <td class="text-start pe-4">
+                                        @if($hist->field === 'harga_penawaran')
+                                            <span class="badge bg-warning-subtle text-warning border border-warning-subtle mb-1"><i class="fas fa-tag"></i> Harga Penawaran</span><br>
+                                            <span class="text-muted text-decoration-line-through">Rp {{ number_format((float)$hist->old_value, 0, ',', '.') }}</span> 
+                                            <i class="fas fa-arrow-right mx-1 text-secondary"></i> 
+                                            <span class="fw-bolder text-success">Rp {{ number_format((float)$hist->new_value, 0, ',', '.') }}</span>
+                                        @elseif($hist->field === 'harga_vendor')
+                                            <span class="badge bg-danger-subtle text-danger border border-danger-subtle mb-1"><i class="fas fa-building"></i> Harga Vendor</span><br>
+                                            <span class="text-muted text-decoration-line-through">Rp {{ number_format((float)$hist->old_value, 0, ',', '.') }}</span> 
+                                            <i class="fas fa-arrow-right mx-1 text-secondary"></i> 
+                                            <span class="fw-bolder text-success">Rp {{ number_format((float)$hist->new_value, 0, ',', '.') }}</span>
+                                        @elseif($hist->field === 'status_penawaran')
+                                            <span class="badge bg-info-subtle text-info border border-info-subtle mb-1"><i class="fas fa-info-circle"></i> Status Penawaran</span><br>
+                                            <span class="badge bg-secondary">{{ strtoupper($hist->old_value) }}</span> 
+                                            <i class="fas fa-arrow-right mx-1 text-secondary"></i> 
+                                            <span class="badge {{ $hist->new_value == 'deal' ? 'bg-success' : 'bg-danger' }}">{{ strtoupper($hist->new_value) }}</span>
+                                        @else
+                                            {{ $hist->field }}: {{ $hist->old_value }} -> {{ $hist->new_value }}
+                                        @endif
+                                    </td>
+                                </tr>
+                            @endforeach
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            <div class="modal-footer bg-light border-top-0 pt-2 pb-2">
+                <button type="button" class="btn btn-secondary btn-sm rounded-pill px-4" data-bs-dismiss="modal">Tutup</button>
+            </div>
+        </div>
+    </div>
+</div>
+@endif
 
 {{-- ================= STYLES ================= --}}
 <style>
