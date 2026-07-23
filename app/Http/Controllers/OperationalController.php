@@ -171,12 +171,20 @@ class OperationalController extends Controller implements HasMiddleware
         $data = $pelatihans->map(function ($pelatihan) {
             $firstPendaftaran = $pelatihan->pendaftaranPribadis->first();
             $sertifikasi = 'Lainnya';
+            $skema = '';
+            
             if ($firstPendaftaran) {
                 if ($firstPendaftaran->tipe_pendaftaran == 'kolektif' && $firstPendaftaran->kolektif && $firstPendaftaran->kolektif->cta) {
                     $sertifikasi = strtoupper($firstPendaftaran->kolektif->cta->sertifikasi);
+                    $skema = strtolower($firstPendaftaran->kolektif->cta->skema);
                 } else if ($firstPendaftaran->cta) {
                     $sertifikasi = strtoupper($firstPendaftaran->cta->sertifikasi);
+                    $skema = strtolower($firstPendaftaran->cta->skema);
                 }
+            }
+
+            if (empty($skema) && strtolower($pelatihan->lokasi) == 'titip vendor lain') {
+                $skema = 'titip vendor lain';
             }
 
             $checklist = json_decode($pelatihan->checklist_validasi, true) ?? [];
@@ -188,6 +196,7 @@ class OperationalController extends Controller implements HasMiddleware
                 'id' => $pelatihan->id,
                 'judul' => optional($pelatihan->training)->nama_training ?? 'Belum Ada Pelatihan',
                 'sertifikasi' => $sertifikasi,
+                'skema' => $skema,
                 'tanggal_pelatihan' => $pelatihan->tanggal_pelatihan ? \Carbon\Carbon::parse($pelatihan->tanggal_pelatihan)->translatedFormat('d M Y') : '-',
                 'tanggal_selesai' => $pelatihan->tanggal_selesai ? \Carbon\Carbon::parse($pelatihan->tanggal_selesai)->translatedFormat('d M Y') : null,
                 'lokasi' => $pelatihan->lokasi ?? 'Belum Diset',

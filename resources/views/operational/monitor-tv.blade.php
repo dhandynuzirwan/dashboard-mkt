@@ -203,8 +203,10 @@
             if (item.status_kelas === 'running') { totalRunning++; }
             if (item.status_kelas === 'persiapan') { totalPersiapan++; }
             
-            totalValidasiChecked += item.progress_count;
-            totalValidasiItems += 21; // Assumption
+            if (item.skema !== 'titip vendor lain') {
+                totalValidasiChecked += item.progress_count;
+                totalValidasiItems += 21; // Assumption
+            }
 
             let statusColor = item.status_kelas === 'running' ? 'bg-success' : 'bg-warning text-dark';
             let statusText = item.status_kelas === 'running' ? 'RUNNING' : 'PERSIAPAN';
@@ -270,6 +272,12 @@
                             </div>
 
                             <!-- PROGRESS BAR VALIDASI -->
+                            ${item.skema === 'titip vendor lain' ? `
+                            <div class="mt-auto pt-2 border-top border-warning border-opacity-50 text-center">
+                                <span class="badge bg-warning text-dark px-3 py-2 w-100 fs-6 shadow-sm"><i class="fas fa-building me-1"></i> TITIP VENDOR</span>
+                                <div class="text-muted text-uppercase fw-bold mt-1" style="font-size: 0.6rem;">Dikelola Vendor Terkait</div>
+                            </div>
+                            ` : `
                             <div class="mt-auto pt-2 border-top border-secondary border-opacity-25">
                                 <div class="d-flex justify-content-between align-items-center mb-1">
                                     <span class="text-dark fw-bold text-uppercase" style="font-size: 0.7rem; letter-spacing: 0.5px;">Progress Validasi</span>
@@ -279,7 +287,7 @@
                                     <div class="progress-bar ${progressColor} progress-bar-striped progress-bar-animated" style="width: ${item.progress_persen}%; border-radius: 10px;"></div>
                                 </div>
                             </div>
-
+                            `}
                         </div>
                     </div>
                 </div>
