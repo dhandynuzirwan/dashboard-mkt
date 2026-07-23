@@ -28,19 +28,24 @@ class AbsensiController extends Controller
         // ==========================================
         // 2. QUERY ABSENSI LOG
         // ==========================================
-        $queryAbsen = AbsensiLog::with('user');
+        // ==========================================
+        $queryAbsen = AbsensiLog::with('user')->select('absensi_logs.*')->join('users', 'absensi_logs.user_id', '=', 'users.id');
 
         if ($start) {
-            $queryAbsen->where('tanggal', '>=', $start);
+            $queryAbsen->where('absensi_logs.tanggal', '>=', $start);
         }
         if ($end) {
-            $queryAbsen->where('tanggal', '<=', $end);
+            $queryAbsen->where('absensi_logs.tanggal', '<=', $end);
         }
         if ($userId) {
-            $queryAbsen->where('user_id', $userId);
+            $queryAbsen->where('absensi_logs.user_id', $userId);
         }
 
-        $absensi = $queryAbsen->orderBy('tanggal', 'desc')->paginate(10, ['*'], 'page_absen')->withQueryString();
+        $absensi = $queryAbsen->orderBy('absensi_logs.tanggal', 'desc')
+                              ->orderBy('users.name', 'asc')
+                              ->orderBy('absensi_logs.jam', 'asc')
+                              ->paginate(10, ['*'], 'page_absen')
+                              ->withQueryString();
 
         // ==========================================
         // 3. QUERY PERIZINAN (Ditambahkan Filter & Paginate)
