@@ -38,20 +38,41 @@ class Cta extends Model
         });
 
         static::updated(function ($cta) {
-            // We only care about tracking if it's currently a deal or was a deal
-            if ($cta->getOriginal('status_penawaran') === 'deal' || $cta->status_penawaran === 'deal') {
-                $fieldsToTrack = ['harga_penawaran', 'harga_vendor', 'status_penawaran'];
-                $userId = \Illuminate\Support\Facades\Auth::id();
+            $userId = \Illuminate\Support\Facades\Auth::id();
 
-                foreach ($fieldsToTrack as $field) {
+            // Check status_penawaran: Only log if changed FROM 'deal' TO something else
+            if ($cta->isDirty('status_penawaran')) {
+                $oldStatus = $cta->getOriginal('status_penawaran');
+                $newStatus = $cta->status_penawaran;
+                
+                if ($oldStatus === 'deal' && $newStatus !== 'deal') {
+                    \App\Models\CtaHistory::create([
+                        'cta_id' => $cta->id,
+                        'user_id' => $userId,
+                        'field' => 'status_penawaran',
+                        'old_value' => $oldStatus,
+                        'new_value' => $newStatus,
+                    ]);
+                }
+            }
+
+            // For prices, only log if the data is currently 'deal' or was 'deal'
+            if ($cta->getOriginal('status_penawaran') === 'deal' || $cta->status_penawaran === 'deal') {
+                $priceFields = ['harga_penawaran', 'harga_vendor'];
+                foreach ($priceFields as $field) {
                     if ($cta->isDirty($field)) {
-                        \App\Models\CtaHistory::create([
-                            'cta_id' => $cta->id,
-                            'user_id' => $userId,
-                            'field' => $field,
-                            'old_value' => $cta->getOriginal($field),
-                            'new_value' => $cta->$field,
-                        ]);
+                        $oldPrice = (float) $cta->getOriginal($field);
+                        
+                        // Only log if old price is > 0 (ignore change from 0 or null)
+                        if ($oldPrice > 0) {
+                            \App\Models\CtaHistory::create([
+                                'cta_id' => $cta->id,
+                                'user_id' => $userId,
+                                'field' => $field,
+                                'old_value' => $cta->getOriginal($field),
+                                'new_value' => $cta->$field,
+                            ]);
+                        }
                     }
                 }
             }
