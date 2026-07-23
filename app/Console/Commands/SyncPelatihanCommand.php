@@ -70,7 +70,7 @@ class SyncPelatihanCommand extends Command
                 'pjk3' => $riwayat->nama_lsp,
                 'kontak_lsp' => $riwayat->kontak_lsp,
                 'pic_operasional' => $riwayat->pic,
-                'status_sertifikat' => $riwayat->status_sertif,
+                'status_sertifikat' => $riwayat->status_sertif ?? 'OGP',
                 'file_scan_sertifikat' => $riwayat->scan_sertif,
                 'nama_penerima' => $riwayat->nama_penerima,
                 'wa_penerima' => $riwayat->wa_penerima,
