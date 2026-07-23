@@ -548,8 +548,8 @@
                         <thead class="bg-light sticky-top" style="z-index: 1;">
                             <tr>
                                 <th class="text-start ps-4">Waktu</th>
-                                <th class="text-start">Oleh</th>
-                                <th class="text-start">Prospek / Perusahaan</th>
+                                <th class="text-start">Diubah Oleh</th>
+                                <th class="text-start">Informasi Deal</th>
                                 <th class="text-start pe-4">Detail Perubahan</th>
                             </tr>
                         </thead>
@@ -564,10 +564,16 @@
                                     </td>
                                     <td class="text-start">
                                         @if($hist->cta && $hist->cta->prospek)
-                                            <div class="fw-bolder text-dark">{{ $hist->cta->prospek->perusahaan }}</div>
-                                            <span class="badge bg-primary-subtle text-primary border border-primary-subtle mt-1" style="font-size: 10px;">
-                                                PIC: {{ $hist->cta->prospek->nama_pic ?? '-' }}
-                                            </span>
+                                            <div class="fw-bolder text-dark mb-1" style="font-size: 14px;">{{ $hist->cta->prospek->perusahaan }}</div>
+                                            <div class="text-primary fw-bold mb-1" style="font-size: 12px;"><i class="fas fa-book me-1"></i> {{ $hist->cta->judul_permintaan ?? '-' }}</div>
+                                            <div class="d-flex flex-wrap gap-1 mt-1">
+                                                <span class="badge bg-secondary-subtle text-secondary border border-secondary-subtle" style="font-size: 10px;">
+                                                    <i class="fas fa-user-tie me-1"></i> {{ optional($hist->cta->prospek->marketing)->name ?? '-' }}
+                                                </span>
+                                                <span class="badge bg-info-subtle text-info border border-info-subtle" style="font-size: 10px;">
+                                                    <i class="fas fa-calendar-alt me-1"></i> {{ \Carbon\Carbon::parse($hist->cta->prospek->tanggal_prospek)->translatedFormat('d M Y') }}
+                                                </span>
+                                            </div>
                                         @else
                                             -
                                         @endif
