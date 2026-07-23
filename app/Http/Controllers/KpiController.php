@@ -201,7 +201,7 @@ class KpiController extends Controller
                 })
                 ->where('status_penawaran', 'deal')
                 ->get() 
-                ->sum(fn($item) => $item->harga_penawaran * $item->jumlah_peserta); 
+                ->sum(fn($item) => $item->harga_penawaran * ($item->jumlah_peserta ?? 1));
 
             // Achievement Revenue (Murni)
             $user->revenue_ach = ($user->revenue_target > 0)

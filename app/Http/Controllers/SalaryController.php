@@ -67,7 +67,7 @@ class SalaryController extends Controller
         $progReal = (clone $baseCta)->count() + (clone $baseCta)->whereNotNull('status_penawaran')->where('status_penawaran','!=','')->count();
         // $progTarget = $targetCall * $hariEfektif; // Target tetap dihitung full sebulan
         $progTarget = $targetCall * 23;
-        $income = (clone $baseCta)->where('status_penawaran', 'deal')->get()->sum(fn($i) => $i->harga_penawaran * $i->jumlah_peserta);
+        $income = (clone $baseCta)->where('status_penawaran', 'deal')->get()->sum(fn($i) => $i->harga_penawaran * ($i->jumlah_peserta ?? 1));
 
         // ================= 🔥 LOGIKA POTONGAN ALPA & IZIN 🔥 =================
         // 1. Hitung jumlah hari tidak masuk (Alpa) berdasarkan hari yang SUDAH BERJALAN
