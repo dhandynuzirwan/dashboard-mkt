@@ -773,7 +773,7 @@
                                     <td>
                                         <span class="fw-bold">{{ $log->user->nama_lengkap ?? $log->user->name ?? 'Unknown' }}</span>
                                     </td>
-                                    <td><span class="badge badge-primary">{{ $log->user->role ?? '-' }}</span></td>
+                                    <td><span class="badge badge-primary">{{ $log->user->name ?? '-' }}</span></td>
                                     <td>{{ \Carbon\Carbon::parse($log->tanggal)->translatedFormat('d M Y') }}</td>
                                     <td><span class="text-success fw-bold">{{ substr($log->jam, 0, 5) }}</span></td>
                                 </tr>
@@ -813,7 +813,7 @@
                                     <td>
                                         <span class="fw-bold">{{ $log->user->nama_lengkap ?? $log->user->name ?? 'Unknown' }}</span>
                                     </td>
-                                    <td><span class="badge badge-primary">{{ $log->user->role ?? '-' }}</span></td>
+                                    <td><span class="badge badge-primary">{{ $log->user->name ?? '-' }}</span></td>
                                     <td>{{ \Carbon\Carbon::parse($log->tanggal)->translatedFormat('d M Y') }}</td>
                                     <td><span class="text-danger fw-bold">{{ substr($log->jam, 0, 5) }}</span></td>
                                 </tr>
@@ -853,7 +853,7 @@
                                     <td>
                                         <span class="fw-bold">{{ $log->user->nama_lengkap ?? $log->user->name ?? 'Unknown' }}</span>
                                     </td>
-                                    <td><span class="badge badge-primary">{{ $log->user->role ?? '-' }}</span></td>
+                                    <td><span class="badge badge-primary">{{ $log->user->name ?? '-' }}</span></td>
                                     <td>{{ \Carbon\Carbon::parse($log->tanggal)->translatedFormat('d M Y') }}</td>
                                     <td><span class="text-danger fw-bold">{{ $log->keterangan }}</span></td>
                                 </tr>
