@@ -735,7 +735,12 @@
                                                     <div class="d-flex flex-wrap gap-2 mt-2">
                                                         <span class="badge bg-light text-dark border"><i class="fas fa-users text-muted me-1"></i> {{ $itemCta->jumlah_peserta }} Peserta</span>
                                                         @if($itemCta->tanggal_pelaksanaan)
-                                                            <span class="badge bg-light text-dark border"><i class="far fa-calendar-check text-muted me-1"></i> {{ \Carbon\Carbon::parse($itemCta->tanggal_pelaksanaan)->format('d M Y') }}</span>
+                                                            <span class="badge bg-light text-dark border"><i class="far fa-calendar-check text-muted me-1"></i> 
+                                                                {{ \Carbon\Carbon::parse($itemCta->tanggal_pelaksanaan)->format('d M Y') }}
+                                                                @if($itemCta->tanggal_selesai && $itemCta->tanggal_selesai != $itemCta->tanggal_pelaksanaan)
+                                                                    - {{ \Carbon\Carbon::parse($itemCta->tanggal_selesai)->format('d M Y') }}
+                                                                @endif
+                                                            </span>
                                                         @endif
                                                     </div>
                                                 </td>
