@@ -10,6 +10,6 @@ Artisan::command('inspire', function () {
 use Illuminate\Support\Facades\Schedule;
 
 // Sync Absensi Fingerspot
-Schedule::command('absensi:sync')->dailyAt('10:00');
+Schedule::command('absensi:sync')->dailyAt('08:00');
 Schedule::command('absensi:sync')->dailyAt('18:00');
 
