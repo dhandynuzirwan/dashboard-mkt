@@ -13,13 +13,19 @@ class PengajuanIzinController extends Controller
     public function index()
     {
         // Tampilkan riwayat pengajuan izin user login
-        // Menampilkan semua baris yang diajukan oleh sistem.
-        $izins = Perizinan::where('user_id', auth()->id())
+        $pendingIzins = Perizinan::where('user_id', auth()->id())
             ->where('external_id', 'like', 'SYS-IZIN-%')
+            ->where('status', 'pending')
             ->orderBy('tanggal', 'desc')
             ->get();
             
-        return view('pengajuan-izin.index', compact('izins'));
+        $riwayatIzins = Perizinan::where('user_id', auth()->id())
+            ->where('external_id', 'like', 'SYS-IZIN-%')
+            ->whereIn('status', ['approved', 'rejected'])
+            ->orderBy('tanggal', 'desc')
+            ->paginate(10);
+            
+        return view('pengajuan-izin.index', compact('pendingIzins', 'riwayatIzins'));
     }
 
     public function create()
