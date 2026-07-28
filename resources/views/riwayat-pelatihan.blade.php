@@ -1239,7 +1239,10 @@
                                 @if($item->scan_sertif)
                                     <div class="d-flex align-items-center mt-1">
                                         <a href="{{ getFileUrl($item->scan_sertif) }}" target="_blank" class="small text-primary me-3"><i class="fas fa-file-pdf me-1"></i> Lihat Sertifikat Saat Ini</a>
-                                        <span class="small text-success"><i class="fas fa-check-circle me-1"></i> Sudah diunggah (Kosongkan jika tidak diubah)</span>
+                                        <div class="form-check form-check-inline mb-0">
+                                            <input class="form-check-input" type="checkbox" name="delete_scan_sertif" value="1" id="delete_scan_sertif_{{ $item->id }}">
+                                            <label class="form-check-label small text-danger" for="delete_scan_sertif_{{ $item->id }}"><i class="fas fa-trash-alt"></i> Hapus file</label>
+                                        </div>
                                     </div>
                                 @endif
                             </div>
@@ -1254,7 +1257,10 @@
                                 @if($item->laporan_pic)
                                     <div class="d-flex align-items-center mt-1">
                                         <a href="{{ getFileUrl($item->laporan_pic) }}" target="_blank" class="small text-primary me-3"><i class="fas fa-file-pdf me-1"></i> Lihat Laporan Saat Ini</a>
-                                        <span class="small text-success"><i class="fas fa-check-circle me-1"></i> Sudah diunggah (Kosongkan jika tidak diubah)</span>
+                                        <div class="form-check form-check-inline mb-0">
+                                            <input class="form-check-input" type="checkbox" name="delete_laporan_pic" value="1" id="delete_laporan_pic_{{ $item->id }}">
+                                            <label class="form-check-label small text-danger" for="delete_laporan_pic_{{ $item->id }}"><i class="fas fa-trash-alt"></i> Hapus file</label>
+                                        </div>
                                         @if($laporanLateText)
                                             <span class="badge bg-warning-subtle text-warning-emphasis border border-warning ms-2"><i class="fas fa-exclamation-triangle"></i> {{ $laporanLateText }}</span>
                                         @endif

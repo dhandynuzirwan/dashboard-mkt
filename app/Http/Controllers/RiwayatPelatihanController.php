@@ -137,8 +137,19 @@ class RiwayatPelatihanController extends Controller
         $riwayat = RiwayatPelatihan::findOrFail($id);
         $data = $request->except(['_token', '_method', 'block', 'dokumentasi_files']);
 
-        // Handle file uploads if any
+        // Handle file deletions
         $fileFields = ['cv', 'modul', 'laporan_pic', 'scan_sertif', 'foto', 'bukti_kompeten'];
+        foreach ($fileFields as $field) {
+            $deleteKey = 'delete_' . $field;
+            if ($request->has($deleteKey) && $request->input($deleteKey) == '1') {
+                if ($riwayat->$field) {
+                    Storage::disk('public')->delete($riwayat->$field);
+                }
+                $data[$field] = null;
+            }
+        }
+
+        // Handle file uploads if any
         foreach ($fileFields as $field) {
             if ($request->hasFile($field)) {
                 $file = $request->file($field);
