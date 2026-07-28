@@ -1,0 +1,202 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <title>Dashboard - Marketing</title>
+    <meta content="width=device-width, initial-scale=1.0, shrink-to-fit=no" name="viewport" />
+
+    <!-- WebFont -->
+    <script src="<?php echo e(asset('assets/js/plugin/webfont/webfont.min.js')); ?>"></script>
+    <script>
+        WebFont.load({
+            google: {
+                families: ["Public Sans:300,400,500,600,700"]
+            },
+            custom: {
+                families: ["Font Awesome 5 Solid", "Font Awesome 5 Regular", "Font Awesome 5 Brands",
+                    "simple-line-icons"
+                ],
+                urls: ["<?php echo e(asset('assets/css/fonts.min.css')); ?>"]
+            },
+            active: function() {
+                sessionStorage.fonts = true;
+            },
+        });
+    </script>
+
+    <!-- CSS -->
+    <link rel="stylesheet" href="<?php echo e(asset('assets/css/bootstrap.min.css')); ?>" />
+    <link rel="stylesheet" href="<?php echo e(asset('assets/css/plugins.min.css')); ?>" />
+    <link rel="stylesheet" href="<?php echo e(asset('assets/css/kaiadmin.min.css')); ?>" />
+    <link rel="stylesheet" href="<?php echo e(asset('assets/css/demo.css')); ?>" />
+
+    <!-- FIX MOBILE SIDEBAR -->
+    <style>
+        @media (max-width: 991px) {
+
+            .sidebar {
+                transform: translateX(-100%);
+                transition: all 0.3s ease;
+                position: fixed;
+                z-index: 999;
+                height: 100%;
+            }
+
+            body.sidebar-open .sidebar {
+                transform: translateX(0);
+            }
+
+            body.sidebar-open::after {
+                content: "";
+                position: fixed;
+                top: 0;
+                left: 0;
+                width: 100%;
+                height: 100%;
+                background: rgba(0, 0, 0, 0.4);
+                z-index: 998;
+            }
+
+            .main-panel {
+                position: relative;
+                z-index: 1;
+            }
+        }
+    </style>
+
+    <?php echo $__env->yieldPushContent('styles'); ?>
+</head>
+
+<body>
+
+    <div class="wrapper">
+
+        
+        <?php echo $__env->make('layouts.sidebar', array_diff_key(get_defined_vars(), ['__data' => 1, '__path' => 1]))->render(); ?>
+
+        <div class="main-panel">
+
+            
+            <?php echo $__env->make('layouts.header', array_diff_key(get_defined_vars(), ['__data' => 1, '__path' => 1]))->render(); ?>
+
+            
+            <div class="container">
+                <div class="page-inner mt-4">
+                    <?php echo $__env->yieldContent('content'); ?>
+                </div>
+            </div>
+
+        </div>
+
+    </div>
+    
+    
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    
+    
+    <?php if(session('deal_congrats')): ?>
+        
+        <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+        
+        
+        
+        <?php
+            $dealSound = auth()->check() && auth()->user()->deal_sound_path 
+                ? asset('storage/' . auth()->user()->deal_sound_path) 
+                : asset('assets/audio/applause2.mp3');
+        ?>
+        <audio id="applauseAudio" src="<?php echo e($dealSound); ?>" preload="auto"></audio>
+    
+        <script>
+            document.addEventListener("DOMContentLoaded", function() {
+                // 1. Mainkan Suara Tepuk Tangan
+                let audio = document.getElementById('applauseAudio');
+                audio.volume = 0.7; // Atur volume (0.0 sampai 1.0)
+                audio.play().catch(error => console.log("Audio diblokir browser, interaksi user diperlukan."));
+    
+                // 2. Tampilkan Pop-up SweetAlert
+                Swal.fire({
+                    title: '🎉 CONGRATS! 🎉',
+                    text: '<?php echo e(session('deal_congrats')); ?>',
+                    icon: 'success',
+                    confirmButtonText: 'Sikat Terus!',
+                    confirmButtonColor: '#28a745',
+                    backdrop: `rgba(0,0,0,0.4)` // Latar belakang sedikit gelap
+                });
+    
+                // 3. Tembakkan Hujan Confetti dari kiri dan kanan layar
+                var duration = 4 * 1000; // Durasi 4 detik
+                var end = Date.now() + duration;
+    
+                (function frame() {
+                    // Tembakan Kiri
+                    confetti({
+                        particleCount: 5,
+                        angle: 60,
+                        spread: 55,
+                        origin: { x: 0 },
+                        colors: ['#FFC107', '#28a745', '#007bff', '#dc3545']
+                    });
+                    // Tembakan Kanan
+                    confetti({
+                        particleCount: 5,
+                        angle: 120,
+                        spread: 55,
+                        origin: { x: 1 },
+                        colors: ['#FFC107', '#28a745', '#007bff', '#dc3545']
+                    });
+    
+                    if (Date.now() < end) {
+                        requestAnimationFrame(frame);
+                    }
+                }());
+            });
+        </script>
+    <?php endif; ?>
+
+    <!-- JS CORE (URUTAN WAJIB BENAR) -->
+    <!-- 1. JQUERY DULU -->
+    <script src="<?php echo e(asset('assets/js/core/jquery-3.7.1.min.js')); ?>"></script>
+
+    <!-- 2. POPPER -->
+    <script src="<?php echo e(asset('assets/js/core/popper.min.js')); ?>"></script>
+
+    <!-- 3. BOOTSTRAP -->
+    <script src="<?php echo e(asset('assets/js/core/bootstrap.min.js')); ?>"></script>
+
+    <!-- 4. PLUGIN SCROLLBAR (WAJIB kalau pakai kaiadmin) -->
+    <script src="<?php echo e(asset('assets/js/plugin/jquery-scrollbar/jquery.scrollbar.min.js')); ?>"></script>
+
+    <!-- 5. BARU KAIADMIN -->
+    <script src="<?php echo e(asset('assets/js/kaiadmin.min.js')); ?>"></script>
+
+    <!-- SIDEBAR TOGGLE FIX TANPA ERROR JQUERY -->
+    <script>
+        document.addEventListener("DOMContentLoaded", function() {
+
+            const toggleButtons = document.querySelectorAll('.toggle-sidebar, .sidenav-toggler');
+
+            toggleButtons.forEach(btn => {
+                btn.addEventListener('click', function() {
+                    document.body.classList.toggle('sidebar-open');
+                });
+            });
+
+            document.addEventListener('click', function(e) {
+                if (!e.target.closest('.sidebar') &&
+                    !e.target.closest('.toggle-sidebar') &&
+                    !e.target.closest('.sidenav-toggler')) {
+
+                    document.body.classList.remove('sidebar-open');
+                }
+            });
+
+        });
+    </script>
+    <?php echo $__env->yieldPushContent('scripts'); ?>
+
+</body>
+
+</html>
+<?php /**PATH C:\laragon\www\dashboard-mkt\resources\views/layouts/app.blade.php ENDPATH**/ ?>
