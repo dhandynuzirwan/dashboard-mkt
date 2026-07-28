@@ -786,17 +786,35 @@
                 }
             };
 
-            let pesanWa = `Halo ${marketingName || 'Marketing'},\n\nBerikut adalah link pendaftaran peserta untuk klien *${perusahaan || 'Klien'}* (Program: ${program || 'Pelatihan'}):\n\n${url}\n\nMohon bantuannya untuk segera meneruskan link ini ke PIC klien terkait agar mereka dapat mengisi form pendaftaran.\n\nTerima kasih!`;
+            let safeMarketingName = marketingName || 'Marketing';
+            let safePerusahaan = perusahaan || 'Klien';
+            let pesanWa = `Halo ${safeMarketingName},\n\nBerikut adalah link pendaftaran peserta untuk klien *${safePerusahaan}* (Program: ${program || 'Pelatihan'}):\n\n${url}\n\nMohon bantuannya untuk segera meneruskan link ini ke PIC klien terkait agar mereka dapat mengisi form pendaftaran.\n\nTerima kasih!`;
             
             let htmlContent = `
-                <p class="text-muted small mb-3">Silakan serahkan link pendaftaran ini kepada PJ Marketing <b>${marketingName || 'Marketing'}</b> untuk disampaikan ke <b>${perusahaan || 'Klien'}</b>.</p>
-                
-                <div class="input-group input-group-sm mb-3">
-                    <input type="text" class="form-control bg-light" value="${url}" readonly id="inputUrlLink">
-                    <button class="btn btn-primary" type="button" id="btnCopyLinkOnly"><i class="fas fa-link me-1"></i>Salin Link</button>
-                </div>
-                
-                <div class="d-flex flex-column gap-2">
+                <div class="text-start mt-2">
+                    <div class="alert bg-primary text-white border-0 shadow-sm mb-4 p-3 d-flex align-items-center" style="border-radius: 12px; background: linear-gradient(135deg, #0d6efd, #0dcaf0);">
+                        <i class="fas fa-info-circle fs-1 me-3 opacity-75"></i>
+                        <div>
+                            <h6 class="mb-1 fw-bolder text-white">Langkah Selanjutnya</h6>
+                            <p class="mb-0 text-white" style="font-size: 12px; opacity: 0.9;">Serahkan link pendaftaran ini kepada PJ Marketing <b class="text-white">${safeMarketingName}</b> untuk diteruskan ke klien <b class="text-white">${safePerusahaan}</b>.</p>
+                        </div>
+                    </div>
+                    
+                    <label class="form-label fw-bold text-dark fs-7 mb-2 text-uppercase" style="letter-spacing: 0.5px; font-size: 11px;">1. Link Registrasi Klien</label>
+                    <div class="input-group mb-4 shadow-sm" style="border-radius: 10px; overflow: hidden; border: 1px solid #e0e0e0;">
+                        <input type="text" class="form-control bg-white border-0 py-2 text-primary fw-bold" value="${url}" readonly id="inputUrlLink" style="font-size: 13px;">
+                        <button class="btn btn-primary px-3 py-2 border-0" type="button" id="btnCopyLinkOnly" style="background: #0d6efd;">
+                            <i class="fas fa-link"></i> Salin
+                        </button>
+                    </div>
+                    
+                    <div class="position-relative mb-4">
+                        <hr class="text-muted opacity-25">
+                        <span class="position-absolute top-50 start-50 translate-middle bg-white px-2 text-muted small fw-bold">ATAU</span>
+                    </div>
+                    
+                    <label class="form-label fw-bold text-dark fs-7 mb-2 text-uppercase" style="letter-spacing: 0.5px; font-size: 11px;">2. Teruskan Cepat ke Marketing</label>
+                    <div class="d-flex flex-column gap-2">
             `;
             
             if (noHp) {
@@ -804,31 +822,44 @@
                 if (cleanNo.startsWith('0')) cleanNo = '62' + cleanNo.substring(1);
                 
                 let waUrl = `https://wa.me/${cleanNo}?text=${encodeURIComponent(pesanWa)}`;
-                htmlContent += `<a href="${waUrl}" target="_blank" class="btn btn-success fw-bold w-100 shadow-sm"><i class="fab fa-whatsapp me-2"></i>Kirim WA ke Marketing</a>`;
+                htmlContent += `
+                    <a href="${waUrl}" target="_blank" class="btn fw-bold w-100 shadow-sm d-flex justify-content-center align-items-center text-white" style="background-color: #25D366; border-radius: 10px; padding: 12px; transition: 0.2s;">
+                        <i class="fab fa-whatsapp fs-5 me-2"></i> Kirim WA ke ${safeMarketingName}
+                    </a>
+                `;
             }
             
-            htmlContent += `<button type="button" class="btn btn-outline-primary fw-bold w-100" id="btnCopyRedaksi"><i class="fas fa-copy me-2"></i>Salin Teks Redaksi Lengkap</button>
+            htmlContent += `
+                        <button type="button" class="btn btn-outline-primary fw-bold w-100 d-flex justify-content-center align-items-center" id="btnCopyRedaksi" style="border-radius: 10px; padding: 10px; border-width: 2px; transition: 0.2s;">
+                            <i class="fas fa-copy fs-5 me-2"></i> Salin Teks Redaksi Lengkap
+                        </button>
+                    </div>
                 </div>
             `;
             
             Swal.fire({
-                icon: 'info',
-                title: 'Bagikan Link Pendaftaran',
+                title: '<span class="fw-bolder fs-3">Bagikan Link Pendaftaran</span>',
                 html: htmlContent,
-                showConfirmButton: true,
-                confirmButtonText: 'Tutup',
-                customClass: { popup: 'card-modern' },
+                showConfirmButton: false,
+                showCloseButton: true,
+                width: '460px',
+                padding: '2em',
+                customClass: { 
+                    popup: 'rounded-4 border-0 shadow-lg',
+                    title: 'text-dark pb-2',
+                    closeButton: 'btn btn-icon btn-sm btn-active-light-primary ms-2'
+                },
                 didRender: () => {
                     // Copy Redaksi Lengkap
                     const btnRedaksi = document.getElementById('btnCopyRedaksi');
                     if(btnRedaksi) {
                         btnRedaksi.addEventListener('click', () => {
                             copyText(pesanWa).then(() => {
-                                btnRedaksi.innerHTML = '<i class="fas fa-check me-2"></i>Teks Disalin!';
+                                btnRedaksi.innerHTML = '<i class="fas fa-check fs-5 me-2"></i>Teks Disalin!';
                                 btnRedaksi.classList.remove('btn-outline-primary');
                                 btnRedaksi.classList.add('btn-primary');
                                 setTimeout(() => {
-                                    btnRedaksi.innerHTML = '<i class="fas fa-copy me-2"></i>Salin Teks Redaksi Lengkap';
+                                    btnRedaksi.innerHTML = '<i class="fas fa-copy fs-5 me-2"></i>Salin Teks Redaksi Lengkap';
                                     btnRedaksi.classList.remove('btn-primary');
                                     btnRedaksi.classList.add('btn-outline-primary');
                                 }, 2000);
@@ -841,11 +872,13 @@
                     if(btnUrl) {
                         btnUrl.addEventListener('click', () => {
                             copyText(url).then(() => {
-                                btnUrl.innerHTML = '<i class="fas fa-check me-1"></i>Disalin!';
+                                btnUrl.innerHTML = '<i class="fas fa-check"></i> Disalin!';
                                 btnUrl.classList.replace('btn-primary', 'btn-success');
+                                btnUrl.style.background = '#198754';
                                 setTimeout(() => {
-                                    btnUrl.innerHTML = '<i class="fas fa-link me-1"></i>Salin Link';
+                                    btnUrl.innerHTML = '<i class="fas fa-link"></i> Salin';
                                     btnUrl.classList.replace('btn-success', 'btn-primary');
+                                    btnUrl.style.background = '#0d6efd';
                                 }, 2000);
                             });
                         });
