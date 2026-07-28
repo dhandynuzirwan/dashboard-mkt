@@ -286,9 +286,9 @@
                                         <td>
                                             <div class="d-flex align-items-center mb-1">
                                                 <div class="avatar avatar-xs rounded-circle bg-primary text-white d-flex align-items-center justify-content-center me-2 shadow-sm" style="width: 24px; height: 24px; font-size: 10px;">
-                                                    {{ substr($deal->marketing->name ?? 'M', 0, 1) }}
+                                                    {{ substr($deal->marketing->nama_lengkap ?? $deal->marketing->name ?? 'M', 0, 1) }}
                                                 </div>
-                                                <span class="fw-bolder text-dark" style="font-size: 12px;">{{ $deal->marketing->name ?? '-' }}</span>
+                                                <span class="fw-bolder text-dark" style="font-size: 12px;">{{ $deal->marketing->nama_lengkap ?? $deal->marketing->name ?? '-' }}</span>
                                             </div>
                                         </td>
 
