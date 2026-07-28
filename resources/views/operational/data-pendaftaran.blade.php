@@ -470,7 +470,7 @@
                                                     </button>
                                                 @else
                                                     <button type="button" class="btn {{ $btnColor }} btn-sm btn-round fw-bold shadow-sm" 
-                                                            onclick="salinLinkRegistrasi('{{ $urlRegistrasi }}', '{{ addslashes($deal->marketing->nama_lengkap ?? $deal->marketing->name ?? '') }}', '{{ addslashes($deal->perusahaan ?? 'Klien') }}', '{{ addslashes($namaTraining) }}', '{{ $deal->marketing->no_hp ?? '' }}')" title="Salin Link Pendaftaran">
+                                                            onclick='salinLinkRegistrasi(@json($urlRegistrasi), @json($deal->marketing->nama_lengkap ?? $deal->marketing->name ?? ""), @json($deal->perusahaan ?? "Klien"), @json($namaTraining), @json($deal->marketing->no_hp ?? ""))' title="Salin Link Pendaftaran">
                                                         <i class="fas fa-link me-1"></i> {{ $btnText }}
                                                     </button>
                                                 @endif
@@ -760,7 +760,26 @@
     });
 
     function salinLinkRegistrasi(url, marketingName, perusahaan, program, noHp) {
-        navigator.clipboard.writeText(url).then(() => {
+        const copyText = (text) => {
+            if (navigator.clipboard && window.isSecureContext) {
+                return navigator.clipboard.writeText(text);
+            } else {
+                let textArea = document.createElement("textarea");
+                textArea.value = text;
+                textArea.style.position = "fixed";
+                textArea.style.left = "-999999px";
+                textArea.style.top = "-999999px";
+                document.body.appendChild(textArea);
+                textArea.focus();
+                textArea.select();
+                return new Promise((res, rej) => {
+                    document.execCommand('copy') ? res() : rej();
+                    textArea.remove();
+                });
+            }
+        };
+
+        copyText(url).then(() => {
             let pesanWa = `Halo ${marketingName},\n\nBerikut adalah link pendaftaran peserta untuk klien *${perusahaan}* (Program: ${program}):\n\n${url}\n\nMohon bantuannya untuk segera meneruskan link ini ke PIC klien terkait agar mereka dapat mengisi form pendaftaran.\n\nTerima kasih!`;
             
             let htmlContent = `
@@ -791,7 +810,7 @@
                     const btn = document.getElementById('btnCopyRedaksi');
                     if(btn) {
                         btn.addEventListener('click', () => {
-                            navigator.clipboard.writeText(pesanWa).then(() => {
+                            copyText(pesanWa).then(() => {
                                 btn.innerHTML = '<i class="fas fa-check me-2"></i>Teks Disalin!';
                                 btn.classList.remove('btn-outline-primary');
                                 btn.classList.add('btn-primary');
@@ -805,6 +824,9 @@
                     }
                 }
             });
+        }).catch(err => {
+            console.error('Failed to copy: ', err);
+            Swal.fire('Gagal', 'Tidak dapat menyalin link secara otomatis.', 'error');
         });
     }
 </script>
