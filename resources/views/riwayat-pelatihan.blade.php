@@ -435,7 +435,12 @@
 
                           <div class="col-md-4">
                               <label class="form-label fw-bold small">Laporan PIC (File)</label>
-                              <input type="file" name="laporan_pic" class="form-control rounded-3">
+                              <div class="input-group">
+                                  <input type="file" name="laporan_pic" id="add_laporan_pic" class="form-control rounded-start-3">
+                                  <button type="button" class="btn btn-outline-danger rounded-end-3" onclick="document.getElementById('add_laporan_pic').value = ''" title="Batal unggah file">
+                                      <i class="fas fa-times"></i>
+                                  </button>
+                              </div>
                           </div>
                           <div class="col-md-4">
                               <label class="form-label fw-bold small">Status Kompeten</label>
@@ -455,7 +460,12 @@
                           </div>
                           <div class="col-md-4">
                               <label class="form-label fw-bold small">Scan Sertif (File)</label>
-                              <input type="file" name="scan_sertif" class="form-control rounded-3">
+                              <div class="input-group">
+                                  <input type="file" name="scan_sertif" id="add_scan_sertif" class="form-control rounded-start-3">
+                                  <button type="button" class="btn btn-outline-danger rounded-end-3" onclick="document.getElementById('add_scan_sertif').value = ''" title="Batal unggah file">
+                                      <i class="fas fa-times"></i>
+                                  </button>
+                              </div>
                           </div>
                           <div class="col-12">
                               <label class="form-label fw-bold small">Keterangan Tambahan</label>
@@ -1220,7 +1230,12 @@
                             <label class="form-label small fw-bold">Upload Berkas Tambahan</label>
                             <div class="mb-3">
                                 <label class="small text-muted">Scan Sertifikat (PDF, Maks 30MB)</label>
-                                <input type="file" name="scan_sertif" class="form-control form-control-sm" accept=".pdf">
+                                <div class="input-group input-group-sm">
+                                    <input type="file" name="scan_sertif" id="scan_sertif_{{ $item->id }}" class="form-control" accept=".pdf">
+                                    <button type="button" class="btn btn-outline-danger" onclick="document.getElementById('scan_sertif_{{ $item->id }}').value = ''" title="Batal unggah file">
+                                        <i class="fas fa-times"></i>
+                                    </button>
+                                </div>
                                 @if($item->scan_sertif)
                                     <div class="d-flex align-items-center mt-1">
                                         <a href="{{ getFileUrl($item->scan_sertif) }}" target="_blank" class="small text-primary me-3"><i class="fas fa-file-pdf me-1"></i> Lihat Sertifikat Saat Ini</a>
@@ -1230,7 +1245,12 @@
                             </div>
                             <div class="mb-2">
                                 <label class="small text-muted">Laporan PIC (PDF, Maks 30MB)</label>
-                                <input type="file" name="laporan_pic" class="form-control form-control-sm" accept=".pdf">
+                                <div class="input-group input-group-sm">
+                                    <input type="file" name="laporan_pic" id="laporan_pic_{{ $item->id }}" class="form-control" accept=".pdf">
+                                    <button type="button" class="btn btn-outline-danger" onclick="document.getElementById('laporan_pic_{{ $item->id }}').value = ''" title="Batal unggah file">
+                                        <i class="fas fa-times"></i>
+                                    </button>
+                                </div>
                                 @if($item->laporan_pic)
                                     <div class="d-flex align-items-center mt-1">
                                         <a href="{{ getFileUrl($item->laporan_pic) }}" target="_blank" class="small text-primary me-3"><i class="fas fa-file-pdf me-1"></i> Lihat Laporan Saat Ini</a>
