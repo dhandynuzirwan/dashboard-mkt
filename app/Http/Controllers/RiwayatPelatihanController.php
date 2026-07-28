@@ -32,7 +32,7 @@ class RiwayatPelatihanController extends Controller
         }
 
         // Data for the table
-        $riwayat = (clone $query)->orderBy('tanggal_mulai', 'desc')->paginate(10)->withQueryString();
+        $riwayat = (clone $query)->orderBy('tanggal_mulai', 'desc')->orderBy('id', 'desc')->paginate(10)->withQueryString();
 
         // Calculate stats (Filtered)
         $totalSertifikatTerbit = (clone $query)->where('status_sertif', 'Sudah Terbit')->sum('jumlah_peserta');
