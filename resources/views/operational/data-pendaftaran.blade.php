@@ -470,7 +470,13 @@
                                                     </button>
                                                 @else
                                                     <button type="button" class="btn {{ $btnColor }} btn-sm btn-round fw-bold shadow-sm" 
-                                                            onclick='salinLinkRegistrasi(@json($urlRegistrasi), @json($deal->marketing->nama_lengkap ?? $deal->marketing->name ?? ""), @json($deal->perusahaan ?? "Klien"), @json($namaTraining), @json($deal->marketing->no_hp ?? ""))' title="Salin Link Pendaftaran">
+                                                            data-url="{{ $urlRegistrasi }}"
+                                                            data-marketing="{{ $deal->marketing->nama_lengkap ?? $deal->marketing->name ?? '' }}"
+                                                            data-perusahaan="{{ $deal->perusahaan ?? 'Klien' }}"
+                                                            data-program="{{ $namaTraining }}"
+                                                            data-hp="{{ $deal->marketing->no_hp ?? '' }}"
+                                                            onclick="salinLinkRegistrasi(this.dataset.url, this.dataset.marketing, this.dataset.perusahaan, this.dataset.program, this.dataset.hp)" 
+                                                            title="Salin Link Pendaftaran">
                                                         <i class="fas fa-link me-1"></i> {{ $btnText }}
                                                     </button>
                                                 @endif
