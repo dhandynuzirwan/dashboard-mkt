@@ -766,91 +766,96 @@
     });
 
     function salinLinkRegistrasi(url, marketingName, perusahaan, program, noHp) {
-        const copyText = (text) => {
-            if (navigator.clipboard && window.isSecureContext) {
-                return navigator.clipboard.writeText(text);
-            } else {
-                let textArea = document.createElement("textarea");
-                textArea.value = text;
-                textArea.style.position = "fixed";
-                textArea.style.left = "-999999px";
-                textArea.style.top = "-999999px";
-                document.body.appendChild(textArea);
-                textArea.focus();
-                textArea.select();
-                return new Promise((res, rej) => {
-                    document.execCommand('copy') ? res() : rej();
-                    textArea.remove();
-                });
-            }
-        };
+        try {
+            const copyText = (text) => {
+                if (typeof navigator !== 'undefined' && navigator.clipboard && typeof window !== 'undefined' && window.isSecureContext) {
+                    return navigator.clipboard.writeText(text);
+                } else {
+                    let textArea = document.createElement("textarea");
+                    textArea.value = text;
+                    textArea.style.position = "fixed";
+                    textArea.style.left = "-999999px";
+                    textArea.style.top = "-999999px";
+                    document.body.appendChild(textArea);
+                    textArea.focus();
+                    textArea.select();
+                    return new Promise((res, rej) => {
+                        document.execCommand('copy') ? res() : rej();
+                        textArea.remove();
+                    });
+                }
+            };
 
-        let pesanWa = `Halo ${marketingName},\n\nBerikut adalah link pendaftaran peserta untuk klien *${perusahaan}* (Program: ${program}):\n\n${url}\n\nMohon bantuannya untuk segera meneruskan link ini ke PIC klien terkait agar mereka dapat mengisi form pendaftaran.\n\nTerima kasih!`;
-        
-        let htmlContent = `
-            <p class="text-muted small mb-3">Silakan serahkan link pendaftaran ini kepada PJ Marketing <b>${marketingName}</b> untuk disampaikan ke <b>${perusahaan}</b>.</p>
+            let pesanWa = `Halo ${marketingName || 'Marketing'},\n\nBerikut adalah link pendaftaran peserta untuk klien *${perusahaan || 'Klien'}* (Program: ${program || 'Pelatihan'}):\n\n${url}\n\nMohon bantuannya untuk segera meneruskan link ini ke PIC klien terkait agar mereka dapat mengisi form pendaftaran.\n\nTerima kasih!`;
             
-            <div class="input-group input-group-sm mb-3">
-                <input type="text" class="form-control bg-light" value="${url}" readonly id="inputUrlLink">
-                <button class="btn btn-primary" type="button" id="btnCopyLinkOnly"><i class="fas fa-link me-1"></i>Salin Link</button>
-            </div>
-            
-            <div class="d-flex flex-column gap-2">
-        `;
-        
-        if (noHp) {
-            let cleanNo = noHp.replace(/\D/g, '');
-            if (cleanNo.startsWith('0')) cleanNo = '62' + cleanNo.substring(1);
-            
-            let waUrl = `https://wa.me/${cleanNo}?text=${encodeURIComponent(pesanWa)}`;
-            htmlContent += `<a href="${waUrl}" target="_blank" class="btn btn-success fw-bold w-100 shadow-sm"><i class="fab fa-whatsapp me-2"></i>Kirim WA ke Marketing</a>`;
-        }
-        
-        htmlContent += `<button type="button" class="btn btn-outline-primary fw-bold w-100" id="btnCopyRedaksi"><i class="fas fa-copy me-2"></i>Salin Teks Redaksi Lengkap</button>
-            </div>
-        `;
-        
-        Swal.fire({
-            icon: 'info',
-            title: 'Bagikan Link Pendaftaran',
-            html: htmlContent,
-            showConfirmButton: true,
-            confirmButtonText: 'Tutup',
-            customClass: { popup: 'card-modern' },
-            didRender: () => {
-                // Copy Redaksi Lengkap
-                const btnRedaksi = document.getElementById('btnCopyRedaksi');
-                if(btnRedaksi) {
-                    btnRedaksi.addEventListener('click', () => {
-                        copyText(pesanWa).then(() => {
-                            btnRedaksi.innerHTML = '<i class="fas fa-check me-2"></i>Teks Disalin!';
-                            btnRedaksi.classList.remove('btn-outline-primary');
-                            btnRedaksi.classList.add('btn-primary');
-                            setTimeout(() => {
-                                btnRedaksi.innerHTML = '<i class="fas fa-copy me-2"></i>Salin Teks Redaksi Lengkap';
-                                btnRedaksi.classList.remove('btn-primary');
-                                btnRedaksi.classList.add('btn-outline-primary');
-                            }, 2000);
-                        });
-                    });
-                }
+            let htmlContent = `
+                <p class="text-muted small mb-3">Silakan serahkan link pendaftaran ini kepada PJ Marketing <b>${marketingName || 'Marketing'}</b> untuk disampaikan ke <b>${perusahaan || 'Klien'}</b>.</p>
                 
-                // Copy URL Link Only
-                const btnUrl = document.getElementById('btnCopyLinkOnly');
-                if(btnUrl) {
-                    btnUrl.addEventListener('click', () => {
-                        copyText(url).then(() => {
-                            btnUrl.innerHTML = '<i class="fas fa-check me-1"></i>Disalin!';
-                            btnUrl.classList.replace('btn-primary', 'btn-success');
-                            setTimeout(() => {
-                                btnUrl.innerHTML = '<i class="fas fa-link me-1"></i>Salin Link';
-                                btnUrl.classList.replace('btn-success', 'btn-primary');
-                            }, 2000);
-                        });
-                    });
-                }
+                <div class="input-group input-group-sm mb-3">
+                    <input type="text" class="form-control bg-light" value="${url}" readonly id="inputUrlLink">
+                    <button class="btn btn-primary" type="button" id="btnCopyLinkOnly"><i class="fas fa-link me-1"></i>Salin Link</button>
+                </div>
+                
+                <div class="d-flex flex-column gap-2">
+            `;
+            
+            if (noHp) {
+                let cleanNo = String(noHp).replace(/\D/g, '');
+                if (cleanNo.startsWith('0')) cleanNo = '62' + cleanNo.substring(1);
+                
+                let waUrl = `https://wa.me/${cleanNo}?text=${encodeURIComponent(pesanWa)}`;
+                htmlContent += `<a href="${waUrl}" target="_blank" class="btn btn-success fw-bold w-100 shadow-sm"><i class="fab fa-whatsapp me-2"></i>Kirim WA ke Marketing</a>`;
             }
-        });
+            
+            htmlContent += `<button type="button" class="btn btn-outline-primary fw-bold w-100" id="btnCopyRedaksi"><i class="fas fa-copy me-2"></i>Salin Teks Redaksi Lengkap</button>
+                </div>
+            `;
+            
+            Swal.fire({
+                icon: 'info',
+                title: 'Bagikan Link Pendaftaran',
+                html: htmlContent,
+                showConfirmButton: true,
+                confirmButtonText: 'Tutup',
+                customClass: { popup: 'card-modern' },
+                didRender: () => {
+                    // Copy Redaksi Lengkap
+                    const btnRedaksi = document.getElementById('btnCopyRedaksi');
+                    if(btnRedaksi) {
+                        btnRedaksi.addEventListener('click', () => {
+                            copyText(pesanWa).then(() => {
+                                btnRedaksi.innerHTML = '<i class="fas fa-check me-2"></i>Teks Disalin!';
+                                btnRedaksi.classList.remove('btn-outline-primary');
+                                btnRedaksi.classList.add('btn-primary');
+                                setTimeout(() => {
+                                    btnRedaksi.innerHTML = '<i class="fas fa-copy me-2"></i>Salin Teks Redaksi Lengkap';
+                                    btnRedaksi.classList.remove('btn-primary');
+                                    btnRedaksi.classList.add('btn-outline-primary');
+                                }, 2000);
+                            });
+                        });
+                    }
+                    
+                    // Copy URL Link Only
+                    const btnUrl = document.getElementById('btnCopyLinkOnly');
+                    if(btnUrl) {
+                        btnUrl.addEventListener('click', () => {
+                            copyText(url).then(() => {
+                                btnUrl.innerHTML = '<i class="fas fa-check me-1"></i>Disalin!';
+                                btnUrl.classList.replace('btn-primary', 'btn-success');
+                                setTimeout(() => {
+                                    btnUrl.innerHTML = '<i class="fas fa-link me-1"></i>Salin Link';
+                                    btnUrl.classList.replace('btn-success', 'btn-primary');
+                                }, 2000);
+                            });
+                        });
+                    }
+                }
+            });
+        } catch (error) {
+            alert("Terjadi kesalahan: " + error.message);
+            console.error(error);
+        }
     }
 </script>
 @endsection
