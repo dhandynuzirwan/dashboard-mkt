@@ -383,7 +383,12 @@
                           </div>
                           <div class="col-md-6">
                               <label class="form-label fw-bold small">Upload CV Trainer (PDF)</label>
-                              <input type="file" name="cv" class="form-control rounded-3" accept=".pdf,.doc,.docx">
+                              <div class="input-group">
+                                  <input type="file" name="cv" id="add_cv" class="form-control rounded-start-3" accept=".pdf,.doc,.docx">
+                                  <button type="button" class="btn btn-outline-danger rounded-end-3" onclick="document.getElementById('add_cv').value = ''" title="Batal unggah file">
+                                      <i class="fas fa-times"></i>
+                                  </button>
+                              </div>
                           </div>
                           <!-- 
                           <div class="col-md-6">
@@ -1124,9 +1129,20 @@
                             </div>
                             <div class="col-md-6">
                                 <label class="form-label small fw-bold">Upload CV Trainer (PDF)</label>
-                                <input type="file" name="cv" class="form-control rounded-3" accept=".pdf,.doc,.docx">
+                                <div class="input-group input-group-sm">
+                                    <input type="file" name="cv" id="cv_{{ $item->id }}" class="form-control" accept=".pdf,.doc,.docx">
+                                    <button type="button" class="btn btn-outline-danger" onclick="document.getElementById('cv_{{ $item->id }}').value = ''" title="Batal unggah file">
+                                        <i class="fas fa-times"></i>
+                                    </button>
+                                </div>
                                 @if($item->cv)
-                                    <div class="small mt-1 text-success"><i class="fas fa-check-circle"></i> File sudah ada. Abaikan jika tidak diubah.</div>
+                                    <div class="d-flex align-items-center mt-1">
+                                        <a href="{{ getFileUrl($item->cv) }}" target="_blank" class="small text-primary me-3"><i class="fas fa-file-pdf me-1"></i> Lihat CV</a>
+                                        <div class="form-check form-check-inline mb-0">
+                                            <input class="form-check-input" type="checkbox" name="delete_cv" value="1" id="delete_cv_{{ $item->id }}">
+                                            <label class="form-check-label small text-danger" for="delete_cv_{{ $item->id }}"><i class="fas fa-trash-alt"></i> Hapus</label>
+                                        </div>
+                                    </div>
                                 @endif
                             </div>
                             <!--
