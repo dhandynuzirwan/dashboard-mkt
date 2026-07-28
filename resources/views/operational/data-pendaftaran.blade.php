@@ -785,54 +785,71 @@
             }
         };
 
-        copyText(url).then(() => {
-            let pesanWa = `Halo ${marketingName},\n\nBerikut adalah link pendaftaran peserta untuk klien *${perusahaan}* (Program: ${program}):\n\n${url}\n\nMohon bantuannya untuk segera meneruskan link ini ke PIC klien terkait agar mereka dapat mengisi form pendaftaran.\n\nTerima kasih!`;
+        let pesanWa = `Halo ${marketingName},\n\nBerikut adalah link pendaftaran peserta untuk klien *${perusahaan}* (Program: ${program}):\n\n${url}\n\nMohon bantuannya untuk segera meneruskan link ini ke PIC klien terkait agar mereka dapat mengisi form pendaftaran.\n\nTerima kasih!`;
+        
+        let htmlContent = `
+            <p class="text-muted small mb-3">Silakan serahkan link pendaftaran ini kepada PJ Marketing <b>${marketingName}</b> untuk disampaikan ke <b>${perusahaan}</b>.</p>
             
-            let htmlContent = `
-                <p class="text-muted small mb-3">Link pendaftaran berhasil disalin. Silakan serahkan link ini kepada PJ Marketing <b>${marketingName}</b> untuk disampaikan ke <b>${perusahaan}</b>.</p>
-                <div class="d-flex flex-column gap-2 mt-3">
-            `;
+            <div class="input-group input-group-sm mb-3">
+                <input type="text" class="form-control bg-light" value="${url}" readonly id="inputUrlLink">
+                <button class="btn btn-primary" type="button" id="btnCopyLinkOnly"><i class="fas fa-link me-1"></i>Salin Link</button>
+            </div>
             
-            if (noHp) {
-                let cleanNo = noHp.replace(/\D/g, '');
-                if (cleanNo.startsWith('0')) cleanNo = '62' + cleanNo.substring(1);
-                
-                let waUrl = `https://wa.me/${cleanNo}?text=${encodeURIComponent(pesanWa)}`;
-                htmlContent += `<a href="${waUrl}" target="_blank" class="btn btn-success fw-bold w-100 shadow-sm"><i class="fab fa-whatsapp me-2"></i>Kirim WA ke Marketing</a>`;
-            }
+            <div class="d-flex flex-column gap-2">
+        `;
+        
+        if (noHp) {
+            let cleanNo = noHp.replace(/\D/g, '');
+            if (cleanNo.startsWith('0')) cleanNo = '62' + cleanNo.substring(1);
             
-            htmlContent += `<button type="button" class="btn btn-outline-primary fw-bold w-100" id="btnCopyRedaksi"><i class="fas fa-copy me-2"></i>Salin Teks Redaksi</button>
-                </div>
-            `;
-            
-            Swal.fire({
-                icon: 'success',
-                title: 'Berhasil Disalin!',
-                html: htmlContent,
-                showConfirmButton: true,
-                confirmButtonText: 'Tutup',
-                customClass: { popup: 'card-modern' },
-                didRender: () => {
-                    const btn = document.getElementById('btnCopyRedaksi');
-                    if(btn) {
-                        btn.addEventListener('click', () => {
-                            copyText(pesanWa).then(() => {
-                                btn.innerHTML = '<i class="fas fa-check me-2"></i>Teks Disalin!';
-                                btn.classList.remove('btn-outline-primary');
-                                btn.classList.add('btn-primary');
-                                setTimeout(() => {
-                                    btn.innerHTML = '<i class="fas fa-copy me-2"></i>Salin Teks Redaksi';
-                                    btn.classList.remove('btn-primary');
-                                    btn.classList.add('btn-outline-primary');
-                                }, 2000);
-                            });
+            let waUrl = `https://wa.me/${cleanNo}?text=${encodeURIComponent(pesanWa)}`;
+            htmlContent += `<a href="${waUrl}" target="_blank" class="btn btn-success fw-bold w-100 shadow-sm"><i class="fab fa-whatsapp me-2"></i>Kirim WA ke Marketing</a>`;
+        }
+        
+        htmlContent += `<button type="button" class="btn btn-outline-primary fw-bold w-100" id="btnCopyRedaksi"><i class="fas fa-copy me-2"></i>Salin Teks Redaksi Lengkap</button>
+            </div>
+        `;
+        
+        Swal.fire({
+            icon: 'info',
+            title: 'Bagikan Link Pendaftaran',
+            html: htmlContent,
+            showConfirmButton: true,
+            confirmButtonText: 'Tutup',
+            customClass: { popup: 'card-modern' },
+            didRender: () => {
+                // Copy Redaksi Lengkap
+                const btnRedaksi = document.getElementById('btnCopyRedaksi');
+                if(btnRedaksi) {
+                    btnRedaksi.addEventListener('click', () => {
+                        copyText(pesanWa).then(() => {
+                            btnRedaksi.innerHTML = '<i class="fas fa-check me-2"></i>Teks Disalin!';
+                            btnRedaksi.classList.remove('btn-outline-primary');
+                            btnRedaksi.classList.add('btn-primary');
+                            setTimeout(() => {
+                                btnRedaksi.innerHTML = '<i class="fas fa-copy me-2"></i>Salin Teks Redaksi Lengkap';
+                                btnRedaksi.classList.remove('btn-primary');
+                                btnRedaksi.classList.add('btn-outline-primary');
+                            }, 2000);
                         });
-                    }
+                    });
                 }
-            });
-        }).catch(err => {
-            console.error('Failed to copy: ', err);
-            Swal.fire('Gagal', 'Tidak dapat menyalin link secara otomatis.', 'error');
+                
+                // Copy URL Link Only
+                const btnUrl = document.getElementById('btnCopyLinkOnly');
+                if(btnUrl) {
+                    btnUrl.addEventListener('click', () => {
+                        copyText(url).then(() => {
+                            btnUrl.innerHTML = '<i class="fas fa-check me-1"></i>Disalin!';
+                            btnUrl.classList.replace('btn-primary', 'btn-success');
+                            setTimeout(() => {
+                                btnUrl.innerHTML = '<i class="fas fa-link me-1"></i>Salin Link';
+                                btnUrl.classList.replace('btn-success', 'btn-primary');
+                            }, 2000);
+                        });
+                    });
+                }
+            }
         });
     }
 </script>
