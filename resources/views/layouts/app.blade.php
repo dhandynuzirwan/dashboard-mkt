@@ -91,11 +91,13 @@
 
     </div>
     
+    {{-- Load Library SweetAlert (Pop-up) Globally --}}
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    
     {{-- ================= FITUR CONGRATS DEAL ================= --}}
     @if (session('deal_congrats'))
-        {{-- Load Library Confetti (Animasi Kertas) & SweetAlert (Pop-up) --}}
+        {{-- Load Library Confetti (Animasi Kertas) --}}
         <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
-        <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
         
         
         {{-- Load File Audio Suara Tepuk Tangan --}}
