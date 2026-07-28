@@ -470,7 +470,7 @@
                                                     </button>
                                                 @else
                                                     <button type="button" class="btn {{ $btnColor }} btn-sm btn-round fw-bold shadow-sm" 
-                                                            onclick="salinLinkRegistrasi('{{ $urlRegistrasi }}')" title="Salin Link Pendaftaran">
+                                                            onclick="salinLinkRegistrasi('{{ $urlRegistrasi }}', '{{ addslashes($deal->marketing->nama_lengkap ?? $deal->marketing->name ?? '') }}', '{{ addslashes($deal->perusahaan ?? 'Klien') }}', '{{ addslashes($namaTraining) }}', '{{ $deal->marketing->no_hp ?? '' }}')" title="Salin Link Pendaftaran">
                                                         <i class="fas fa-link me-1"></i> {{ $btnText }}
                                                     </button>
                                                 @endif
@@ -759,15 +759,51 @@
         });
     });
 
-    function salinLinkRegistrasi(url) {
+    function salinLinkRegistrasi(url, marketingName, perusahaan, program, noHp) {
         navigator.clipboard.writeText(url).then(() => {
+            let pesanWa = `Halo ${marketingName},\n\nBerikut adalah link pendaftaran peserta untuk klien *${perusahaan}* (Program: ${program}):\n\n${url}\n\nMohon bantuannya untuk segera meneruskan link ini ke PIC klien terkait agar mereka dapat mengisi form pendaftaran.\n\nTerima kasih!`;
+            
+            let htmlContent = `
+                <p class="text-muted small mb-3">Link pendaftaran berhasil disalin. Silakan serahkan link ini kepada PJ Marketing <b>${marketingName}</b> untuk disampaikan ke <b>${perusahaan}</b>.</p>
+                <div class="d-flex flex-column gap-2 mt-3">
+            `;
+            
+            if (noHp) {
+                let cleanNo = noHp.replace(/\D/g, '');
+                if (cleanNo.startsWith('0')) cleanNo = '62' + cleanNo.substring(1);
+                
+                let waUrl = `https://wa.me/${cleanNo}?text=${encodeURIComponent(pesanWa)}`;
+                htmlContent += `<a href="${waUrl}" target="_blank" class="btn btn-success fw-bold w-100 shadow-sm"><i class="fab fa-whatsapp me-2"></i>Kirim WA ke Marketing</a>`;
+            }
+            
+            htmlContent += `<button type="button" class="btn btn-outline-primary fw-bold w-100" id="btnCopyRedaksi"><i class="fas fa-copy me-2"></i>Salin Teks Redaksi</button>
+                </div>
+            `;
+            
             Swal.fire({
                 icon: 'success',
-                title: 'Link Berhasil Disalin!',
-                text: 'Silakan bagikan link tersebut kepada klien.',
-                timer: 2000,
-                showConfirmButton: false,
-                customClass: { popup: 'card-modern' }
+                title: 'Berhasil Disalin!',
+                html: htmlContent,
+                showConfirmButton: true,
+                confirmButtonText: 'Tutup',
+                customClass: { popup: 'card-modern' },
+                didRender: () => {
+                    const btn = document.getElementById('btnCopyRedaksi');
+                    if(btn) {
+                        btn.addEventListener('click', () => {
+                            navigator.clipboard.writeText(pesanWa).then(() => {
+                                btn.innerHTML = '<i class="fas fa-check me-2"></i>Teks Disalin!';
+                                btn.classList.remove('btn-outline-primary');
+                                btn.classList.add('btn-primary');
+                                setTimeout(() => {
+                                    btn.innerHTML = '<i class="fas fa-copy me-2"></i>Salin Teks Redaksi';
+                                    btn.classList.remove('btn-primary');
+                                    btn.classList.add('btn-outline-primary');
+                                }, 2000);
+                            });
+                        });
+                    }
+                }
             });
         });
     }
