@@ -72,27 +72,13 @@ Aplikasi ini dibangun menggunakan arsitektur *Monolith Modern* dengan pendekatan
 
 ---
 
-## 📸 Tampilan Antarmuka (Screenshots)
-
-> 💡 *Catatan: Silakan tambahkan screenshot aplikasi Anda di sini.*
-
-| Dashboard Utama | Kanban Pipeline |
-| :---: | :---: |
-| <img src="https://via.placeholder.com/400x250.png?text=Dashboard+Utama" alt="Dashboard Utama"> | <img src="https://via.placeholder.com/400x250.png?text=Pipeline+Kanban" alt="Kanban"> |
-
-| Slip Gaji (Payroll) | Guest Mode (Data Sensor) |
-| :---: | :---: |
-| <img src="https://via.placeholder.com/400x250.png?text=Payroll+System" alt="Payroll"> | <img src="https://via.placeholder.com/400x250.png?text=Guest+Mode" alt="Guest Mode"> |
-
----
-
 ## 💻 Panduan Instalasi (Local Development)
 
 Ikuti langkah-langkah di bawah ini untuk menjalankan aplikasi di komputer lokal Anda:
 
 1. **Clone repositori ini:**
    ```bash
-   git clone https://github.com/username-anda/dashboard-mkt.git
+   git clone https://github.com/dhandynuzirwan/dashboard-mkt.git
    cd dashboard-mkt
    ```
 
@@ -128,9 +114,9 @@ Ikuti langkah-langkah di bawah ini untuk menjalankan aplikasi di komputer lokal 
 Proyek ini dikembangkan oleh **[Nama Anda]**.  
 Terbuka untuk kolaborasi atau peluang karir! Anda bisa menghubungi saya melalui:
 
-- 💼 **LinkedIn**: [linkedin.com/in/username-anda](https://linkedin.com/)
-- 🌐 **Portfolio**: [website-portfolio-anda.com](https://website-portfolio-anda.com)
-- 📧 **Email**: email.anda@gmail.com
+- 💼 **LinkedIn**: [linkedin.com/in/ramadhandynuzirwan](https://linkedin.com/ramadhandynuzirwan)
+- 🌐 **Portfolio**: [my-portofolio-dhandy.vercel.app](https://my-portofolio-dhandy.vercel.app/)
+- 📧 **Email**: dhandynuzirwan@gmail.com
 
 ---
 
