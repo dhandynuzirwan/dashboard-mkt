@@ -141,7 +141,7 @@ class HomeController extends Controller
         $holidays = Holiday::whereMonth('tanggal', $now->month)->whereYear('tanggal', $now->year)->get();
         foreach ($holidays as $h) {
             $day = Carbon::parse($h->tanggal)->day;
-            $calendarEvents[$day] = 'danger'; // merah
+            $calendarEvents[$day] = ['color' => 'danger', 'title' => Str::limit($h->keterangan, 30)];
             $upcomingAgendas->push([
                 'title' => Str::limit($h->keterangan, 30),
                 'date' => Carbon::parse($h->tanggal),
@@ -156,7 +156,7 @@ class HomeController extends Controller
                 if ($eventDate->month == $now->month && $eventDate->year == $now->year) {
                     $day = $eventDate->day;
                     $color = $p->kategori == 'hari_besar' ? 'success' : ($p->kategori == 'urgent' ? 'danger' : 'primary');
-                    $calendarEvents[$day] = $color;
+                    $calendarEvents[$day] = ['color' => $color, 'title' => Str::limit($p->judul, 30)];
                 }
                 $color = $p->kategori == 'hari_besar' ? 'success' : ($p->kategori == 'urgent' ? 'danger' : 'primary');
                 $upcomingAgendas->push([
@@ -175,7 +175,7 @@ class HomeController extends Controller
         foreach ($pelatihans as $pel) {
             if ($pel->tanggal_pelatihan) {
                 $day = Carbon::parse($pel->tanggal_pelatihan)->day;
-                $calendarEvents[$day] = 'warning';
+                $calendarEvents[$day] = ['color' => 'warning', 'title' => 'Training: ' . Str::limit($pel->training->nama_pelatihan ?? 'Tanpa Nama', 20)];
                 $upcomingAgendas->push([
                     'title' => 'Training: ' . Str::limit($pel->training->nama_pelatihan ?? 'Tanpa Nama', 20),
                     'date' => Carbon::parse($pel->tanggal_pelatihan),
@@ -192,7 +192,7 @@ class HomeController extends Controller
         if ($user->tanggal_kontrak_berakhir) {
             $kontrakEnd = Carbon::parse($user->tanggal_kontrak_berakhir);
             if ($kontrakEnd->month == $now->month && $kontrakEnd->year == $now->year) {
-                $calendarEvents[$kontrakEnd->day] = 'danger'; // Merah
+                $calendarEvents[$kontrakEnd->day] = ['color' => 'danger', 'title' => 'Kontrak Berakhir'];
             }
             if ($kontrakEnd->format('Y-m-d') >= $now->format('Y-m-d')) {
                 $upcomingAgendas->push([
