@@ -168,16 +168,17 @@ class HomeController extends Controller
         }
 
         // Pelatihan Berjalan
-        $pelatihans = PelatihanBerjalan::with('training')
+        $pelatihans = PelatihanBerjalan::with(['training', 'riwayat'])
             ->whereMonth('tanggal_pelatihan', $now->month)
             ->get();
             
         foreach ($pelatihans as $pel) {
             if ($pel->tanggal_pelatihan) {
                 $day = Carbon::parse($pel->tanggal_pelatihan)->day;
-                $calendarEvents[$day] = ['color' => 'warning', 'title' => 'Training: ' . Str::limit($pel->training->nama_training ?? 'Tanpa Nama', 20)];
+                $trainingName = $pel->training->nama_training ?? ($pel->riwayat->judul_pelatihan ?? 'Tanpa Nama');
+                $calendarEvents[$day] = ['color' => 'warning', 'title' => 'Training: ' . Str::limit($trainingName, 20)];
                 $upcomingAgendas->push([
-                    'title' => 'Training: ' . Str::limit($pel->training->nama_training ?? 'Tanpa Nama', 20),
+                    'title' => 'Training: ' . Str::limit($trainingName, 20),
                     'date' => Carbon::parse($pel->tanggal_pelatihan),
                     'color' => 'warning'
                 ]);
