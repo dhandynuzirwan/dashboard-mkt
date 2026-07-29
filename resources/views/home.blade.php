@@ -553,12 +553,21 @@
             if(isViewingServerMonth && events[i]) {
                 // Cari nama event dari upcomingAgendas
                 let matchingAgenda = agendas.find(a => {
+                    if (typeof a.date === 'string' && a.date.length >= 10) {
+                        let dateParts = a.date.substring(0, 10).split('-');
+                        if (dateParts.length === 3) {
+                            let y = parseInt(dateParts[0]);
+                            let m = parseInt(dateParts[1]) - 1;
+                            let d = parseInt(dateParts[2]);
+                            return d === i && m === month && y === year;
+                        }
+                    }
                     let d = new Date(a.date);
                     return d.getDate() === i && d.getMonth() === month && d.getFullYear() === year;
                 });
 
                 if(matchingAgenda) {
-                    titleAttr = `title="${matchingAgenda.title}"`;
+                    titleAttr = `data-bs-toggle="tooltip" data-bs-placement="top" title="${matchingAgenda.title}"`;
                 }
 
                 if(!(isCurrentMonth && i === today.getDate())) {
@@ -566,6 +575,12 @@
                 }
             }
             daysEl.innerHTML += `<div class="${classes}" ${titleAttr}>${i}${dotHtml}</div>`;
+        }
+
+        // Inisialisasi Bootstrap Tooltip untuk kalender
+        if (typeof bootstrap !== 'undefined') {
+            const tooltipTriggerList = document.querySelectorAll('#calendar-days [data-bs-toggle="tooltip"]');
+            [...tooltipTriggerList].map(tooltipTriggerEl => new bootstrap.Tooltip(tooltipTriggerEl));
         }
     }
 
