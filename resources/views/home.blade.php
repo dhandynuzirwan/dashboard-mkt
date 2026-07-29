@@ -1,9 +1,134 @@
 @extends('layouts.app')
 
 @section('content')
+<style>
+    /* Ultra-Premium Modern CSS (Bento Grid) */
+    .page-wrapper-modern {
+        background-color: #f4f6fa;
+        min-height: 100vh;
+        font-family: 'Nunito', 'Segoe UI', sans-serif;
+    }
+    
+    .bento-card {
+        background: rgba(255, 255, 255, 0.95);
+        border: 1px solid rgba(227, 230, 240, 0.8);
+        box-shadow: 0 8px 30px rgba(0, 0, 0, 0.03);
+        border-radius: 24px;
+        transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+        overflow: hidden;
+        backdrop-filter: blur(10px);
+    }
+    
+    .bento-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 15px 35px rgba(0, 0, 0, 0.08);
+    }
+
+    .bento-card-no-hover {
+        background: rgba(255, 255, 255, 0.95);
+        border: 1px solid rgba(227, 230, 240, 0.8);
+        box-shadow: 0 8px 30px rgba(0, 0, 0, 0.03);
+        border-radius: 24px;
+        overflow: hidden;
+    }
+
+    .profile-banner {
+        height: 120px;
+        background: linear-gradient(135deg, #4e73df 0%, #224abe 100%);
+        position: relative;
+    }
+    
+    .profile-avatar-wrapper {
+        width: 100px;
+        height: 100px;
+        border-radius: 50%;
+        padding: 5px;
+        background: white;
+        margin-top: -50px;
+        position: relative;
+        z-index: 2;
+        box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+    }
+    
+    .profile-avatar {
+        width: 100%;
+        height: 100%;
+        border-radius: 50%;
+        object-fit: cover;
+    }
+
+    .data-diri-item {
+        background: #f8f9fc;
+        border-radius: 16px;
+        padding: 12px 16px;
+        transition: all 0.2s;
+    }
+    .data-diri-item:hover {
+        background: #eff6ff;
+    }
+
+    .fade-in { animation: fadeIn 0.6s ease-out forwards; opacity: 0; }
+    @keyframes fadeIn { 
+        from { opacity: 0; transform: translateY(15px); } 
+        to { opacity: 1; transform: translateY(0); } 
+    }
+    
+    .bg-success-subtle { background-color: #d1fae5 !important; }
+    .bg-primary-subtle { background-color: #eff6ff !important; }
+    .bg-warning-subtle { background-color: #fef3c7 !important; }
+    .bg-info-subtle { background-color: #e0f2fe !important; }
+    .bg-danger-subtle { background-color: #fee2e2 !important; }
+    .line-height-1 { line-height: 1; }
+    
+    /* Calendar styles */
+    .calendar-day { 
+        width: 14.28%; padding: 6px 0; border-radius: 8px; cursor: pointer; position: relative;
+    }
+    .calendar-day:hover:not(.empty) { background-color: #eff6ff; color: #4e73df; font-weight: 700; }
+    .calendar-day.today { background-color: #4e73df; color: white; font-weight: bold; box-shadow: 0 4px 10px rgba(78, 115, 223, 0.4); }
+    .calendar-label { 
+        position: absolute; bottom: 3px; left: 50%; transform: translateX(-50%);
+        width: 20px; height: 4px; border-radius: 10px;
+    }
+
+    .scrollable-content {
+        max-height: 380px;
+        overflow-y: auto;
+        padding-right: 5px;
+    }
+    
+    .scrollable-content::-webkit-scrollbar { width: 5px; }
+    .scrollable-content::-webkit-scrollbar-thumb { background-color: #cbd5e1; border-radius: 10px; }
+    
+    .quick-action-btn {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        background: white;
+        border: 1px solid #edf2f9;
+        padding: 12px 20px;
+        border-radius: 16px;
+        color: #475569;
+        font-weight: 700;
+        text-decoration: none;
+        transition: all 0.3s;
+        box-shadow: 0 2px 10px rgba(0,0,0,0.02);
+    }
+    .quick-action-btn:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 8px 20px rgba(0,0,0,0.06);
+        border-color: #bac8f3;
+        color: #4e73df;
+    }
+    
+    .icon-box {
+        width: 40px; height: 40px; border-radius: 12px;
+        display: flex; align-items: center; justify-content: center;
+    }
+</style>
+
 <div class="page-wrapper-modern fade-in">
     <div class="container-fluid py-4 px-3 px-md-4">
-    <div class="page-inner">
         
         {{-- Alert Sukses Login --}}
         @if(session('success_login') || true) 
@@ -34,364 +159,310 @@
         </div>
         @endif
 
-        <div class="row g-4">
-            {{-- KOLOM KIRI (Utama) --}}
+        {{-- BENTO GRID ROW 1: Profile & Attendance --}}
+        <div class="row g-4 mb-4">
+            {{-- PROFILE SECTION (Utama) --}}
             <div class="col-lg-8 col-md-12">
-                
-                {{-- 1. Hero Banner --}}
-                <div class="glass-card mb-4 fade-in" style="background: linear-gradient(135deg, #0d6efd 0%, #0a58ca 100%); color: white;">
-                    <div class="card-body p-4 p-md-5 position-relative overflow-hidden">
-                        <i class="fas fa-chart-line position-absolute" style="font-size: 150px; right: -20px; bottom: -30px; opacity: 0.1;"></i>
-                        <div class="row align-items-center position-relative z-1">
-                            <div class="col-md-8">
-                                <h2 class="fw-bold mb-2">Halo, {{ Auth::user()->name }}! 👋</h2>
-                                <p class="opacity-75 mb-4">Siap untuk menyelesaikan tugas hebat hari ini? Cek jadwal dan progres kamu di bawah ini.</p>
-                                
-                                <div class="d-inline-flex align-items-center bg-white bg-opacity-25 rounded-pill px-3 py-2" style="backdrop-filter: blur(5px);">
-                                    <i class="fas fa-clock me-2"></i>
-                                    <span id="realtime-clock" class="fw-semibold" style="letter-spacing: 0.5px;">Memuat waktu...</span>
-                                </div>
-                            </div>
-                            <div class="col-md-4 text-end d-none d-md-block">
-                                <div class="bg-white rounded-circle d-inline-flex align-items-center justify-content-center shadow ms-auto" style="width: 80px; height: 80px;">
-                                    <i class="fas fa-building text-primary fs-1"></i>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                {{-- 2. Quick Actions (Akses Cepat) --}}
-                <h5 class="fw-bold mb-3 fade-in" style="animation-delay: 0.1s;"><i class="fas fa-bolt text-warning me-2"></i> Akses Cepat</h5>
-                <div class="row g-3 mb-4 fade-in" style="animation-delay: 0.2s;">
-                    @foreach($quickAccess as $item)
-                    <div class="col-6 col-sm-3">
-                        <a href="{{ $item['route'] }}" class="text-decoration-none">
-                            <div class="glass-card glass-hover text-center h-100 p-3">
-                                <div class="card-body p-2">
-                                    <div class="icon-box bg-{{ $item['color'] }}-subtle text-{{ $item['color'] }} rounded-circle mx-auto mb-3 d-flex align-items-center justify-content-center" style="width: 50px; height: 50px;">
-                                        <i class="{{ $item['icon'] }} fs-4"></i>
-                                    </div>
-                                    <h6 class="text-dark fw-semibold mb-0 small">{{ $item['title'] }}</h6>
-                                </div>
-                            </div>
-                        </a>
-                    </div>
-                    @endforeach
-                </div>
-
-                <div class="row">
-                    <div class="col-md-6">
-                        {{-- 3. Panel Pengumuman (Dinamis) --}}
-                        <div class="glass-card mb-4 fade-in" style="animation-delay: 0.3s; height: 100%;">
-                            <div class="card-header bg-transparent border-0 pt-4 pb-0 px-4 ">
-                                <h5 class="fw-bold mb-0"><i class="fas fa-bullhorn text-danger me-2"></i> Papan Pengumuman</h5>
-                            </div>
-                            <div class="card-body p-4">
-                                @forelse($pengumuman as $p)
-                                    @php
-                                        $icon = 'fas fa-info-circle';
-                                        $color = 'primary';
-                                        $badgeText = 'Pengumuman';
-                                        if($p->kategori == 'hari_besar') {
-                                            $icon = 'fas fa-calendar-day';
-                                            $color = 'success';
-                                            $badgeText = 'Hari Besar';
-                                        } elseif($p->kategori == 'urgent') {
-                                            $icon = 'fas fa-exclamation-triangle';
-                                            $color = 'danger';
-                                            $badgeText = '<i class="fas fa-fire me-1"></i> Urgent';
-                                        } elseif($p->kategori == 'pencapaian') {
-                                            $icon = 'fas fa-trophy';
-                                            $color = 'primary';
-                                            $badgeText = 'Pencapaian';
-                                        }
-                                    @endphp
-                                    <div class="d-flex mb-3 pb-3 {{ !$loop->last ? 'border-bottom' : '' }}">
-                                        <div class="flex-shrink-0">
-                                            <div class="bg-{{ $color }}-subtle text-{{ $color }} rounded p-2 text-center d-flex align-items-center justify-content-center" style="width: 50px; height: 50px;">
-                                                <i class="{{ $icon }} fs-4"></i>
-                                            </div>
-                                        </div>
-                                        <div class="flex-grow-1 ms-3">
-                                            <div class="mb-1">
-                                                <span class="badge badge-{{ $color }} rounded-pill px-2" style="font-size: 10px;">{!! $badgeText !!}</span>
-                                                <small class="text-muted" style="font-size: 11px;"><i class="fas fa-clock me-1"></i>{{ $p->tanggal_event ? \Carbon\Carbon::parse($p->tanggal_event)->format('d M Y') : $p->created_at->diffForHumans() }}</small>
-                                            </div>
-                                            <h6 class="fw-bold mb-1">{{ $p->judul }}</h6>
-                                            <p class="text-muted small mb-0">{{ $p->deskripsi }}</p>
-                                        </div>
-                                    </div>
-                                @empty
-                                    <div class="text-center py-4 text-muted">
-                                        <i class="fas fa-bell-slash fs-1 text-light mb-2 d-block"></i>
-                                        <span class="small">Belum ada pengumuman saat ini.</span>
-                                    </div>
-                                @endforelse
-                            </div>
+                <div class="bento-card-no-hover h-100 position-relative fade-in">
+                    {{-- Banner Background --}}
+                    <div class="profile-banner d-flex justify-content-end p-3">
+                        <div class="d-inline-flex align-items-center bg-white bg-opacity-25 rounded-pill px-3 py-1 text-white" style="backdrop-filter: blur(5px); height: fit-content;">
+                            <i class="fas fa-clock me-2"></i>
+                            <span id="realtime-clock" class="fw-semibold small">Memuat waktu...</span>
                         </div>
                     </div>
                     
-                    <div class="col-md-6">
-                        @if(Auth::user()->role === 'superadmin')
-                        {{-- 4. Permintaan Perizinan (Khusus Superadmin) --}}
-                        <div class="glass-card mb-4 fade-in" style="animation-delay: 0.4s; height: 100%;">
-                            <div class="card-header bg-transparent border-0 pt-4 pb-0 px-4 d-flex justify-content-between align-items-center ">
-                                <h5 class="fw-bold mb-0"><i class="fas fa-tasks text-primary me-2"></i> Permintaan Perizinan</h5>
-                                <span class="badge bg-danger rounded-pill">{{ count($pendingPerizinan) }} Pending</span>
+                    <div class="px-4 pb-4 px-md-5 pb-md-5">
+                        <div class="d-flex flex-column flex-md-row align-items-md-end gap-4 mb-4">
+                            <div class="profile-avatar-wrapper">
+                                @if(Auth::user()->foto_profil)
+                                    <img src="{{ asset('storage/' . Auth::user()->foto_profil) }}" alt="Profile Picture" class="profile-avatar">
+                                @else
+                                    <div class="profile-avatar bg-light d-flex align-items-center justify-content-center text-muted">
+                                        <i class="fas fa-user fs-1"></i>
+                                    </div>
+                                @endif
+                                <span class="position-absolute bottom-0 end-0 p-2 bg-success border border-white border-2 rounded-circle" style="transform: translate(-5px, -5px);" title="Online"></span>
                             </div>
-                            <div class="card-body p-4 pt-3">
-                                <ul class="list-unstyled mb-0 position-relative">
-                                    @if(count($pendingPerizinan) > 0)
-                                        <div class="position-absolute border-start border-2 border-light" style="top: 10px; bottom: 10px; left: 5px; z-index: 1;"></div>
-                                        
-                                        @foreach($pendingPerizinan as $p)
-                                        <li class="position-relative ps-4 mb-4 z-2">
-                                            <div class="position-absolute bg-{{ $p['color'] }} border border-white border-2 rounded-circle" style="width: 14px; height: 14px; left: -1px; top: 3px;"></div>
-                                            <div class="small text-muted mb-1">{{ \Carbon\Carbon::parse($p['waktu'])->diffForHumans() }} &bull; <span class="fw-semibold text-dark">{{ $p['tipe'] }}</span></div>
-                                            <div class="small fw-semibold text-dark">Diajukan oleh: {{ $p['nama'] }}</div>
-                                        </li>
-                                        @endforeach
-                                    @else
-                                        <li class="text-center py-4 text-muted">
-                                            <i class="fas fa-check-circle fs-1 text-light mb-2 d-block"></i>
-                                            <span class="small">Tidak ada permintaan yang pending.</span>
-                                        </li>
-                                    @endif
-                                </ul>
+                            
+                            <div class="flex-grow-1 pb-1">
+                                <h3 class="fw-black text-dark mb-1">{{ Auth::user()->name }}</h3>
+                                <p class="text-primary fw-bold small mb-0 text-uppercase" style="letter-spacing: 1px;">
+                                    <i class="fas fa-user-shield me-1"></i> {{ str_replace('_', ' ', Auth::user()->role ?? 'Karyawan') }}
+                                </p>
                             </div>
-                        </div>
-                        @else
-                        {{-- 4. Aktivitas Terbaru (Dinamis) --}}
-                        <div class="glass-card mb-4 fade-in" style="animation-delay: 0.4s; height: 100%;">
-                            <div class="card-header bg-transparent border-0 pt-4 pb-0 px-4 ">
-                                <h5 class="fw-bold mb-0"><i class="fas fa-list text-info me-2"></i> Aktivitas Feed</h5>
-                            </div>
-                            <div class="card-body p-4 pt-3">
-                                <ul class="list-unstyled mb-0 position-relative">
-                                    @if($feed->count() > 0)
-                                        {{-- Garis background timeline --}}
-                                        <div class="position-absolute border-start border-2 border-light" style="top: 10px; bottom: 10px; left: 5px; z-index: 1;"></div>
-                                        
-                                        @foreach($feed as $f)
-                                        <li class="position-relative ps-4 mb-4 z-2">
-                                            <div class="position-absolute bg-{{ $f['color'] }} border border-white border-2 rounded-circle" style="width: 14px; height: 14px; left: -1px; top: 3px;"></div>
-                                            <div class="small text-muted mb-1">{{ \Carbon\Carbon::parse($f['time'])->diffForHumans() }} &bull; <span class="fw-semibold text-dark">{{ $f['type'] }}</span></div>
-                                            <div class="small fw-semibold text-dark">{{ $f['title'] }}</div>
-                                        </li>
-                                        @endforeach
-                                    @else
-                                        <li class="text-center py-4 text-muted">
-                                            <i class="fas fa-history fs-1 text-light mb-2 d-block"></i>
-                                            <span class="small">Belum ada aktivitas terekam.</span>
-                                        </li>
-                                    @endif
-                                </ul>
-                            </div>
-                        </div>
-                        @endif
-                    </div>
-                </div>
-
-            </div>
-
-            {{-- KOLOM KANAN (Sidebar Widget) --}}
-            <div class="col-lg-4 col-md-12 fade-in" style="animation-delay: 0.5s;">
-                
-                {{-- 1. Mini Profile --}}
-                <div class="glass-card mb-4">
-                    <div class="card-body p-4">
-                        <div class="d-flex align-items-center mb-3">
-                            <div class="avatar-container position-relative me-3">
-                                <div class="bg-secondary bg-opacity-10 rounded-circle d-flex align-items-center justify-content-center overflow-hidden" style="width: 60px; height: 60px;">
-                                    @if(Auth::user()->foto_profil)
-                                        <img src="{{ asset('storage/' . Auth::user()->foto_profil) }}" alt="Profile Picture" class="w-100 h-100" style="object-fit: cover;">
-                                    @else
-                                        <i class="fas fa-user text-secondary fs-3"></i>
-                                    @endif
-                                </div>
-                                <span class="position-absolute bottom-0 end-0 p-2 bg-success border border-white border-2 rounded-circle" style="transform: translate(-2px, -2px);" title="Online"></span>
-                            </div>
-                            <div>
-                                <h5 class="fw-bold mb-1">{{ Auth::user()->name }}</h5>
-                                <p class="text-muted small mb-0 text-capitalize"><i class="fas fa-user-shield me-1"></i> {{ str_replace('_', ' ', Auth::user()->role ?? 'Karyawan') }}</p>
-                            </div>
-                            <div class="ms-auto dropdown">
-                                <button class="btn btn-light btn-sm rounded-circle" type="button" data-bs-toggle="dropdown"><i class="fas fa-ellipsis-v"></i></button>
-                                <ul class="dropdown-menu dropdown-menu-end shadow-sm border-0">
-                                    <li><a class="dropdown-item" href="{{ route('my-profile.edit') }}"><i class="fas fa-user-edit me-2"></i> Edit Profil</a></li>
-                                    <li><hr class="dropdown-divider"></li>
+                            
+                            <div class="pb-1 dropdown">
+                                <button class="btn btn-outline-primary rounded-pill px-4 fw-bold shadow-sm" type="button" data-bs-toggle="dropdown">
+                                    <i class="fas fa-cog me-1"></i> Pengaturan
+                                </button>
+                                <ul class="dropdown-menu dropdown-menu-end shadow border-0 rounded-4 p-2">
+                                    <li><a class="dropdown-item rounded-3 mb-1" href="{{ route('my-profile.edit') }}"><i class="fas fa-user-edit me-2 text-primary"></i> Edit Profil</a></li>
                                     <li>
                                         <form action="{{ route('logout') }}" method="POST">
                                             @csrf
-                                            <button type="submit" class="dropdown-item text-danger"><i class="fas fa-sign-out-alt me-2"></i> Logout</button>
+                                            <button type="submit" class="dropdown-item rounded-3 text-danger"><i class="fas fa-sign-out-alt me-2"></i> Logout</button>
                                         </form>
                                     </li>
                                 </ul>
                             </div>
                         </div>
-                        
-                        <div class="bg-light rounded p-3 mb-3">
-                            <h6 class="fw-bold mb-3 small text-muted"><i class="fas fa-id-card me-1"></i> DATA DIRI</h6>
-                            <div class="d-flex justify-content-between mb-2">
-                                <span class="text-muted small">Nama Lengkap</span>
-                                <span class="fw-semibold small text-end">{{ Auth::user()->nama_lengkap ?? '-' }}</span>
+
+                        {{-- Data Diri Bento Grid --}}
+                        <div class="row g-3">
+                            <div class="col-sm-6 col-md-3">
+                                <div class="data-diri-item h-100">
+                                    <div class="text-muted small fw-bold mb-1"><i class="fas fa-id-badge text-primary me-1"></i> NIK</div>
+                                    <div class="text-dark fw-bolder">{{ Auth::user()->nik ?? '-' }}</div>
+                                </div>
                             </div>
-                            <div class="d-flex justify-content-between mb-2">
-                                <span class="text-muted small">NIK</span>
-                                <span class="fw-semibold small text-end">{{ Auth::user()->nik ?? '-' }}</span>
+                            <div class="col-sm-6 col-md-3">
+                                <div class="data-diri-item h-100">
+                                    <div class="text-muted small fw-bold mb-1"><i class="fas fa-birthday-cake text-warning me-1"></i> Tanggal Lahir</div>
+                                    <div class="text-dark fw-bolder">{{ Auth::user()->tanggal_lahir ? \Carbon\Carbon::parse(Auth::user()->tanggal_lahir)->translatedFormat('d M Y') : '-' }}</div>
+                                </div>
                             </div>
-                            <div class="d-flex justify-content-between mb-2">
-                                <span class="text-muted small">Tanggal Lahir</span>
-                                <span class="fw-semibold small text-end">{{ Auth::user()->tanggal_lahir ? \Carbon\Carbon::parse(Auth::user()->tanggal_lahir)->translatedFormat('d F Y') : '-' }}</span>
+                            <div class="col-sm-6 col-md-3">
+                                <div class="data-diri-item h-100">
+                                    <div class="text-muted small fw-bold mb-1"><i class="fas fa-file-signature text-info me-1"></i> Kontrak Mulai</div>
+                                    <div class="text-dark fw-bolder">{{ Auth::user()->tanggal_kontrak_baru ? \Carbon\Carbon::parse(Auth::user()->tanggal_kontrak_baru)->translatedFormat('d M Y') : '-' }}</div>
+                                </div>
                             </div>
-                            <div class="d-flex justify-content-between mb-2">
-                                <span class="text-muted small">Kontrak Baru</span>
-                                <span class="fw-semibold small text-end">{{ Auth::user()->tanggal_kontrak_baru ? \Carbon\Carbon::parse(Auth::user()->tanggal_kontrak_baru)->translatedFormat('d M Y') : '-' }}</span>
-                            </div>
-                            <div class="d-flex justify-content-between">
-                                <span class="text-muted small">Kontrak Berakhir</span>
-                                <span class="fw-bold small text-danger text-end">{{ Auth::user()->tanggal_kontrak_berakhir ? \Carbon\Carbon::parse(Auth::user()->tanggal_kontrak_berakhir)->translatedFormat('d M Y') : '-' }}</span>
+                            <div class="col-sm-6 col-md-3">
+                                <div class="data-diri-item h-100">
+                                    <div class="text-muted small fw-bold mb-1"><i class="fas fa-hourglass-end text-danger me-1"></i> Kontrak Habis</div>
+                                    <div class="text-danger fw-bolder">{{ Auth::user()->tanggal_kontrak_berakhir ? \Carbon\Carbon::parse(Auth::user()->tanggal_kontrak_berakhir)->translatedFormat('d M Y') : '-' }}</div>
+                                </div>
                             </div>
                         </div>
                         
-                        <div class="d-flex gap-2">
-                            <a href="#" class="btn btn-primary btn-sm flex-fill fw-semibold"><i class="fas fa-briefcase me-1"></i> Jobdesk</a>
-                            <a href="#" class="btn btn-info btn-sm flex-fill fw-semibold text-white"><i class="fas fa-sitemap me-1"></i> Struktur</a>
+                        {{-- Quick Actions --}}
+                        <div class="mt-4 pt-3 border-top">
+                            <h6 class="fw-bold mb-3 text-muted small text-uppercase">Akses Cepat</h6>
+                            <div class="d-flex flex-wrap gap-2">
+                                @foreach($quickAccess as $item)
+                                    <a href="{{ $item['route'] }}" class="quick-action-btn">
+                                        <div class="icon-box bg-{{ $item['color'] }}-subtle text-{{ $item['color'] }} shadow-sm" style="width: 32px; height: 32px; border-radius: 8px;">
+                                            <i class="{{ $item['icon'] }}"></i>
+                                        </div>
+                                        {{ $item['title'] }}
+                                    </a>
+                                @endforeach
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+
+            {{-- ATTENDANCE SECTION --}}
+            <div class="col-lg-4 col-md-12">
+                <div class="bento-card h-100 p-4 fade-in" style="animation-delay: 0.1s;">
+                    <div class="d-flex justify-content-between align-items-center mb-4">
+                        <h5 class="fw-bolder mb-0 text-dark"><i class="fas fa-clipboard-check text-success me-2"></i> Kehadiran</h5>
+                        <span class="badge bg-light text-muted border">Bulan Ini</span>
+                    </div>
+                    
+                    <div class="position-relative mx-auto" style="width: 160px; height: 160px; margin-bottom: 30px; margin-top: 20px;">
+                        <canvas id="attendanceChart"></canvas>
+                        <div class="position-absolute top-50 start-50 translate-middle text-center" style="margin-top: 2px;">
+                            <span class="d-block fw-black fs-2 text-dark line-height-1" style="margin-bottom: -2px;">{{ $attendanceRate }}%</span>
+                            <span class="text-muted fw-bold" style="font-size: 11px;">RATING</span>
+                        </div>
+                    </div>
+
+                    <div class="row text-center g-3">
+                        <div class="col-4">
+                            <div class="bg-success-subtle rounded-3 p-2 h-100">
+                                <span class="d-block text-success fw-bold" style="font-size: 11px; text-transform: uppercase;">Hadir</span>
+                                <span class="d-block fw-black fs-4 text-dark mt-1">{{ $hadir }}</span>
+                            </div>
+                        </div>
+                        <div class="col-4">
+                            <div class="bg-warning-subtle rounded-3 p-2 h-100">
+                                <span class="d-block text-warning fw-bold" style="font-size: 11px; text-transform: uppercase;">Telat</span>
+                                <span class="d-block fw-black fs-4 text-dark mt-1">{{ $telat }}</span>
+                            </div>
+                        </div>
+                        <div class="col-4">
+                            <div class="bg-danger-subtle rounded-3 p-2 h-100">
+                                <span class="d-block text-danger fw-bold" style="font-size: 11px; text-transform: uppercase;">Absen</span>
+                                <span class="d-block fw-black fs-4 text-dark mt-1">{{ $absen }}</span>
+                            </div>
                         </div>
                     </div>
                 </div>
+            </div>
+        </div>
 
-                {{-- 2. Kalender Dinamis --}}
-                <div class="glass-card mb-4">
-                    <div class="card-header bg-transparent border-0 pt-4 pb-0 px-4 ">
-                        <h6 class="fw-bold mb-0"><i class="fas fa-calendar-alt text-primary me-2"></i> Kalender Agenda</h6>
+        {{-- BENTO GRID ROW 2: Announcements, Calendar, Feed --}}
+        <div class="row g-4 mb-4">
+            {{-- Pengumuman --}}
+            <div class="col-lg-4 col-md-6">
+                <div class="bento-card h-100 fade-in" style="animation-delay: 0.2s;">
+                    <div class="bg-transparent border-0 pt-4 pb-3 px-4 d-flex align-items-center gap-2">
+                        <div class="bg-danger text-white rounded-circle d-flex justify-content-center align-items-center shadow-sm" style="width: 35px; height: 35px;">
+                            <i class="fas fa-bullhorn"></i>
+                        </div>
+                        <h5 class="fw-bolder mb-0 text-dark">Pengumuman</h5>
                     </div>
-                    <div class="card-body p-4">
-                        {{-- Header Kalender --}}
-                        <div class="d-flex justify-content-between align-items-center mb-3">
-                            <button class="btn btn-sm btn-light rounded-circle" onclick="changeMonth(-1)"><i class="fas fa-chevron-left"></i></button>
-                            <h6 class="fw-bold mb-0" id="calendar-month-year">...</h6>
-                            <button class="btn btn-sm btn-light rounded-circle" onclick="changeMonth(1)"><i class="fas fa-chevron-right"></i></button>
+                    <div class="p-4 pt-0 scrollable-content">
+                        @forelse($pengumuman as $p)
+                            @php
+                                $icon = 'fas fa-info-circle';
+                                $color = 'primary';
+                                $badgeText = 'Info';
+                                if($p->kategori == 'hari_besar') {
+                                    $icon = 'fas fa-calendar-day';
+                                    $color = 'success';
+                                    $badgeText = 'Hari Besar';
+                                } elseif($p->kategori == 'urgent') {
+                                    $icon = 'fas fa-exclamation-triangle';
+                                    $color = 'danger';
+                                    $badgeText = 'Urgent';
+                                } elseif($p->kategori == 'pencapaian') {
+                                    $icon = 'fas fa-trophy';
+                                    $color = 'warning';
+                                    $badgeText = 'Pencapaian';
+                                }
+                            @endphp
+                            <div class="d-flex mb-3 pb-3 {{ !$loop->last ? 'border-bottom' : '' }}">
+                                <div class="flex-shrink-0 mt-1">
+                                    <div class="bg-{{ $color }}-subtle text-{{ $color }} rounded-circle text-center d-flex align-items-center justify-content-center shadow-sm" style="width: 40px; height: 40px;">
+                                        <i class="{{ $icon }}"></i>
+                                    </div>
+                                </div>
+                                <div class="flex-grow-1 ms-3">
+                                    <div class="d-flex justify-content-between align-items-start mb-1">
+                                        <h6 class="fw-bold text-dark mb-0 pe-2">{{ $p->judul }}</h6>
+                                        <span class="badge bg-{{ $color }} rounded-pill px-2" style="font-size: 9px; letter-spacing: 0.5px;">{{ $badgeText }}</span>
+                                    </div>
+                                    <p class="text-muted small mb-1" style="font-size: 13px;">{{ $p->deskripsi }}</p>
+                                    <small class="text-secondary fw-semibold" style="font-size: 11px;"><i class="fas fa-clock me-1"></i>{{ $p->tanggal_event ? \Carbon\Carbon::parse($p->tanggal_event)->format('d M Y') : $p->created_at->diffForHumans() }}</small>
+                                </div>
+                            </div>
+                        @empty
+                            <div class="text-center py-5 text-muted">
+                                <i class="fas fa-bell-slash fs-1 text-light mb-3 d-block"></i>
+                                <span class="small fw-semibold">Tidak ada pengumuman baru.</span>
+                            </div>
+                        @endforelse
+                    </div>
+                </div>
+            </div>
+
+            {{-- Kalender Agenda --}}
+            <div class="col-lg-4 col-md-6">
+                <div class="bento-card h-100 fade-in" style="animation-delay: 0.3s;">
+                    <div class="bg-transparent border-0 pt-4 pb-2 px-4 d-flex align-items-center gap-2">
+                        <div class="bg-primary text-white rounded-circle d-flex justify-content-center align-items-center shadow-sm" style="width: 35px; height: 35px;">
+                            <i class="fas fa-calendar-alt"></i>
+                        </div>
+                        <h5 class="fw-bolder mb-0 text-dark">Kalender</h5>
+                    </div>
+                    <div class="p-4 pt-2">
+                        <div class="d-flex justify-content-between align-items-center mb-3 bg-light rounded-pill p-1">
+                            <button class="btn btn-sm btn-white rounded-circle shadow-sm" onclick="changeMonth(-1)"><i class="fas fa-chevron-left text-muted"></i></button>
+                            <h6 class="fw-bolder mb-0 text-primary" id="calendar-month-year">...</h6>
+                            <button class="btn btn-sm btn-white rounded-circle shadow-sm" onclick="changeMonth(1)"><i class="fas fa-chevron-right text-muted"></i></button>
                         </div>
                         
-                        {{-- Grid Hari Kalender --}}
                         <div class="text-center calendar-wrapper mb-3">
-                            <div class="d-flex text-muted small fw-bold mb-2">
-                                <div style="width: 14.28%">M</div>
+                            <div class="d-flex text-secondary small fw-bold mb-2">
                                 <div style="width: 14.28%">S</div>
                                 <div style="width: 14.28%">S</div>
                                 <div style="width: 14.28%">R</div>
                                 <div style="width: 14.28%">K</div>
                                 <div style="width: 14.28%">J</div>
                                 <div style="width: 14.28%">S</div>
+                                <div style="width: 14.28%">M</div>
                             </div>
-                            <div id="calendar-days" class="d-flex flex-wrap small">
+                            <div id="calendar-days" class="d-flex flex-wrap small text-dark">
                                 <!-- JS Populated -->
                             </div>
                         </div>
                         
-                        <hr class="opacity-10">
-                        
-                        {{-- List Event --}}
-                        <h6 class="fw-semibold small mb-3 text-muted text-uppercase">Agenda Mendatang</h6>
-                        @forelse($upcomingAgendas as $agenda)
-                            <div class="d-flex mb-2 align-items-center">
-                                <div class="bg-{{ $agenda['color'] }} rounded-circle me-2" style="width:10px; height:10px;"></div>
-                                <div class="small fw-semibold text-dark">{{ $agenda['title'] }} <span class="badge bg-light text-muted ms-2 fw-normal">{{ \Carbon\Carbon::parse($agenda['date'])->format('d M') }}</span></div>
-                            </div>
-                        @empty
-                            <div class="small text-muted text-center py-2">Tidak ada agenda mendatang.</div>
-                        @endforelse
-                    </div>
-                </div>
-
-                {{-- 3. Ringkasan Absensi --}}
-                <div class="glass-card mb-4">
-                    <div class="card-body p-4 text-center">
-                        <h6 class="fw-bold mb-3 text-start"><i class="fas fa-clipboard-check text-success me-2"></i> Kehadiran Bulan Ini</h6>
-                        
-                        <div class="position-relative mx-auto" style="width: 140px; height: 140px; margin-bottom: 20px;">
-                            <canvas id="attendanceChart"></canvas>
-                            <div class="position-absolute top-50 start-50 translate-middle text-center" style="margin-top: 2px;">
-                                <span class="d-block fw-bold fs-4 text-dark line-height-1" style="margin-bottom: -5px;">{{ $attendanceRate }}%</span>
-                                <span class="text-muted" style="font-size: 10px;">Tingkat Kehadiran</span>
-                            </div>
-                        </div>
-
-                        <div class="row text-center g-2 mt-2 border-top pt-3">
-                            <div class="col-4">
-                                <span class="d-block fw-bold fs-5 text-success">{{ $hadir }}</span>
-                                <span class="d-block text-muted" style="font-size: 11px;">Hadir</span>
-                            </div>
-                            <div class="col-4">
-                                <span class="d-block fw-bold fs-5 text-warning">{{ $telat }}</span>
-                                <span class="d-block text-muted" style="font-size: 11px;">Telat</span>
-                            </div>
-                            <div class="col-4">
-                                <span class="d-block fw-bold fs-5 text-danger">{{ $absen }}</span>
-                                <span class="d-block text-muted" style="font-size: 11px;">Absen/Alpha</span>
-                            </div>
+                        <div class="mt-4 pt-3 border-top scrollable-content" style="max-height: 120px;">
+                            <h6 class="fw-bold small mb-2 text-muted text-uppercase" style="letter-spacing: 1px;">Agenda Mendatang</h6>
+                            @forelse($upcomingAgendas as $agenda)
+                                <div class="d-flex mb-2 align-items-center bg-light p-2 rounded-3">
+                                    <div class="bg-{{ $agenda['color'] }} rounded-circle me-3" style="width:12px; height:12px; box-shadow: 0 0 5px var(--bs-{{ $agenda['color'] }});"></div>
+                                    <div class="small fw-bold text-dark flex-grow-1">{{ $agenda['title'] }}</div>
+                                    <span class="badge bg-white text-dark shadow-sm border">{{ \Carbon\Carbon::parse($agenda['date'])->format('d M') }}</span>
+                                </div>
+                            @empty
+                                <div class="small text-muted text-center py-2 fw-semibold">Tidak ada agenda.</div>
+                            @endforelse
                         </div>
                     </div>
                 </div>
+            </div>
 
+            {{-- Feed / Perizinan --}}
+            <div class="col-lg-4 col-md-12">
+                <div class="bento-card h-100 fade-in" style="animation-delay: 0.4s;">
+                    @if(Auth::user()->role === 'superadmin')
+                        <div class="bg-transparent border-0 pt-4 pb-3 px-4 d-flex justify-content-between align-items-center">
+                            <div class="d-flex align-items-center gap-2">
+                                <div class="bg-warning text-white rounded-circle d-flex justify-content-center align-items-center shadow-sm" style="width: 35px; height: 35px;">
+                                    <i class="fas fa-tasks"></i>
+                                </div>
+                                <h5 class="fw-bolder mb-0 text-dark">Perizinan</h5>
+                            </div>
+                            <span class="badge bg-danger rounded-pill shadow-sm">{{ count($pendingPerizinan) }} Baru</span>
+                        </div>
+                        <div class="p-4 pt-0 scrollable-content">
+                            @if(count($pendingPerizinan) > 0)
+                                <div class="position-relative ms-2">
+                                    <div class="position-absolute border-start border-2 border-light" style="top: 10px; bottom: 10px; left: 6px; z-index: 1;"></div>
+                                    @foreach($pendingPerizinan as $p)
+                                    <div class="position-relative ps-4 mb-4 z-2">
+                                        <div class="position-absolute bg-{{ $p['color'] }} border border-white border-2 rounded-circle shadow-sm" style="width: 16px; height: 16px; left: -1px; top: 3px;"></div>
+                                        <div class="small text-muted mb-1 fw-bold">{{ \Carbon\Carbon::parse($p['waktu'])->diffForHumans() }} &bull; <span class="text-{{ $p['color'] }}">{{ $p['tipe'] }}</span></div>
+                                        <div class="small fw-bolder text-dark bg-light p-2 rounded-3 mt-1">Diajukan: {{ $p['nama'] }}</div>
+                                    </div>
+                                    @endforeach
+                                </div>
+                            @else
+                                <div class="text-center py-5 text-muted">
+                                    <i class="fas fa-check-circle fs-1 text-success mb-3 d-block opacity-50"></i>
+                                    <span class="small fw-semibold">Tidak ada permintaan perizinan.</span>
+                                </div>
+                            @endif
+                        </div>
+                    @else
+                        <div class="bg-transparent border-0 pt-4 pb-3 px-4 d-flex align-items-center gap-2">
+                            <div class="bg-info text-white rounded-circle d-flex justify-content-center align-items-center shadow-sm" style="width: 35px; height: 35px;">
+                                <i class="fas fa-history"></i>
+                            </div>
+                            <h5 class="fw-bolder mb-0 text-dark">Feed Aktivitas</h5>
+                        </div>
+                        <div class="p-4 pt-0 scrollable-content">
+                            @if($feed->count() > 0)
+                                <div class="position-relative ms-2">
+                                    <div class="position-absolute border-start border-2 border-light" style="top: 10px; bottom: 10px; left: 6px; z-index: 1;"></div>
+                                    @foreach($feed as $f)
+                                    <div class="position-relative ps-4 mb-4 z-2">
+                                        <div class="position-absolute bg-{{ $f['color'] }} border border-white border-2 rounded-circle shadow-sm" style="width: 16px; height: 16px; left: -1px; top: 3px;"></div>
+                                        <div class="small text-muted mb-1 fw-bold">{{ \Carbon\Carbon::parse($f['time'])->diffForHumans() }} &bull; <span class="text-{{ $f['color'] }}">{{ $f['type'] }}</span></div>
+                                        <div class="small fw-bolder text-dark bg-light p-2 rounded-3 mt-1">{{ $f['title'] }}</div>
+                                    </div>
+                                    @endforeach
+                                </div>
+                            @else
+                                <div class="text-center py-5 text-muted">
+                                    <i class="fas fa-history fs-1 text-light mb-3 d-block"></i>
+                                    <span class="small fw-semibold">Belum ada aktivitas terekam.</span>
+                                </div>
+                            @endif
+                        </div>
+                    @endif
+                </div>
             </div>
         </div>
+
     </div>
 </div>
-
-<style>
-    /* Premium Modern CSS */
-    .page-wrapper-modern {
-        background-color: #f8f9fc;
-        min-height: 100vh;
-        font-family: 'Nunito', 'Segoe UI', sans-serif;
-    }
-    .glass-card {
-        background: #ffffff;
-        border: 1px solid rgba(227, 230, 240, 0.8);
-        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.03);
-        border-radius: 20px;
-        transition: all 0.3s ease;
-    }
-    .glass-card:hover {
-        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.06);
-    }
-    .glass-hover {
-        border-radius: 20px;
-        background: #ffffff;
-        border: 1px solid rgba(227, 230, 240, 0.8);
-        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.03);
-        transition: all 0.3s ease;
-    }
-    .glass-hover:hover { 
-        transform: translateY(-5px); 
-        box-shadow: 0 10px 30px rgba(0,0,0,0.08); 
-    }
-    .fade-in { animation: fadeIn 0.6s ease-out forwards; opacity: 0; }
-    @keyframes fadeIn { 
-        from { opacity: 0; transform: translateY(15px); } 
-        to { opacity: 1; transform: translateY(0); } 
-    }
-    .bg-success-subtle { background-color: #d1fae5 !important; }
-    .bg-primary-subtle { background-color: #eff6ff !important; }
-    .bg-warning-subtle { background-color: #fef3c7 !important; }
-    .bg-info-subtle { background-color: #e0f2fe !important; }
-    .bg-danger-subtle { background-color: #fee2e2 !important; }
-    .line-height-1 { line-height: 1; }
-    
-    /* Calendar styles */
-    .calendar-day { 
-        width: 14.28%; padding: 6px 0; border-radius: 6px; cursor: pointer; position: relative;
-    }
-    .calendar-day:hover:not(.empty) { background-color: #eff6ff; color: #0d6efd; font-weight: 600; }
-    .calendar-day.today { background-color: #0d6efd; color: white; font-weight: bold; }
-    .calendar-label { 
-        position: absolute; bottom: 3px; left: 50%; transform: translateX(-50%);
-        width: 20px; height: 5px; border-radius: 10px;
-    }
-</style>
 
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <script>
@@ -405,7 +476,6 @@
         setInterval(updateClock, 1000);
         updateClock();
         
-        // Render Initial Calendar
         renderCalendar();
         
         // Render Doughnut Chart
@@ -416,16 +486,23 @@
                 labels: ['Hadir', 'Telat', 'Absen'],
                 datasets: [{
                     data: [{{ $hadir }}, {{ $telat }}, {{ $absen }}],
-                    backgroundColor: ['#22c55e', '#eab308', '#ef4444'], // Tailwind Green, Yellow, Red
+                    backgroundColor: ['#10b981', '#f59e0b', '#ef4444'], // Modern Emerald, Amber, Rose
                     borderWidth: 0,
-                    hoverOffset: 4
+                    hoverOffset: 6
                 }]
             },
             options: {
-                cutout: '75%',
+                cutout: '78%',
                 plugins: {
                     legend: { display: false },
-                    tooltip: { enabled: true }
+                    tooltip: { 
+                        enabled: true,
+                        backgroundColor: 'rgba(0,0,0,0.8)',
+                        padding: 10,
+                        cornerRadius: 8,
+                        titleFont: { size: 13, family: "'Nunito', sans-serif" },
+                        bodyFont: { size: 14, family: "'Nunito', sans-serif", weight: 'bold' }
+                    }
                 },
                 maintainAspectRatio: false
             }
@@ -434,47 +511,38 @@
 
     // --- KALENDER DINAMIS ---
     let currentDate = new Date();
-    
-    // Server-side events injected to JS
     const events = @json($calendarEvents);
 
     function renderCalendar() {
         const monthYearEl = document.getElementById('calendar-month-year');
         const daysEl = document.getElementById('calendar-days');
-        
         const year = currentDate.getFullYear();
         const month = currentDate.getMonth();
         
-        // Format Nama Bulan
         const monthNames = ["Januari", "Februari", "Maret", "April", "Mei", "Juni", "Juli", "Agustus", "September", "Oktober", "November", "Desember"];
         monthYearEl.innerText = `${monthNames[month]} ${year}`;
         
-        // Kalkulasi hari
-        const firstDay = new Date(year, month, 1).getDay();
-        const daysInMonth = new Date(year, month + 1, 0).getDate();
+        // Mulai hari Senin (1)
+        let firstDay = new Date(year, month, 1).getDay() - 1;
+        if(firstDay === -1) firstDay = 6; // Jika Minggu(0), jadi 6
         
+        const daysInMonth = new Date(year, month + 1, 0).getDate();
         const today = new Date();
         const isCurrentMonth = (today.getMonth() === month && today.getFullYear() === year);
         
         daysEl.innerHTML = '';
         
-        // Empty slots sebelum tgl 1
         for(let i=0; i<firstDay; i++) {
             daysEl.innerHTML += `<div class="calendar-day empty"></div>`;
         }
         
-        // Tanggal
         for(let i=1; i<=daysInMonth; i++) {
             let classes = "calendar-day";
             if(isCurrentMonth && i === today.getDate()) {
                 classes += " today shadow-sm";
             }
             
-            // Cek apakah ada event di tgl ini
             let dotHtml = '';
-            // Only show events for current server month if we are viewing the current server month, 
-            // since $calendarEvents is generated only for the server's current month.
-            // For a fully dynamic calendar, we'd need to fetch events via AJAX. For now, this is static per month load.
             const serverDate = new Date();
             const isViewingServerMonth = (serverDate.getMonth() === month && serverDate.getFullYear() === year);
 
@@ -483,7 +551,6 @@
                     dotHtml = `<div class="calendar-label bg-${events[i]} shadow-sm"></div>`;
                 }
             }
-            
             daysEl.innerHTML += `<div class="${classes}">${i}${dotHtml}</div>`;
         }
     }
