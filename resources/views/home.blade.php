@@ -34,8 +34,9 @@
 
     .profile-banner {
         height: 120px;
-        background: linear-gradient(135deg, #4e73df 0%, #224abe 100%);
+        background: linear-gradient(135deg, #0d6efd 0%, #0a58ca 100%);
         position: relative;
+        overflow: hidden;
     }
     
     .profile-avatar-wrapper {
@@ -166,7 +167,8 @@
                 <div class="bento-card-no-hover h-100 position-relative fade-in">
                     {{-- Banner Background --}}
                     <div class="profile-banner d-flex justify-content-end p-3">
-                        <div class="d-inline-flex align-items-center bg-white bg-opacity-25 rounded-pill px-3 py-1 text-white" style="backdrop-filter: blur(5px); height: fit-content;">
+                        <i class="fas fa-chart-line position-absolute" style="font-size: 150px; right: -20px; bottom: -30px; opacity: 0.1; color: white; z-index: 0;"></i>
+                        <div class="d-inline-flex align-items-center bg-white bg-opacity-25 rounded-pill px-3 py-1 text-white position-relative" style="backdrop-filter: blur(5px); height: fit-content; z-index: 1;">
                             <i class="fas fa-clock me-2"></i>
                             <span id="realtime-clock" class="fw-semibold small">Memuat waktu...</span>
                         </div>
