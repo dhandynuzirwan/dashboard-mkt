@@ -365,9 +365,9 @@
     }
     .calendar-day:hover:not(.empty) { background-color: #eff6ff; color: #0d6efd; font-weight: 600; }
     .calendar-day.today { background-color: #0d6efd; color: white; font-weight: bold; }
-    .calendar-dot { 
-        position: absolute; bottom: 2px; left: 50%; transform: translateX(-50%);
-        width: 4px; height: 4px; border-radius: 50%;
+    .calendar-label { 
+        position: absolute; bottom: 3px; left: 50%; transform: translateX(-50%);
+        width: 20px; height: 5px; border-radius: 10px;
     }
 </style>
 
@@ -458,7 +458,7 @@
 
             if(isViewingServerMonth && events[i]) {
                 if(!(isCurrentMonth && i === today.getDate())) {
-                    dotHtml = `<div class="calendar-dot bg-${events[i]}"></div>`;
+                    dotHtml = `<div class="calendar-label bg-${events[i]} shadow-sm"></div>`;
                 }
             }
             
