@@ -388,19 +388,21 @@ class DataMasukController extends Controller
     public function autoSyncProspek()
     {
         try {
-            $prospekList = Prospek::whereNotNull('marketing_id')
-                            ->get()
-                            ->unique('perusahaan');
+            // Optimasi: Gunakan satu query raw UPDATE JOIN agar prosesnya instan dan tidak N+1
+            // Ini akan mencocokkan nama perusahaan di data_masuks dengan prospeks dan meng-update marketing_id
+            $updated = \Illuminate\Support\Facades\DB::update("
+                UPDATE data_masuks dm
+                JOIN (
+                    SELECT perusahaan, MAX(marketing_id) as marketing_id
+                    FROM prospeks
+                    WHERE marketing_id IS NOT NULL
+                    GROUP BY perusahaan
+                ) p ON dm.perusahaan = p.perusahaan
+                SET dm.marketing_id = p.marketing_id
+                WHERE dm.marketing_id IS NULL
+            ");
             
-            $count = 0;
-
-            foreach ($prospekList as $prospek) {
-                $updated = DataMasuk::whereNull('marketing_id')
-                            ->where('perusahaan', $prospek->perusahaan)
-                            ->update(['marketing_id' => $prospek->marketing_id]);
-                
-                $count += $updated; 
-            }
+            $count = $updated;
 
             if ($count > 0) {
                 return redirect()->back()->with('success', "Auto-Sync Sukses! Sebanyak {$count} data berhasil disinkronkan dengan database Prospek.");
