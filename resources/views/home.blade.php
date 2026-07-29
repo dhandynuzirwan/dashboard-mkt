@@ -265,11 +265,11 @@
                         <span class="badge bg-light text-muted border">Bulan Ini</span>
                     </div>
                     
-                    <div class="position-relative mx-auto" style="width: 220px; height: 220px; margin-bottom: 30px; margin-top: 20px;">
+                    <div class="position-relative mx-auto w-100" style="max-width: 280px; aspect-ratio: 1/1; margin-bottom: 30px; margin-top: 10px;">
                         <canvas id="attendanceChart"></canvas>
                         <div class="position-absolute top-50 start-50 translate-middle text-center" style="margin-top: 2px;">
-                            <span class="d-block fw-black fs-1 text-dark line-height-1" style="margin-bottom: -2px;">{{ $attendanceRate }}%</span>
-                            <span class="text-muted fw-bold" style="font-size: 11px;">RATING</span>
+                            <span class="d-block fw-black text-dark line-height-1" style="font-size: 2.8rem; margin-bottom: -5px;">{{ $attendanceRate }}%</span>
+                            <span class="text-muted fw-bold" style="font-size: 12px; letter-spacing: 1px;">RATING</span>
                         </div>
                     </div>
 
