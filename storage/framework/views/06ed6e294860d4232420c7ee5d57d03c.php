@@ -35,11 +35,11 @@
                     <form action="<?php echo e(route('riwayat.pelatihan')); ?>" method="GET" class="row g-3 align-items-end">
                         <div class="col-sm-6 col-md-3">
                             <label class="form-label fw-bold small text-muted">Bulan & Tahun</label>
-                            <input type="month" name="month_year" class="form-control form-control-sm rounded-3 px-3 py-2" value="<?php echo e(request('month_year')); ?>">
+                            <input type="month" name="month_year" class="form-control form-control-modern form-control-sm rounded-3 px-3 py-2" value="<?php echo e(request('month_year')); ?>">
                         </div>
                         <div class="col-sm-6 col-md-3">
                             <label class="form-label fw-bold small text-muted">Jenis Pelatihan</label>
-                            <select name="jenis" class="form-select form-select-sm rounded-3 px-3 py-2">
+                            <select name="jenis" class="form-select form-control-modern form-select-sm rounded-3 px-3 py-2">
                                 <option value="">Semua Jenis</option>
                                 <?php $__currentLoopData = $listJenis; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $j): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
                                     <option value="<?php echo e($j); ?>" <?php echo e(request('jenis') == $j ? 'selected' : ''); ?>><?php echo e($j); ?></option>
@@ -48,7 +48,7 @@
                         </div>
                         <div class="col-sm-6 col-md-3">
                             <label class="form-label fw-bold small text-muted">Metode</label>
-                            <select name="metode" class="form-select form-select-sm rounded-3 px-3 py-2">
+                            <select name="metode" class="form-select form-control-modern form-select-sm rounded-3 px-3 py-2">
                                 <option value="">Semua Metode</option>
                                 <?php $__currentLoopData = $listMetode; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $m): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
                                     <option value="<?php echo e($m); ?>" <?php echo e(request('metode') == $m ? 'selected' : ''); ?>><?php echo e($m); ?></option>
@@ -322,23 +322,23 @@
                       <div class="row g-3">
                           <div class="col-md-12">
                               <label class="form-label fw-bold small">Judul Pelatihan <span class="text-danger">*</span></label>
-                              <input type="text" name="judul_pelatihan" class="form-control rounded-3" required>
+                              <input type="text" name="judul_pelatihan" class="form-control form-control-modern rounded-3" required>
                           </div>
                           <div class="col-md-4">
                               <label class="form-label fw-bold small">Tgl. Mulai <span class="text-danger">*</span></label>
-                              <input type="date" name="tanggal_mulai" class="form-control rounded-3" required>
+                              <input type="date" name="tanggal_mulai" class="form-control form-control-modern rounded-3" required>
                           </div>
                           <div class="col-md-4">
                               <label class="form-label fw-bold small">Tgl. Selesai <span class="text-danger">*</span></label>
-                              <input type="date" name="tanggal_selesai" class="form-control rounded-3" required>
+                              <input type="date" name="tanggal_selesai" class="form-control form-control-modern rounded-3" required>
                           </div>
                           <div class="col-md-4">
                               <label class="form-label fw-bold small">Jum. Peserta <span class="text-danger">*</span></label>
-                              <input type="number" name="jumlah_peserta" id="inputJumlahPeserta" class="form-control rounded-3" required min="1">
+                              <input type="number" name="jumlah_peserta" id="inputJumlahPeserta" class="form-control form-control-modern rounded-3" required min="1">
                           </div>
                           <div class="col-md-6">
                               <label class="form-label fw-bold small">Jenis Pelatihan</label>
-                              <select name="jenis" class="form-select rounded-3">
+                              <select name="jenis" class="form-select form-control-modern rounded-3">
                                   <option value="">Pilih...</option>
                                   <option value="Sertifikat KEMNAKER">Sertifikat KEMNAKER</option>
                                   <option value="Sertifikat BNSP">Sertifikat BNSP</option>
@@ -350,7 +350,7 @@
                           </div>
                           <div class="col-md-6">
                               <label class="form-label fw-bold small">Metode</label>
-                              <select name="metode" class="form-select rounded-3">
+                              <select name="metode" class="form-select form-control-modern rounded-3">
                                   <option value="">Pilih...</option>
                                   <option value="Online Training">Online Training</option>
                                   <option value="Offline Training">Offline Training</option>
@@ -368,11 +368,11 @@
                           </div>
                           <div class="col-md-5 mt-3">
                               <label class="form-label fw-bold small">Syarat Peserta (Link Drive)</label>
-                              <input type="url" name="syarat_peserta" class="form-control rounded-3" placeholder="https://drive.google.com/...">
+                              <input type="url" name="syarat_peserta" class="form-control form-control-modern rounded-3" placeholder="https://drive.google.com/...">
                           </div>
                           <div class="col-md-3 mt-3">
                               <label class="form-label fw-bold small">Status Syarat</label>
-                              <select name="ket_syarat" class="form-select rounded-3">
+                              <select name="ket_syarat" class="form-select form-control-modern rounded-3">
                                   <option value="">Pilih...</option>
                                   <option value="Lengkap">Lengkap</option>
                                   <option value="Belum">Belum</option>
@@ -391,16 +391,16 @@
                       <div class="row g-3">
                           <div class="col-md-6">
                               <label class="form-label fw-bold small">Nama Trainer</label>
-                              <input type="text" name="nama_trainer" class="form-control rounded-3">
+                              <input type="text" name="nama_trainer" class="form-control form-control-modern rounded-3">
                           </div>
                           <div class="col-md-6">
                               <label class="form-label fw-bold small">WA Trainer</label>
-                              <input type="text" name="wa_trainer" class="form-control rounded-3">
+                              <input type="text" name="wa_trainer" class="form-control form-control-modern rounded-3">
                           </div>
                           <div class="col-md-6">
                               <label class="form-label fw-bold small">Upload CV Trainer (PDF)</label>
                               <div class="input-group">
-                                  <input type="file" name="cv" id="add_cv" class="form-control rounded-start-3" accept=".pdf,.doc,.docx">
+                                  <input type="file" name="cv" id="add_cv" class="form-control form-control-modern rounded-start-3" accept=".pdf,.doc,.docx">
                                   <button type="button" class="btn btn-outline-danger rounded-end-3" onclick="document.getElementById('add_cv').value = ''" title="Batal unggah file">
                                       <i class="fas fa-times"></i>
                                   </button>
@@ -409,29 +409,29 @@
                           <!-- 
                           <div class="col-md-6">
                               <label class="form-label fw-bold small">Upload Modul</label>
-                              <input type="file" name="modul" class="form-control rounded-3">
+                              <input type="file" name="modul" class="form-control form-control-modern rounded-3">
                           </div>
                           -->
                           <div class="col-12"><hr class="text-muted opacity-25"></div>
                           <div class="col-md-6">
                               <label class="form-label fw-bold small">Nama LSP</label>
-                              <input type="text" name="nama_lsp" class="form-control rounded-3">
+                              <input type="text" name="nama_lsp" class="form-control form-control-modern rounded-3">
                           </div>
                           <div class="col-md-6">
                               <label class="form-label fw-bold small">Kontak LSP</label>
-                              <input type="text" name="kontak_lsp" class="form-control rounded-3">
+                              <input type="text" name="kontak_lsp" class="form-control form-control-modern rounded-3">
                           </div>
                           <div class="col-md-4">
                               <label class="form-label fw-bold small">Tanggal Asesmen</label>
-                              <input type="date" name="tanggal_asesmen" class="form-control rounded-3">
+                              <input type="date" name="tanggal_asesmen" class="form-control form-control-modern rounded-3">
                           </div>
                           <div class="col-md-4">
                               <label class="form-label fw-bold small">Nama Asesor</label>
-                              <input type="text" name="nama_asesor" class="form-control rounded-3">
+                              <input type="text" name="nama_asesor" class="form-control form-control-modern rounded-3">
                           </div>
                           <div class="col-md-4">
                               <label class="form-label fw-bold small">WA Asesor</label>
-                              <input type="text" name="wa_asesor" class="form-control rounded-3">
+                              <input type="text" name="wa_asesor" class="form-control form-control-modern rounded-3">
                           </div>
                       </div>
                   </div>
@@ -446,7 +446,7 @@
                       <div class="row g-3">
                           <div class="col-md-4">
                               <label class="form-label fw-bold small">PIC Kegiatan</label>
-                              <select name="pic" class="form-select rounded-3">
+                              <select name="pic" class="form-select form-control-modern rounded-3">
                                   <option value="">Pilih PIC...</option>
                                   <?php $__currentLoopData = $users; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $user): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
                                       <option value="<?php echo e($user->name); ?>"><?php echo e($user->nama_lengkap ?: $user->name); ?></option>
@@ -457,7 +457,7 @@
                           <div class="col-md-4">
                               <label class="form-label fw-bold small">Laporan PIC (File)</label>
                               <div class="input-group">
-                                  <input type="file" name="laporan_pic" id="add_laporan_pic" class="form-control rounded-start-3">
+                                  <input type="file" name="laporan_pic" id="add_laporan_pic" class="form-control form-control-modern rounded-start-3">
                                   <button type="button" class="btn btn-outline-danger rounded-end-3" onclick="document.getElementById('add_laporan_pic').value = ''" title="Batal unggah file">
                                       <i class="fas fa-times"></i>
                                   </button>
@@ -465,7 +465,7 @@
                           </div>
                           <div class="col-md-4">
                               <label class="form-label fw-bold small">Status Kompeten</label>
-                              <select name="status_kompeten" class="form-select rounded-3">
+                              <select name="status_kompeten" class="form-select form-control-modern rounded-3">
                                   <option value="">Pilih...</option>
                                   <option value="Kompeten">Kompeten</option>
                                   <option value="Belum">Belum Kompeten</option>
@@ -473,7 +473,7 @@
                           </div>
                           <div class="col-md-4">
                               <label class="form-label fw-bold small">Status Sertifikat</label>
-                              <select name="status_sertif" class="form-select rounded-3">
+                              <select name="status_sertif" class="form-select form-control-modern rounded-3">
                                   <option value="">Pilih...</option>
                                   <option value="Sudah Terbit">Sudah Terbit</option>
                                   <option value="Belum Terbit">Belum Terbit</option>
@@ -482,7 +482,7 @@
                           <div class="col-md-4">
                               <label class="form-label fw-bold small">Scan Sertif (File)</label>
                               <div class="input-group">
-                                  <input type="file" name="scan_sertif" id="add_scan_sertif" class="form-control rounded-start-3">
+                                  <input type="file" name="scan_sertif" id="add_scan_sertif" class="form-control form-control-modern rounded-start-3">
                                   <button type="button" class="btn btn-outline-danger rounded-end-3" onclick="document.getElementById('add_scan_sertif').value = ''" title="Batal unggah file">
                                       <i class="fas fa-times"></i>
                                   </button>
@@ -490,7 +490,7 @@
                           </div>
                           <div class="col-12">
                               <label class="form-label fw-bold small">Keterangan Tambahan</label>
-                              <textarea name="keterangan_tambahan" class="form-control rounded-3" rows="2" placeholder="Catatan tambahan sertifikasi..."></textarea>
+                              <textarea name="keterangan_tambahan" class="form-control form-control-modern rounded-3" rows="2" placeholder="Catatan tambahan sertifikasi..."></textarea>
                           </div>
                       </div>
                   </div>
@@ -505,23 +505,23 @@
                       <div class="row g-3">
                           <div class="col-md-6">
                               <label class="form-label fw-bold small">Nama Penerima</label>
-                              <input type="text" name="nama_penerima" class="form-control rounded-3">
+                              <input type="text" name="nama_penerima" class="form-control form-control-modern rounded-3">
                           </div>
                           <div class="col-md-6">
                               <label class="form-label fw-bold small">WA Penerima</label>
-                              <input type="text" name="wa_penerima" class="form-control rounded-3">
+                              <input type="text" name="wa_penerima" class="form-control form-control-modern rounded-3">
                           </div>
                           <div class="col-md-12">
                               <label class="form-label fw-bold small">Alamat Lengkap</label>
-                              <textarea name="alamat_pengiriman" class="form-control rounded-3" rows="2"></textarea>
+                              <textarea name="alamat_pengiriman" class="form-control form-control-modern rounded-3" rows="2"></textarea>
                           </div>
                           <div class="col-md-12">
                               <label class="form-label fw-bold small">Isi Paket</label>
-                              <textarea name="isi_paket" class="form-control rounded-3" rows="2" placeholder="Misal: 5 Modul, 5 Tas, Sertifikat Asli..."></textarea>
+                              <textarea name="isi_paket" class="form-control form-control-modern rounded-3" rows="2" placeholder="Misal: 5 Modul, 5 Tas, Sertifikat Asli..."></textarea>
                           </div>
                           <div class="col-md-4">
                               <label class="form-label fw-bold small">Status Pengiriman</label>
-                              <select name="status_pengiriman" class="form-select rounded-3">
+                              <select name="status_pengiriman" class="form-select form-control-modern rounded-3">
                                   <option value="">Pilih...</option>
                                   <option value="Diproses">Diproses</option>
                                   <option value="Dikirim">Dikirim</option>
@@ -530,23 +530,23 @@
                           </div>
                           <div class="col-md-4">
                               <label class="form-label fw-bold small">Tgl. Kirim</label>
-                              <input type="date" name="tanggal_kirim" class="form-control rounded-3">
+                              <input type="date" name="tanggal_kirim" class="form-control form-control-modern rounded-3">
                           </div>
                           <div class="col-md-4">
                               <label class="form-label fw-bold small">Tgl. Diterima</label>
-                              <input type="date" name="tanggal_diterima" class="form-control rounded-3">
+                              <input type="date" name="tanggal_diterima" class="form-control form-control-modern rounded-3">
                           </div>
                           <div class="col-md-6">
                               <label class="form-label fw-bold small">Nomor Resi</label>
-                              <input type="text" name="no_resi" class="form-control rounded-3" placeholder="Masukkan resi kurir...">
+                              <input type="text" name="no_resi" class="form-control form-control-modern rounded-3" placeholder="Masukkan resi kurir...">
                           </div>
                           <div class="col-md-6">
                               <label class="form-label fw-bold small">Foto Bukti (Upload)</label>
-                              <input type="file" name="foto" class="form-control rounded-3" accept="image/*">
+                              <input type="file" name="foto" class="form-control form-control-modern rounded-3" accept="image/*">
                           </div>
                           <div class="col-md-12 mt-4">
                               <label class="form-label fw-bold small">Catatan Akhir / Log</label>
-                              <textarea name="catatan" class="form-control rounded-3" rows="2" placeholder="Catatan bebas..."></textarea>
+                              <textarea name="catatan" class="form-control form-control-modern rounded-3" rows="2" placeholder="Catatan bebas..."></textarea>
                           </div>
                       </div>
                   </div>
@@ -621,8 +621,8 @@
                         <i class="fas fa-graduation-cap position-absolute text-primary" style="font-size: 8rem; right: -20px; bottom: -20px; opacity: 0.1;"></i>
                         <div class="position-relative z-1 text-start pe-5">
                             
-                                <span class="badge bg-primary px-3 py-1 fs-6 rounded-pill shadow-sm"><?php echo e($item->jenis ?? 'N/A'); ?></span>
-                                <span class="badge bg-white text-dark px-3 py-1 fs-6 rounded-pill shadow-sm border"><?php echo e($item->metode ?? 'N/A'); ?></span>
+                                <span class="badge bg-primary-subtle text-primary px-3 py-1 fs-6 rounded-pill shadow-sm"><?php echo e($item->jenis ?? 'N/A'); ?></span>
+                                <span class="badge bg-secondary-subtle text-secondary px-3 py-1 fs-6 rounded-pill shadow-sm"><?php echo e($item->metode ?? 'N/A'); ?></span>
                             
                             <h4 class="fw-black text-dark mb-1 mt-2"><?php echo e($item->judul_pelatihan); ?></h4>
                             
@@ -650,7 +650,7 @@
                                 <div class="row g-3">
                                     <div class="col-sm-6">
                                         <div class="text-muted small fw-bold mb-1">Jumlah Peserta Terdaftar</div>
-                                        <div class="fw-bolder text-dark"><span class="badge bg-warning text-dark px-2 py-1 fs-6 me-1"><?php echo e($item->jumlah_peserta ?? 0); ?></span> Orang</div>
+                                        <div class="fw-bolder text-dark"><span class="badge bg-warning-subtle text-warning-emphasis px-2 py-1 fs-6 me-1"><?php echo e($item->jumlah_peserta ?? 0); ?></span> Orang</div>
                                     </div>
                                     <div class="col-sm-6">
                                         <div class="text-muted small fw-bold mb-1">Syarat Kelengkapan</div>
@@ -737,13 +737,12 @@
                                             <?php endif; ?>
                                             <div class="mt-2 d-flex flex-wrap gap-1">
                                                 <?php if($item->cv): ?>
-                                                    <a href="<?php echo e(getFileUrl($item->cv)); ?>" target="_blank" class="badge bg-danger text-white text-decoration-none px-2 py-1"><i class="fas fa-file-pdf me-1"></i> CV Trainer</a>
+                                                    <a href="<?php echo e(getFileUrl($item->cv)); ?>" target="_blank" class="badge bg-danger-subtle text-danger text-decoration-none px-2 py-1"><i class="fas fa-file-pdf me-1"></i> CV Trainer</a>
                                                 <?php endif; ?>
-                                                <!--
                                                 <?php if($item->modul): ?>
-                                                    <a href="<?php echo e(getFileUrl($item->modul)); ?>" target="_blank" class="badge bg-primary text-white text-decoration-none px-2 py-1"><i class="fas fa-file-download me-1"></i> Modul</a>
+                                                    <span class="text-muted mx-1">|</span>
+                                                    <a href="<?php echo e(getFileUrl($item->modul)); ?>" target="_blank" class="badge bg-primary-subtle text-primary text-decoration-none px-2 py-1"><i class="fas fa-file-download me-1"></i> Modul</a>
                                                 <?php endif; ?>
-                                                -->
                                             </div>
                                         </div>
                                         <div class="col-sm-6">
@@ -859,7 +858,7 @@
                                     <div class="d-flex justify-content-between align-items-center mb-3 position-relative z-1">
                                         <div>
                                             <div class="text-info-emphasis small fw-bold mb-1">Status Paket</div>
-                                            <span class="badge bg-dark px-3 py-2 fs-6 shadow-sm"><?php echo e($item->status_pengiriman ?? 'Belum Info'); ?></span>
+                                            <span class="badge bg-secondary-subtle text-secondary px-3 py-2 fs-6 shadow-sm"><?php echo e($item->status_pengiriman ?? 'Belum Info'); ?></span>
                                         </div>
                                         <div class="text-end">
                                             <div class="text-info-emphasis small fw-bold mb-1">Nomor Resi</div>
@@ -1012,7 +1011,7 @@
                                 
                                 <div class="mb-3">
                                     <label class="form-label small text-muted">Pilih File (Bisa pilih berulang kali. Foto max 5MB, Video max 20MB)</label>
-                                    <input type="file" id="dokumentasiInput<?php echo e($item->id); ?>" class="form-control rounded-3" multiple accept="image/*,video/*" onchange="handleFileSelect(event, <?php echo e($item->id); ?>)">
+                                    <input type="file" id="dokumentasiInput<?php echo e($item->id); ?>" class="form-control form-control-modern rounded-3" multiple accept="image/*,video/*" onchange="handleFileSelect(event, <?php echo e($item->id); ?>)">
                                     <div id="fileQueuePreview<?php echo e($item->id); ?>" class="mt-2 d-flex flex-wrap gap-2"></div>
                                 </div>
                                 <div class="text-end">
@@ -1045,22 +1044,22 @@
                     <div class="modal-body p-4">
                         <div class="mb-3">
                             <label class="form-label small fw-bold">Judul Pelatihan</label>
-                            <input type="text" name="judul_pelatihan" class="form-control rounded-3" value="<?php echo e($item->judul_pelatihan); ?>" required>
+                            <input type="text" name="judul_pelatihan" class="form-control form-control-modern rounded-3" value="<?php echo e($item->judul_pelatihan); ?>" required>
                         </div>
                         <div class="row g-2 mb-3">
                             <div class="col-6">
                                 <label class="form-label small fw-bold">Tanggal Mulai</label>
-                                <input type="date" name="tanggal_mulai" class="form-control rounded-3" value="<?php echo e($item->tanggal_mulai); ?>" required>
+                                <input type="date" name="tanggal_mulai" class="form-control form-control-modern rounded-3" value="<?php echo e($item->tanggal_mulai); ?>" required>
                             </div>
                             <div class="col-6">
                                 <label class="form-label small fw-bold">Tanggal Selesai</label>
-                                <input type="date" name="tanggal_selesai" class="form-control rounded-3" value="<?php echo e($item->tanggal_selesai); ?>" required>
+                                <input type="date" name="tanggal_selesai" class="form-control form-control-modern rounded-3" value="<?php echo e($item->tanggal_selesai); ?>" required>
                             </div>
                         </div>
                         <div class="row g-2">
                             <div class="col-6">
                                 <label class="form-label small fw-bold">Jenis</label>
-                                <select name="jenis" class="form-select rounded-3">
+                                <select name="jenis" class="form-select form-control-modern rounded-3">
                                     <option value="Sertifikat KEMNAKER" <?php echo e($item->jenis == 'Sertifikat KEMNAKER' ? 'selected' : ''); ?>>Sertifikat KEMNAKER</option>
                                     <option value="Sertifikat BNSP" <?php echo e($item->jenis == 'Sertifikat BNSP' ? 'selected' : ''); ?>>Sertifikat BNSP</option>
                                     <option value="UPSKILLS" <?php echo e($item->jenis == 'UPSKILLS' ? 'selected' : ''); ?>>UPSKILLS</option>
@@ -1071,7 +1070,7 @@
                             </div>
                             <div class="col-6">
                                 <label class="form-label small fw-bold">Metode</label>
-                                <select name="metode" class="form-select rounded-3">
+                                <select name="metode" class="form-select form-control-modern rounded-3">
                                     <option value="Online Training" <?php echo e($item->metode == 'Online Training' ? 'selected' : ''); ?>>Online Training</option>
                                     <option value="Offline Training" <?php echo e($item->metode == 'Offline Training' ? 'selected' : ''); ?>>Offline Training</option>
                                     <option value="Blended Training" <?php echo e($item->metode == 'Blended Training' ? 'selected' : ''); ?>>Blended Training</option>
@@ -1105,11 +1104,11 @@
                     <div class="modal-body p-4">
                         <div class="mb-3">
                             <label class="form-label small fw-bold">Link Syarat Peserta (GDrive)</label>
-                            <input type="url" name="syarat_peserta" class="form-control rounded-3" value="<?php echo e($item->syarat_peserta); ?>">
+                            <input type="url" name="syarat_peserta" class="form-control form-control-modern rounded-3" value="<?php echo e($item->syarat_peserta); ?>">
                         </div>
                         <div class="mb-0">
                             <label class="form-label small fw-bold">Keterangan Syarat</label>
-                            <select name="ket_syarat" class="form-select rounded-3">
+                            <select name="ket_syarat" class="form-select form-control-modern rounded-3">
                                 <option value="Lengkap" <?php echo e($item->ket_syarat == 'Lengkap' ? 'selected' : ''); ?>>Lengkap</option>
                                 <option value="Belum" <?php echo e($item->ket_syarat == 'Belum' ? 'selected' : ''); ?>>Belum Lengkap</option>
                             </select>
@@ -1139,16 +1138,16 @@
                         <div class="row g-3">
                             <div class="col-md-6">
                                 <label class="form-label small fw-bold">Nama Trainer</label>
-                                <input type="text" name="nama_trainer" class="form-control rounded-3" value="<?php echo e($item->nama_trainer); ?>">
+                                <input type="text" name="nama_trainer" class="form-control form-control-modern rounded-3" value="<?php echo e($item->nama_trainer); ?>">
                             </div>
                             <div class="col-md-6">
                                 <label class="form-label small fw-bold">WA Trainer</label>
-                                <input type="text" name="wa_trainer" class="form-control rounded-3" value="<?php echo e($item->wa_trainer); ?>">
+                                <input type="text" name="wa_trainer" class="form-control form-control-modern rounded-3" value="<?php echo e($item->wa_trainer); ?>">
                             </div>
                             <div class="col-md-6">
                                 <label class="form-label small fw-bold">Upload CV Trainer (PDF)</label>
                                 <div class="input-group input-group-sm">
-                                    <input type="file" name="cv" id="cv_<?php echo e($item->id); ?>" class="form-control" accept=".pdf,.doc,.docx">
+                                    <input type="file" name="cv" id="cv_<?php echo e($item->id); ?>" class="form-control form-control-modern" accept=".pdf,.doc,.docx">
                                     <button type="button" class="btn btn-outline-danger" onclick="document.getElementById('cv_<?php echo e($item->id); ?>').value = ''" title="Batal unggah file">
                                         <i class="fas fa-times"></i>
                                     </button>
@@ -1166,7 +1165,7 @@
                             <!--
                             <div class="col-md-6">
                                 <label class="form-label small fw-bold">Upload Modul</label>
-                                <input type="file" name="modul" class="form-control rounded-3">
+                                <input type="file" name="modul" class="form-control form-control-modern rounded-3">
                                 <?php if($item->modul): ?>
                                     <div class="small mt-1 text-success"><i class="fas fa-check-circle"></i> File sudah ada. Abaikan jika tidak diubah.</div>
                                 <?php endif; ?>
@@ -1175,23 +1174,23 @@
                             <div class="col-12"><hr class="text-muted opacity-25"></div>
                             <div class="col-md-6">
                                 <label class="form-label small fw-bold">Nama LSP</label>
-                                <input type="text" name="nama_lsp" class="form-control rounded-3" value="<?php echo e($item->nama_lsp); ?>">
+                                <input type="text" name="nama_lsp" class="form-control form-control-modern rounded-3" value="<?php echo e($item->nama_lsp); ?>">
                             </div>
                             <div class="col-md-6">
                                 <label class="form-label small fw-bold">Kontak LSP</label>
-                                <input type="text" name="kontak_lsp" class="form-control rounded-3" value="<?php echo e($item->kontak_lsp); ?>">
+                                <input type="text" name="kontak_lsp" class="form-control form-control-modern rounded-3" value="<?php echo e($item->kontak_lsp); ?>">
                             </div>
                             <div class="col-md-6">
                                 <label class="form-label small fw-bold">Nama Asesor</label>
-                                <input type="text" name="nama_asesor" class="form-control rounded-3" value="<?php echo e($item->nama_asesor); ?>">
+                                <input type="text" name="nama_asesor" class="form-control form-control-modern rounded-3" value="<?php echo e($item->nama_asesor); ?>">
                             </div>
                             <div class="col-md-6">
                                 <label class="form-label small fw-bold">WA Asesor</label>
-                                <input type="text" name="wa_asesor" class="form-control rounded-3" value="<?php echo e($item->wa_asesor); ?>">
+                                <input type="text" name="wa_asesor" class="form-control form-control-modern rounded-3" value="<?php echo e($item->wa_asesor); ?>">
                             </div>
                             <div class="col-md-6">
                                 <label class="form-label small fw-bold">PIC Kegiatan</label>
-                                <select name="pic" class="form-select rounded-3">
+                                <select name="pic" class="form-select form-control-modern rounded-3">
                                     <option value="">Pilih...</option>
                                     <?php $__currentLoopData = $users; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $usr): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
                                         <option value="<?php echo e($usr->name); ?>" <?php echo e($item->pic == $usr->name ? 'selected' : ''); ?>><?php echo e($usr->nama_lengkap ?: $usr->name); ?></option>
@@ -1200,7 +1199,7 @@
                             </div>
                             <div class="col-md-6">
                                 <label class="form-label small fw-bold">Tanggal Asesmen</label>
-                                <input type="date" name="tanggal_asesmen" class="form-control rounded-3" value="<?php echo e($item->tanggal_asesmen); ?>">
+                                <input type="date" name="tanggal_asesmen" class="form-control form-control-modern rounded-3" value="<?php echo e($item->tanggal_asesmen); ?>">
                             </div>
                         </div>
                     </div>
@@ -1227,7 +1226,7 @@
                     <div class="modal-body p-4">
                         <div class="mb-3">
                             <label class="form-label small fw-bold">Status Kompeten</label>
-                            <select name="status_kompeten" class="form-select rounded-3" onchange="toggleBuktiKompeten(this, <?php echo e($item->id); ?>)">
+                            <select name="status_kompeten" class="form-select form-control-modern rounded-3" onchange="toggleBuktiKompeten(this, <?php echo e($item->id); ?>)">
                                 <option value="" <?php echo e(empty($item->status_kompeten) ? 'selected' : ''); ?>>Pilih...</option>
                                 <option value="Kompeten" <?php echo e($item->status_kompeten == 'Kompeten' ? 'selected' : ''); ?>>Kompeten</option>
                                 <option value="Belum" <?php echo e($item->status_kompeten == 'Belum' ? 'selected' : ''); ?>>Belum Kompeten</option>
@@ -1235,7 +1234,7 @@
                         </div>
                         <div class="mb-3" id="bukti-kompeten-container-<?php echo e($item->id); ?>" style="display: <?php echo e($item->status_kompeten == 'Kompeten' ? 'block' : 'none'); ?>;">
                             <label class="form-label small fw-bold">Upload Bukti Kompeten (PDF, Maks 30MB)</label>
-                            <input type="file" name="bukti_kompeten" class="form-control form-control-sm" accept=".pdf">
+                            <input type="file" name="bukti_kompeten" class="form-control form-control-modern form-control-sm" accept=".pdf">
                             <?php if($item->bukti_kompeten): ?>
                                 <div class="d-flex align-items-center mt-1">
                                     <a href="<?php echo e(getFileUrl($item->bukti_kompeten)); ?>" target="_blank" class="small text-primary me-3"><i class="fas fa-file-pdf me-1"></i> Lihat Bukti Saat Ini</a>
@@ -1245,7 +1244,7 @@
                         </div>
                         <div class="mb-3">
                             <label class="form-label small fw-bold">Status Sertifikat</label>
-                            <select name="status_sertif" class="form-select rounded-3">
+                            <select name="status_sertif" class="form-select form-control-modern rounded-3">
                                 <option value="" <?php echo e(empty($item->status_sertif) ? 'selected' : ''); ?>>Pilih...</option>
                                 <option value="Sudah Terbit" <?php echo e($item->status_sertif == 'Sudah Terbit' ? 'selected' : ''); ?>>Sudah Terbit</option>
                                 <option value="Belum Terbit" <?php echo e($item->status_sertif == 'Belum Terbit' ? 'selected' : ''); ?>>Belum Terbit</option>
@@ -1253,7 +1252,7 @@
                         </div>
                         <div class="mb-3">
                             <label class="form-label small fw-bold">Status Pengiriman Sertifikat</label>
-                            <select name="status_pengiriman" class="form-select rounded-3">
+                            <select name="status_pengiriman" class="form-select form-control-modern rounded-3">
                                 <option value="" <?php echo e(empty($item->status_pengiriman) ? 'selected' : ''); ?>>Pilih...</option>
                                 <option value="Diproses" <?php echo e($item->status_pengiriman == 'Diproses' ? 'selected' : ''); ?>>Diproses</option>
                                 <option value="Dikirim" <?php echo e($item->status_pengiriman == 'Dikirim' ? 'selected' : ''); ?>>Dikirim</option>
@@ -1265,7 +1264,7 @@
                             <div class="mb-3">
                                 <label class="small text-muted">Scan Sertifikat (PDF, Maks 30MB)</label>
                                 <div class="input-group input-group-sm">
-                                    <input type="file" name="scan_sertif" id="scan_sertif_<?php echo e($item->id); ?>" class="form-control" accept=".pdf">
+                                    <input type="file" name="scan_sertif" id="scan_sertif_<?php echo e($item->id); ?>" class="form-control form-control-modern" accept=".pdf">
                                     <button type="button" class="btn btn-outline-danger" onclick="document.getElementById('scan_sertif_<?php echo e($item->id); ?>').value = ''" title="Batal unggah file">
                                         <i class="fas fa-times"></i>
                                     </button>
@@ -1283,7 +1282,7 @@
                             <div class="mb-2">
                                 <label class="small text-muted">Laporan PIC (PDF, Maks 30MB)</label>
                                 <div class="input-group input-group-sm">
-                                    <input type="file" name="laporan_pic" id="laporan_pic_<?php echo e($item->id); ?>" class="form-control" accept=".pdf">
+                                    <input type="file" name="laporan_pic" id="laporan_pic_<?php echo e($item->id); ?>" class="form-control form-control-modern" accept=".pdf">
                                     <button type="button" class="btn btn-outline-danger" onclick="document.getElementById('laporan_pic_<?php echo e($item->id); ?>').value = ''" title="Batal unggah file">
                                         <i class="fas fa-times"></i>
                                     </button>
@@ -1308,7 +1307,7 @@
                         </div>
                         <div class="mb-0">
                             <label class="form-label small fw-bold">Keterangan Tambahan</label>
-                            <textarea name="keterangan_tambahan" class="form-control rounded-3" rows="2"><?php echo e($item->keterangan_tambahan); ?></textarea>
+                            <textarea name="keterangan_tambahan" class="form-control form-control-modern rounded-3" rows="2"><?php echo e($item->keterangan_tambahan); ?></textarea>
                         </div>
                     </div>
                     <div class="modal-footer border-top-0 px-4 pb-4 pt-0">
@@ -1335,23 +1334,23 @@
                         <div class="row g-3">
                             <div class="col-md-6">
                                 <label class="form-label small fw-bold">Nama Penerima</label>
-                                <input type="text" name="nama_penerima" class="form-control rounded-3" value="<?php echo e($item->nama_penerima); ?>">
+                                <input type="text" name="nama_penerima" class="form-control form-control-modern rounded-3" value="<?php echo e($item->nama_penerima); ?>">
                             </div>
                             <div class="col-md-6">
                                 <label class="form-label small fw-bold">WA Penerima</label>
-                                <input type="text" name="wa_penerima" class="form-control rounded-3" value="<?php echo e($item->wa_penerima); ?>">
+                                <input type="text" name="wa_penerima" class="form-control form-control-modern rounded-3" value="<?php echo e($item->wa_penerima); ?>">
                             </div>
                             <div class="col-12">
                                 <label class="form-label small fw-bold">Alamat Lengkap</label>
-                                <textarea name="alamat_pengiriman" class="form-control rounded-3" rows="2"><?php echo e($item->alamat_pengiriman); ?></textarea>
+                                <textarea name="alamat_pengiriman" class="form-control form-control-modern rounded-3" rows="2"><?php echo e($item->alamat_pengiriman); ?></textarea>
                             </div>
                             <div class="col-12">
                                 <label class="form-label small fw-bold">Isi Paket</label>
-                                <textarea name="isi_paket" class="form-control rounded-3" rows="2"><?php echo e($item->isi_paket); ?></textarea>
+                                <textarea name="isi_paket" class="form-control form-control-modern rounded-3" rows="2"><?php echo e($item->isi_paket); ?></textarea>
                             </div>
                             <div class="col-md-4">
                                 <label class="form-label small fw-bold">Status Pengiriman</label>
-                                <select name="status_pengiriman" class="form-select rounded-3">
+                                <select name="status_pengiriman" class="form-select form-control-modern rounded-3">
                                     <option value="" <?php echo e(empty($item->status_pengiriman) ? 'selected' : ''); ?>>Pilih...</option>
                                     <option value="Diproses" <?php echo e($item->status_pengiriman == 'Diproses' ? 'selected' : ''); ?>>Diproses</option>
                                     <option value="Dikirim" <?php echo e($item->status_pengiriman == 'Dikirim' ? 'selected' : ''); ?>>Dikirim</option>
@@ -1360,19 +1359,19 @@
                             </div>
                             <div class="col-md-4">
                                 <label class="form-label small fw-bold">Tanggal Kirim</label>
-                                <input type="date" name="tanggal_kirim" class="form-control rounded-3" value="<?php echo e($item->tanggal_kirim); ?>">
+                                <input type="date" name="tanggal_kirim" class="form-control form-control-modern rounded-3" value="<?php echo e($item->tanggal_kirim); ?>">
                             </div>
                             <div class="col-md-4">
                                 <label class="form-label small fw-bold">Tanggal Diterima</label>
-                                <input type="date" name="tanggal_diterima" class="form-control rounded-3" value="<?php echo e($item->tanggal_diterima); ?>">
+                                <input type="date" name="tanggal_diterima" class="form-control form-control-modern rounded-3" value="<?php echo e($item->tanggal_diterima); ?>">
                             </div>
                             <div class="col-md-6">
                                 <label class="form-label small fw-bold">No Resi</label>
-                                <input type="text" name="no_resi" class="form-control rounded-3" value="<?php echo e($item->no_resi); ?>">
+                                <input type="text" name="no_resi" class="form-control form-control-modern rounded-3" value="<?php echo e($item->no_resi); ?>">
                             </div>
                             <div class="col-md-6">
                                 <label class="form-label small fw-bold">Foto Bukti / Resi (Maks 2MB)</label>
-                                <input type="file" name="foto" class="form-control rounded-3" accept="image/*,.pdf">
+                                <input type="file" name="foto" class="form-control form-control-modern rounded-3" accept="image/*,.pdf">
                                 <?php if($item->foto): ?>
                                     <div class="d-flex align-items-center mt-1">
                                         <a href="<?php echo e(getFileUrl($item->foto)); ?>" target="_blank" class="small text-primary me-3"><i class="fas fa-image me-1"></i> Lihat Foto Saat Ini</a>
@@ -1382,7 +1381,7 @@
                             </div>
                             <div class="col-md-12">
                                 <label class="form-label small fw-bold">Catatan Logistik</label>
-                                <textarea name="catatan" class="form-control rounded-3" rows="1"><?php echo e($item->catatan); ?></textarea>
+                                <textarea name="catatan" class="form-control form-control-modern rounded-3" rows="1"><?php echo e($item->catatan); ?></textarea>
                             </div>
                         </div>
                     </div>
@@ -1416,28 +1415,28 @@
                     <div class="modal-body p-4" style="max-height: 60vh; overflow-y: auto;">
                         <div class="mb-3">
                             <label class="form-label fw-bold small text-success"><i class="fas fa-file-excel me-1"></i> Auto-Fill dari Excel (Opsional)</label>
-                            <textarea id="pasteExcel<?php echo e($item->id); ?>" class="form-control rounded-3" rows="2" placeholder="Copy baris dari Excel lalu Paste di sini...&#10;Urutan Kolom: [Nama] [Instansi] [No WA] [Marketing]"></textarea>
+                            <textarea id="pasteExcel<?php echo e($item->id); ?>" class="form-control form-control-modern rounded-3" rows="2" placeholder="Copy baris dari Excel lalu Paste di sini...&#10;Urutan Kolom: [Nama] [Instansi] [No WA] [Marketing]"></textarea>
                             <small class="text-muted" style="font-size: 11px;">*Maksimal 50 baris sekaligus. Data akan otomatis terisi ke bawah.</small>
                         </div>
                         <div class="mb-3 d-flex align-items-center gap-3 bg-light p-3 rounded-3 border">
                             <label class="form-label fw-bold mb-0">Jumlah Peserta Ditambahkan:</label>
-                            <input type="number" id="inputTambahPeserta<?php echo e($item->id); ?>" class="form-control text-center rounded-3 fw-bold" style="width: 80px;" value="1" min="1" max="50">
+                            <input type="number" id="inputTambahPeserta<?php echo e($item->id); ?>" class="form-control form-control-modern text-center rounded-3 fw-bold" style="width: 80px;" value="1" min="1" max="50">
                         </div>
                         <div id="tambahPesertaContainer<?php echo e($item->id); ?>">
                             <div class="border p-3 rounded-3 mb-2 bg-white shadow-sm">
                                 <h6 class="fw-bold mb-2 small text-secondary">Peserta Tambahan 1</h6>
                                 <div class="row g-2">
                                     <div class="col-md-3">
-                                        <input type="text" name="nama_peserta[]" class="form-control rounded-3 form-control-sm" placeholder="Nama" required>
+                                        <input type="text" name="nama_peserta[]" class="form-control form-control-modern rounded-3 form-control-sm" placeholder="Nama" required>
                                     </div>
                                     <div class="col-md-3">
-                                        <input type="text" name="instansi_peserta[]" class="form-control rounded-3 form-control-sm" placeholder="Instansi">
+                                        <input type="text" name="instansi_peserta[]" class="form-control form-control-modern rounded-3 form-control-sm" placeholder="Instansi">
                                     </div>
                                     <div class="col-md-3">
-                                        <input type="text" name="wa_peserta[]" class="form-control rounded-3 form-control-sm" placeholder="WA">
+                                        <input type="text" name="wa_peserta[]" class="form-control form-control-modern rounded-3 form-control-sm" placeholder="WA">
                                     </div>
                                     <div class="col-md-3">
-                                        <select name="marketing[]" class="form-select rounded-3 form-control-sm">
+                                        <select name="marketing[]" class="form-select form-control-modern rounded-3 form-control-sm">
                                             <option value="">Marketing...</option>
                                             <?php $__currentLoopData = $marketings; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $mkt): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
                                                 <option value="<?php echo e($mkt->name); ?>"><?php echo e($mkt->nama_lengkap ?: $mkt->name); ?></option>
@@ -1504,16 +1503,16 @@
                                                     <h6 class="fw-bold mb-2 small text-secondary">Peserta Tambahan ${i}</h6>
                                                     <div class="row g-2">
                                                         <div class="col-md-3">
-                                                            <input type="text" name="nama_peserta[]" class="form-control rounded-3 form-control-sm" placeholder="Nama" required>
+                                                            <input type="text" name="nama_peserta[]" class="form-control form-control-modern rounded-3 form-control-sm" placeholder="Nama" required>
                                                         </div>
                                                         <div class="col-md-3">
-                                                            <input type="text" name="instansi_peserta[]" class="form-control rounded-3 form-control-sm" placeholder="Instansi">
+                                                            <input type="text" name="instansi_peserta[]" class="form-control form-control-modern rounded-3 form-control-sm" placeholder="Instansi">
                                                         </div>
                                                         <div class="col-md-3">
-                                                            <input type="text" name="wa_peserta[]" class="form-control rounded-3 form-control-sm" placeholder="WA">
+                                                            <input type="text" name="wa_peserta[]" class="form-control form-control-modern rounded-3 form-control-sm" placeholder="WA">
                                                         </div>
                                                         <div class="col-md-3">
-                                                            <select name="marketing[]" class="form-select rounded-3 form-control-sm">
+                                                            <select name="marketing[]" class="form-select form-control-modern rounded-3 form-control-sm">
                                                                 ${marketingOpts}
                                                             </select>
                                                         </div>
@@ -1587,11 +1586,11 @@
                                     
                                     <?php $__currentLoopData = $validPesertas; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $idx => $p): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
                                     <tr class="peserta-row">
-                                        <td class="px-3 py-2"><input type="text" name="nama_peserta[]" class="form-control rounded-3 form-control-sm" value="<?php echo e($p['nama']); ?>" required></td>
-                                        <td class="px-3 py-2"><input type="text" name="instansi_peserta[]" class="form-control rounded-3 form-control-sm" value="<?php echo e($p['instansi']); ?>"></td>
-                                        <td class="px-3 py-2"><input type="text" name="wa_peserta[]" class="form-control rounded-3 form-control-sm" value="<?php echo e($p['wa']); ?>"></td>
+                                        <td class="px-3 py-2"><input type="text" name="nama_peserta[]" class="form-control form-control-modern rounded-3 form-control-sm" value="<?php echo e($p['nama']); ?>" required></td>
+                                        <td class="px-3 py-2"><input type="text" name="instansi_peserta[]" class="form-control form-control-modern rounded-3 form-control-sm" value="<?php echo e($p['instansi']); ?>"></td>
+                                        <td class="px-3 py-2"><input type="text" name="wa_peserta[]" class="form-control form-control-modern rounded-3 form-control-sm" value="<?php echo e($p['wa']); ?>"></td>
                                         <td class="px-3 py-2">
-                                            <select name="marketing[]" class="form-select rounded-3 form-control-sm">
+                                            <select name="marketing[]" class="form-select form-control-modern rounded-3 form-control-sm">
                                                 <option value="">Pilih...</option>
                                                 <?php $__currentLoopData = $marketings; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $mkt): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
                                                     <option value="<?php echo e($mkt->name); ?>" <?php echo e($p['marketing'] == $mkt->name ? 'selected' : ''); ?>><?php echo e($mkt->nama_lengkap ?: $mkt->name); ?></option>
@@ -1627,11 +1626,11 @@
                     const tr = document.createElement('tr');
                     tr.className = 'peserta-row';
                     tr.innerHTML = `
-                        <td class="px-3 py-2"><input type="text" name="nama_peserta[]" class="form-control rounded-3 form-control-sm" required></td>
-                        <td class="px-3 py-2"><input type="text" name="instansi_peserta[]" class="form-control rounded-3 form-control-sm"></td>
-                        <td class="px-3 py-2"><input type="text" name="wa_peserta[]" class="form-control rounded-3 form-control-sm"></td>
+                        <td class="px-3 py-2"><input type="text" name="nama_peserta[]" class="form-control form-control-modern rounded-3 form-control-sm" required></td>
+                        <td class="px-3 py-2"><input type="text" name="instansi_peserta[]" class="form-control form-control-modern rounded-3 form-control-sm"></td>
+                        <td class="px-3 py-2"><input type="text" name="wa_peserta[]" class="form-control form-control-modern rounded-3 form-control-sm"></td>
                         <td class="px-3 py-2">
-                            <select name="marketing[]" class="form-select rounded-3 form-control-sm">
+                            <select name="marketing[]" class="form-select form-control-modern rounded-3 form-control-sm">
                                 <option value="">Pilih...</option>
                                 <?php $__currentLoopData = $marketings; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $mkt): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
                                     <option value="<?php echo e($mkt->name); ?>"><?php echo e($mkt->nama_lengkap ?: $mkt->name); ?></option>
@@ -1681,19 +1680,19 @@
                     <div class="modal-body p-4">
                         <div class="mb-3">
                             <label class="form-label small fw-bold">Nama Peserta</label>
-                            <input type="text" name="nama_peserta" class="form-control rounded-3" value="<?php echo e(trim($peserta)); ?>" required>
+                            <input type="text" name="nama_peserta" class="form-control form-control-modern rounded-3" value="<?php echo e(trim($peserta)); ?>" required>
                         </div>
                         <div class="mb-3">
                             <label class="form-label small fw-bold">Perusahaan / Instansi</label>
-                            <input type="text" name="instansi_peserta" class="form-control rounded-3" value="<?php echo e(trim($instansis[$i] ?? '')); ?>">
+                            <input type="text" name="instansi_peserta" class="form-control form-control-modern rounded-3" value="<?php echo e(trim($instansis[$i] ?? '')); ?>">
                         </div>
                         <div class="mb-3">
                             <label class="form-label small fw-bold">WA Peserta</label>
-                            <input type="text" name="wa_peserta" class="form-control rounded-3" value="<?php echo e(trim($was[$i] ?? '')); ?>">
+                            <input type="text" name="wa_peserta" class="form-control form-control-modern rounded-3" value="<?php echo e(trim($was[$i] ?? '')); ?>">
                         </div>
                         <div class="mb-0">
                             <label class="form-label small fw-bold">Marketing</label>
-                            <select name="marketing" class="form-select rounded-3">
+                            <select name="marketing" class="form-select form-control-modern rounded-3">
                                 <option value="">Pilih...</option>
                                 <?php $__currentLoopData = $marketings; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $mkt): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
                                     <option value="<?php echo e($mkt->name); ?>" <?php echo e(trim($mkts[$i] ?? '') == $mkt->name ? 'selected' : ''); ?>><?php echo e($mkt->nama_lengkap ?: $mkt->name); ?></option>
@@ -1898,19 +1897,19 @@
                             <div class="row g-2">
                                 <div class="col-md-3">
                                     <label class="small fw-bold">Nama Peserta <span class="text-danger">*</span></label>
-                                    <input type="text" name="nama_peserta[]" class="form-control form-control-sm" required>
+                                    <input type="text" name="nama_peserta[]" class="form-control form-control-modern form-control-sm" required>
                                 </div>
                                 <div class="col-md-3">
                                     <label class="small fw-bold">Instansi</label>
-                                    <input type="text" name="instansi_peserta[]" class="form-control form-control-sm">
+                                    <input type="text" name="instansi_peserta[]" class="form-control form-control-modern form-control-sm">
                                 </div>
                                 <div class="col-md-3">
                                     <label class="small fw-bold">WA Peserta</label>
-                                    <input type="text" name="wa_peserta[]" class="form-control form-control-sm">
+                                    <input type="text" name="wa_peserta[]" class="form-control form-control-modern form-control-sm">
                                 </div>
                                 <div class="col-md-3">
                                     <label class="small fw-bold">Marketing</label>
-                                    <select name="marketing[]" class="form-select form-control-sm">
+                                    <select name="marketing[]" class="form-select form-control-modern form-control-sm">
                                         ${marketingOptions}
                                     </select>
                                 </div>
