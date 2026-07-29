@@ -13,6 +13,12 @@
   </p>
 
   <p>
+    <img src="https://img.shields.io/badge/ERP-System-28a745?style=for-the-badge" alt="ERP">
+    <img src="https://img.shields.io/badge/CRM-Marketing-007bff?style=for-the-badge" alt="CRM">
+    <img src="https://img.shields.io/badge/HRIS-Human_Resources-dc3545?style=for-the-badge" alt="HRIS">
+  </p>
+
+  <p>
     <img src="https://img.shields.io/badge/Laravel-12.x-FF2D20?style=for-the-badge&logo=laravel&logoColor=white" alt="Laravel 12">
     <img src="https://img.shields.io/badge/PHP-8.2+-777BB4?style=for-the-badge&logo=php&logoColor=white" alt="PHP 8.2">
     <img src="https://img.shields.io/badge/MySQL-005C84?style=for-the-badge&logo=mysql&logoColor=white" alt="MySQL">
@@ -24,7 +30,7 @@
 
 ## 🚀 Tentang Proyek
 
-Proyek **Dashboard Marketing & HR** ini adalah sistem *Enterprise Resource Planning* (ERP) mini berbasis web yang dirancang untuk mengelola berbagai alur kerja perusahaan dalam satu platform terpusat. Aplikasi ini menangani mulai dari akuisisi pelanggan (Pipeline/Prospek), pengelolaan *training*, hingga manajemen Sumber Daya Manusia (Absensi & Penggajian).
+Proyek **Dashboard Marketing & HR** ini adalah sebuah ekosistem *Enterprise Resource Planning* (**ERP**) terpadu yang menggabungkan kekuatan *Customer Relationship Management* (**CRM**) dan *Human Resources Information System* (**HRIS**) dalam satu platform terpusat. Aplikasi ini dirancang untuk mendigitalisasi dan mengotomatisasi seluruh alur kerja perusahaan, mulai dari hulu (akuisisi pelanggan & prospek) hingga hilir (manajemen SDM, absensi, & penggajian).
 
 Aplikasi ini dikembangkan menggunakan **Laravel 12** dan sangat cocok digunakan sebagai bahan portofolio pengembangan perangkat lunak (SaaS/B2B System).
 
