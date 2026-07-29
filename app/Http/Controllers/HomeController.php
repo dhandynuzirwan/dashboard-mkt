@@ -175,9 +175,9 @@ class HomeController extends Controller
         foreach ($pelatihans as $pel) {
             if ($pel->tanggal_pelatihan) {
                 $day = Carbon::parse($pel->tanggal_pelatihan)->day;
-                $calendarEvents[$day] = ['color' => 'warning', 'title' => 'Training: ' . Str::limit($pel->training->nama_pelatihan ?? 'Tanpa Nama', 20)];
+                $calendarEvents[$day] = ['color' => 'warning', 'title' => 'Training: ' . Str::limit($pel->training->nama_training ?? 'Tanpa Nama', 20)];
                 $upcomingAgendas->push([
-                    'title' => 'Training: ' . Str::limit($pel->training->nama_pelatihan ?? 'Tanpa Nama', 20),
+                    'title' => 'Training: ' . Str::limit($pel->training->nama_training ?? 'Tanpa Nama', 20),
                     'date' => Carbon::parse($pel->tanggal_pelatihan),
                     'color' => 'warning'
                 ]);
