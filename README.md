@@ -56,13 +56,19 @@ Aplikasi ini dikembangkan menggunakan **Laravel 12** dan sangat cocok digunakan 
 
 ---
 
-## 🛠️ Teknologi yang Digunakan
+## 🛠️ Arsitektur & Teknologi (Tech Stack)
 
-* **Backend**: Laravel 12.x, PHP 8.2+
-* **Database**: MySQL / MariaDB
-* **Frontend**: Bootstrap 5, Kaiadmin Template, jQuery
-* **Interaktivitas**: SweetAlert2, Canvas Confetti
-* **Package Pendukung**: Maatwebsite Excel (Eksport/Import), Laravel Sanctum
+Aplikasi ini dibangun menggunakan arsitektur *Monolith Modern* dengan pendekatan MVC, didukung oleh infrastruktur teknologi yang tangguh dan dapat diskalakan (*scalable*):
+
+* **Core Backend Framework**: Laravel 12.x
+* **Runtime Environment**: PHP 8.2+ (Optimasi performa & *Type Safety*)
+* **Relational Database Management System (RDBMS)**: MySQL / MariaDB (Terstruktur & terindeks untuk query volume tinggi)
+* **Frontend UI/UX**: Bootstrap 5, Custom SCSS/CSS Architecture, Blade Templating Engine
+* **Interactivity & DOM Manipulation**: Vanilla JavaScript & jQuery teroptimasi
+* **Micro-Interactions**: SweetAlert2 (Notifikasi asinkron) & Canvas Confetti (Micro-interactions)
+* **Dependency & Package Management**: Composer (PHP) & NPM (Node.js)
+* **Data Export/Import**: Laravel Excel / PhpSpreadsheet (Integrasi laporan data)
+* **API Security & Authentication**: Laravel Sanctum (Stateful Session & Token-based)
 
 ---
 
