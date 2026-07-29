@@ -67,6 +67,15 @@
     <div class="container-fluid py-4 px-3 px-md-4">
         
         {{-- Header --}}
+        <div class="alert alert-warning alert-dismissible fade show shadow-sm rounded-4 border-0 border-start border-4 border-warning mb-4" role="alert">
+            <div class="d-flex align-items-center">
+                <i class="fas fa-info-circle fs-4 text-warning me-3"></i>
+                <div>
+                    <strong>Informasi:</strong> Halaman ini saat ini masih dalam tahap pengembangan dan belum berfungsi (Hanya Tampilan Data Dummy).
+                </div>
+            </div>
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
         <div class="d-flex flex-column flex-md-row justify-content-between align-items-md-center mb-5 gap-3">
             <div>
                 <h2 class="fw-bolder text-dark mb-1" style="letter-spacing: -0.5px;">Permintaan Training</h2>
