@@ -232,8 +232,10 @@
                                         <div class="mb-1">
                                             <?php if($item->status_sertif == 'Sudah Terbit'): ?>
                                                 <span class="badge bg-success-subtle text-success px-2 py-1"><i class="fas fa-check-circle me-1"></i>Sertif Terbit</span>
-                                            <?php else: ?>
+                                            <?php elseif($item->status_sertif == 'Belum Terbit'): ?>
                                                 <span class="badge bg-warning-subtle text-warning-emphasis px-2 py-1"><i class="fas fa-clock me-1"></i>Sertif Pending</span>
+                                            <?php else: ?>
+                                                <span class="badge bg-light text-muted border px-2 py-1"><i class="fas fa-minus-circle me-1"></i>Belum Diinput</span>
                                             <?php endif; ?>
                                         </div>
                                         <div>
