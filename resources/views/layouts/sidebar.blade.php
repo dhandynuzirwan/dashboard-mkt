@@ -306,6 +306,35 @@
                                         </a>
                                     </li>
                                 @endif
+
+
+                            </ul>
+                        </div>
+                    </li>
+                @endif
+                
+                {{-- ================= MENU PERMINTAAN VISUAL ================= --}}
+                @if(in_array(auth()->user()->role, ['superadmin', 'web_dev', 'operasional', 'graphic']))
+                    @php $isPermintaanVisual = request()->routeIs(['operational.permintaan-visual.*']); @endphp
+                    <li class="nav-item {{ $isPermintaanVisual ? 'active' : '' }}">
+                        <a data-bs-toggle="collapse" href="#permintaanVisual" class="{{ $isPermintaanVisual ? '' : 'collapsed' }}" aria-expanded="{{ $isPermintaanVisual ? 'true' : 'false' }}">
+                            <i class="fas fa-palette"></i>
+                            <p>Permintaan Visual</p>
+                            <span class="badge badge-dark">Beta</span>
+                            <span class="caret"></span>
+                        </a>
+                        <div class="collapse {{ $isPermintaanVisual ? 'show' : '' }}" id="permintaanVisual">
+                            <ul class="nav nav-collapse">
+                                <li class="{{ request()->routeIs('operational.permintaan-visual.biasa*') ? 'active' : '' }}">
+                                    <a href="{{ route('operational.permintaan-visual.biasa') }}">
+                                        <span class="sub-item">Permintaan Biasa</span>
+                                    </a>
+                                </li>
+                                <li class="{{ request()->routeIs('operational.permintaan-visual.training*') ? 'active' : '' }}">
+                                    <a href="{{ route('operational.permintaan-visual.training') }}">
+                                        <span class="sub-item">Permintaan Training</span>
+                                    </a>
+                                </li>
                             </ul>
                         </div>
                     </li>

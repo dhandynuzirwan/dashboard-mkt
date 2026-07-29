@@ -38,6 +38,7 @@ class RiwayatPelatihanController extends Controller
         $totalSertifikatTerbit = (clone $query)->where('status_sertif', 'Sudah Terbit')->sum('jumlah_peserta');
         $totalSertifikatPending = (clone $query)->where('status_sertif', 'Belum Terbit')->sum('jumlah_peserta');
         $totalPelatihan = (clone $query)->count();
+        $totalPeserta = (clone $query)->sum('jumlah_peserta');
 
         // Data for Chart 1: 12 months history
         $chartData = [
@@ -87,6 +88,7 @@ class RiwayatPelatihanController extends Controller
             'totalSertifikatTerbit', 
             'totalSertifikatPending', 
             'totalPelatihan',
+            'totalPeserta',
             'chartData',
             'chartJenisData',
             'listJenis',

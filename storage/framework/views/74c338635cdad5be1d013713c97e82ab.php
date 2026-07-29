@@ -306,6 +306,35 @@
                                         </a>
                                     </li>
                                 <?php endif; ?>
+
+
+                            </ul>
+                        </div>
+                    </li>
+                <?php endif; ?>
+                
+                
+                <?php if(in_array(auth()->user()->role, ['superadmin', 'web_dev', 'operasional', 'graphic'])): ?>
+                    <?php $isPermintaanVisual = request()->routeIs(['operational.permintaan-visual.*']); ?>
+                    <li class="nav-item <?php echo e($isPermintaanVisual ? 'active' : ''); ?>">
+                        <a data-bs-toggle="collapse" href="#permintaanVisual" class="<?php echo e($isPermintaanVisual ? '' : 'collapsed'); ?>" aria-expanded="<?php echo e($isPermintaanVisual ? 'true' : 'false'); ?>">
+                            <i class="fas fa-palette"></i>
+                            <p>Permintaan Visual</p>
+                            <span class="badge badge-dark">Beta</span>
+                            <span class="caret"></span>
+                        </a>
+                        <div class="collapse <?php echo e($isPermintaanVisual ? 'show' : ''); ?>" id="permintaanVisual">
+                            <ul class="nav nav-collapse">
+                                <li class="<?php echo e(request()->routeIs('operational.permintaan-visual.biasa*') ? 'active' : ''); ?>">
+                                    <a href="<?php echo e(route('operational.permintaan-visual.biasa')); ?>">
+                                        <span class="sub-item">Permintaan Biasa</span>
+                                    </a>
+                                </li>
+                                <li class="<?php echo e(request()->routeIs('operational.permintaan-visual.training*') ? 'active' : ''); ?>">
+                                    <a href="<?php echo e(route('operational.permintaan-visual.training')); ?>">
+                                        <span class="sub-item">Permintaan Training</span>
+                                    </a>
+                                </li>
                             </ul>
                         </div>
                     </li>

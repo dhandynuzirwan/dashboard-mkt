@@ -194,6 +194,13 @@ Route::middleware('auth')->group(function () {
             Route::delete('/data-pendaftaran/{id}', [OperationalPendaftaranController::class, 'destroy'])->name('operational.pendaftaran.destroy');
             Route::put('/data-pendaftaran/update-status-vendor/{id}', [OperationalPendaftaranController::class, 'updateStatusVendor'])->name('operational.pendaftaran.update-status-vendor');
             Route::put('/data-pendaftaran/update-komentar/{id}', [OperationalPendaftaranController::class, 'updateKomentar'])->name('operational.pendaftaran.update-komentar');
+
+            // Permintaan Visual
+            Route::get('/permintaan-visual/biasa', [App\Http\Controllers\PermintaanVisualController::class, 'biasaIndex'])->name('operational.permintaan-visual.biasa');
+            Route::get('/permintaan-visual/biasa/create', [App\Http\Controllers\PermintaanVisualController::class, 'biasaCreate'])->name('operational.permintaan-visual.biasa.create');
+            Route::post('/permintaan-visual/biasa', [App\Http\Controllers\PermintaanVisualController::class, 'biasaStore'])->name('operational.permintaan-visual.biasa.store');
+            
+            Route::get('/permintaan-visual/training', [App\Http\Controllers\PermintaanVisualController::class, 'trainingIndex'])->name('operational.permintaan-visual.training');
         });
 
         // Aktivitas Harian
