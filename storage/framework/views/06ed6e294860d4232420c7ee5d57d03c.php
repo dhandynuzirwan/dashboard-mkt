@@ -455,9 +455,9 @@
                           </div>
 
                           <div class="col-md-4">
-                              <label class="form-label fw-bold small">Laporan PIC (File)</label>
+                              <label class="form-label fw-bold small">Laporan PIC (PDF/Word)</label>
                               <div class="input-group">
-                                  <input type="file" name="laporan_pic" id="add_laporan_pic" class="form-control form-control-modern rounded-start-3">
+                                  <input type="file" name="laporan_pic" id="add_laporan_pic" class="form-control form-control-modern rounded-start-3" accept=".pdf,.doc,.docx">
                                   <button type="button" class="btn btn-outline-danger rounded-end-3" onclick="document.getElementById('add_laporan_pic').value = ''" title="Batal unggah file">
                                       <i class="fas fa-times"></i>
                                   </button>
@@ -1280,16 +1280,16 @@
                                 <?php endif; ?>
                             </div>
                             <div class="mb-2">
-                                <label class="small text-muted">Laporan PIC (PDF, Maks 30MB)</label>
+                                <label class="small text-muted">Laporan PIC (PDF/Word, Maks 30MB)</label>
                                 <div class="input-group input-group-sm">
-                                    <input type="file" name="laporan_pic" id="laporan_pic_<?php echo e($item->id); ?>" class="form-control form-control-modern" accept=".pdf">
+                                    <input type="file" name="laporan_pic" id="laporan_pic_<?php echo e($item->id); ?>" class="form-control form-control-modern" accept=".pdf,.doc,.docx">
                                     <button type="button" class="btn btn-outline-danger" onclick="document.getElementById('laporan_pic_<?php echo e($item->id); ?>').value = ''" title="Batal unggah file">
                                         <i class="fas fa-times"></i>
                                     </button>
                                 </div>
                                 <?php if($item->laporan_pic): ?>
                                     <div class="d-flex align-items-center mt-1">
-                                        <a href="<?php echo e(getFileUrl($item->laporan_pic)); ?>" target="_blank" class="small text-primary me-3"><i class="fas fa-file-pdf me-1"></i> Lihat Laporan Saat Ini</a>
+                                        <a href="<?php echo e(getFileUrl($item->laporan_pic)); ?>" target="_blank" class="small text-primary me-3"><i class="fas fa-file-alt me-1"></i> Lihat Laporan Saat Ini</a>
                                         <div class="form-check form-check-inline mb-0">
                                             <input class="form-check-input" type="checkbox" name="delete_laporan_pic" value="1" id="delete_laporan_pic_<?php echo e($item->id); ?>">
                                             <label class="form-check-label small text-danger" for="delete_laporan_pic_<?php echo e($item->id); ?>"><i class="fas fa-trash-alt"></i> Hapus file</label>

@@ -107,8 +107,14 @@ class RiwayatPelatihanController extends Controller
         foreach ($fileFields as $field) {
             if ($request->hasFile($field)) {
                 $file = $request->file($field);
-                // Save file to storage/app/public/riwayat_pelatihan
-                $path = $file->store('riwayat_pelatihan', 'public');
+                if ($field === 'laporan_pic') {
+                    $safeTitle = preg_replace('/[^A-Za-z0-9\- ]/', '_', $request->judul_pelatihan);
+                    $filename = 'Laporan PIC-' . $safeTitle . '-' . time() . '.' . $file->getClientOriginalExtension();
+                    $path = $file->storeAs('riwayat_pelatihan', $filename, 'public');
+                } else {
+                    // Save file to storage/app/public/riwayat_pelatihan
+                    $path = $file->store('riwayat_pelatihan', 'public');
+                }
                 $data[$field] = $path;
             }
         }
@@ -155,7 +161,14 @@ class RiwayatPelatihanController extends Controller
         foreach ($fileFields as $field) {
             if ($request->hasFile($field)) {
                 $file = $request->file($field);
-                $path = $file->store('uploads/riwayat_pelatihan', 'public');
+                if ($field === 'laporan_pic') {
+                    $judul = $request->judul_pelatihan ?? $riwayat->judul_pelatihan;
+                    $safeTitle = preg_replace('/[^A-Za-z0-9\- ]/', '_', $judul);
+                    $filename = 'Laporan PIC-' . $safeTitle . '-' . time() . '.' . $file->getClientOriginalExtension();
+                    $path = $file->storeAs('uploads/riwayat_pelatihan', $filename, 'public');
+                } else {
+                    $path = $file->store('uploads/riwayat_pelatihan', 'public');
+                }
                 $data[$field] = $path;
             }
         }
