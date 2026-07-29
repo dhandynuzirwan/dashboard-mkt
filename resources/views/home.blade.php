@@ -265,31 +265,31 @@
                         <span class="badge bg-light text-muted border">Bulan Ini</span>
                     </div>
                     
-                    <div class="position-relative mx-auto" style="width: 160px; height: 160px; margin-bottom: 30px; margin-top: 20px;">
+                    <div class="position-relative mx-auto" style="width: 220px; height: 220px; margin-bottom: 30px; margin-top: 20px;">
                         <canvas id="attendanceChart"></canvas>
                         <div class="position-absolute top-50 start-50 translate-middle text-center" style="margin-top: 2px;">
-                            <span class="d-block fw-black fs-2 text-dark line-height-1" style="margin-bottom: -2px;">{{ $attendanceRate }}%</span>
+                            <span class="d-block fw-black fs-1 text-dark line-height-1" style="margin-bottom: -2px;">{{ $attendanceRate }}%</span>
                             <span class="text-muted fw-bold" style="font-size: 11px;">RATING</span>
                         </div>
                     </div>
 
                     <div class="row text-center g-3">
                         <div class="col-4">
-                            <div class="bg-success-subtle rounded-3 p-2 h-100">
+                            <div class="p-1 h-100">
                                 <span class="d-block text-success fw-bold" style="font-size: 11px; text-transform: uppercase;">Hadir</span>
-                                <span class="d-block fw-black fs-4 text-dark mt-1">{{ $hadir }}</span>
+                                <span class="d-block fw-black fs-5 text-dark mt-1">{{ $hadir }}</span>
                             </div>
                         </div>
                         <div class="col-4">
-                            <div class="bg-warning-subtle rounded-3 p-2 h-100">
+                            <div class="p-1 h-100">
                                 <span class="d-block text-warning fw-bold" style="font-size: 11px; text-transform: uppercase;">Telat</span>
-                                <span class="d-block fw-black fs-4 text-dark mt-1">{{ $telat }}</span>
+                                <span class="d-block fw-black fs-5 text-dark mt-1">{{ $telat }}</span>
                             </div>
                         </div>
                         <div class="col-4">
-                            <div class="bg-danger-subtle rounded-3 p-2 h-100">
+                            <div class="p-1 h-100">
                                 <span class="d-block text-danger fw-bold" style="font-size: 11px; text-transform: uppercase;">Absen</span>
-                                <span class="d-block fw-black fs-4 text-dark mt-1">{{ $absen }}</span>
+                                <span class="d-block fw-black fs-5 text-dark mt-1">{{ $absen }}</span>
                             </div>
                         </div>
                     </div>
