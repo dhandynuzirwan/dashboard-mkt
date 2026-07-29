@@ -1,7 +1,8 @@
 
 
 <?php $__env->startSection('content'); ?>
-<div class="container-fluid py-4">
+<div class="page-wrapper-modern fade-in">
+    <div class="container-fluid py-4 px-3 px-md-4">
     <div class="page-inner">
         
         
@@ -38,7 +39,7 @@
             <div class="col-lg-8 col-md-12">
                 
                 
-                <div class="card border-0 shadow-sm rounded-4 mb-4 fade-in" style="background: linear-gradient(135deg, #0d6efd 0%, #0a58ca 100%); color: white;">
+                <div class="glass-card mb-4 fade-in" style="background: linear-gradient(135deg, #0d6efd 0%, #0a58ca 100%); color: white;">
                     <div class="card-body p-4 p-md-5 position-relative overflow-hidden">
                         <i class="fas fa-chart-line position-absolute" style="font-size: 150px; right: -20px; bottom: -30px; opacity: 0.1;"></i>
                         <div class="row align-items-center position-relative z-1">
@@ -66,7 +67,7 @@
                     <?php $__currentLoopData = $quickAccess; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $item): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
                     <div class="col-6 col-sm-3">
                         <a href="<?php echo e($item['route']); ?>" class="text-decoration-none">
-                            <div class="card card-hover border-0 shadow-sm rounded-4 text-center h-100 p-3">
+                            <div class="glass-card glass-hover text-center h-100 p-3">
                                 <div class="card-body p-2">
                                     <div class="icon-box bg-<?php echo e($item['color']); ?>-subtle text-<?php echo e($item['color']); ?> rounded-circle mx-auto mb-3 d-flex align-items-center justify-content-center" style="width: 50px; height: 50px;">
                                         <i class="<?php echo e($item['icon']); ?> fs-4"></i>
@@ -82,8 +83,8 @@
                 <div class="row">
                     <div class="col-md-6">
                         
-                        <div class="card border-0 shadow-sm rounded-4 mb-4 fade-in" style="animation-delay: 0.3s; height: 100%;">
-                            <div class="card-header bg-white border-0 pt-4 pb-0 px-4 rounded-top-4">
+                        <div class="glass-card mb-4 fade-in" style="animation-delay: 0.3s; height: 100%;">
+                            <div class="card-header bg-transparent border-0 pt-4 pb-0 px-4 ">
                                 <h5 class="fw-bold mb-0"><i class="fas fa-bullhorn text-danger me-2"></i> Papan Pengumuman</h5>
                             </div>
                             <div class="card-body p-4">
@@ -134,8 +135,8 @@
                     <div class="col-md-6">
                         <?php if(Auth::user()->role === 'superadmin'): ?>
                         
-                        <div class="card border-0 shadow-sm rounded-4 mb-4 fade-in" style="animation-delay: 0.4s; height: 100%;">
-                            <div class="card-header bg-white border-0 pt-4 pb-0 px-4 d-flex justify-content-between align-items-center rounded-top-4">
+                        <div class="glass-card mb-4 fade-in" style="animation-delay: 0.4s; height: 100%;">
+                            <div class="card-header bg-transparent border-0 pt-4 pb-0 px-4 d-flex justify-content-between align-items-center ">
                                 <h5 class="fw-bold mb-0"><i class="fas fa-tasks text-primary me-2"></i> Permintaan Perizinan</h5>
                                 <span class="badge bg-danger rounded-pill"><?php echo e(count($pendingPerizinan)); ?> Pending</span>
                             </div>
@@ -162,8 +163,8 @@
                         </div>
                         <?php else: ?>
                         
-                        <div class="card border-0 shadow-sm rounded-4 mb-4 fade-in" style="animation-delay: 0.4s; height: 100%;">
-                            <div class="card-header bg-white border-0 pt-4 pb-0 px-4 rounded-top-4">
+                        <div class="glass-card mb-4 fade-in" style="animation-delay: 0.4s; height: 100%;">
+                            <div class="card-header bg-transparent border-0 pt-4 pb-0 px-4 ">
                                 <h5 class="fw-bold mb-0"><i class="fas fa-list text-info me-2"></i> Aktivitas Feed</h5>
                             </div>
                             <div class="card-body p-4 pt-3">
@@ -198,7 +199,7 @@
             <div class="col-lg-4 col-md-12 fade-in" style="animation-delay: 0.5s;">
                 
                 
-                <div class="card border-0 shadow-sm rounded-4 mb-4">
+                <div class="glass-card mb-4">
                     <div class="card-body p-4">
                         <div class="d-flex align-items-center mb-3">
                             <div class="avatar-container position-relative me-3">
@@ -262,8 +263,8 @@
                 </div>
 
                 
-                <div class="card border-0 shadow-sm rounded-4 mb-4">
-                    <div class="card-header bg-white border-0 pt-4 pb-0 px-4 rounded-top-4">
+                <div class="glass-card mb-4">
+                    <div class="card-header bg-transparent border-0 pt-4 pb-0 px-4 ">
                         <h6 class="fw-bold mb-0"><i class="fas fa-calendar-alt text-primary me-2"></i> Kalender Agenda</h6>
                     </div>
                     <div class="card-body p-4">
@@ -306,7 +307,7 @@
                 </div>
 
                 
-                <div class="card border-0 shadow-sm rounded-4 mb-4">
+                <div class="glass-card mb-4">
                     <div class="card-body p-4 text-center">
                         <h6 class="fw-bold mb-3 text-start"><i class="fas fa-clipboard-check text-success me-2"></i> Kehadiran Bulan Ini</h6>
                         
@@ -341,11 +342,32 @@
 </div>
 
 <style>
-    .card { transition: all 0.3s ease; }
-    .card-hover:hover { 
+    /* Premium Modern CSS */
+    .page-wrapper-modern {
+        background-color: #f8f9fc;
+        min-height: 100vh;
+        font-family: 'Nunito', 'Segoe UI', sans-serif;
+    }
+    .glass-card {
+        background: #ffffff;
+        border: 1px solid rgba(227, 230, 240, 0.8);
+        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.03);
+        border-radius: 20px;
+        transition: all 0.3s ease;
+    }
+    .glass-card:hover {
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.06);
+    }
+    .glass-hover {
+        border-radius: 20px;
+        background: #ffffff;
+        border: 1px solid rgba(227, 230, 240, 0.8);
+        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.03);
+        transition: all 0.3s ease;
+    }
+    .glass-hover:hover { 
         transform: translateY(-5px); 
-        box-shadow: 0 10px 20px rgba(0,0,0,0.08) !important; 
-        background-color: #fcfcfc;
+        box-shadow: 0 10px 30px rgba(0,0,0,0.08); 
     }
     .fade-in { animation: fadeIn 0.6s ease-out forwards; opacity: 0; }
     @keyframes fadeIn { 
@@ -365,9 +387,9 @@
     }
     .calendar-day:hover:not(.empty) { background-color: #eff6ff; color: #0d6efd; font-weight: 600; }
     .calendar-day.today { background-color: #0d6efd; color: white; font-weight: bold; }
-    .calendar-dot { 
-        position: absolute; bottom: 2px; left: 50%; transform: translateX(-50%);
-        width: 4px; height: 4px; border-radius: 50%;
+    .calendar-label { 
+        position: absolute; bottom: 3px; left: 50%; transform: translateX(-50%);
+        width: 20px; height: 5px; border-radius: 10px;
     }
 </style>
 
@@ -458,7 +480,7 @@
 
             if(isViewingServerMonth && events[i]) {
                 if(!(isCurrentMonth && i === today.getDate())) {
-                    dotHtml = `<div class="calendar-dot bg-${events[i]}"></div>`;
+                    dotHtml = `<div class="calendar-label bg-${events[i]} shadow-sm"></div>`;
                 }
             }
             
