@@ -514,6 +514,7 @@
     // --- KALENDER DINAMIS ---
     let currentDate = new Date();
     const events = @json($calendarEvents);
+    const agendas = @json($upcomingAgendas);
 
     function renderCalendar() {
         const monthYearEl = document.getElementById('calendar-month-year');
@@ -545,15 +546,26 @@
             }
             
             let dotHtml = '';
+            let titleAttr = '';
             const serverDate = new Date();
             const isViewingServerMonth = (serverDate.getMonth() === month && serverDate.getFullYear() === year);
 
             if(isViewingServerMonth && events[i]) {
+                // Cari nama event dari upcomingAgendas
+                let matchingAgenda = agendas.find(a => {
+                    let d = new Date(a.date);
+                    return d.getDate() === i && d.getMonth() === month && d.getFullYear() === year;
+                });
+
+                if(matchingAgenda) {
+                    titleAttr = `title="${matchingAgenda.title}"`;
+                }
+
                 if(!(isCurrentMonth && i === today.getDate())) {
                     dotHtml = `<div class="calendar-label bg-${events[i]} shadow-sm"></div>`;
                 }
             }
-            daysEl.innerHTML += `<div class="${classes}">${i}${dotHtml}</div>`;
+            daysEl.innerHTML += `<div class="${classes}" ${titleAttr}>${i}${dotHtml}</div>`;
         }
     }
 
