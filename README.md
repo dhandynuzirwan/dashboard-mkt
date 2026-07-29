@@ -1,59 +1,127 @@
-<p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400" alt="Laravel Logo"></a></p>
+<div align="center">
+  <img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="300" alt="Laravel Logo">
+  
+  <h1>📊 Dashboard Marketing & HR Management System</h1>
+  <p>
+    Sistem Informasi Komprehensif untuk Manajemen Prospek (CRM), Operasional, Absensi, dan Penggajian terintegrasi.
+  </p>
+  
+  <p>
+    <a href="#fitur-utama"><strong>Jelajahi Fitur</strong></a> ·
+    <a href="#teknologi"><strong>Teknologi</strong></a> ·
+    <a href="#instalasi"><strong>Instalasi</strong></a>
+  </p>
 
-<p align="center">
-<a href="https://github.com/laravel/framework/actions"><img src="https://github.com/laravel/framework/workflows/tests/badge.svg" alt="Build Status"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/dt/laravel/framework" alt="Total Downloads"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/v/laravel/framework" alt="Latest Stable Version"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
-</p>
+  <p>
+    <img src="https://img.shields.io/badge/Laravel-12.x-FF2D20?style=for-the-badge&logo=laravel&logoColor=white" alt="Laravel 12">
+    <img src="https://img.shields.io/badge/PHP-8.2+-777BB4?style=for-the-badge&logo=php&logoColor=white" alt="PHP 8.2">
+    <img src="https://img.shields.io/badge/MySQL-005C84?style=for-the-badge&logo=mysql&logoColor=white" alt="MySQL">
+    <img src="https://img.shields.io/badge/Bootstrap-5.x-7952B3?style=for-the-badge&logo=bootstrap&logoColor=white" alt="Bootstrap">
+  </p>
+</div>
 
-## About Laravel
+---
 
-Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
+## 🚀 Tentang Proyek
 
-- [Simple, fast routing engine](https://laravel.com/docs/routing).
-- [Powerful dependency injection container](https://laravel.com/docs/container).
-- Multiple back-ends for [session](https://laravel.com/docs/session) and [cache](https://laravel.com/docs/cache) storage.
-- Expressive, intuitive [database ORM](https://laravel.com/docs/eloquent).
-- Database agnostic [schema migrations](https://laravel.com/docs/migrations).
-- [Robust background job processing](https://laravel.com/docs/queues).
-- [Real-time event broadcasting](https://laravel.com/docs/broadcasting).
+Proyek **Dashboard Marketing & HR** ini adalah sistem *Enterprise Resource Planning* (ERP) mini berbasis web yang dirancang untuk mengelola berbagai alur kerja perusahaan dalam satu platform terpusat. Aplikasi ini menangani mulai dari akuisisi pelanggan (Pipeline/Prospek), pengelolaan *training*, hingga manajemen Sumber Daya Manusia (Absensi & Penggajian).
 
-Laravel is accessible, powerful, and provides tools required for large, robust applications.
+Aplikasi ini dikembangkan menggunakan **Laravel 12** dan sangat cocok digunakan sebagai bahan portofolio pengembangan perangkat lunak (SaaS/B2B System).
 
-## Learning Laravel
+---
 
-Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of all modern web application frameworks, making it a breeze to get started with the framework. You can also check out [Laravel Learn](https://laravel.com/learn), where you will be guided through building a modern Laravel application.
+## ✨ Fitur Utama
 
-If you don't feel like reading, [Laracasts](https://laracasts.com) can help. Laracasts contains thousands of video tutorials on a range of topics including Laravel, modern PHP, unit testing, and JavaScript. Boost your skills by digging into our comprehensive video library.
+### 📈 Manajemen Marketing & Prospek (CRM)
+- **Kanban Pipeline**: Visualisasi data prospek dan pergerakan status *deal* (Call to Action/CTA).
+- **Manajemen Data Masuk (Leads)**: Sinkronisasi otomatis data prospek dari berbagai sumber.
+- **Master Data**: Kelola instruktur, proposal, modul pelatihan, dan artikel.
+- **Efek Konfeti**: Animasi *confetti* interaktif saat prospek berhasil mencapai tahap *deal*! 🎉
 
-## Laravel Sponsors
+### 👥 Manajemen HR & Operasional
+- **Absensi Terintegrasi**: Log absensi, *geo-location*, dan sinkronisasi kamera (Fingerspot).
+- **Sistem Penggajian Lengkap (Payroll)**: Kalkulasi gaji pokok, tunjangan, potongan BPJS, hingga pajak.
+- **Pengajuan Izin & Lembur**: Alur *approval* (persetujuan) berjenjang oleh HRD dan Atasan.
+- **Aset & Inventaris**: Manajemen stok barang, peminjaman, dan mutasi antar divisi.
 
-We would like to extend our thanks to the following sponsors for funding Laravel development. If you are interested in becoming a sponsor, please visit the [Laravel Partners program](https://partners.laravel.com).
+### 🔒 Keamanan & Hak Akses (Role-based)
+- **Multi-Role System**: Sistem akses berbeda untuk `superadmin`, `marketing`, `hrd`, `operasional`, `finance`, dll.
+- **Guest Mode & Data Masking**: Mode Tamu (*Guest*) yang memungkinkan eksplorasi UI tanpa melihat data sensitif. Data penting (misal: nominal gaji, nomor kontak) otomatis **disensor/diburamkan** secara *server-side*.
 
-### Premium Partners
+---
 
-- **[Vehikl](https://vehikl.com)**
-- **[Tighten Co.](https://tighten.co)**
-- **[Kirschbaum Development Group](https://kirschbaumdevelopment.com)**
-- **[64 Robots](https://64robots.com)**
-- **[Curotec](https://www.curotec.com/services/technologies/laravel)**
-- **[DevSquad](https://devsquad.com/hire-laravel-developers)**
-- **[Redberry](https://redberry.international/laravel-development)**
-- **[Active Logic](https://activelogic.com)**
+## 🛠️ Teknologi yang Digunakan
 
-## Contributing
+* **Backend**: Laravel 12.x, PHP 8.2+
+* **Database**: MySQL / MariaDB
+* **Frontend**: Bootstrap 5, Kaiadmin Template, jQuery
+* **Interaktivitas**: SweetAlert2, Canvas Confetti
+* **Package Pendukung**: Maatwebsite Excel (Eksport/Import), Laravel Sanctum
 
-Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
+---
 
-## Code of Conduct
+## 📸 Tampilan Antarmuka (Screenshots)
 
-In order to ensure that the Laravel community is welcoming to all, please review and abide by the [Code of Conduct](https://laravel.com/docs/contributions#code-of-conduct).
+> 💡 *Catatan: Silakan tambahkan screenshot aplikasi Anda di sini.*
 
-## Security Vulnerabilities
+| Dashboard Utama | Kanban Pipeline |
+| :---: | :---: |
+| <img src="https://via.placeholder.com/400x250.png?text=Dashboard+Utama" alt="Dashboard Utama"> | <img src="https://via.placeholder.com/400x250.png?text=Pipeline+Kanban" alt="Kanban"> |
 
-If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell via [taylor@laravel.com](mailto:taylor@laravel.com). All security vulnerabilities will be promptly addressed.
+| Slip Gaji (Payroll) | Guest Mode (Data Sensor) |
+| :---: | :---: |
+| <img src="https://via.placeholder.com/400x250.png?text=Payroll+System" alt="Payroll"> | <img src="https://via.placeholder.com/400x250.png?text=Guest+Mode" alt="Guest Mode"> |
 
-## License
+---
 
-The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+## 💻 Panduan Instalasi (Local Development)
+
+Ikuti langkah-langkah di bawah ini untuk menjalankan aplikasi di komputer lokal Anda:
+
+1. **Clone repositori ini:**
+   ```bash
+   git clone https://github.com/username-anda/dashboard-mkt.git
+   cd dashboard-mkt
+   ```
+
+2. **Install dependensi PHP & Node:**
+   ```bash
+   composer install
+   npm install && npm run build
+   ```
+
+3. **Konfigurasi Environment:**
+   Salin file konfigurasi bawaan dan sesuaikan nama *database* Anda.
+   ```bash
+   cp .env.example .env
+   php artisan key:generate
+   ```
+
+4. **Jalankan Migrasi & Seeder Database:**
+   *(Pastikan MySQL server sudah berjalan)*
+   ```bash
+   php artisan migrate --seed
+   ```
+
+5. **Jalankan Server Lokal:**
+   ```bash
+   php artisan serve
+   ```
+   Aplikasi dapat diakses di `http://127.0.0.1:8000`.
+
+---
+
+## 👨‍💻 Penulis (Author)
+
+Proyek ini dikembangkan oleh **[Nama Anda]**.  
+Terbuka untuk kolaborasi atau peluang karir! Anda bisa menghubungi saya melalui:
+
+- 💼 **LinkedIn**: [linkedin.com/in/username-anda](https://linkedin.com/)
+- 🌐 **Portfolio**: [website-portfolio-anda.com](https://website-portfolio-anda.com)
+- 📧 **Email**: email.anda@gmail.com
+
+---
+
+<div align="center">
+  <sub>Dibuat dengan ❤️ menggunakan Laravel</sub>
+</div>
