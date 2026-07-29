@@ -23,7 +23,7 @@
             <?php endif; ?>
 
             
-            <div class="card border-0 shadow-sm rounded-4 mb-4 bg-white fade-in">
+            <div class="glass-card mb-4 fade-in">
                 <div class="card-body p-3 p-md-4">
                     <div class="d-flex align-items-center mb-3 pb-3 border-bottom">
                         <div class="icon-circle bg-primary-subtle text-primary rounded-circle d-flex align-items-center justify-content-center me-2" style="width: 32px; height: 32px; font-size: 13px;">
@@ -66,7 +66,7 @@
             
             <div class="row g-3 mb-4">
                 <div class="col-md-6 col-lg-3">
-                    <div class="card border-0 shadow-sm rounded-4 h-100 hover-lift bg-white">
+                    <div class="glass-card h-100 hover-lift">
                         <div class="card-body p-4 d-flex align-items-center">
                             <div class="icon-circle bg-primary-subtle text-primary rounded-circle d-flex align-items-center justify-content-center me-3" style="width: 55px; height: 55px; font-size: 24px;">
                                 <i class="fas fa-users"></i>
@@ -79,7 +79,7 @@
                     </div>
                 </div>
                 <div class="col-md-6 col-lg-3">
-                    <div class="card border-0 shadow-sm rounded-4 h-100 hover-lift bg-white">
+                    <div class="glass-card h-100 hover-lift">
                         <div class="card-body p-4 d-flex align-items-center">
                             <div class="icon-circle bg-info-subtle text-info rounded-circle d-flex align-items-center justify-content-center me-3" style="width: 55px; height: 55px; font-size: 24px;">
                                 <i class="fas fa-user-graduate"></i>
@@ -92,7 +92,7 @@
                     </div>
                 </div>
                 <div class="col-md-6 col-lg-3">
-                    <div class="card border-0 shadow-sm rounded-4 h-100 hover-lift bg-white">
+                    <div class="glass-card h-100 hover-lift">
                         <div class="card-body p-4 d-flex align-items-center">
                             <div class="icon-circle bg-success-subtle text-success rounded-circle d-flex align-items-center justify-content-center me-3" style="width: 55px; height: 55px; font-size: 24px;">
                                 <i class="fas fa-certificate"></i>
@@ -105,7 +105,7 @@
                     </div>
                 </div>
                 <div class="col-md-6 col-lg-3">
-                    <div class="card border-0 shadow-sm rounded-4 h-100 hover-lift bg-white">
+                    <div class="glass-card h-100 hover-lift">
                         <div class="card-body p-4 d-flex align-items-center">
                             <div class="icon-circle bg-warning-subtle text-warning-emphasis rounded-circle d-flex align-items-center justify-content-center me-3" style="width: 55px; height: 55px; font-size: 24px;">
                                 <i class="fas fa-hourglass-half text-warning"></i>
@@ -122,7 +122,7 @@
             
             <div class="row g-3 mb-4 fade-in">
                 <div class="col-md-8">
-                    <div class="card border-0 shadow-sm rounded-4 h-100 bg-white">
+                    <div class="glass-card h-100">
                         <div class="card-header bg-transparent border-bottom-0 pt-4 pb-0 px-4">
                             <h6 class="fw-bolder mb-0"><i class="fas fa-chart-line text-primary me-2"></i> Grafik Trend (12 Bulan Terakhir)</h6>
                         </div>
@@ -134,7 +134,7 @@
                     </div>
                 </div>
                 <div class="col-md-4">
-                    <div class="card border-0 shadow-sm rounded-4 h-100 bg-white">
+                    <div class="glass-card h-100">
                         <div class="card-header bg-transparent border-bottom-0 pt-4 pb-0 px-4">
                             <h6 class="fw-bolder mb-0"><i class="fas fa-chart-pie text-success me-2"></i> Proporsi Jenis Pelatihan</h6>
                         </div>
@@ -155,14 +155,14 @@
             </div>
 
             
-            <div class="card border-0 shadow-sm rounded-4 mb-4 bg-white overflow-hidden">
+            <div class="glass-card mb-4 overflow-hidden" style="padding: 12px;">
                 <div class="card-header bg-transparent border-bottom pt-4 pb-3 px-4 d-flex justify-content-between align-items-center">
                     <h6 class="fw-bolder mb-0"><i class="fas fa-list-alt text-primary me-2"></i> Data Riwayat Pelatihan Lengkap</h6>
                 </div>
                 <div class="card-body p-0">
-                    <div class="table-responsive" style="max-height: 600px; overflow-y: auto;">
-                        <table class="table table-hover align-middle mb-0" style="font-size: 13px; white-space: nowrap;">
-                            <thead class="bg-light sticky-top text-muted" style="z-index: 1;">
+                    <div class="table-responsive" style="max-height: 600px; overflow-y: auto; padding-right: 8px;">
+                        <table class="table table-custom align-middle mb-0" style="font-size: 13px; white-space: nowrap;">
+                            <thead class="sticky-top text-muted" style="z-index: 1; background-color: #ffffff;">
                                 <tr>
                                     <th width="5%" class="text-center py-3">No</th>
                                     <th class="py-3">Info Pelatihan</th>
@@ -314,7 +314,7 @@
           <div class="modal-body p-4" style="max-height: 75vh; overflow-y: auto; background-color: #f8fafc;">
               
               
-              <div class="card border-0 shadow-sm rounded-4 mb-4">
+              <div class="glass-card mb-4">
                   <div class="card-header bg-white border-bottom pt-3 pb-2 px-4">
                       <h6 class="fw-bold text-primary mb-0">1. Informasi Umum Pelatihan</h6>
                   </div>
@@ -383,7 +383,7 @@
               </div>
 
               
-              <div class="card border-0 shadow-sm rounded-4 mb-4">
+              <div class="glass-card mb-4">
                   <div class="card-header bg-white border-bottom pt-3 pb-2 px-4">
                       <h6 class="fw-bold text-success mb-0">2. Tim Eksekutor (Trainer & LSP)</h6>
                   </div>
@@ -438,7 +438,7 @@
               </div>
 
               
-              <div class="card border-0 shadow-sm rounded-4 mb-4">
+              <div class="glass-card mb-4">
                   <div class="card-header bg-white border-bottom pt-3 pb-2 px-4">
                       <h6 class="fw-bold text-warning mb-0" style="color: #d97706 !important;">3. PIC & Status Sertifikasi</h6>
                   </div>
@@ -497,7 +497,7 @@
               </div>
 
               
-              <div class="card border-0 shadow-sm rounded-4 mb-0">
+              <div class="glass-card mb-0">
                   <div class="card-header bg-white border-bottom pt-3 pb-2 px-4">
                       <h6 class="fw-bold text-info mb-0">4. Informasi Pengiriman Paket</h6>
                   </div>
@@ -967,7 +967,7 @@
                             <div class="row g-3 mb-4" id="galeriGrid<?php echo e($item->id); ?>">
                                 <?php $__currentLoopData = $dokumentasi; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $i => $file): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
                                     <div class="col-md-3 col-sm-4 col-6">
-                                        <div class="card border-0 shadow-sm rounded-4 h-100 overflow-hidden position-relative">
+                                        <div class="glass-card h-100 overflow-hidden position-relative">
                                             <?php
                                                 $ext = strtolower(pathinfo($file, PATHINFO_EXTENSION));
                                                 $isVideo = in_array($ext, ['mp4', 'webm', 'ogg', 'mov', 'avi']);
@@ -1717,8 +1717,8 @@
     /* UTILITIES */
     .fw-black { font-weight: 900 !important; }
     .rounded-4 { border-radius: 1rem !important; }
-    .hover-lift { transition: transform 0.2s ease-in-out, box-shadow 0.2s; }
-    .hover-lift:hover { transform: translateY(-3px); box-shadow: 0 10px 20px rgba(0,0,0,0.08) !important; }
+    .hover-lift { transition: box-shadow 0.3s ease, border-color 0.3s ease; }
+    .hover-lift:hover { box-shadow: 0 10px 30px rgba(0,0,0,0.08) !important; border-color: rgba(78, 115, 223, 0.2) !important; }
     .fade-in { animation: fadeIn 0.5s ease-out; }
     @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
     
@@ -1729,8 +1729,41 @@
     .bg-danger-subtle { background-color: #fee2e2 !important; }
     .bg-info-subtle { background-color: #e0f2fe !important; }
     
-    /* TABLE TWEAKS */
-    table td { vertical-align: top; }
+    /* PREMIUM UI */
+    .glass-card {
+        background: #ffffff;
+        border: 1px solid rgba(227, 230, 240, 0.8);
+        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.03);
+        border-radius: 20px;
+        transition: all 0.3s ease;
+    }
+    .glass-card:hover {
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.06);
+    }
+    .table-custom { border-collapse: separate; border-spacing: 0 12px; margin-top: -12px;}
+    .table-custom tr { background-color: #ffffff; box-shadow: 0 2px 10px rgba(0,0,0,0.02); border-radius: 16px; transition: all 0.2s ease; border: 1px solid #f1f3f9;}
+    .table-custom tr:hover { box-shadow: 0 5px 15px rgba(0,0,0,0.06); }
+    .table-custom td { padding: 18px 22px; border: none; vertical-align: middle;}
+    .table-custom td:first-child { border-top-left-radius: 16px; border-bottom-left-radius: 16px; }
+    .table-custom td:last-child { border-top-right-radius: 16px; border-bottom-right-radius: 16px; }
+    .table-custom th { border: none; padding: 10px 22px; color: #858796; font-weight: 700; text-transform: uppercase; font-size: 11px; letter-spacing: 1px; background: transparent;}
+
+    .form-control-modern {
+        border-radius: 12px;
+        padding: 12px 18px;
+        border: 2px solid #edf2f9;
+        transition: all 0.2s;
+    }
+    .form-control-modern:focus {
+        border-color: #4e73df;
+        box-shadow: 0 0 0 0.25rem rgba(78, 115, 223, 0.1);
+    }
+    .btn-premium {
+        border-radius: 12px;
+        font-weight: 700;
+        padding: 10px 24px;
+        transition: all 0.3s;
+    }
 </style>
 <?php $__env->stopSection(); ?>
 
@@ -2086,7 +2119,7 @@
                     
                     let cardHtml = `
                         <div class="col-md-3 col-sm-4 col-6">
-                            <div class="card border-0 shadow-sm rounded-4 h-100 overflow-hidden position-relative">
+                            <div class="glass-card h-100 overflow-hidden position-relative">
                                 ${mediaHtml}
                                 <button type="button" class="btn btn-sm btn-danger rounded-circle shadow-sm position-absolute" 
                                     onclick="hapusDokumentasi(this, '${deleteUrl}')"

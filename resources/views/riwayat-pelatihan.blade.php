@@ -24,7 +24,7 @@
             @endif
 
             {{-- Filter Bar --}}
-            <div class="card border-0 shadow-sm rounded-4 mb-4 bg-white fade-in">
+            <div class="glass-card mb-4 fade-in">
                 <div class="card-body p-3 p-md-4">
                     <div class="d-flex align-items-center mb-3 pb-3 border-bottom">
                         <div class="icon-circle bg-primary-subtle text-primary rounded-circle d-flex align-items-center justify-content-center me-2" style="width: 32px; height: 32px; font-size: 13px;">
@@ -36,11 +36,11 @@
                     <form action="{{ route('riwayat.pelatihan') }}" method="GET" class="row g-3 align-items-end">
                         <div class="col-sm-6 col-md-3">
                             <label class="form-label fw-bold small text-muted">Bulan & Tahun</label>
-                            <input type="month" name="month_year" class="form-control form-control-sm rounded-3 px-3 py-2" value="{{ request('month_year') }}">
+                            <input type="month" name="month_year" class="form-control form-control-modern form-control-sm rounded-3 px-3 py-2" value="{{ request('month_year') }}">
                         </div>
                         <div class="col-sm-6 col-md-3">
                             <label class="form-label fw-bold small text-muted">Jenis Pelatihan</label>
-                            <select name="jenis" class="form-select form-select-sm rounded-3 px-3 py-2">
+                            <select name="jenis" class="form-select form-control-modern form-select-sm rounded-3 px-3 py-2">
                                 <option value="">Semua Jenis</option>
                                 @foreach($listJenis as $j)
                                     <option value="{{ $j }}" {{ request('jenis') == $j ? 'selected' : '' }}>{{ $j }}</option>
@@ -49,7 +49,7 @@
                         </div>
                         <div class="col-sm-6 col-md-3">
                             <label class="form-label fw-bold small text-muted">Metode</label>
-                            <select name="metode" class="form-select form-select-sm rounded-3 px-3 py-2">
+                            <select name="metode" class="form-select form-control-modern form-select-sm rounded-3 px-3 py-2">
                                 <option value="">Semua Metode</option>
                                 @foreach($listMetode as $m)
                                     <option value="{{ $m }}" {{ request('metode') == $m ? 'selected' : '' }}>{{ $m }}</option>
@@ -67,7 +67,7 @@
             {{-- Stat Cards Modern --}}
             <div class="row g-3 mb-4">
                 <div class="col-md-6 col-lg-3">
-                    <div class="card border-0 shadow-sm rounded-4 h-100 hover-lift bg-white">
+                    <div class="glass-card h-100 hover-lift">
                         <div class="card-body p-4 d-flex align-items-center">
                             <div class="icon-circle bg-primary-subtle text-primary rounded-circle d-flex align-items-center justify-content-center me-3" style="width: 55px; height: 55px; font-size: 24px;">
                                 <i class="fas fa-users"></i>
@@ -80,7 +80,7 @@
                     </div>
                 </div>
                 <div class="col-md-6 col-lg-3">
-                    <div class="card border-0 shadow-sm rounded-4 h-100 hover-lift bg-white">
+                    <div class="glass-card h-100 hover-lift">
                         <div class="card-body p-4 d-flex align-items-center">
                             <div class="icon-circle bg-info-subtle text-info rounded-circle d-flex align-items-center justify-content-center me-3" style="width: 55px; height: 55px; font-size: 24px;">
                                 <i class="fas fa-user-graduate"></i>
@@ -93,7 +93,7 @@
                     </div>
                 </div>
                 <div class="col-md-6 col-lg-3">
-                    <div class="card border-0 shadow-sm rounded-4 h-100 hover-lift bg-white">
+                    <div class="glass-card h-100 hover-lift">
                         <div class="card-body p-4 d-flex align-items-center">
                             <div class="icon-circle bg-success-subtle text-success rounded-circle d-flex align-items-center justify-content-center me-3" style="width: 55px; height: 55px; font-size: 24px;">
                                 <i class="fas fa-certificate"></i>
@@ -106,7 +106,7 @@
                     </div>
                 </div>
                 <div class="col-md-6 col-lg-3">
-                    <div class="card border-0 shadow-sm rounded-4 h-100 hover-lift bg-white">
+                    <div class="glass-card h-100 hover-lift">
                         <div class="card-body p-4 d-flex align-items-center">
                             <div class="icon-circle bg-warning-subtle text-warning-emphasis rounded-circle d-flex align-items-center justify-content-center me-3" style="width: 55px; height: 55px; font-size: 24px;">
                                 <i class="fas fa-hourglass-half text-warning"></i>
@@ -123,7 +123,7 @@
             {{-- Charts Section --}}
             <div class="row g-3 mb-4 fade-in">
                 <div class="col-md-8">
-                    <div class="card border-0 shadow-sm rounded-4 h-100 bg-white">
+                    <div class="glass-card h-100">
                         <div class="card-header bg-transparent border-bottom-0 pt-4 pb-0 px-4">
                             <h6 class="fw-bolder mb-0"><i class="fas fa-chart-line text-primary me-2"></i> Grafik Trend (12 Bulan Terakhir)</h6>
                         </div>
@@ -135,7 +135,7 @@
                     </div>
                 </div>
                 <div class="col-md-4">
-                    <div class="card border-0 shadow-sm rounded-4 h-100 bg-white">
+                    <div class="glass-card h-100">
                         <div class="card-header bg-transparent border-bottom-0 pt-4 pb-0 px-4">
                             <h6 class="fw-bolder mb-0"><i class="fas fa-chart-pie text-success me-2"></i> Proporsi Jenis Pelatihan</h6>
                         </div>
@@ -156,14 +156,14 @@
             </div>
 
             {{-- Table Data --}}
-            <div class="card border-0 shadow-sm rounded-4 mb-4 bg-white overflow-hidden">
+            <div class="glass-card mb-4 overflow-hidden" style="padding: 12px;">
                 <div class="card-header bg-transparent border-bottom pt-4 pb-3 px-4 d-flex justify-content-between align-items-center">
                     <h6 class="fw-bolder mb-0"><i class="fas fa-list-alt text-primary me-2"></i> Data Riwayat Pelatihan Lengkap</h6>
                 </div>
                 <div class="card-body p-0">
-                    <div class="table-responsive" style="max-height: 600px; overflow-y: auto;">
-                        <table class="table table-hover align-middle mb-0" style="font-size: 13px; white-space: nowrap;">
-                            <thead class="bg-light sticky-top text-muted" style="z-index: 1;">
+                    <div class="table-responsive" style="max-height: 600px; overflow-y: auto; padding-right: 8px;">
+                        <table class="table table-custom align-middle mb-0" style="font-size: 13px; white-space: nowrap;">
+                            <thead class="sticky-top text-muted" style="z-index: 1; background-color: #ffffff;">
                                 <tr>
                                     <th width="5%" class="text-center py-3">No</th>
                                     <th class="py-3">Info Pelatihan</th>
@@ -313,7 +313,7 @@
           <div class="modal-body p-4" style="max-height: 75vh; overflow-y: auto; background-color: #f8fafc;">
               
               {{-- Section 1: Informasi Pelatihan --}}
-              <div class="card border-0 shadow-sm rounded-4 mb-4">
+              <div class="glass-card mb-4">
                   <div class="card-header bg-white border-bottom pt-3 pb-2 px-4">
                       <h6 class="fw-bold text-primary mb-0">1. Informasi Umum Pelatihan</h6>
                   </div>
@@ -321,23 +321,23 @@
                       <div class="row g-3">
                           <div class="col-md-12">
                               <label class="form-label fw-bold small">Judul Pelatihan <span class="text-danger">*</span></label>
-                              <input type="text" name="judul_pelatihan" class="form-control rounded-3" required>
+                              <input type="text" name="judul_pelatihan" class="form-control form-control-modern rounded-3" required>
                           </div>
                           <div class="col-md-4">
                               <label class="form-label fw-bold small">Tgl. Mulai <span class="text-danger">*</span></label>
-                              <input type="date" name="tanggal_mulai" class="form-control rounded-3" required>
+                              <input type="date" name="tanggal_mulai" class="form-control form-control-modern rounded-3" required>
                           </div>
                           <div class="col-md-4">
                               <label class="form-label fw-bold small">Tgl. Selesai <span class="text-danger">*</span></label>
-                              <input type="date" name="tanggal_selesai" class="form-control rounded-3" required>
+                              <input type="date" name="tanggal_selesai" class="form-control form-control-modern rounded-3" required>
                           </div>
                           <div class="col-md-4">
                               <label class="form-label fw-bold small">Jum. Peserta <span class="text-danger">*</span></label>
-                              <input type="number" name="jumlah_peserta" id="inputJumlahPeserta" class="form-control rounded-3" required min="1">
+                              <input type="number" name="jumlah_peserta" id="inputJumlahPeserta" class="form-control form-control-modern rounded-3" required min="1">
                           </div>
                           <div class="col-md-6">
                               <label class="form-label fw-bold small">Jenis Pelatihan</label>
-                              <select name="jenis" class="form-select rounded-3">
+                              <select name="jenis" class="form-select form-control-modern rounded-3">
                                   <option value="">Pilih...</option>
                                   <option value="Sertifikat KEMNAKER">Sertifikat KEMNAKER</option>
                                   <option value="Sertifikat BNSP">Sertifikat BNSP</option>
@@ -349,7 +349,7 @@
                           </div>
                           <div class="col-md-6">
                               <label class="form-label fw-bold small">Metode</label>
-                              <select name="metode" class="form-select rounded-3">
+                              <select name="metode" class="form-select form-control-modern rounded-3">
                                   <option value="">Pilih...</option>
                                   <option value="Online Training">Online Training</option>
                                   <option value="Offline Training">Offline Training</option>
@@ -367,11 +367,11 @@
                           </div>
                           <div class="col-md-5 mt-3">
                               <label class="form-label fw-bold small">Syarat Peserta (Link Drive)</label>
-                              <input type="url" name="syarat_peserta" class="form-control rounded-3" placeholder="https://drive.google.com/...">
+                              <input type="url" name="syarat_peserta" class="form-control form-control-modern rounded-3" placeholder="https://drive.google.com/...">
                           </div>
                           <div class="col-md-3 mt-3">
                               <label class="form-label fw-bold small">Status Syarat</label>
-                              <select name="ket_syarat" class="form-select rounded-3">
+                              <select name="ket_syarat" class="form-select form-control-modern rounded-3">
                                   <option value="">Pilih...</option>
                                   <option value="Lengkap">Lengkap</option>
                                   <option value="Belum">Belum</option>
@@ -382,7 +382,7 @@
               </div>
 
               {{-- Section 2: Tim Eksekutor --}}
-              <div class="card border-0 shadow-sm rounded-4 mb-4">
+              <div class="glass-card mb-4">
                   <div class="card-header bg-white border-bottom pt-3 pb-2 px-4">
                       <h6 class="fw-bold text-success mb-0">2. Tim Eksekutor (Trainer & LSP)</h6>
                   </div>
@@ -390,16 +390,16 @@
                       <div class="row g-3">
                           <div class="col-md-6">
                               <label class="form-label fw-bold small">Nama Trainer</label>
-                              <input type="text" name="nama_trainer" class="form-control rounded-3">
+                              <input type="text" name="nama_trainer" class="form-control form-control-modern rounded-3">
                           </div>
                           <div class="col-md-6">
                               <label class="form-label fw-bold small">WA Trainer</label>
-                              <input type="text" name="wa_trainer" class="form-control rounded-3">
+                              <input type="text" name="wa_trainer" class="form-control form-control-modern rounded-3">
                           </div>
                           <div class="col-md-6">
                               <label class="form-label fw-bold small">Upload CV Trainer (PDF)</label>
                               <div class="input-group">
-                                  <input type="file" name="cv" id="add_cv" class="form-control rounded-start-3" accept=".pdf,.doc,.docx">
+                                  <input type="file" name="cv" id="add_cv" class="form-control form-control-modern rounded-start-3" accept=".pdf,.doc,.docx">
                                   <button type="button" class="btn btn-outline-danger rounded-end-3" onclick="document.getElementById('add_cv').value = ''" title="Batal unggah file">
                                       <i class="fas fa-times"></i>
                                   </button>
@@ -408,36 +408,36 @@
                           <!-- 
                           <div class="col-md-6">
                               <label class="form-label fw-bold small">Upload Modul</label>
-                              <input type="file" name="modul" class="form-control rounded-3">
+                              <input type="file" name="modul" class="form-control form-control-modern rounded-3">
                           </div>
                           -->
                           <div class="col-12"><hr class="text-muted opacity-25"></div>
                           <div class="col-md-6">
                               <label class="form-label fw-bold small">Nama LSP</label>
-                              <input type="text" name="nama_lsp" class="form-control rounded-3">
+                              <input type="text" name="nama_lsp" class="form-control form-control-modern rounded-3">
                           </div>
                           <div class="col-md-6">
                               <label class="form-label fw-bold small">Kontak LSP</label>
-                              <input type="text" name="kontak_lsp" class="form-control rounded-3">
+                              <input type="text" name="kontak_lsp" class="form-control form-control-modern rounded-3">
                           </div>
                           <div class="col-md-4">
                               <label class="form-label fw-bold small">Tanggal Asesmen</label>
-                              <input type="date" name="tanggal_asesmen" class="form-control rounded-3">
+                              <input type="date" name="tanggal_asesmen" class="form-control form-control-modern rounded-3">
                           </div>
                           <div class="col-md-4">
                               <label class="form-label fw-bold small">Nama Asesor</label>
-                              <input type="text" name="nama_asesor" class="form-control rounded-3">
+                              <input type="text" name="nama_asesor" class="form-control form-control-modern rounded-3">
                           </div>
                           <div class="col-md-4">
                               <label class="form-label fw-bold small">WA Asesor</label>
-                              <input type="text" name="wa_asesor" class="form-control rounded-3">
+                              <input type="text" name="wa_asesor" class="form-control form-control-modern rounded-3">
                           </div>
                       </div>
                   </div>
               </div>
 
               {{-- Section 3: Sertifikasi & PIC --}}
-              <div class="card border-0 shadow-sm rounded-4 mb-4">
+              <div class="glass-card mb-4">
                   <div class="card-header bg-white border-bottom pt-3 pb-2 px-4">
                       <h6 class="fw-bold text-warning mb-0" style="color: #d97706 !important;">3. PIC & Status Sertifikasi</h6>
                   </div>
@@ -445,7 +445,7 @@
                       <div class="row g-3">
                           <div class="col-md-4">
                               <label class="form-label fw-bold small">PIC Kegiatan</label>
-                              <select name="pic" class="form-select rounded-3">
+                              <select name="pic" class="form-select form-control-modern rounded-3">
                                   <option value="">Pilih PIC...</option>
                                   @foreach($users as $user)
                                       <option value="{{ $user->name }}">{{ $user->nama_lengkap ?: $user->name }}</option>
@@ -456,7 +456,7 @@
                           <div class="col-md-4">
                               <label class="form-label fw-bold small">Laporan PIC (File)</label>
                               <div class="input-group">
-                                  <input type="file" name="laporan_pic" id="add_laporan_pic" class="form-control rounded-start-3">
+                                  <input type="file" name="laporan_pic" id="add_laporan_pic" class="form-control form-control-modern rounded-start-3">
                                   <button type="button" class="btn btn-outline-danger rounded-end-3" onclick="document.getElementById('add_laporan_pic').value = ''" title="Batal unggah file">
                                       <i class="fas fa-times"></i>
                                   </button>
@@ -464,7 +464,7 @@
                           </div>
                           <div class="col-md-4">
                               <label class="form-label fw-bold small">Status Kompeten</label>
-                              <select name="status_kompeten" class="form-select rounded-3">
+                              <select name="status_kompeten" class="form-select form-control-modern rounded-3">
                                   <option value="">Pilih...</option>
                                   <option value="Kompeten">Kompeten</option>
                                   <option value="Belum">Belum Kompeten</option>
@@ -472,7 +472,7 @@
                           </div>
                           <div class="col-md-4">
                               <label class="form-label fw-bold small">Status Sertifikat</label>
-                              <select name="status_sertif" class="form-select rounded-3">
+                              <select name="status_sertif" class="form-select form-control-modern rounded-3">
                                   <option value="">Pilih...</option>
                                   <option value="Sudah Terbit">Sudah Terbit</option>
                                   <option value="Belum Terbit">Belum Terbit</option>
@@ -481,7 +481,7 @@
                           <div class="col-md-4">
                               <label class="form-label fw-bold small">Scan Sertif (File)</label>
                               <div class="input-group">
-                                  <input type="file" name="scan_sertif" id="add_scan_sertif" class="form-control rounded-start-3">
+                                  <input type="file" name="scan_sertif" id="add_scan_sertif" class="form-control form-control-modern rounded-start-3">
                                   <button type="button" class="btn btn-outline-danger rounded-end-3" onclick="document.getElementById('add_scan_sertif').value = ''" title="Batal unggah file">
                                       <i class="fas fa-times"></i>
                                   </button>
@@ -489,14 +489,14 @@
                           </div>
                           <div class="col-12">
                               <label class="form-label fw-bold small">Keterangan Tambahan</label>
-                              <textarea name="keterangan_tambahan" class="form-control rounded-3" rows="2" placeholder="Catatan tambahan sertifikasi..."></textarea>
+                              <textarea name="keterangan_tambahan" class="form-control form-control-modern rounded-3" rows="2" placeholder="Catatan tambahan sertifikasi..."></textarea>
                           </div>
                       </div>
                   </div>
               </div>
 
               {{-- Section 4: Pengiriman --}}
-              <div class="card border-0 shadow-sm rounded-4 mb-0">
+              <div class="glass-card mb-0">
                   <div class="card-header bg-white border-bottom pt-3 pb-2 px-4">
                       <h6 class="fw-bold text-info mb-0">4. Informasi Pengiriman Paket</h6>
                   </div>
@@ -504,23 +504,23 @@
                       <div class="row g-3">
                           <div class="col-md-6">
                               <label class="form-label fw-bold small">Nama Penerima</label>
-                              <input type="text" name="nama_penerima" class="form-control rounded-3">
+                              <input type="text" name="nama_penerima" class="form-control form-control-modern rounded-3">
                           </div>
                           <div class="col-md-6">
                               <label class="form-label fw-bold small">WA Penerima</label>
-                              <input type="text" name="wa_penerima" class="form-control rounded-3">
+                              <input type="text" name="wa_penerima" class="form-control form-control-modern rounded-3">
                           </div>
                           <div class="col-md-12">
                               <label class="form-label fw-bold small">Alamat Lengkap</label>
-                              <textarea name="alamat_pengiriman" class="form-control rounded-3" rows="2"></textarea>
+                              <textarea name="alamat_pengiriman" class="form-control form-control-modern rounded-3" rows="2"></textarea>
                           </div>
                           <div class="col-md-12">
                               <label class="form-label fw-bold small">Isi Paket</label>
-                              <textarea name="isi_paket" class="form-control rounded-3" rows="2" placeholder="Misal: 5 Modul, 5 Tas, Sertifikat Asli..."></textarea>
+                              <textarea name="isi_paket" class="form-control form-control-modern rounded-3" rows="2" placeholder="Misal: 5 Modul, 5 Tas, Sertifikat Asli..."></textarea>
                           </div>
                           <div class="col-md-4">
                               <label class="form-label fw-bold small">Status Pengiriman</label>
-                              <select name="status_pengiriman" class="form-select rounded-3">
+                              <select name="status_pengiriman" class="form-select form-control-modern rounded-3">
                                   <option value="">Pilih...</option>
                                   <option value="Diproses">Diproses</option>
                                   <option value="Dikirim">Dikirim</option>
@@ -529,23 +529,23 @@
                           </div>
                           <div class="col-md-4">
                               <label class="form-label fw-bold small">Tgl. Kirim</label>
-                              <input type="date" name="tanggal_kirim" class="form-control rounded-3">
+                              <input type="date" name="tanggal_kirim" class="form-control form-control-modern rounded-3">
                           </div>
                           <div class="col-md-4">
                               <label class="form-label fw-bold small">Tgl. Diterima</label>
-                              <input type="date" name="tanggal_diterima" class="form-control rounded-3">
+                              <input type="date" name="tanggal_diterima" class="form-control form-control-modern rounded-3">
                           </div>
                           <div class="col-md-6">
                               <label class="form-label fw-bold small">Nomor Resi</label>
-                              <input type="text" name="no_resi" class="form-control rounded-3" placeholder="Masukkan resi kurir...">
+                              <input type="text" name="no_resi" class="form-control form-control-modern rounded-3" placeholder="Masukkan resi kurir...">
                           </div>
                           <div class="col-md-6">
                               <label class="form-label fw-bold small">Foto Bukti (Upload)</label>
-                              <input type="file" name="foto" class="form-control rounded-3" accept="image/*">
+                              <input type="file" name="foto" class="form-control form-control-modern rounded-3" accept="image/*">
                           </div>
                           <div class="col-md-12 mt-4">
                               <label class="form-label fw-bold small">Catatan Akhir / Log</label>
-                              <textarea name="catatan" class="form-control rounded-3" rows="2" placeholder="Catatan bebas..."></textarea>
+                              <textarea name="catatan" class="form-control form-control-modern rounded-3" rows="2" placeholder="Catatan bebas..."></textarea>
                           </div>
                       </div>
                   </div>
@@ -620,8 +620,8 @@
                         <i class="fas fa-graduation-cap position-absolute text-primary" style="font-size: 8rem; right: -20px; bottom: -20px; opacity: 0.1;"></i>
                         <div class="position-relative z-1 text-start pe-5">
                             {{-- <div class="d-flex flex-wrap justify-content-start gap-1 mb-2"> --}}
-                                <span class="badge bg-primary px-3 py-1 fs-6 rounded-pill shadow-sm">{{ $item->jenis ?? 'N/A' }}</span>
-                                <span class="badge bg-white text-dark px-3 py-1 fs-6 rounded-pill shadow-sm border">{{ $item->metode ?? 'N/A' }}</span>
+                                <span class="badge bg-primary-subtle text-primary px-3 py-1 fs-6 rounded-pill shadow-sm">{{ $item->jenis ?? 'N/A' }}</span>
+                                <span class="badge bg-secondary-subtle text-secondary px-3 py-1 fs-6 rounded-pill shadow-sm">{{ $item->metode ?? 'N/A' }}</span>
                             {{-- </div> --}}
                             <h4 class="fw-black text-dark mb-1 mt-2">{{ $item->judul_pelatihan }}</h4>
                             
@@ -648,7 +648,7 @@
                                 <div class="row g-3">
                                     <div class="col-sm-6">
                                         <div class="text-muted small fw-bold mb-1">Jumlah Peserta Terdaftar</div>
-                                        <div class="fw-bolder text-dark"><span class="badge bg-warning text-dark px-2 py-1 fs-6 me-1">{{ $item->jumlah_peserta ?? 0 }}</span> Orang</div>
+                                        <div class="fw-bolder text-dark"><span class="badge bg-warning-subtle text-warning-emphasis px-2 py-1 fs-6 me-1">{{ $item->jumlah_peserta ?? 0 }}</span> Orang</div>
                                     </div>
                                     <div class="col-sm-6">
                                         <div class="text-muted small fw-bold mb-1">Syarat Kelengkapan</div>
@@ -735,13 +735,12 @@
                                             @endif
                                             <div class="mt-2 d-flex flex-wrap gap-1">
                                                 @if($item->cv)
-                                                    <a href="{{ getFileUrl($item->cv) }}" target="_blank" class="badge bg-danger text-white text-decoration-none px-2 py-1"><i class="fas fa-file-pdf me-1"></i> CV Trainer</a>
+                                                    <a href="{{ getFileUrl($item->cv) }}" target="_blank" class="badge bg-danger-subtle text-danger text-decoration-none px-2 py-1"><i class="fas fa-file-pdf me-1"></i> CV Trainer</a>
                                                 @endif
-                                                <!--
                                                 @if($item->modul)
-                                                    <a href="{{ getFileUrl($item->modul) }}" target="_blank" class="badge bg-primary text-white text-decoration-none px-2 py-1"><i class="fas fa-file-download me-1"></i> Modul</a>
+                                                    <span class="text-muted mx-1">|</span>
+                                                    <a href="{{ getFileUrl($item->modul) }}" target="_blank" class="badge bg-primary-subtle text-primary text-decoration-none px-2 py-1"><i class="fas fa-file-download me-1"></i> Modul</a>
                                                 @endif
-                                                -->
                                             </div>
                                         </div>
                                         <div class="col-sm-6">
@@ -855,7 +854,7 @@
                                     <div class="d-flex justify-content-between align-items-center mb-3 position-relative z-1">
                                         <div>
                                             <div class="text-info-emphasis small fw-bold mb-1">Status Paket</div>
-                                            <span class="badge bg-dark px-3 py-2 fs-6 shadow-sm">{{ $item->status_pengiriman ?? 'Belum Info' }}</span>
+                                            <span class="badge bg-secondary-subtle text-secondary px-3 py-2 fs-6 shadow-sm">{{ $item->status_pengiriman ?? 'Belum Info' }}</span>
                                         </div>
                                         <div class="text-end">
                                             <div class="text-info-emphasis small fw-bold mb-1">Nomor Resi</div>
@@ -963,7 +962,7 @@
                             <div class="row g-3 mb-4" id="galeriGrid{{ $item->id }}">
                                 @foreach($dokumentasi as $i => $file)
                                     <div class="col-md-3 col-sm-4 col-6">
-                                        <div class="card border-0 shadow-sm rounded-4 h-100 overflow-hidden position-relative">
+                                        <div class="glass-card h-100 overflow-hidden position-relative">
                                             @php
                                                 $ext = strtolower(pathinfo($file, PATHINFO_EXTENSION));
                                                 $isVideo = in_array($ext, ['mp4', 'webm', 'ogg', 'mov', 'avi']);
@@ -1008,7 +1007,7 @@
                                 
                                 <div class="mb-3">
                                     <label class="form-label small text-muted">Pilih File (Bisa pilih berulang kali. Foto max 5MB, Video max 20MB)</label>
-                                    <input type="file" id="dokumentasiInput{{ $item->id }}" class="form-control rounded-3" multiple accept="image/*,video/*" onchange="handleFileSelect(event, {{ $item->id }})">
+                                    <input type="file" id="dokumentasiInput{{ $item->id }}" class="form-control form-control-modern rounded-3" multiple accept="image/*,video/*" onchange="handleFileSelect(event, {{ $item->id }})">
                                     <div id="fileQueuePreview{{ $item->id }}" class="mt-2 d-flex flex-wrap gap-2"></div>
                                 </div>
                                 <div class="text-end">
@@ -1041,22 +1040,22 @@
                     <div class="modal-body p-4">
                         <div class="mb-3">
                             <label class="form-label small fw-bold">Judul Pelatihan</label>
-                            <input type="text" name="judul_pelatihan" class="form-control rounded-3" value="{{ $item->judul_pelatihan }}" required>
+                            <input type="text" name="judul_pelatihan" class="form-control form-control-modern rounded-3" value="{{ $item->judul_pelatihan }}" required>
                         </div>
                         <div class="row g-2 mb-3">
                             <div class="col-6">
                                 <label class="form-label small fw-bold">Tanggal Mulai</label>
-                                <input type="date" name="tanggal_mulai" class="form-control rounded-3" value="{{ $item->tanggal_mulai }}" required>
+                                <input type="date" name="tanggal_mulai" class="form-control form-control-modern rounded-3" value="{{ $item->tanggal_mulai }}" required>
                             </div>
                             <div class="col-6">
                                 <label class="form-label small fw-bold">Tanggal Selesai</label>
-                                <input type="date" name="tanggal_selesai" class="form-control rounded-3" value="{{ $item->tanggal_selesai }}" required>
+                                <input type="date" name="tanggal_selesai" class="form-control form-control-modern rounded-3" value="{{ $item->tanggal_selesai }}" required>
                             </div>
                         </div>
                         <div class="row g-2">
                             <div class="col-6">
                                 <label class="form-label small fw-bold">Jenis</label>
-                                <select name="jenis" class="form-select rounded-3">
+                                <select name="jenis" class="form-select form-control-modern rounded-3">
                                     <option value="Sertifikat KEMNAKER" {{ $item->jenis == 'Sertifikat KEMNAKER' ? 'selected' : '' }}>Sertifikat KEMNAKER</option>
                                     <option value="Sertifikat BNSP" {{ $item->jenis == 'Sertifikat BNSP' ? 'selected' : '' }}>Sertifikat BNSP</option>
                                     <option value="UPSKILLS" {{ $item->jenis == 'UPSKILLS' ? 'selected' : '' }}>UPSKILLS</option>
@@ -1067,7 +1066,7 @@
                             </div>
                             <div class="col-6">
                                 <label class="form-label small fw-bold">Metode</label>
-                                <select name="metode" class="form-select rounded-3">
+                                <select name="metode" class="form-select form-control-modern rounded-3">
                                     <option value="Online Training" {{ $item->metode == 'Online Training' ? 'selected' : '' }}>Online Training</option>
                                     <option value="Offline Training" {{ $item->metode == 'Offline Training' ? 'selected' : '' }}>Offline Training</option>
                                     <option value="Blended Training" {{ $item->metode == 'Blended Training' ? 'selected' : '' }}>Blended Training</option>
@@ -1101,11 +1100,11 @@
                     <div class="modal-body p-4">
                         <div class="mb-3">
                             <label class="form-label small fw-bold">Link Syarat Peserta (GDrive)</label>
-                            <input type="url" name="syarat_peserta" class="form-control rounded-3" value="{{ $item->syarat_peserta }}">
+                            <input type="url" name="syarat_peserta" class="form-control form-control-modern rounded-3" value="{{ $item->syarat_peserta }}">
                         </div>
                         <div class="mb-0">
                             <label class="form-label small fw-bold">Keterangan Syarat</label>
-                            <select name="ket_syarat" class="form-select rounded-3">
+                            <select name="ket_syarat" class="form-select form-control-modern rounded-3">
                                 <option value="Lengkap" {{ $item->ket_syarat == 'Lengkap' ? 'selected' : '' }}>Lengkap</option>
                                 <option value="Belum" {{ $item->ket_syarat == 'Belum' ? 'selected' : '' }}>Belum Lengkap</option>
                             </select>
@@ -1135,16 +1134,16 @@
                         <div class="row g-3">
                             <div class="col-md-6">
                                 <label class="form-label small fw-bold">Nama Trainer</label>
-                                <input type="text" name="nama_trainer" class="form-control rounded-3" value="{{ $item->nama_trainer }}">
+                                <input type="text" name="nama_trainer" class="form-control form-control-modern rounded-3" value="{{ $item->nama_trainer }}">
                             </div>
                             <div class="col-md-6">
                                 <label class="form-label small fw-bold">WA Trainer</label>
-                                <input type="text" name="wa_trainer" class="form-control rounded-3" value="{{ $item->wa_trainer }}">
+                                <input type="text" name="wa_trainer" class="form-control form-control-modern rounded-3" value="{{ $item->wa_trainer }}">
                             </div>
                             <div class="col-md-6">
                                 <label class="form-label small fw-bold">Upload CV Trainer (PDF)</label>
                                 <div class="input-group input-group-sm">
-                                    <input type="file" name="cv" id="cv_{{ $item->id }}" class="form-control" accept=".pdf,.doc,.docx">
+                                    <input type="file" name="cv" id="cv_{{ $item->id }}" class="form-control form-control-modern" accept=".pdf,.doc,.docx">
                                     <button type="button" class="btn btn-outline-danger" onclick="document.getElementById('cv_{{ $item->id }}').value = ''" title="Batal unggah file">
                                         <i class="fas fa-times"></i>
                                     </button>
@@ -1162,7 +1161,7 @@
                             <!--
                             <div class="col-md-6">
                                 <label class="form-label small fw-bold">Upload Modul</label>
-                                <input type="file" name="modul" class="form-control rounded-3">
+                                <input type="file" name="modul" class="form-control form-control-modern rounded-3">
                                 @if($item->modul)
                                     <div class="small mt-1 text-success"><i class="fas fa-check-circle"></i> File sudah ada. Abaikan jika tidak diubah.</div>
                                 @endif
@@ -1171,23 +1170,23 @@
                             <div class="col-12"><hr class="text-muted opacity-25"></div>
                             <div class="col-md-6">
                                 <label class="form-label small fw-bold">Nama LSP</label>
-                                <input type="text" name="nama_lsp" class="form-control rounded-3" value="{{ $item->nama_lsp }}">
+                                <input type="text" name="nama_lsp" class="form-control form-control-modern rounded-3" value="{{ $item->nama_lsp }}">
                             </div>
                             <div class="col-md-6">
                                 <label class="form-label small fw-bold">Kontak LSP</label>
-                                <input type="text" name="kontak_lsp" class="form-control rounded-3" value="{{ $item->kontak_lsp }}">
+                                <input type="text" name="kontak_lsp" class="form-control form-control-modern rounded-3" value="{{ $item->kontak_lsp }}">
                             </div>
                             <div class="col-md-6">
                                 <label class="form-label small fw-bold">Nama Asesor</label>
-                                <input type="text" name="nama_asesor" class="form-control rounded-3" value="{{ $item->nama_asesor }}">
+                                <input type="text" name="nama_asesor" class="form-control form-control-modern rounded-3" value="{{ $item->nama_asesor }}">
                             </div>
                             <div class="col-md-6">
                                 <label class="form-label small fw-bold">WA Asesor</label>
-                                <input type="text" name="wa_asesor" class="form-control rounded-3" value="{{ $item->wa_asesor }}">
+                                <input type="text" name="wa_asesor" class="form-control form-control-modern rounded-3" value="{{ $item->wa_asesor }}">
                             </div>
                             <div class="col-md-6">
                                 <label class="form-label small fw-bold">PIC Kegiatan</label>
-                                <select name="pic" class="form-select rounded-3">
+                                <select name="pic" class="form-select form-control-modern rounded-3">
                                     <option value="">Pilih...</option>
                                     @foreach($users as $usr)
                                         <option value="{{ $usr->name }}" {{ $item->pic == $usr->name ? 'selected' : '' }}>{{ $usr->nama_lengkap ?: $usr->name }}</option>
@@ -1196,7 +1195,7 @@
                             </div>
                             <div class="col-md-6">
                                 <label class="form-label small fw-bold">Tanggal Asesmen</label>
-                                <input type="date" name="tanggal_asesmen" class="form-control rounded-3" value="{{ $item->tanggal_asesmen }}">
+                                <input type="date" name="tanggal_asesmen" class="form-control form-control-modern rounded-3" value="{{ $item->tanggal_asesmen }}">
                             </div>
                         </div>
                     </div>
@@ -1223,7 +1222,7 @@
                     <div class="modal-body p-4">
                         <div class="mb-3">
                             <label class="form-label small fw-bold">Status Kompeten</label>
-                            <select name="status_kompeten" class="form-select rounded-3" onchange="toggleBuktiKompeten(this, {{ $item->id }})">
+                            <select name="status_kompeten" class="form-select form-control-modern rounded-3" onchange="toggleBuktiKompeten(this, {{ $item->id }})">
                                 <option value="" {{ empty($item->status_kompeten) ? 'selected' : '' }}>Pilih...</option>
                                 <option value="Kompeten" {{ $item->status_kompeten == 'Kompeten' ? 'selected' : '' }}>Kompeten</option>
                                 <option value="Belum" {{ $item->status_kompeten == 'Belum' ? 'selected' : '' }}>Belum Kompeten</option>
@@ -1231,7 +1230,7 @@
                         </div>
                         <div class="mb-3" id="bukti-kompeten-container-{{ $item->id }}" style="display: {{ $item->status_kompeten == 'Kompeten' ? 'block' : 'none' }};">
                             <label class="form-label small fw-bold">Upload Bukti Kompeten (PDF, Maks 30MB)</label>
-                            <input type="file" name="bukti_kompeten" class="form-control form-control-sm" accept=".pdf">
+                            <input type="file" name="bukti_kompeten" class="form-control form-control-modern form-control-sm" accept=".pdf">
                             @if($item->bukti_kompeten)
                                 <div class="d-flex align-items-center mt-1">
                                     <a href="{{ getFileUrl($item->bukti_kompeten) }}" target="_blank" class="small text-primary me-3"><i class="fas fa-file-pdf me-1"></i> Lihat Bukti Saat Ini</a>
@@ -1241,7 +1240,7 @@
                         </div>
                         <div class="mb-3">
                             <label class="form-label small fw-bold">Status Sertifikat</label>
-                            <select name="status_sertif" class="form-select rounded-3">
+                            <select name="status_sertif" class="form-select form-control-modern rounded-3">
                                 <option value="" {{ empty($item->status_sertif) ? 'selected' : '' }}>Pilih...</option>
                                 <option value="Sudah Terbit" {{ $item->status_sertif == 'Sudah Terbit' ? 'selected' : '' }}>Sudah Terbit</option>
                                 <option value="Belum Terbit" {{ $item->status_sertif == 'Belum Terbit' ? 'selected' : '' }}>Belum Terbit</option>
@@ -1249,7 +1248,7 @@
                         </div>
                         <div class="mb-3">
                             <label class="form-label small fw-bold">Status Pengiriman Sertifikat</label>
-                            <select name="status_pengiriman" class="form-select rounded-3">
+                            <select name="status_pengiriman" class="form-select form-control-modern rounded-3">
                                 <option value="" {{ empty($item->status_pengiriman) ? 'selected' : '' }}>Pilih...</option>
                                 <option value="Diproses" {{ $item->status_pengiriman == 'Diproses' ? 'selected' : '' }}>Diproses</option>
                                 <option value="Dikirim" {{ $item->status_pengiriman == 'Dikirim' ? 'selected' : '' }}>Dikirim</option>
@@ -1261,7 +1260,7 @@
                             <div class="mb-3">
                                 <label class="small text-muted">Scan Sertifikat (PDF, Maks 30MB)</label>
                                 <div class="input-group input-group-sm">
-                                    <input type="file" name="scan_sertif" id="scan_sertif_{{ $item->id }}" class="form-control" accept=".pdf">
+                                    <input type="file" name="scan_sertif" id="scan_sertif_{{ $item->id }}" class="form-control form-control-modern" accept=".pdf">
                                     <button type="button" class="btn btn-outline-danger" onclick="document.getElementById('scan_sertif_{{ $item->id }}').value = ''" title="Batal unggah file">
                                         <i class="fas fa-times"></i>
                                     </button>
@@ -1279,7 +1278,7 @@
                             <div class="mb-2">
                                 <label class="small text-muted">Laporan PIC (PDF, Maks 30MB)</label>
                                 <div class="input-group input-group-sm">
-                                    <input type="file" name="laporan_pic" id="laporan_pic_{{ $item->id }}" class="form-control" accept=".pdf">
+                                    <input type="file" name="laporan_pic" id="laporan_pic_{{ $item->id }}" class="form-control form-control-modern" accept=".pdf">
                                     <button type="button" class="btn btn-outline-danger" onclick="document.getElementById('laporan_pic_{{ $item->id }}').value = ''" title="Batal unggah file">
                                         <i class="fas fa-times"></i>
                                     </button>
@@ -1304,7 +1303,7 @@
                         </div>
                         <div class="mb-0">
                             <label class="form-label small fw-bold">Keterangan Tambahan</label>
-                            <textarea name="keterangan_tambahan" class="form-control rounded-3" rows="2">{{ $item->keterangan_tambahan }}</textarea>
+                            <textarea name="keterangan_tambahan" class="form-control form-control-modern rounded-3" rows="2">{{ $item->keterangan_tambahan }}</textarea>
                         </div>
                     </div>
                     <div class="modal-footer border-top-0 px-4 pb-4 pt-0">
@@ -1331,23 +1330,23 @@
                         <div class="row g-3">
                             <div class="col-md-6">
                                 <label class="form-label small fw-bold">Nama Penerima</label>
-                                <input type="text" name="nama_penerima" class="form-control rounded-3" value="{{ $item->nama_penerima }}">
+                                <input type="text" name="nama_penerima" class="form-control form-control-modern rounded-3" value="{{ $item->nama_penerima }}">
                             </div>
                             <div class="col-md-6">
                                 <label class="form-label small fw-bold">WA Penerima</label>
-                                <input type="text" name="wa_penerima" class="form-control rounded-3" value="{{ $item->wa_penerima }}">
+                                <input type="text" name="wa_penerima" class="form-control form-control-modern rounded-3" value="{{ $item->wa_penerima }}">
                             </div>
                             <div class="col-12">
                                 <label class="form-label small fw-bold">Alamat Lengkap</label>
-                                <textarea name="alamat_pengiriman" class="form-control rounded-3" rows="2">{{ $item->alamat_pengiriman }}</textarea>
+                                <textarea name="alamat_pengiriman" class="form-control form-control-modern rounded-3" rows="2">{{ $item->alamat_pengiriman }}</textarea>
                             </div>
                             <div class="col-12">
                                 <label class="form-label small fw-bold">Isi Paket</label>
-                                <textarea name="isi_paket" class="form-control rounded-3" rows="2">{{ $item->isi_paket }}</textarea>
+                                <textarea name="isi_paket" class="form-control form-control-modern rounded-3" rows="2">{{ $item->isi_paket }}</textarea>
                             </div>
                             <div class="col-md-4">
                                 <label class="form-label small fw-bold">Status Pengiriman</label>
-                                <select name="status_pengiriman" class="form-select rounded-3">
+                                <select name="status_pengiriman" class="form-select form-control-modern rounded-3">
                                     <option value="" {{ empty($item->status_pengiriman) ? 'selected' : '' }}>Pilih...</option>
                                     <option value="Diproses" {{ $item->status_pengiriman == 'Diproses' ? 'selected' : '' }}>Diproses</option>
                                     <option value="Dikirim" {{ $item->status_pengiriman == 'Dikirim' ? 'selected' : '' }}>Dikirim</option>
@@ -1356,19 +1355,19 @@
                             </div>
                             <div class="col-md-4">
                                 <label class="form-label small fw-bold">Tanggal Kirim</label>
-                                <input type="date" name="tanggal_kirim" class="form-control rounded-3" value="{{ $item->tanggal_kirim }}">
+                                <input type="date" name="tanggal_kirim" class="form-control form-control-modern rounded-3" value="{{ $item->tanggal_kirim }}">
                             </div>
                             <div class="col-md-4">
                                 <label class="form-label small fw-bold">Tanggal Diterima</label>
-                                <input type="date" name="tanggal_diterima" class="form-control rounded-3" value="{{ $item->tanggal_diterima }}">
+                                <input type="date" name="tanggal_diterima" class="form-control form-control-modern rounded-3" value="{{ $item->tanggal_diterima }}">
                             </div>
                             <div class="col-md-6">
                                 <label class="form-label small fw-bold">No Resi</label>
-                                <input type="text" name="no_resi" class="form-control rounded-3" value="{{ $item->no_resi }}">
+                                <input type="text" name="no_resi" class="form-control form-control-modern rounded-3" value="{{ $item->no_resi }}">
                             </div>
                             <div class="col-md-6">
                                 <label class="form-label small fw-bold">Foto Bukti / Resi (Maks 2MB)</label>
-                                <input type="file" name="foto" class="form-control rounded-3" accept="image/*,.pdf">
+                                <input type="file" name="foto" class="form-control form-control-modern rounded-3" accept="image/*,.pdf">
                                 @if($item->foto)
                                     <div class="d-flex align-items-center mt-1">
                                         <a href="{{ getFileUrl($item->foto) }}" target="_blank" class="small text-primary me-3"><i class="fas fa-image me-1"></i> Lihat Foto Saat Ini</a>
@@ -1378,7 +1377,7 @@
                             </div>
                             <div class="col-md-12">
                                 <label class="form-label small fw-bold">Catatan Logistik</label>
-                                <textarea name="catatan" class="form-control rounded-3" rows="1">{{ $item->catatan }}</textarea>
+                                <textarea name="catatan" class="form-control form-control-modern rounded-3" rows="1">{{ $item->catatan }}</textarea>
                             </div>
                         </div>
                     </div>
@@ -1412,28 +1411,28 @@
                     <div class="modal-body p-4" style="max-height: 60vh; overflow-y: auto;">
                         <div class="mb-3">
                             <label class="form-label fw-bold small text-success"><i class="fas fa-file-excel me-1"></i> Auto-Fill dari Excel (Opsional)</label>
-                            <textarea id="pasteExcel{{ $item->id }}" class="form-control rounded-3" rows="2" placeholder="Copy baris dari Excel lalu Paste di sini...&#10;Urutan Kolom: [Nama] [Instansi] [No WA] [Marketing]"></textarea>
+                            <textarea id="pasteExcel{{ $item->id }}" class="form-control form-control-modern rounded-3" rows="2" placeholder="Copy baris dari Excel lalu Paste di sini...&#10;Urutan Kolom: [Nama] [Instansi] [No WA] [Marketing]"></textarea>
                             <small class="text-muted" style="font-size: 11px;">*Maksimal 50 baris sekaligus. Data akan otomatis terisi ke bawah.</small>
                         </div>
                         <div class="mb-3 d-flex align-items-center gap-3 bg-light p-3 rounded-3 border">
                             <label class="form-label fw-bold mb-0">Jumlah Peserta Ditambahkan:</label>
-                            <input type="number" id="inputTambahPeserta{{ $item->id }}" class="form-control text-center rounded-3 fw-bold" style="width: 80px;" value="1" min="1" max="50">
+                            <input type="number" id="inputTambahPeserta{{ $item->id }}" class="form-control form-control-modern text-center rounded-3 fw-bold" style="width: 80px;" value="1" min="1" max="50">
                         </div>
                         <div id="tambahPesertaContainer{{ $item->id }}">
                             <div class="border p-3 rounded-3 mb-2 bg-white shadow-sm">
                                 <h6 class="fw-bold mb-2 small text-secondary">Peserta Tambahan 1</h6>
                                 <div class="row g-2">
                                     <div class="col-md-3">
-                                        <input type="text" name="nama_peserta[]" class="form-control rounded-3 form-control-sm" placeholder="Nama" required>
+                                        <input type="text" name="nama_peserta[]" class="form-control form-control-modern rounded-3 form-control-sm" placeholder="Nama" required>
                                     </div>
                                     <div class="col-md-3">
-                                        <input type="text" name="instansi_peserta[]" class="form-control rounded-3 form-control-sm" placeholder="Instansi">
+                                        <input type="text" name="instansi_peserta[]" class="form-control form-control-modern rounded-3 form-control-sm" placeholder="Instansi">
                                     </div>
                                     <div class="col-md-3">
-                                        <input type="text" name="wa_peserta[]" class="form-control rounded-3 form-control-sm" placeholder="WA">
+                                        <input type="text" name="wa_peserta[]" class="form-control form-control-modern rounded-3 form-control-sm" placeholder="WA">
                                     </div>
                                     <div class="col-md-3">
-                                        <select name="marketing[]" class="form-select rounded-3 form-control-sm">
+                                        <select name="marketing[]" class="form-select form-control-modern rounded-3 form-control-sm">
                                             <option value="">Marketing...</option>
                                             @foreach($marketings as $mkt)
                                                 <option value="{{ $mkt->name }}">{{ $mkt->nama_lengkap ?: $mkt->name }}</option>
@@ -1500,16 +1499,16 @@
                                                     <h6 class="fw-bold mb-2 small text-secondary">Peserta Tambahan ${i}</h6>
                                                     <div class="row g-2">
                                                         <div class="col-md-3">
-                                                            <input type="text" name="nama_peserta[]" class="form-control rounded-3 form-control-sm" placeholder="Nama" required>
+                                                            <input type="text" name="nama_peserta[]" class="form-control form-control-modern rounded-3 form-control-sm" placeholder="Nama" required>
                                                         </div>
                                                         <div class="col-md-3">
-                                                            <input type="text" name="instansi_peserta[]" class="form-control rounded-3 form-control-sm" placeholder="Instansi">
+                                                            <input type="text" name="instansi_peserta[]" class="form-control form-control-modern rounded-3 form-control-sm" placeholder="Instansi">
                                                         </div>
                                                         <div class="col-md-3">
-                                                            <input type="text" name="wa_peserta[]" class="form-control rounded-3 form-control-sm" placeholder="WA">
+                                                            <input type="text" name="wa_peserta[]" class="form-control form-control-modern rounded-3 form-control-sm" placeholder="WA">
                                                         </div>
                                                         <div class="col-md-3">
-                                                            <select name="marketing[]" class="form-select rounded-3 form-control-sm">
+                                                            <select name="marketing[]" class="form-select form-control-modern rounded-3 form-control-sm">
                                                                 ${marketingOpts}
                                                             </select>
                                                         </div>
@@ -1583,11 +1582,11 @@
                                     
                                     @foreach($validPesertas as $idx => $p)
                                     <tr class="peserta-row">
-                                        <td class="px-3 py-2"><input type="text" name="nama_peserta[]" class="form-control rounded-3 form-control-sm" value="{{ $p['nama'] }}" required></td>
-                                        <td class="px-3 py-2"><input type="text" name="instansi_peserta[]" class="form-control rounded-3 form-control-sm" value="{{ $p['instansi'] }}"></td>
-                                        <td class="px-3 py-2"><input type="text" name="wa_peserta[]" class="form-control rounded-3 form-control-sm" value="{{ $p['wa'] }}"></td>
+                                        <td class="px-3 py-2"><input type="text" name="nama_peserta[]" class="form-control form-control-modern rounded-3 form-control-sm" value="{{ $p['nama'] }}" required></td>
+                                        <td class="px-3 py-2"><input type="text" name="instansi_peserta[]" class="form-control form-control-modern rounded-3 form-control-sm" value="{{ $p['instansi'] }}"></td>
+                                        <td class="px-3 py-2"><input type="text" name="wa_peserta[]" class="form-control form-control-modern rounded-3 form-control-sm" value="{{ $p['wa'] }}"></td>
                                         <td class="px-3 py-2">
-                                            <select name="marketing[]" class="form-select rounded-3 form-control-sm">
+                                            <select name="marketing[]" class="form-select form-control-modern rounded-3 form-control-sm">
                                                 <option value="">Pilih...</option>
                                                 @foreach($marketings as $mkt)
                                                     <option value="{{ $mkt->name }}" {{ $p['marketing'] == $mkt->name ? 'selected' : '' }}>{{ $mkt->nama_lengkap ?: $mkt->name }}</option>
@@ -1623,11 +1622,11 @@
                     const tr = document.createElement('tr');
                     tr.className = 'peserta-row';
                     tr.innerHTML = `
-                        <td class="px-3 py-2"><input type="text" name="nama_peserta[]" class="form-control rounded-3 form-control-sm" required></td>
-                        <td class="px-3 py-2"><input type="text" name="instansi_peserta[]" class="form-control rounded-3 form-control-sm"></td>
-                        <td class="px-3 py-2"><input type="text" name="wa_peserta[]" class="form-control rounded-3 form-control-sm"></td>
+                        <td class="px-3 py-2"><input type="text" name="nama_peserta[]" class="form-control form-control-modern rounded-3 form-control-sm" required></td>
+                        <td class="px-3 py-2"><input type="text" name="instansi_peserta[]" class="form-control form-control-modern rounded-3 form-control-sm"></td>
+                        <td class="px-3 py-2"><input type="text" name="wa_peserta[]" class="form-control form-control-modern rounded-3 form-control-sm"></td>
                         <td class="px-3 py-2">
-                            <select name="marketing[]" class="form-select rounded-3 form-control-sm">
+                            <select name="marketing[]" class="form-select form-control-modern rounded-3 form-control-sm">
                                 <option value="">Pilih...</option>
                                 @foreach($marketings as $mkt)
                                     <option value="{{ $mkt->name }}">{{ $mkt->nama_lengkap ?: $mkt->name }}</option>
@@ -1677,19 +1676,19 @@
                     <div class="modal-body p-4">
                         <div class="mb-3">
                             <label class="form-label small fw-bold">Nama Peserta</label>
-                            <input type="text" name="nama_peserta" class="form-control rounded-3" value="{{ trim($peserta) }}" required>
+                            <input type="text" name="nama_peserta" class="form-control form-control-modern rounded-3" value="{{ trim($peserta) }}" required>
                         </div>
                         <div class="mb-3">
                             <label class="form-label small fw-bold">Perusahaan / Instansi</label>
-                            <input type="text" name="instansi_peserta" class="form-control rounded-3" value="{{ trim($instansis[$i] ?? '') }}">
+                            <input type="text" name="instansi_peserta" class="form-control form-control-modern rounded-3" value="{{ trim($instansis[$i] ?? '') }}">
                         </div>
                         <div class="mb-3">
                             <label class="form-label small fw-bold">WA Peserta</label>
-                            <input type="text" name="wa_peserta" class="form-control rounded-3" value="{{ trim($was[$i] ?? '') }}">
+                            <input type="text" name="wa_peserta" class="form-control form-control-modern rounded-3" value="{{ trim($was[$i] ?? '') }}">
                         </div>
                         <div class="mb-0">
                             <label class="form-label small fw-bold">Marketing</label>
-                            <select name="marketing" class="form-select rounded-3">
+                            <select name="marketing" class="form-select form-control-modern rounded-3">
                                 <option value="">Pilih...</option>
                                 @foreach($marketings as $mkt)
                                     <option value="{{ $mkt->name }}" {{ trim($mkts[$i] ?? '') == $mkt->name ? 'selected' : '' }}>{{ $mkt->nama_lengkap ?: $mkt->name }}</option>
@@ -1713,8 +1712,8 @@
     /* UTILITIES */
     .fw-black { font-weight: 900 !important; }
     .rounded-4 { border-radius: 1rem !important; }
-    .hover-lift { transition: transform 0.2s ease-in-out, box-shadow 0.2s; }
-    .hover-lift:hover { transform: translateY(-3px); box-shadow: 0 10px 20px rgba(0,0,0,0.08) !important; }
+    .hover-lift { transition: box-shadow 0.3s ease, border-color 0.3s ease; }
+    .hover-lift:hover { box-shadow: 0 10px 30px rgba(0,0,0,0.08) !important; border-color: rgba(78, 115, 223, 0.2) !important; }
     .fade-in { animation: fadeIn 0.5s ease-out; }
     @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
     
@@ -1725,8 +1724,41 @@
     .bg-danger-subtle { background-color: #fee2e2 !important; }
     .bg-info-subtle { background-color: #e0f2fe !important; }
     
-    /* TABLE TWEAKS */
-    table td { vertical-align: top; }
+    /* PREMIUM UI */
+    .glass-card {
+        background: #ffffff;
+        border: 1px solid rgba(227, 230, 240, 0.8);
+        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.03);
+        border-radius: 20px;
+        transition: all 0.3s ease;
+    }
+    .glass-card:hover {
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.06);
+    }
+    .table-custom { border-collapse: separate; border-spacing: 0 12px; margin-top: -12px;}
+    .table-custom tr { background-color: #ffffff; box-shadow: 0 2px 10px rgba(0,0,0,0.02); border-radius: 16px; transition: all 0.2s ease; border: 1px solid #f1f3f9;}
+    .table-custom tr:hover { box-shadow: 0 5px 15px rgba(0,0,0,0.06); }
+    .table-custom td { padding: 18px 22px; border: none; vertical-align: middle;}
+    .table-custom td:first-child { border-top-left-radius: 16px; border-bottom-left-radius: 16px; }
+    .table-custom td:last-child { border-top-right-radius: 16px; border-bottom-right-radius: 16px; }
+    .table-custom th { border: none; padding: 10px 22px; color: #858796; font-weight: 700; text-transform: uppercase; font-size: 11px; letter-spacing: 1px; background: transparent;}
+
+    .form-control-modern {
+        border-radius: 12px;
+        padding: 12px 18px;
+        border: 2px solid #edf2f9;
+        transition: all 0.2s;
+    }
+    .form-control-modern:focus {
+        border-color: #4e73df;
+        box-shadow: 0 0 0 0.25rem rgba(78, 115, 223, 0.1);
+    }
+    .btn-premium {
+        border-radius: 12px;
+        font-weight: 700;
+        padding: 10px 24px;
+        transition: all 0.3s;
+    }
 </style>
 @endsection
 
@@ -1861,19 +1893,19 @@
                             <div class="row g-2">
                                 <div class="col-md-3">
                                     <label class="small fw-bold">Nama Peserta <span class="text-danger">*</span></label>
-                                    <input type="text" name="nama_peserta[]" class="form-control form-control-sm" required>
+                                    <input type="text" name="nama_peserta[]" class="form-control form-control-modern form-control-sm" required>
                                 </div>
                                 <div class="col-md-3">
                                     <label class="small fw-bold">Instansi</label>
-                                    <input type="text" name="instansi_peserta[]" class="form-control form-control-sm">
+                                    <input type="text" name="instansi_peserta[]" class="form-control form-control-modern form-control-sm">
                                 </div>
                                 <div class="col-md-3">
                                     <label class="small fw-bold">WA Peserta</label>
-                                    <input type="text" name="wa_peserta[]" class="form-control form-control-sm">
+                                    <input type="text" name="wa_peserta[]" class="form-control form-control-modern form-control-sm">
                                 </div>
                                 <div class="col-md-3">
                                     <label class="small fw-bold">Marketing</label>
-                                    <select name="marketing[]" class="form-select form-control-sm">
+                                    <select name="marketing[]" class="form-select form-control-modern form-control-sm">
                                         ${marketingOptions}
                                     </select>
                                 </div>
@@ -2082,7 +2114,7 @@
                     
                     let cardHtml = `
                         <div class="col-md-3 col-sm-4 col-6">
-                            <div class="card border-0 shadow-sm rounded-4 h-100 overflow-hidden position-relative">
+                            <div class="glass-card h-100 overflow-hidden position-relative">
                                 ${mediaHtml}
                                 <button type="button" class="btn btn-sm btn-danger rounded-circle shadow-sm position-absolute" 
                                     onclick="hapusDokumentasi(this, '${deleteUrl}')"
