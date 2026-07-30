@@ -229,7 +229,7 @@ class KpiController extends Controller
         $hpp_per_bulan = 0;
         $komisi_spv = 0;
 
-        if (in_array(auth()->user()->role, ['superadmin', 'spv_marketing'])) {
+        if (in_array(auth()->user()->role, ['superadmin', 'spv_marketing', 'performance'])) {
             $total_kpi_avg = $marketings->count() > 0 ? $marketings->avg('total_kpi') : 0;
             $total_income_keseluruhan = $marketings->sum('revenue_actual');
             
