@@ -30,6 +30,11 @@ class User extends Authenticatable
         'no_hp',        // 🔥 TAMBAHAN BARU
         'nik',
         'tanggal_lahir',
+        'tanggal_bergabung',
+        'ktp_file',
+        'ijasah_file',
+        'pas_foto_file',
+        'kk_file',
         'tanggal_kontrak_baru',
         'tanggal_kontrak_berakhir',
         'deal_sound_path',

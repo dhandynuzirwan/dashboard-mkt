@@ -104,6 +104,12 @@
                                     <input type="date" class="form-control @error('tanggal_lahir') is-invalid @enderror" id="tanggal_lahir" name="tanggal_lahir" value="{{ old('tanggal_lahir', $user->tanggal_lahir) }}">
                                 </div>
 
+                                {{-- Tanggal Bergabung --}}
+                                <div class="form-group col-md-6 mb-3">
+                                    <label for="tanggal_bergabung" class="fw-bold mb-1">Tanggal Bergabung</label>
+                                    <input type="date" class="form-control @error('tanggal_bergabung') is-invalid @enderror" id="tanggal_bergabung" name="tanggal_bergabung" value="{{ old('tanggal_bergabung', $user->tanggal_bergabung) }}">
+                                </div>
+
                                 {{-- Tanggal Kontrak --}}
                                 <div class="form-group col-md-6 mb-3">
                                     <label for="tanggal_kontrak_baru" class="fw-bold mb-1">Tanggal Kontrak Terbaru</label>
@@ -128,6 +134,38 @@
                                     <input type="file" class="form-control @error('sop_file') is-invalid @enderror" id="sop_file" name="sop_file">
                                     @if($user->sop_file)
                                         <small class="d-block mt-1"><a href="{{ asset('storage/' . $user->sop_file) }}" target="_blank"><i class="fas fa-file me-1"></i> Lihat SOP saat ini</a></small>
+                                    @endif
+                                </div>
+
+                                <div class="form-group col-md-6 mb-3">
+                                    <label for="ktp_file" class="fw-bold mb-1">KTP (PDF/Image)</label>
+                                    <input type="file" class="form-control @error('ktp_file') is-invalid @enderror" id="ktp_file" name="ktp_file">
+                                    @if($user->ktp_file)
+                                        <small class="d-block mt-1"><a href="{{ asset('storage/' . $user->ktp_file) }}" target="_blank"><i class="fas fa-file me-1"></i> Lihat KTP saat ini</a></small>
+                                    @endif
+                                </div>
+
+                                <div class="form-group col-md-6 mb-3">
+                                    <label for="ijasah_file" class="fw-bold mb-1">Ijazah (PDF/Image)</label>
+                                    <input type="file" class="form-control @error('ijasah_file') is-invalid @enderror" id="ijasah_file" name="ijasah_file">
+                                    @if($user->ijasah_file)
+                                        <small class="d-block mt-1"><a href="{{ asset('storage/' . $user->ijasah_file) }}" target="_blank"><i class="fas fa-file me-1"></i> Lihat Ijazah saat ini</a></small>
+                                    @endif
+                                </div>
+
+                                <div class="form-group col-md-6 mb-3">
+                                    <label for="pas_foto_file" class="fw-bold mb-1">Pas Foto (PDF/Image)</label>
+                                    <input type="file" class="form-control @error('pas_foto_file') is-invalid @enderror" id="pas_foto_file" name="pas_foto_file">
+                                    @if($user->pas_foto_file)
+                                        <small class="d-block mt-1"><a href="{{ asset('storage/' . $user->pas_foto_file) }}" target="_blank"><i class="fas fa-file me-1"></i> Lihat Pas Foto saat ini</a></small>
+                                    @endif
+                                </div>
+
+                                <div class="form-group col-md-6 mb-3">
+                                    <label for="kk_file" class="fw-bold mb-1">Kartu Keluarga (PDF/Image)</label>
+                                    <input type="file" class="form-control @error('kk_file') is-invalid @enderror" id="kk_file" name="kk_file">
+                                    @if($user->kk_file)
+                                        <small class="d-block mt-1"><a href="{{ asset('storage/' . $user->kk_file) }}" target="_blank"><i class="fas fa-file me-1"></i> Lihat KK saat ini</a></small>
                                     @endif
                                 </div>
 

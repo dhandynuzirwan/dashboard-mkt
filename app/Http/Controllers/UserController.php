@@ -41,11 +41,16 @@ class UserController extends Controller
             'fingerspot_id' => 'nullable|string|unique:users,fingerspot_id',
             'nik' => 'nullable|string|max:50',
             'tanggal_lahir' => 'nullable|date',
+            'tanggal_bergabung' => 'nullable|date',
             'tanggal_kontrak_baru' => 'nullable|date',
             'tanggal_kontrak_berakhir' => 'nullable|date',
             'nama_lengkap_ktp' => 'nullable|string|max:255',
             'jobdesk_file' => 'nullable|file|mimes:pdf,doc,docx,png,jpg,jpeg|max:5120',
             'sop_file' => 'nullable|file|mimes:pdf,doc,docx,png,jpg,jpeg|max:5120',
+            'ktp_file' => 'nullable|file|mimes:pdf,png,jpg,jpeg|max:5120',
+            'ijasah_file' => 'nullable|file|mimes:pdf,png,jpg,jpeg|max:5120',
+            'pas_foto_file' => 'nullable|file|mimes:pdf,png,jpg,jpeg|max:5120',
+            'kk_file' => 'nullable|file|mimes:pdf,png,jpg,jpeg|max:5120',
         ]);
 
         $data = [
@@ -59,6 +64,7 @@ class UserController extends Controller
             'fingerspot_id' => $request->fingerspot_id,
             'nik' => $request->nik,
             'tanggal_lahir' => $request->tanggal_lahir,
+            'tanggal_bergabung' => $request->tanggal_bergabung,
             'tanggal_kontrak_baru' => $request->tanggal_kontrak_baru,
             'tanggal_kontrak_berakhir' => $request->tanggal_kontrak_berakhir,
         ];
@@ -68,6 +74,18 @@ class UserController extends Controller
         }
         if ($request->hasFile('sop_file')) {
             $data['sop_file'] = $request->file('sop_file')->store('users/sop', 'public');
+        }
+        if ($request->hasFile('ktp_file')) {
+            $data['ktp_file'] = $request->file('ktp_file')->store('users/ktp', 'public');
+        }
+        if ($request->hasFile('ijasah_file')) {
+            $data['ijasah_file'] = $request->file('ijasah_file')->store('users/ijasah', 'public');
+        }
+        if ($request->hasFile('pas_foto_file')) {
+            $data['pas_foto_file'] = $request->file('pas_foto_file')->store('users/pas_foto', 'public');
+        }
+        if ($request->hasFile('kk_file')) {
+            $data['kk_file'] = $request->file('kk_file')->store('users/kk', 'public');
         }
 
         User::create($data);
@@ -104,11 +122,16 @@ class UserController extends Controller
             'fingerspot_id' => 'nullable|string|unique:users,fingerspot_id,' . $id,
             'nik' => 'nullable|string|max:50',
             'tanggal_lahir' => 'nullable|date',
+            'tanggal_bergabung' => 'nullable|date',
             'tanggal_kontrak_baru' => 'nullable|date',
             'tanggal_kontrak_berakhir' => 'nullable|date',
             'nama_lengkap_ktp' => 'nullable|string|max:255',
             'jobdesk_file' => 'nullable|file|mimes:pdf,doc,docx,png,jpg,jpeg|max:5120',
             'sop_file' => 'nullable|file|mimes:pdf,doc,docx,png,jpg,jpeg|max:5120',
+            'ktp_file' => 'nullable|file|mimes:pdf,png,jpg,jpeg|max:5120',
+            'ijasah_file' => 'nullable|file|mimes:pdf,png,jpg,jpeg|max:5120',
+            'pas_foto_file' => 'nullable|file|mimes:pdf,png,jpg,jpeg|max:5120',
+            'kk_file' => 'nullable|file|mimes:pdf,png,jpg,jpeg|max:5120',
         ]);
 
         // Siapkan array data untuk diupdate (KOSONGKAN FOTO PROFIL DULU DI SINI)
@@ -122,6 +145,7 @@ class UserController extends Controller
             'fingerspot_id' => $request->fingerspot_id,
             'nik' => $request->nik,
             'tanggal_lahir' => $request->tanggal_lahir,
+            'tanggal_bergabung' => $request->tanggal_bergabung,
             'tanggal_kontrak_baru' => $request->tanggal_kontrak_baru,
             'tanggal_kontrak_berakhir' => $request->tanggal_kontrak_berakhir,
         ];
@@ -157,6 +181,34 @@ class UserController extends Controller
                 Storage::disk('public')->delete($user->sop_file);
             }
             $data['sop_file'] = $request->file('sop_file')->store('users/sop', 'public');
+        }
+
+        if ($request->hasFile('ktp_file')) {
+            if ($user->ktp_file && Storage::disk('public')->exists($user->ktp_file)) {
+                Storage::disk('public')->delete($user->ktp_file);
+            }
+            $data['ktp_file'] = $request->file('ktp_file')->store('users/ktp', 'public');
+        }
+
+        if ($request->hasFile('ijasah_file')) {
+            if ($user->ijasah_file && Storage::disk('public')->exists($user->ijasah_file)) {
+                Storage::disk('public')->delete($user->ijasah_file);
+            }
+            $data['ijasah_file'] = $request->file('ijasah_file')->store('users/ijasah', 'public');
+        }
+
+        if ($request->hasFile('pas_foto_file')) {
+            if ($user->pas_foto_file && Storage::disk('public')->exists($user->pas_foto_file)) {
+                Storage::disk('public')->delete($user->pas_foto_file);
+            }
+            $data['pas_foto_file'] = $request->file('pas_foto_file')->store('users/pas_foto', 'public');
+        }
+
+        if ($request->hasFile('kk_file')) {
+            if ($user->kk_file && Storage::disk('public')->exists($user->kk_file)) {
+                Storage::disk('public')->delete($user->kk_file);
+            }
+            $data['kk_file'] = $request->file('kk_file')->store('users/kk', 'public');
         }
 
         // Jalankan perintah update
