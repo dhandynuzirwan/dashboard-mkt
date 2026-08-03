@@ -24,6 +24,9 @@ class User extends Authenticatable
         'role',
         'foto_profil',
         'nama_lengkap', // 🔥 TAMBAHAN BARU
+        'nama_lengkap_ktp',
+        'jobdesk_file',
+        'sop_file',
         'no_hp',        // 🔥 TAMBAHAN BARU
         'nik',
         'tanggal_lahir',

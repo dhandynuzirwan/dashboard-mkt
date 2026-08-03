@@ -70,7 +70,7 @@
                         
                                 
                                 <div class="form-group col-md-6 mb-3">
-                                    <label for="name" class="fw-bold mb-1">Nama Panggilan <span class="text-danger">*</span></label>
+                                    <label for="name" class="fw-bold mb-1">Username <span class="text-danger">*</span></label>
                                     <input type="text" class="form-control <?php $__errorArgs = ['name'];
 $__bag = $errors->getBag($__errorArgs[1] ?? 'default');
 if ($__bag->has($__errorArgs[0])) :
@@ -82,7 +82,7 @@ unset($__errorArgs, $__bag); ?>" id="name" name="name" value="<?php echo e(old('
                                 </div>
                                 
                                 <div class="form-group col-md-6 mb-3">
-                                    <label for="nama_lengkap" class="fw-bold mb-1">Nama Lengkap (KTP)</label>
+                                    <label for="nama_lengkap" class="fw-bold mb-1">Nama Panggilan</label>
                                     <input type="text" class="form-control <?php $__errorArgs = ['nama_lengkap'];
 $__bag = $errors->getBag($__errorArgs[1] ?? 'default');
 if ($__bag->has($__errorArgs[0])) :
@@ -91,6 +91,18 @@ $message = $__bag->first($__errorArgs[0]); ?> is-invalid <?php unset($message);
 if (isset($__messageOriginal)) { $message = $__messageOriginal; }
 endif;
 unset($__errorArgs, $__bag); ?>" id="nama_lengkap" name="nama_lengkap" value="<?php echo e(old('nama_lengkap', $user->nama_lengkap ?? '')); ?>">
+                                </div>
+                        
+                                <div class="form-group col-md-6 mb-3">
+                                    <label for="nama_lengkap_ktp" class="fw-bold mb-1">Nama Lengkap (KTP)</label>
+                                    <input type="text" class="form-control <?php $__errorArgs = ['nama_lengkap_ktp'];
+$__bag = $errors->getBag($__errorArgs[1] ?? 'default');
+if ($__bag->has($__errorArgs[0])) :
+if (isset($message)) { $__messageOriginal = $message; }
+$message = $__bag->first($__errorArgs[0]); ?> is-invalid <?php unset($message);
+if (isset($__messageOriginal)) { $message = $__messageOriginal; }
+endif;
+unset($__errorArgs, $__bag); ?>" id="nama_lengkap_ktp" name="nama_lengkap_ktp" value="<?php echo e(old('nama_lengkap_ktp', $user->nama_lengkap_ktp ?? '')); ?>">
                                 </div>
                         
                                 <div class="form-group col-md-6 mb-3">
@@ -166,6 +178,36 @@ $message = $__bag->first($__errorArgs[0]); ?> is-invalid <?php unset($message);
 if (isset($__messageOriginal)) { $message = $__messageOriginal; }
 endif;
 unset($__errorArgs, $__bag); ?>" id="tanggal_kontrak_berakhir" name="tanggal_kontrak_berakhir" value="<?php echo e(old('tanggal_kontrak_berakhir', $user->tanggal_kontrak_berakhir)); ?>">
+                                </div>
+
+                                <div class="form-group col-md-6 mb-3">
+                                    <label for="jobdesk_file" class="fw-bold mb-1">Jobdesk (PDF/Doc/Image)</label>
+                                    <input type="file" class="form-control <?php $__errorArgs = ['jobdesk_file'];
+$__bag = $errors->getBag($__errorArgs[1] ?? 'default');
+if ($__bag->has($__errorArgs[0])) :
+if (isset($message)) { $__messageOriginal = $message; }
+$message = $__bag->first($__errorArgs[0]); ?> is-invalid <?php unset($message);
+if (isset($__messageOriginal)) { $message = $__messageOriginal; }
+endif;
+unset($__errorArgs, $__bag); ?>" id="jobdesk_file" name="jobdesk_file">
+                                    <?php if($user->jobdesk_file): ?>
+                                        <small class="d-block mt-1"><a href="<?php echo e(asset('storage/' . $user->jobdesk_file)); ?>" target="_blank"><i class="fas fa-file me-1"></i> Lihat Jobdesk saat ini</a></small>
+                                    <?php endif; ?>
+                                </div>
+
+                                <div class="form-group col-md-6 mb-3">
+                                    <label for="sop_file" class="fw-bold mb-1">SOP (PDF/Doc/Image)</label>
+                                    <input type="file" class="form-control <?php $__errorArgs = ['sop_file'];
+$__bag = $errors->getBag($__errorArgs[1] ?? 'default');
+if ($__bag->has($__errorArgs[0])) :
+if (isset($message)) { $__messageOriginal = $message; }
+$message = $__bag->first($__errorArgs[0]); ?> is-invalid <?php unset($message);
+if (isset($__messageOriginal)) { $message = $__messageOriginal; }
+endif;
+unset($__errorArgs, $__bag); ?>" id="sop_file" name="sop_file">
+                                    <?php if($user->sop_file): ?>
+                                        <small class="d-block mt-1"><a href="<?php echo e(asset('storage/' . $user->sop_file)); ?>" target="_blank"><i class="fas fa-file me-1"></i> Lihat SOP saat ini</a></small>
+                                    <?php endif; ?>
                                 </div>
 
                                 <div class="form-group col-md-6 mb-3">

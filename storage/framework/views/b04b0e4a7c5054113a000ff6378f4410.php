@@ -147,7 +147,14 @@
                 <div class="glass-card p-4 h-100">
                     <h6 class="fw-bolder mb-3 text-dark">History Permintaan (Bulan Ini)</h6>
                     <div style="position: relative; height: 220px; width: 100%;">
-                        <canvas id="historyChart"></canvas>
+                        <?php if(array_sum($chartData['history']) > 0): ?>
+                            <canvas id="historyChart"></canvas>
+                        <?php else: ?>
+                            <div class="d-flex flex-column justify-content-center align-items-center h-100 opacity-50">
+                                <i class="fas fa-chart-line fa-3x mb-3 text-muted"></i>
+                                <span class="small text-muted fw-bold">Belum ada data history bulan ini</span>
+                            </div>
+                        <?php endif; ?>
                     </div>
                 </div>
             </div>
@@ -157,7 +164,14 @@
                     <h6 class="fw-bolder mb-3 text-dark">Prioritas Permintaan</h6>
                     <div class="d-flex align-items-center justify-content-center h-100">
                         <div style="position: relative; height: 180px; width: 100%;">
-                            <canvas id="prioritasChart"></canvas>
+                            <?php if(array_sum($chartData['prioritas']) > 0): ?>
+                                <canvas id="prioritasChart"></canvas>
+                            <?php else: ?>
+                                <div class="d-flex flex-column justify-content-center align-items-center h-100 opacity-50">
+                                    <i class="fas fa-chart-pie fa-3x mb-3 text-muted"></i>
+                                    <span class="small text-muted fw-bold">Belum ada data prioritas</span>
+                                </div>
+                            <?php endif; ?>
                         </div>
                     </div>
                 </div>
@@ -169,32 +183,32 @@
             <div class="glass-card p-2 d-inline-flex">
                 <ul class="nav nav-pills-custom mb-0 d-flex flex-wrap gap-2" id="pills-tab-with-icon" role="tablist">
                 <li class="nav-item">
-                    <a class="nav-link active filter-tab" href="javascript:void(0)" data-filter="Semua">
+                    <a class="nav-link active filter-tab" href="#" data-filter="Semua">
                         <i class="fas fa-layer-group"></i> Semua
                     </a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link filter-tab" href="javascript:void(0)" data-filter="Cover Proposal">
+                    <a class="nav-link filter-tab" href="#" data-filter="Cover Proposal">
                         <i class="fas fa-book"></i> Cover Proposal
                     </a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link filter-tab" href="javascript:void(0)" data-filter="Flyer/Poster">
+                    <a class="nav-link filter-tab" href="#" data-filter="Flyer/Poster">
                         <i class="fas fa-file-image"></i> Flyer/Poster
                     </a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link filter-tab" href="javascript:void(0)" data-filter="Penjualan">
+                    <a class="nav-link filter-tab" href="#" data-filter="Penjualan">
                         <i class="fas fa-shopping-cart"></i> Penjualan
                     </a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link filter-tab" href="javascript:void(0)" data-filter="Media Sosial">
+                    <a class="nav-link filter-tab" href="#" data-filter="Media Sosial">
                         <i class="fab fa-instagram"></i> Media Sosial
                     </a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link filter-tab" href="javascript:void(0)" data-filter="Presentasi">
+                    <a class="nav-link filter-tab" href="#" data-filter="Presentasi">
                         <i class="fas fa-desktop"></i> Presentasi
                     </a>
                 </li>
@@ -299,10 +313,10 @@
                                         <li><a class="dropdown-item py-2 rounded-3" href="<?php echo e(route('operational.permintaan-visual.biasa.edit', $item->id)); ?>"><i class="fas fa-edit text-info me-2"></i> Edit</a></li>
                                         <li><hr class="dropdown-divider"></li>
                                         <li>
-                                            <form action="<?php echo e(route('operational.permintaan-visual.biasa.destroy', $item->id)); ?>" method="POST" onsubmit="return confirm('Apakah Anda yakin ingin membatalkan permintaan ini?');">
+                                            <form action="<?php echo e(route('operational.permintaan-visual.biasa.destroy', $item->id)); ?>" method="POST" onsubmit="return confirm('Apakah Anda yakin ingin menghapus data permintaan ini secara permanen?');">
                                                 <?php echo csrf_field(); ?>
                                                 <?php echo method_field('DELETE'); ?>
-                                                <button type="submit" class="dropdown-item py-2 rounded-3 text-danger border-0 bg-transparent" style="width: 100%; text-align: left;"><i class="fas fa-trash me-2"></i> Batalkan</button>
+                                                <button type="submit" class="dropdown-item py-2 rounded-3 text-danger border-0 bg-transparent" style="width: 100%; text-align: left;"><i class="fas fa-trash me-2"></i> Hapus Permanen</button>
                                             </form>
                                         </li>
                                     </ul>
@@ -317,6 +331,13 @@
                             </td>
                         </tr>
                         <?php endif; ?>
+                        
+                        <tr id="empty-state-row" style="display: none;">
+                            <td colspan="8" class="text-center py-5">
+                                <img src="https://cdni.iconscout.com/illustration/premium/thumb/empty-state-2130362-1800926.png" width="150" class="mb-3 opacity-50">
+                                <h6 class="fw-bolder text-muted mb-0">Belum ada data untuk kategori ini.</h6>
+                            </td>
+                        </tr>
                     </tbody>
                 </table>
             </div>
@@ -484,79 +505,123 @@
 
 <?php $__env->stopSection(); ?>
 
-<?php $__env->startSection('scripts'); ?>
-<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<?php $__env->startPush('scripts'); ?>
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
 <script>
     document.addEventListener("DOMContentLoaded", function() {
+        
+        // Filter kategori berdasarkan tab
+        const filterTabs = document.querySelectorAll('.filter-tab');
+        const tableRows = document.querySelectorAll('.permintaan-row');
+
+        filterTabs.forEach(tab => {
+            tab.addEventListener('click', function(e) {
+                e.preventDefault();
+                
+                // hapus active dari semua tab
+                filterTabs.forEach(t => t.classList.remove('active'));
+                this.classList.add('active');
+
+                const filterValue = this.getAttribute('data-filter');
+                let visibleCount = 0;
+
+                tableRows.forEach(row => {
+                    const kategori = (row.getAttribute('data-kategori') || '').toLowerCase().trim();
+                    const filter = filterValue.toLowerCase().trim();
+                    
+                    // Gunakan includes untuk pencarian string (misal: "Media Sosial" -> "media sosial")
+                    if (filterValue === 'Semua' || kategori.includes(filter)) {
+                        row.style.display = '';
+                        visibleCount++;
+                    } else {
+                        row.style.display = 'none';
+                    }
+                });
+
+                const emptyState = document.getElementById('empty-state-row');
+                if (emptyState) {
+                    if (visibleCount === 0) {
+                        emptyState.style.display = '';
+                    } else {
+                        emptyState.style.display = 'none';
+                    }
+                }
+            });
+        });
+
         // Doughnut Chart (Prioritas)
-        var ctxPrioritas = document.getElementById('prioritasChart').getContext('2d');
-        var prioritasChart = new Chart(ctxPrioritas, {
-            type: 'doughnut',
-            data: {
-                labels: ['Tinggi', 'Sedang', 'Rendah'],
-                datasets: [{
-                    data: [45, 30, 25],
-                    backgroundColor: ['#e74a3b', '#f6c23e', '#36b9cc'],
-                    borderWidth: 0,
-                    hoverOffset: 4
-                }]
-            },
-            options: {
-                responsive: true,
-                maintainAspectRatio: false,
-                cutout: '75%',
-                plugins: {
-                    legend: {
-                        position: 'right',
-                        labels: {
-                            usePointStyle: true,
-                            padding: 15,
-                            font: { size: 12, family: "'Nunito', sans-serif" }
+        if (document.getElementById('prioritasChart')) {
+            var ctxPrioritas = document.getElementById('prioritasChart').getContext('2d');
+            var prioritasChart = new Chart(ctxPrioritas, {
+                type: 'doughnut',
+                data: {
+                    labels: ['Tinggi', 'Sedang', 'Rendah'],
+                    datasets: [{
+                        data: <?php echo json_encode($chartData['prioritas'], 15, 512) ?>,
+                        backgroundColor: ['#e74a3b', '#f6c23e', '#36b9cc'],
+                        borderWidth: 0,
+                        hoverOffset: 4
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    cutout: '75%',
+                    plugins: {
+                        legend: {
+                            position: 'right',
+                            labels: {
+                                usePointStyle: true,
+                                padding: 15,
+                                font: { size: 12, family: "'Nunito', sans-serif" }
+                            }
                         }
                     }
                 }
-            }
-        });
+            });
+        }
 
         // Line/Bar Chart (History)
-        var ctxHistory = document.getElementById('historyChart').getContext('2d');
-        var historyChart = new Chart(ctxHistory, {
-            type: 'line',
-            data: {
-                labels: ['Minggu 1', 'Minggu 2', 'Minggu 3', 'Minggu 4'],
-                datasets: [{
-                    label: 'Jumlah Permintaan',
-                    data: [12, 19, 15, 24],
-                    backgroundColor: 'rgba(78, 115, 223, 0.1)',
-                    borderColor: '#4e73df',
-                    borderWidth: 3,
-                    pointBackgroundColor: '#fff',
-                    pointBorderColor: '#4e73df',
-                    pointBorderWidth: 2,
-                    pointRadius: 4,
-                    pointHoverRadius: 6,
-                    fill: true,
-                    tension: 0.4
-                }]
-            },
-            options: {
-                responsive: true,
-                maintainAspectRatio: false,
-                scales: {
-                    y: {
-                        beginAtZero: true,
-                        grid: { borderDash: [2, 4], color: '#edf2f9' },
-                        ticks: { stepSize: 5 }
-                    },
-                    x: {
-                        grid: { display: false }
-                    }
+        if (document.getElementById('historyChart')) {
+            var ctxHistory = document.getElementById('historyChart').getContext('2d');
+            var historyChart = new Chart(ctxHistory, {
+                type: 'line',
+                data: {
+                    labels: ['Minggu 1', 'Minggu 2', 'Minggu 3', 'Minggu 4'],
+                    datasets: [{
+                        label: 'Jumlah Permintaan',
+                        data: <?php echo json_encode($chartData['history'], 15, 512) ?>,
+                        backgroundColor: 'rgba(78, 115, 223, 0.1)',
+                        borderColor: '#4e73df',
+                        borderWidth: 3,
+                        pointBackgroundColor: '#fff',
+                        pointBorderColor: '#4e73df',
+                        pointBorderWidth: 2,
+                        pointRadius: 4,
+                        pointHoverRadius: 6,
+                        fill: true,
+                        tension: 0.4
+                    }]
                 },
-                plugins: {
-                    legend: { display: false }
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            grid: { borderDash: [2, 4], color: '#edf2f9' },
+                            ticks: { stepSize: 5 }
+                        },
+                        x: {
+                            grid: { display: false }
+                        }
+                    },
+                    plugins: {
+                        legend: { display: false }
+                    }
                 }
-            }
-        });
+            });
+        }
     });
 
     // Toggle text area revisi
@@ -569,31 +634,7 @@
             revisiArea.classList.add('d-none');
         }
     }
-
-    // Filter kategori berdasarkan tab
-    const filterTabs = document.querySelectorAll('.filter-tab');
-    const tableRows = document.querySelectorAll('.permintaan-row');
-
-    filterTabs.forEach(tab => {
-        tab.addEventListener('click', function(e) {
-            e.preventDefault();
-            // hapus active dari semua tab
-            filterTabs.forEach(t => t.classList.remove('active'));
-            this.classList.add('active');
-
-            const filterValue = this.getAttribute('data-filter');
-
-            tableRows.forEach(row => {
-                const kategori = row.getAttribute('data-kategori');
-                if (filterValue === 'Semua' || kategori === filterValue) {
-                    row.style.display = '';
-                } else {
-                    row.style.display = 'none';
-                }
-            });
-        });
-    });
 </script>
-<?php $__env->stopSection(); ?>
+<?php $__env->stopPush(); ?>
 
 <?php echo $__env->make('layouts.app', array_diff_key(get_defined_vars(), ['__data' => 1, '__path' => 1]))->render(); ?><?php /**PATH C:\laragon\www\dashboard-mkt\resources\views/operational/permintaan-visual/biasa/index.blade.php ENDPATH**/ ?>

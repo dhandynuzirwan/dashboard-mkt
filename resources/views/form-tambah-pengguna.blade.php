@@ -41,24 +41,30 @@
                             </div>
                         @endif
 
-                        <form action="{{ route('user.store') }}" method="POST">
+                        {{-- Jangan lupa tambahkan enctype multipart/form-data! --}}
+                        <form action="{{ route('user.store') }}" method="POST" enctype="multipart/form-data">
                             @csrf
 
                             <div class="row">
 
                                 {{-- NAMA --}}
                                 <div class="form-group col-md-6 mb-3">
-                                    <label for="name" class="fw-bold mb-1">Nama Panggilan <span class="text-danger">*</span></label>
+                                    <label for="name" class="fw-bold mb-1">Username <span class="text-danger">*</span></label>
                                     <input type="text" class="form-control" id="name" name="name"
-                                        placeholder="Masukkan Nama Panggilan" value="{{ old('name') }}" required>
+                                        placeholder="Masukkan Username" value="{{ old('name') }}" required>
                                 </div>
                                 
                                 {{-- NAMA LENGKAP --}}
                                 <div class="form-group col-md-6 mb-3">
-                                    <label for="nama_lengkap" class="fw-bold mb-1">Nama Lengkap (KTP)</label>
+                                    <label for="nama_lengkap" class="fw-bold mb-1">Nama Panggilan</label>
                                     <input type="text" class="form-control" id="nama_lengkap" name="nama_lengkap" 
-                                        value="{{ old('nama_lengkap', $user->nama_lengkap ?? '') }}" 
-                                        placeholder="Masukkan Nama Lengkap Sesuai KTP">
+                                        value="{{ old('nama_lengkap') }}" 
+                                        placeholder="Masukkan Nama Panggilan">
+                                </div>
+                        
+                                <div class="form-group col-md-6 mb-3">
+                                    <label for="nama_lengkap_ktp" class="fw-bold mb-1">Nama Lengkap (KTP)</label>
+                                    <input type="text" class="form-control" id="nama_lengkap_ktp" name="nama_lengkap_ktp" value="{{ old('nama_lengkap_ktp') }}" placeholder="Masukkan Nama Lengkap Sesuai KTP">
                                 </div>
 
                                 {{-- NOMOR HP / WHATSAPP --}}
@@ -104,6 +110,16 @@
                                 <div class="form-group col-md-6 mb-3">
                                     <label for="tanggal_kontrak_berakhir" class="fw-bold mb-1">Tanggal Kontrak Berakhir</label>
                                     <input type="date" class="form-control" id="tanggal_kontrak_berakhir" name="tanggal_kontrak_berakhir" value="{{ old('tanggal_kontrak_berakhir') }}">
+                                </div>
+
+                                <div class="form-group col-md-6 mb-3">
+                                    <label for="jobdesk_file" class="fw-bold mb-1">Jobdesk (PDF/Doc/Image)</label>
+                                    <input type="file" class="form-control" id="jobdesk_file" name="jobdesk_file">
+                                </div>
+
+                                <div class="form-group col-md-6 mb-3">
+                                    <label for="sop_file" class="fw-bold mb-1">SOP (PDF/Doc/Image)</label>
+                                    <input type="file" class="form-control" id="sop_file" name="sop_file">
                                 </div>
 
                                 {{-- ROLE --}}

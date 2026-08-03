@@ -68,13 +68,18 @@
                         
                                 {{-- 2. INPUT DATA TEKS --}}
                                 <div class="form-group col-md-6 mb-3">
-                                    <label for="name" class="fw-bold mb-1">Nama Panggilan <span class="text-danger">*</span></label>
+                                    <label for="name" class="fw-bold mb-1">Username <span class="text-danger">*</span></label>
                                     <input type="text" class="form-control @error('name') is-invalid @enderror" id="name" name="name" value="{{ old('name', $user->name) }}" required>
                                 </div>
                                 
                                 <div class="form-group col-md-6 mb-3">
-                                    <label for="nama_lengkap" class="fw-bold mb-1">Nama Lengkap (KTP)</label>
+                                    <label for="nama_lengkap" class="fw-bold mb-1">Nama Panggilan</label>
                                     <input type="text" class="form-control @error('nama_lengkap') is-invalid @enderror" id="nama_lengkap" name="nama_lengkap" value="{{ old('nama_lengkap', $user->nama_lengkap ?? '') }}">
+                                </div>
+                        
+                                <div class="form-group col-md-6 mb-3">
+                                    <label for="nama_lengkap_ktp" class="fw-bold mb-1">Nama Lengkap (KTP)</label>
+                                    <input type="text" class="form-control @error('nama_lengkap_ktp') is-invalid @enderror" id="nama_lengkap_ktp" name="nama_lengkap_ktp" value="{{ old('nama_lengkap_ktp', $user->nama_lengkap_ktp ?? '') }}">
                                 </div>
                         
                                 <div class="form-group col-md-6 mb-3">
@@ -108,6 +113,22 @@
                                 <div class="form-group col-md-6 mb-3">
                                     <label for="tanggal_kontrak_berakhir" class="fw-bold mb-1">Tanggal Kontrak Berakhir</label>
                                     <input type="date" class="form-control @error('tanggal_kontrak_berakhir') is-invalid @enderror" id="tanggal_kontrak_berakhir" name="tanggal_kontrak_berakhir" value="{{ old('tanggal_kontrak_berakhir', $user->tanggal_kontrak_berakhir) }}">
+                                </div>
+
+                                <div class="form-group col-md-6 mb-3">
+                                    <label for="jobdesk_file" class="fw-bold mb-1">Jobdesk (PDF/Doc/Image)</label>
+                                    <input type="file" class="form-control @error('jobdesk_file') is-invalid @enderror" id="jobdesk_file" name="jobdesk_file">
+                                    @if($user->jobdesk_file)
+                                        <small class="d-block mt-1"><a href="{{ asset('storage/' . $user->jobdesk_file) }}" target="_blank"><i class="fas fa-file me-1"></i> Lihat Jobdesk saat ini</a></small>
+                                    @endif
+                                </div>
+
+                                <div class="form-group col-md-6 mb-3">
+                                    <label for="sop_file" class="fw-bold mb-1">SOP (PDF/Doc/Image)</label>
+                                    <input type="file" class="form-control @error('sop_file') is-invalid @enderror" id="sop_file" name="sop_file">
+                                    @if($user->sop_file)
+                                        <small class="d-block mt-1"><a href="{{ asset('storage/' . $user->sop_file) }}" target="_blank"><i class="fas fa-file me-1"></i> Lihat SOP saat ini</a></small>
+                                    @endif
                                 </div>
 
                                 <div class="form-group col-md-6 mb-3">

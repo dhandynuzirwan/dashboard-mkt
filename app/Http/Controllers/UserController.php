@@ -43,11 +43,15 @@ class UserController extends Controller
             'tanggal_lahir' => 'nullable|date',
             'tanggal_kontrak_baru' => 'nullable|date',
             'tanggal_kontrak_berakhir' => 'nullable|date',
+            'nama_lengkap_ktp' => 'nullable|string|max:255',
+            'jobdesk_file' => 'nullable|file|mimes:pdf,doc,docx,png,jpg,jpeg|max:5120',
+            'sop_file' => 'nullable|file|mimes:pdf,doc,docx,png,jpg,jpeg|max:5120',
         ]);
 
-        User::create([
+        $data = [
             'name' => $request->name,
             'nama_lengkap' => $request->nama_lengkap, 
+            'nama_lengkap_ktp' => $request->nama_lengkap_ktp,
             'no_hp' => $request->no_hp,               
             'email' => $request->email,
             'password' => Hash::make($request->password),
@@ -57,7 +61,16 @@ class UserController extends Controller
             'tanggal_lahir' => $request->tanggal_lahir,
             'tanggal_kontrak_baru' => $request->tanggal_kontrak_baru,
             'tanggal_kontrak_berakhir' => $request->tanggal_kontrak_berakhir,
-        ]);
+        ];
+
+        if ($request->hasFile('jobdesk_file')) {
+            $data['jobdesk_file'] = $request->file('jobdesk_file')->store('users/jobdesk', 'public');
+        }
+        if ($request->hasFile('sop_file')) {
+            $data['sop_file'] = $request->file('sop_file')->store('users/sop', 'public');
+        }
+
+        User::create($data);
 
         return redirect()->route('user')->with('success', 'User berhasil ditambahkan');
     }
@@ -93,12 +106,16 @@ class UserController extends Controller
             'tanggal_lahir' => 'nullable|date',
             'tanggal_kontrak_baru' => 'nullable|date',
             'tanggal_kontrak_berakhir' => 'nullable|date',
+            'nama_lengkap_ktp' => 'nullable|string|max:255',
+            'jobdesk_file' => 'nullable|file|mimes:pdf,doc,docx,png,jpg,jpeg|max:5120',
+            'sop_file' => 'nullable|file|mimes:pdf,doc,docx,png,jpg,jpeg|max:5120',
         ]);
 
         // Siapkan array data untuk diupdate (KOSONGKAN FOTO PROFIL DULU DI SINI)
         $data = [
             'name' => $request->name,
             'nama_lengkap' => $request->nama_lengkap, 
+            'nama_lengkap_ktp' => $request->nama_lengkap_ktp,
             'no_hp' => $request->no_hp,                
             'email' => $request->email,
             'role' => $request->role,
@@ -126,6 +143,20 @@ class UserController extends Controller
             
             // 3. Masukkan nama file (path) yang baru ke array $data agar ikut tersimpan ke database
             $data['foto_profil'] = $path;
+        }
+
+        if ($request->hasFile('jobdesk_file')) {
+            if ($user->jobdesk_file && Storage::disk('public')->exists($user->jobdesk_file)) {
+                Storage::disk('public')->delete($user->jobdesk_file);
+            }
+            $data['jobdesk_file'] = $request->file('jobdesk_file')->store('users/jobdesk', 'public');
+        }
+
+        if ($request->hasFile('sop_file')) {
+            if ($user->sop_file && Storage::disk('public')->exists($user->sop_file)) {
+                Storage::disk('public')->delete($user->sop_file);
+            }
+            $data['sop_file'] = $request->file('sop_file')->store('users/sop', 'public');
         }
 
         // Jalankan perintah update
