@@ -195,25 +195,7 @@ Route::middleware('auth')->group(function () {
             Route::put('/data-pendaftaran/update-status-vendor/{id}', [OperationalPendaftaranController::class, 'updateStatusVendor'])->name('operational.pendaftaran.update-status-vendor');
             Route::put('/data-pendaftaran/update-komentar/{id}', [OperationalPendaftaranController::class, 'updateKomentar'])->name('operational.pendaftaran.update-komentar');
 
-            // Permintaan Visual
-            Route::prefix('permintaan-visual/biasa')->group(function () {
-                Route::get('/', [App\Http\Controllers\PermintaanVisualController::class, 'biasaIndex'])->name('operational.permintaan-visual.biasa');
-                Route::get('/create', [App\Http\Controllers\PermintaanVisualController::class, 'biasaCreate'])->name('operational.permintaan-visual.biasa.create');
-                Route::post('/', [App\Http\Controllers\PermintaanVisualController::class, 'biasaStore'])->name('operational.permintaan-visual.biasa.store');
-                
-                // Update Status & Upload Hasil (untuk di index)
-                Route::put('/{id}/update-status', [App\Http\Controllers\PermintaanVisualController::class, 'biasaUpdateStatus'])->name('operational.permintaan-visual.biasa.update-status');
-                Route::post('/{id}/upload-hasil', [App\Http\Controllers\PermintaanVisualController::class, 'biasaUploadHasil'])->name('operational.permintaan-visual.biasa.upload-hasil');
-                Route::put('/{id}/update-catatan', [App\Http\Controllers\PermintaanVisualController::class, 'biasaUpdateCatatan'])->name('operational.permintaan-visual.biasa.update-catatan');
 
-                // Edit, Update, Batalkan
-                Route::get('/{id}/edit', [App\Http\Controllers\PermintaanVisualController::class, 'biasaEdit'])->name('operational.permintaan-visual.biasa.edit');
-                Route::put('/{id}', [App\Http\Controllers\PermintaanVisualController::class, 'biasaUpdate'])->name('operational.permintaan-visual.biasa.update');
-                Route::delete('/{id}', [App\Http\Controllers\PermintaanVisualController::class, 'biasaDestroy'])->name('operational.permintaan-visual.biasa.destroy');
-            });
-            
-            Route::get('/permintaan-visual/training', [App\Http\Controllers\PermintaanVisualController::class, 'trainingIndex'])->name('operational.permintaan-visual.training');
-            Route::post('/permintaan-visual/training/{id}/upload', [App\Http\Controllers\PermintaanVisualController::class, 'trainingUpload'])->name('operational.permintaan-visual.training.upload');
         });
 
         // Aktivitas Harian
@@ -250,7 +232,25 @@ Route::middleware('auth')->group(function () {
     // 1. FITUR UMUM (Superadmin, Web Dev, Admin, Marketing, RnD, Digital Marketing)
     Route::middleware('role:superadmin,web_dev,spv_marketing,admin,marketing,rnd,digitalmarketing,operasional,team_leader,graphic,performance')->group(function () {
         
-        
+        // Permintaan Visual (Akses Terbuka untuk Semua Role)
+        Route::prefix('operational/permintaan-visual')->group(function () {
+            Route::prefix('biasa')->group(function () {
+                Route::get('/', [App\Http\Controllers\PermintaanVisualController::class, 'biasaIndex'])->name('operational.permintaan-visual.biasa');
+                Route::get('/create', [App\Http\Controllers\PermintaanVisualController::class, 'biasaCreate'])->name('operational.permintaan-visual.biasa.create');
+                Route::post('/', [App\Http\Controllers\PermintaanVisualController::class, 'biasaStore'])->name('operational.permintaan-visual.biasa.store');
+                
+                Route::put('/{id}/update-status', [App\Http\Controllers\PermintaanVisualController::class, 'biasaUpdateStatus'])->name('operational.permintaan-visual.biasa.update-status');
+                Route::post('/{id}/upload-hasil', [App\Http\Controllers\PermintaanVisualController::class, 'biasaUploadHasil'])->name('operational.permintaan-visual.biasa.upload-hasil');
+                Route::put('/{id}/update-catatan', [App\Http\Controllers\PermintaanVisualController::class, 'biasaUpdateCatatan'])->name('operational.permintaan-visual.biasa.update-catatan');
+
+                Route::get('/{id}/edit', [App\Http\Controllers\PermintaanVisualController::class, 'biasaEdit'])->name('operational.permintaan-visual.biasa.edit');
+                Route::put('/{id}', [App\Http\Controllers\PermintaanVisualController::class, 'biasaUpdate'])->name('operational.permintaan-visual.biasa.update');
+                Route::delete('/{id}', [App\Http\Controllers\PermintaanVisualController::class, 'biasaDestroy'])->name('operational.permintaan-visual.biasa.destroy');
+            });
+            
+            Route::get('/training', [App\Http\Controllers\PermintaanVisualController::class, 'trainingIndex'])->name('operational.permintaan-visual.training');
+            Route::post('/training/{id}/upload', [App\Http\Controllers\PermintaanVisualController::class, 'trainingUpload'])->name('operational.permintaan-visual.training.upload');
+        });
         Route::post('/download-request', [DownloadRequestController::class, 'store'])->name('download.request');
         Route::get('/download-file/{id}', [DownloadRequestController::class, 'download'])->name('download.file');
         Route::get('/my-downloads', [DownloadRequestController::class, 'myRequests'])->name('download.my');
