@@ -55,9 +55,9 @@
     }
 </style>
 
-<div class="page-wrapper-modern py-4">
-    <div class="container-fluid px-4">
-        
+<div class="container">
+    <div class="page-inner">
+           
         
         <div class="d-flex align-items-left align-items-md-center flex-column flex-md-row pb-4 justify-content-between">
             <div>
