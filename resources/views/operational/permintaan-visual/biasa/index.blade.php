@@ -232,11 +232,11 @@
                         <tr>
                             <th width="5%">No</th>
                             <th>Judul Permintaan</th>
-                            <th>Kategori & Tipe</th>
-                            <th>Prioritas</th>
-                            <th>Status</th>
-                            <th>Pengerjaan</th>
-                            <th>Tanggal</th>
+                            <th width="15%">Kategori & Tipe</th>
+                            <th width="10%">Prioritas</th>
+                            <th width="18%">Status</th>
+                            <th width="12%">Pengerjaan</th>
+                            <th width="12%">Tanggal</th>
                             <th class="text-center" width="10%">Aksi</th>
                         </tr>
                     </thead>
