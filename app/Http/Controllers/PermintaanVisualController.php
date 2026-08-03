@@ -177,10 +177,20 @@ class PermintaanVisualController extends Controller
     public function biasaDestroy($id)
     {
         $permintaan = \App\Models\PermintaanBiasa::findOrFail($id);
-        $permintaan->status = 'Batal'; // Soft cancel atau delete. Disini kita set status Batal saja agar historinya tetap ada.
-        $permintaan->save();
+        
+        // Hapus file referensi jika ada
+        if ($permintaan->referensi_file) {
+            \Illuminate\Support\Facades\Storage::disk('public')->delete($permintaan->referensi_file);
+        }
+        
+        // Hapus file hasil jika ada
+        if ($permintaan->hasil_file) {
+            \Illuminate\Support\Facades\Storage::disk('public')->delete($permintaan->hasil_file);
+        }
 
-        return redirect()->route('operational.permintaan-visual.biasa')->with('success', 'Permintaan berhasil dibatalkan.');
+        $permintaan->delete();
+
+        return redirect()->route('operational.permintaan-visual.biasa')->with('success', 'Data permintaan berhasil dihapus secara permanen.');
     }
 
     public function trainingIndex()

@@ -301,10 +301,10 @@
                                         <li><a class="dropdown-item py-2 rounded-3" href="{{ route('operational.permintaan-visual.biasa.edit', $item->id) }}"><i class="fas fa-edit text-info me-2"></i> Edit</a></li>
                                         <li><hr class="dropdown-divider"></li>
                                         <li>
-                                            <form action="{{ route('operational.permintaan-visual.biasa.destroy', $item->id) }}" method="POST" onsubmit="return confirm('Apakah Anda yakin ingin membatalkan permintaan ini?');">
+                                            <form action="{{ route('operational.permintaan-visual.biasa.destroy', $item->id) }}" method="POST" onsubmit="return confirm('Apakah Anda yakin ingin menghapus data permintaan ini secara permanen?');">
                                                 @csrf
                                                 @method('DELETE')
-                                                <button type="submit" class="dropdown-item py-2 rounded-3 text-danger border-0 bg-transparent" style="width: 100%; text-align: left;"><i class="fas fa-trash me-2"></i> Batalkan</button>
+                                                <button type="submit" class="dropdown-item py-2 rounded-3 text-danger border-0 bg-transparent" style="width: 100%; text-align: left;"><i class="fas fa-trash me-2"></i> Hapus Permanen</button>
                                             </form>
                                         </li>
                                     </ul>
