@@ -557,6 +557,32 @@
                 }
             }
         });
+        // Filter kategori berdasarkan tab
+        const filterTabs = document.querySelectorAll('.filter-tab');
+        const tableRows = document.querySelectorAll('.permintaan-row');
+
+        filterTabs.forEach(tab => {
+            tab.addEventListener('click', function(e) {
+                e.preventDefault();
+                // hapus active dari semua tab
+                filterTabs.forEach(t => t.classList.remove('active'));
+                this.classList.add('active');
+
+                const filterValue = this.getAttribute('data-filter');
+
+                tableRows.forEach(row => {
+                    const kategori = (row.getAttribute('data-kategori') || '').toLowerCase().trim();
+                    const filter = filterValue.toLowerCase().trim();
+                    
+                    // Gunakan includes untuk pencarian string (misal: "Media Sosial" -> "media sosial")
+                    if (filterValue === 'Semua' || kategori.includes(filter)) {
+                        row.style.display = '';
+                    } else {
+                        row.style.display = 'none';
+                    }
+                });
+            });
+        });
     });
 
     // Toggle text area revisi
@@ -569,29 +595,5 @@
             revisiArea.classList.add('d-none');
         }
     }
-
-    // Filter kategori berdasarkan tab
-    const filterTabs = document.querySelectorAll('.filter-tab');
-    const tableRows = document.querySelectorAll('.permintaan-row');
-
-    filterTabs.forEach(tab => {
-        tab.addEventListener('click', function(e) {
-            e.preventDefault();
-            // hapus active dari semua tab
-            filterTabs.forEach(t => t.classList.remove('active'));
-            this.classList.add('active');
-
-            const filterValue = this.getAttribute('data-filter');
-
-            tableRows.forEach(row => {
-                const kategori = row.getAttribute('data-kategori');
-                if (filterValue === 'Semua' || kategori === filterValue) {
-                    row.style.display = '';
-                } else {
-                    row.style.display = 'none';
-                }
-            });
-        });
-    });
 </script>
 @endsection
