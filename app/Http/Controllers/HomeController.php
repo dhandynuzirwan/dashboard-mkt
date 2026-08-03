@@ -23,6 +23,12 @@ class HomeController extends Controller
 
         // 1. Logika Papan Pengumuman
         $pengumuman = Pengumuman::where('is_active', true)
+            ->whereMonth('created_at', $now->month)
+            ->whereYear('created_at', $now->year)
+            ->where(function ($query) use ($now) {
+                $query->whereNull('tanggal_event')
+                      ->orWhereDate('tanggal_event', '>=', $now->toDateString());
+            })
             ->orderBy('created_at', 'desc')
             ->take(5)
             ->get();
