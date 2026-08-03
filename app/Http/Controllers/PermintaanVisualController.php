@@ -82,6 +82,47 @@ class PermintaanVisualController extends Controller
         return redirect()->route('operational.permintaan-visual.biasa')->with('success', 'Permintaan berhasil diajukan dengan prioritas ' . $prioritas . '.');
     }
 
+    public function biasaUpdateStatus(Request $request, $id)
+    {
+        $permintaan = \App\Models\PermintaanBiasa::findOrFail($id);
+        
+        $request->validate([
+            'status_update' => 'required|string',
+            'catatan_revisi' => 'nullable|string'
+        ]);
+
+        $permintaan->status = $request->status_update;
+        
+        if ($request->status_update === 'Revisi' && $request->has('catatan_revisi')) {
+            $permintaan->catatan = $request->catatan_revisi;
+        }
+
+        $permintaan->save();
+
+        return redirect()->back()->with('success', 'Status berhasil diperbarui.');
+    }
+
+    public function biasaUploadHasil(Request $request, $id)
+    {
+        $permintaan = \App\Models\PermintaanBiasa::findOrFail($id);
+        
+        $request->validate([
+            'hasil_desain' => 'required|file|mimes:png,jpg,jpeg,pdf,ai,psd,zip,rar|max:51200' // 50MB max
+        ]);
+
+        if ($request->hasFile('hasil_desain')) {
+            $file = $request->file('hasil_desain');
+            $filename = time() . '_hasil_' . \Illuminate\Support\Str::slug($permintaan->judul) . '.' . $file->getClientOriginalExtension();
+            $hasil_file = $file->storeAs('permintaan_biasa/hasil', $filename, 'public');
+            
+            $permintaan->hasil_file = $hasil_file;
+            $permintaan->status = 'Review'; // otomatis pindah ke Review kalau upload
+            $permintaan->save();
+        }
+
+        return redirect()->back()->with('success', 'File hasil desain berhasil diunggah.');
+    }
+
     public function trainingIndex()
     {
         return view('operational.permintaan-visual.training.index');

@@ -199,6 +199,8 @@ Route::middleware('auth')->group(function () {
             Route::get('/permintaan-visual/biasa', [App\Http\Controllers\PermintaanVisualController::class, 'biasaIndex'])->name('operational.permintaan-visual.biasa');
             Route::get('/permintaan-visual/biasa/create', [App\Http\Controllers\PermintaanVisualController::class, 'biasaCreate'])->name('operational.permintaan-visual.biasa.create');
             Route::post('/permintaan-visual/biasa', [App\Http\Controllers\PermintaanVisualController::class, 'biasaStore'])->name('operational.permintaan-visual.biasa.store');
+            Route::put('/permintaan-visual/biasa/{id}/status', [App\Http\Controllers\PermintaanVisualController::class, 'biasaUpdateStatus'])->name('operational.permintaan-visual.biasa.update-status');
+            Route::post('/permintaan-visual/biasa/{id}/upload', [App\Http\Controllers\PermintaanVisualController::class, 'biasaUploadHasil'])->name('operational.permintaan-visual.biasa.upload-hasil');
             
             Route::get('/permintaan-visual/training', [App\Http\Controllers\PermintaanVisualController::class, 'trainingIndex'])->name('operational.permintaan-visual.training');
         });

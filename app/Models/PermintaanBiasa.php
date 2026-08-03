@@ -17,6 +17,7 @@ class PermintaanBiasa extends Model
         'tujuan',
         'deskripsi',
         'referensi_file',
+        'hasil_file',
         'catatan',
         'prioritas',
         'status',

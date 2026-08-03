@@ -82,16 +82,7 @@
 <div class="container">
     <div class="page-inner">
         
-        
-        <div class="alert alert-warning alert-dismissible fade show shadow-sm rounded-4 border-0 border-start border-4 border-warning mb-4" role="alert">
-            <div class="d-flex align-items-center">
-                <i class="fas fa-info-circle fs-4 text-warning me-3"></i>
-                <div>
-                    <strong>Informasi:</strong> Halaman ini saat ini masih dalam tahap pengembangan dan belum berfungsi (Hanya Tampilan Data Dummy).
-                </div>
-            </div>
-            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-        </div>
+
         <div class="d-flex flex-column flex-md-row justify-content-between align-items-md-center mb-5 gap-3">
             <div>
                 <h2 class="fw-bolder text-dark mb-1" style="letter-spacing: -0.5px;">Permintaan Biasa</h2>
@@ -111,7 +102,7 @@
                     </div>
                     <div>
                         <p class="text-muted fw-bold mb-1" style="font-size: 12px; letter-spacing: 0.5px; text-transform: uppercase;">Menunggu</p>
-                        <h3 class="fw-black text-dark mb-0" style="font-size: 28px;">12</h3>
+                        <h3 class="fw-black text-dark mb-0" style="font-size: 28px;"><?php echo e($statMenunggu); ?></h3>
                     </div>
                 </div>
             </div>
@@ -122,7 +113,7 @@
                     </div>
                     <div>
                         <p class="text-muted fw-bold mb-1" style="font-size: 12px; letter-spacing: 0.5px; text-transform: uppercase;">Dalam Proses</p>
-                        <h3 class="fw-black text-dark mb-0" style="font-size: 28px;">5</h3>
+                        <h3 class="fw-black text-dark mb-0" style="font-size: 28px;"><?php echo e($statProses); ?></h3>
                     </div>
                 </div>
             </div>
@@ -133,7 +124,7 @@
                     </div>
                     <div>
                         <p class="text-muted fw-bold mb-1" style="font-size: 12px; letter-spacing: 0.5px; text-transform: uppercase;">Review</p>
-                        <h3 class="fw-black text-dark mb-0" style="font-size: 28px;">3</h3>
+                        <h3 class="fw-black text-dark mb-0" style="font-size: 28px;"><?php echo e($statReview); ?></h3>
                     </div>
                 </div>
             </div>
@@ -144,7 +135,7 @@
                     </div>
                     <div>
                         <p class="text-muted fw-bold mb-1" style="font-size: 12px; letter-spacing: 0.5px; text-transform: uppercase;">Selesai</p>
-                        <h3 class="fw-black text-dark mb-0" style="font-size: 28px;">24</h3>
+                        <h3 class="fw-black text-dark mb-0" style="font-size: 28px;"><?php echo e($statSelesai); ?></h3>
                     </div>
                 </div>
             </div>
@@ -248,29 +239,55 @@
                         </tr>
                     </thead>
                     <tbody>
-                        
+                        <?php $__empty_1 = true; $__currentLoopData = $permintaans; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $index => $item): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); $__empty_1 = false; ?>
                         <tr>
-                            <td class="text-muted fw-bold">1</td>
+                            <td class="text-muted fw-bold"><?php echo e($index + 1); ?></td>
                             <td>
-                                <div class="fw-bold text-dark" style="font-size: 15px;">Desain Poster Promo Kemerdekaan</div>
-                                <div class="text-muted small mt-1">Dibuat oleh: <span class="text-primary fw-bold">Budi Santoso</span></div>
+                                <div class="fw-bold text-dark" style="font-size: 15px;"><?php echo e($item->judul); ?></div>
+                                <div class="text-muted small mt-1">Dibuat oleh: <span class="text-primary fw-bold"><?php echo e($item->user->name ?? 'Unknown'); ?></span></div>
                             </td>
                             <td>
-                                <span class="badge-soft-info d-inline-block mb-1">Flyer/Poster</span><br>
-                                <span class="badge bg-secondary text-white rounded-pill px-2" style="font-size:10px;">Baru</span>
+                                <?php
+                                    $kategoriBadge = 'badge-soft-primary';
+                                    if(str_contains(strtolower($item->kategori), 'flyer')) $kategoriBadge = 'badge-soft-info';
+                                    elseif(str_contains(strtolower($item->kategori), 'media sosial')) $kategoriBadge = 'badge-soft-success';
+                                    elseif(str_contains(strtolower($item->kategori), 'penjualan')) $kategoriBadge = 'badge-soft-warning';
+                                ?>
+                                <span class="<?php echo e($kategoriBadge); ?> d-inline-block mb-1"><?php echo e($item->kategori); ?></span><br>
+                                <?php if($item->created_at->diffInDays(now()) < 3): ?>
+                                    <span class="badge bg-secondary text-white rounded-pill px-2" style="font-size:10px;">Baru</span>
+                                <?php endif; ?>
                             </td>
-                            <td><span class="badge-soft-danger"><i class="fas fa-arrow-up me-1"></i> Tinggi</span></td>
+                            <td>
+                                <?php
+                                    $prioBadge = 'badge-soft-primary';
+                                    $prioIcon = 'fa-minus';
+                                    if($item->prioritas == 'Tinggi') { $prioBadge = 'badge-soft-danger'; $prioIcon = 'fa-arrow-up'; }
+                                    elseif($item->prioritas == 'Sedang') { $prioBadge = 'badge-soft-warning'; $prioIcon = 'fa-equals'; }
+                                    elseif($item->prioritas == 'Rendah') { $prioBadge = 'badge-soft-info'; $prioIcon = 'fa-arrow-down'; }
+                                ?>
+                                <span class="<?php echo e($prioBadge); ?>"><i class="fas <?php echo e($prioIcon); ?> me-1"></i> <?php echo e($item->prioritas); ?></span>
+                            </td>
                             <td>
                                 <div class="d-flex align-items-center gap-2">
-                                    <span class="badge-soft-warning"><i class="fas fa-clock me-1"></i> Menunggu</span>
+                                    <?php
+                                        $statusBadge = 'badge-soft-secondary';
+                                        $statusIcon = 'fa-clock';
+                                        if($item->status == 'Menunggu') { $statusBadge = 'badge-soft-warning'; $statusIcon = 'fa-clock'; }
+                                        elseif($item->status == 'Dalam Proses') { $statusBadge = 'badge-soft-info'; $statusIcon = 'fa-spinner fa-spin'; }
+                                        elseif($item->status == 'Review') { $statusBadge = 'badge-soft-primary'; $statusIcon = 'fa-search'; }
+                                        elseif($item->status == 'Selesai') { $statusBadge = 'badge-soft-success'; $statusIcon = 'fa-check-double'; }
+                                        elseif($item->status == 'Batal') { $statusBadge = 'badge-soft-danger'; $statusIcon = 'fa-times'; }
+                                    ?>
+                                    <span class="<?php echo e($statusBadge); ?>"><i class="fas <?php echo e($statusIcon); ?> me-1"></i> <?php echo e($item->status); ?></span>
                                 </div>
                             </td>
                             <td>
-                                <span class="text-muted small">-</span>
+                                <span class="text-muted small"><?php echo e($item->pic->name ?? '-'); ?></span>
                             </td>
                             <td>
-                                <div class="fw-bold text-dark">28 Jul 2026</div>
-                                <div class="text-muted small">Target: 30 Jul 2026</div>
+                                <div class="fw-bold text-dark"><?php echo e(\Carbon\Carbon::parse($item->created_at)->format('d M Y')); ?></div>
+                                <div class="text-muted small">Target: <?php echo e(\Carbon\Carbon::parse($item->deadline)->format('d M Y')); ?></div>
                             </td>
                             <td class="text-center">
                                 <div class="dropdown">
@@ -278,7 +295,7 @@
                                         <i class="fas fa-ellipsis-h text-muted"></i>
                                     </button>
                                     <ul class="dropdown-menu dropdown-menu-end shadow border-0 rounded-4 p-2">
-                                        <li><a class="dropdown-item py-2 rounded-3" href="#" data-bs-toggle="modal" data-bs-target="#modalDetailPermintaan"><i class="fas fa-eye text-primary me-2"></i> Detail</a></li>
+                                        <li><a class="dropdown-item py-2 rounded-3" href="#" data-bs-toggle="modal" data-bs-target="#modalDetailPermintaan<?php echo e($item->id); ?>"><i class="fas fa-eye text-primary me-2"></i> Detail</a></li>
                                         <li><a class="dropdown-item py-2 rounded-3" href="#"><i class="fas fa-edit text-info me-2"></i> Edit</a></li>
                                         <li><hr class="dropdown-divider"></li>
                                         <li><a class="dropdown-item py-2 rounded-3 text-danger" href="#"><i class="fas fa-trash me-2"></i> Batalkan</a></li>
@@ -286,42 +303,14 @@
                                 </div>
                             </td>
                         </tr>
+                        <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); if ($__empty_1): ?>
                         <tr>
-                            <td class="text-muted fw-bold">2</td>
-                            <td>
-                                <div class="fw-bold text-dark" style="font-size: 15px;">Cover Proposal Klien BUMN</div>
-                                <div class="text-muted small mt-1">Dibuat oleh: <span class="text-primary fw-bold">Siti Aminah</span></div>
-                            </td>
-                            <td>
-                                <span class="badge-soft-primary d-inline-block mb-1">Cover Proposal</span><br>
-                                <span class="badge bg-secondary text-white rounded-pill px-2" style="font-size:10px;">Revisi</span>
-                            </td>
-                            <td><span class="badge-soft-warning"><i class="fas fa-minus me-1"></i> Sedang</span></td>
-                            <td>
-                                <div class="d-flex align-items-center gap-2">
-                                    <span class="badge-soft-info"><i class="fas fa-spinner fa-spin me-1"></i> Diproses</span>
-                                </div>
-                            </td>
-                            <td>
-                                <div class="fw-bold text-dark" style="font-size: 13px;"><i class="fas fa-stopwatch text-primary me-1"></i> 2 Hari 4 Jam</div>
-                                <div class="text-muted small mt-1">Oleh: <span class="text-primary fw-bold">Alex (Graphic)</span></div>
-                            </td>
-                            <td>
-                                <div class="fw-bold text-dark">27 Jul 2026</div>
-                                <div class="text-muted small">Target: 01 Ags 2026</div>
-                            </td>
-                            <td class="text-center">
-                                <div class="dropdown">
-                                    <button class="btn btn-light rounded-circle shadow-sm" type="button" data-bs-toggle="dropdown" style="width: 35px; height: 35px; border: 1px solid #e3e6f0;">
-                                        <i class="fas fa-ellipsis-h text-muted"></i>
-                                    </button>
-                                    <ul class="dropdown-menu dropdown-menu-end shadow border-0 rounded-4 p-2">
-                                        <li><a class="dropdown-item py-2 rounded-3" href="#" data-bs-toggle="modal" data-bs-target="#modalDetailPermintaan"><i class="fas fa-eye text-primary me-2"></i> Detail</a></li>
-                                        <li><a class="dropdown-item py-2 rounded-3" href="#"><i class="fas fa-edit text-info me-2"></i> Edit</a></li>
-                                    </ul>
-                                </div>
+                            <td colspan="8" class="text-center py-5">
+                                <img src="https://cdni.iconscout.com/illustration/premium/thumb/empty-state-2130362-1800926.png" width="150" class="mb-3 opacity-50">
+                                <h6 class="fw-bolder text-muted mb-0">Belum ada permintaan visual</h6>
                             </td>
                         </tr>
+                        <?php endif; ?>
                     </tbody>
                 </table>
             </div>
@@ -330,17 +319,19 @@
 </div>
 
 
-<div class="modal fade" id="modalDetailPermintaan" tabindex="-1" aria-hidden="true">
+<?php $__currentLoopData = $permintaans; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $item): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+<div class="modal fade" id="modalDetailPermintaan<?php echo e($item->id); ?>" tabindex="-1" aria-hidden="true">
     <div class="modal-dialog modal-xl modal-dialog-centered modal-dialog-scrollable">
         <div class="modal-content modal-content-modern">
             <div class="modal-header modal-header-modern d-flex flex-column flex-md-row justify-content-between align-items-md-center gap-3">
                 <div>
                     <h4 class="fw-bolder mb-1"><i class="fas fa-file-invoice me-2 text-white-50"></i> Detail Permintaan Visual</h4>
-                    <p class="mb-0 text-white-50 fw-bold" style="font-size: 13px;">Desain Poster Promo Kemerdekaan &bull; Dibuat oleh Budi Santoso</p>
+                    <p class="mb-0 text-white-50 fw-bold" style="font-size: 13px;"><?php echo e($item->judul); ?> &bull; Dibuat oleh <?php echo e($item->user->name ?? 'Unknown'); ?></p>
                 </div>
                 <div class="d-flex align-items-center gap-3">
-                    <div class="bg-white text-danger px-3 py-1 rounded-pill fw-bold text-uppercase" style="font-size: 11px; letter-spacing: 1px;">
-                        <i class="fas fa-arrow-up me-1"></i> Prioritas Tinggi
+                    <div class="bg-white <?php echo e($item->prioritas == 'Tinggi' ? 'text-danger' : ($item->prioritas == 'Sedang' ? 'text-warning' : 'text-info')); ?> px-3 py-1 rounded-pill fw-bold text-uppercase" style="font-size: 11px; letter-spacing: 1px;">
+                        <i class="fas fa-arrow-<?php echo e($item->prioritas == 'Tinggi' ? 'up' : ($item->prioritas == 'Sedang' ? 'right' : 'down')); ?> me-1"></i> Prioritas <?php echo e($item->prioritas); ?>
+
                     </div>
                     <button type="button" class="btn-close btn-close-white ms-2" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
@@ -358,49 +349,58 @@
                             
                             <div class="row mb-3">
                                 <div class="col-sm-4 text-muted fw-bold small">Judul Permintaan</div>
-                                <div class="col-sm-8 fw-bold text-dark">Desain Poster Promo Kemerdekaan</div>
+                                <div class="col-sm-8 fw-bold text-dark"><?php echo e($item->judul); ?></div>
                             </div>
                             <div class="row mb-3">
                                 <div class="col-sm-4 text-muted fw-bold small">Kategori Desain</div>
-                                <div class="col-sm-8"><span class="badge-soft-info px-3 py-1">Flyer/Poster</span></div>
+                                <div class="col-sm-8"><span class="badge-soft-info px-3 py-1"><?php echo e($item->kategori); ?></span></div>
                             </div>
                             <div class="row mb-3">
                                 <div class="col-sm-4 text-muted fw-bold small">Target Selesai</div>
-                                <div class="col-sm-8 fw-bold text-dark"><i class="fas fa-calendar-alt text-danger me-1"></i> 30 Jul 2026</div>
+                                <div class="col-sm-8 fw-bold text-dark"><i class="fas fa-calendar-alt text-danger me-1"></i> <?php echo e(\Carbon\Carbon::parse($item->deadline)->format('d M Y')); ?></div>
                             </div>
                             <div class="row mb-3">
                                 <div class="col-sm-4 text-muted fw-bold small">Tujuan/Kegunaan</div>
-                                <div class="col-sm-8 text-dark">Untuk disebar di grup WhatsApp dan Instagram feed official perusahaan.</div>
+                                <div class="col-sm-8 text-dark"><?php echo e($item->tujuan); ?></div>
                             </div>
                             
                             <hr class="my-4" style="border-color: #edf2f9; opacity: 1;">
                             
                             <h6 class="fw-bolder text-dark mb-3">Deskripsi Kebutuhan Secara Detail</h6>
                             <div class="p-3 bg-light rounded-3 border mb-4 text-dark" style="font-size: 14px; line-height: 1.6;">
-                                Tolong buatkan desain poster kemerdekaan RI ke-81. Dominan warna merah putih, tapi kasih sentuhan modern minimalist (tidak norak). Jangan lupa masukkan logo perusahaan di pojok kanan atas, dan teks promo "MERDEKA SALE 45%" di tengah.
+                                <?php echo nl2br(e($item->deskripsi)); ?>
+
                             </div>
 
                             <div class="row">
                                 <div class="col-md-6 mb-3 mb-md-0">
                                     <h6 class="fw-bolder text-dark mb-2">Referensi Desain</h6>
+                                    <?php if($item->referensi_file): ?>
                                     <div class="d-flex align-items-center p-3 rounded-3" style="background: #f4f7fe; border: 1px dashed #bac8f3;">
                                         <i class="fas fa-file-image text-primary fa-2x me-3"></i>
                                         <div class="flex-grow-1 overflow-hidden">
-                                            <div class="fw-bold text-dark text-truncate" style="font-size: 13px;">referensi_poster_1.jpg</div>
-                                            <div class="text-muted small">1.2 MB</div>
+                                            <div class="fw-bold text-dark text-truncate" style="font-size: 13px;"><?php echo e(basename($item->referensi_file)); ?></div>
+                                            <div class="text-muted small">File Uploaded</div>
                                         </div>
-                                        <a href="#" class="btn btn-light rounded-circle text-primary shadow-sm ms-2 d-flex align-items-center justify-content-center" style="width: 32px; height: 32px;" title="Lihat">
+                                        <a href="<?php echo e(asset('storage/' . $item->referensi_file)); ?>" target="_blank" class="btn btn-light rounded-circle text-primary shadow-sm ms-2 d-flex align-items-center justify-content-center" style="width: 32px; height: 32px;" title="Lihat">
                                             <i class="fas fa-eye"></i>
                                         </a>
                                     </div>
+                                    <?php else: ?>
+                                    <div class="text-muted small fst-italic">Tidak ada referensi dilampirkan.</div>
+                                    <?php endif; ?>
                                 </div>
                                 <div class="col-md-6">
                                     <div class="d-flex justify-content-between align-items-center mb-2">
-                                        <h6 class="fw-bolder text-dark mb-0">Komentar</h6>
+                                        <h6 class="fw-bolder text-dark mb-0">Komentar / Catatan</h6>
                                         <button class="btn btn-sm btn-link text-primary p-0 text-decoration-none fw-bold" style="font-size: 13px;"><i class="fas fa-edit me-1"></i> Edit/Tambah</button>
                                     </div>
                                     <div class="p-3 bg-light rounded-3 border h-100 text-dark small">
-                                        <em>"Tolong sediakan juga versi resolusi tinggi untuk dicetak ukuran A3."</em>
+                                        <?php if($item->catatan): ?>
+                                            <em>"<?php echo nl2br(e($item->catatan)); ?>"</em>
+                                        <?php else: ?>
+                                            <span class="text-muted fst-italic">Belum ada komentar atau catatan revisi.</span>
+                                        <?php endif; ?>
                                     </div>
                                 </div>
                             </div>
@@ -412,15 +412,16 @@
                         <div class="glass-card p-4 mb-4">
                             <h6 class="fw-bolder text-dark mb-3"><i class="fas fa-tasks text-warning me-2"></i> Status Pengerjaan</h6>
                             <div class="mb-3">
-                                <select class="form-select-modern w-100" name="status_update" id="statusSelect" onchange="toggleRevisiNote()" <?php if(in_array(auth()->user()->role ?? 'graphic', ['karyawan'])): ?> disabled <?php endif; ?>>
-                                    <option value="Menunggu">Menunggu</option>
-                                    <option value="Review" selected>Sudah di-upload graphic (Review)</option>
-                                    <option value="Selesai">Selesai</option>
-                                    <option value="Revisi">Revisi</option>
+                                <select class="form-select-modern w-100" name="status_update" id="statusSelect<?php echo e($item->id); ?>" onchange="toggleRevisiNote(<?php echo e($item->id); ?>)" <?php if(in_array(auth()->user()->role ?? 'graphic', ['karyawan'])): ?> disabled <?php endif; ?>>
+                                    <option value="Menunggu" <?php echo e($item->status == 'Menunggu' ? 'selected' : ''); ?>>Menunggu</option>
+                                    <option value="Dalam Proses" <?php echo e($item->status == 'Dalam Proses' ? 'selected' : ''); ?>>Dalam Proses</option>
+                                    <option value="Review" <?php echo e($item->status == 'Review' ? 'selected' : ''); ?>>Review (Sudah di-upload)</option>
+                                    <option value="Selesai" <?php echo e($item->status == 'Selesai' ? 'selected' : ''); ?>>Selesai</option>
+                                    <option value="Batal" <?php echo e($item->status == 'Batal' ? 'selected' : ''); ?>>Batal</option>
                                 </select>
                             </div>
                             
-                            <div id="revisi-note-area" class="d-none">
+                            <div id="revisi-note-area<?php echo e($item->id); ?>" class="d-none">
                                 <label class="form-label fw-bold text-dark small mb-2">Komentar Revisi <span class="text-danger">*</span></label>
                                 <textarea class="form-control-modern w-100 mb-3" rows="3" placeholder="Tuliskan bagian mana yang perlu direvisi..."></textarea>
                             </div>
@@ -432,18 +433,7 @@
                         <div class="glass-card p-4 border-primary border-2">
                             <h6 class="fw-bolder text-dark mb-3"><i class="fas fa-paint-brush text-primary me-2"></i> Hasil Desain (Tim Graphic)</h6>
                             
-                            
-                            <div class="d-flex align-items-center p-3 rounded-3 mb-3" style="background: #f4f7fe; border: 1px solid #bac8f3;">
-                                <i class="fas fa-file-image text-success fa-2x me-3"></i>
-                                <div class="flex-grow-1 overflow-hidden">
-                                    <div class="fw-bold text-dark text-truncate" style="font-size: 13px;">poster_kemerdekaan_final.jpg</div>
-                                    <div class="text-muted small">Waktu: 2 Hari 4 Jam</div>
-                                </div>
-                                <a href="#" download class="btn btn-sm btn-light text-primary rounded-circle shadow-sm ms-2" style="width: 32px; height: 32px; display: flex; align-items: center; justify-content: center;" title="Unduh">
-                                    <i class="fas fa-download"></i>
-                                </a>
-                                <button type="button" class="btn btn-sm btn-link text-danger p-0 ms-2" title="Hapus File"><i class="fas fa-trash-alt"></i></button>
-                            </div>
+                            <div class="text-muted small fst-italic mb-3">Belum ada hasil desain yang diunggah.</div>
 
                             <?php if(in_array(auth()->user()->role ?? 'graphic', ['graphic', 'superadmin', 'web_dev'])): ?>
                             <hr class="my-3 opacity-25">
@@ -466,6 +456,7 @@
         </div>
     </div>
 </div>
+<?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
 
 <?php $__env->stopSection(); ?>
 
@@ -545,9 +536,9 @@
     });
 
     // Toggle text area revisi
-    function toggleRevisiNote() {
-        var status = document.getElementById('statusSelect').value;
-        var revisiArea = document.getElementById('revisi-note-area');
+    function toggleRevisiNote(id) {
+        var status = document.getElementById('statusSelect' + id).value;
+        var revisiArea = document.getElementById('revisi-note-area' + id);
         if (status === 'Revisi') {
             revisiArea.classList.remove('d-none');
         } else {

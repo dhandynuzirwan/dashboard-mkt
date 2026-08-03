@@ -104,8 +104,8 @@
     }
 </style>
 
-<div class="page-wrapper-modern fade-in">
-    <div class="container-fluid py-5 px-3 px-md-4">
+<div class="container">
+    <div class="page-inner">
         <div class="row">
             <div class="col-12 col-xl-9 mx-auto">
                 
@@ -168,10 +168,7 @@
                                 </div>
                             </div>
 
-                            <div class="col-12">
-                                <label class="form-label-modern">Catatan Tambahan <span class="text-muted fw-normal">(Opsional)</span></label>
-                                <textarea class="form-control-modern w-100" name="catatan" rows="3" placeholder="Tambahan informasi jika ada..."></textarea>
-                            </div>
+
                         </div>
 
                         <hr class="my-5" style="border-color: #edf2f9; opacity: 1;">

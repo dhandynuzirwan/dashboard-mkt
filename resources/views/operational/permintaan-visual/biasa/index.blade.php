@@ -411,37 +411,55 @@
                     <div class="col-lg-4">
                         <div class="glass-card p-4 mb-4">
                             <h6 class="fw-bolder text-dark mb-3"><i class="fas fa-tasks text-warning me-2"></i> Status Pengerjaan</h6>
-                            <div class="mb-3">
-                                <select class="form-select-modern w-100" name="status_update" id="statusSelect{{ $item->id }}" onchange="toggleRevisiNote({{ $item->id }})" @if(in_array(auth()->user()->role ?? 'graphic', ['karyawan'])) disabled @endif>
-                                    <option value="Menunggu" {{ $item->status == 'Menunggu' ? 'selected' : '' }}>Menunggu</option>
-                                    <option value="Dalam Proses" {{ $item->status == 'Dalam Proses' ? 'selected' : '' }}>Dalam Proses</option>
-                                    <option value="Review" {{ $item->status == 'Review' ? 'selected' : '' }}>Review (Sudah di-upload)</option>
-                                    <option value="Selesai" {{ $item->status == 'Selesai' ? 'selected' : '' }}>Selesai</option>
-                                    <option value="Batal" {{ $item->status == 'Batal' ? 'selected' : '' }}>Batal</option>
-                                </select>
-                            </div>
-                            
-                            <div id="revisi-note-area{{ $item->id }}" class="d-none">
-                                <label class="form-label fw-bold text-dark small mb-2">Komentar Revisi <span class="text-danger">*</span></label>
-                                <textarea class="form-control-modern w-100 mb-3" rows="3" placeholder="Tuliskan bagian mana yang perlu direvisi..."></textarea>
-                            </div>
+                            <form action="{{ route('operational.permintaan-visual.biasa.update-status', $item->id) }}" method="POST">
+                                @csrf
+                                @method('PUT')
+                                <div class="mb-3">
+                                    <select class="form-select-modern w-100" name="status_update" id="statusSelect{{ $item->id }}" onchange="toggleRevisiNote({{ $item->id }})" @if(in_array(auth()->user()->role ?? 'graphic', ['karyawan'])) disabled @endif>
+                                        <option value="Menunggu" {{ $item->status == 'Menunggu' ? 'selected' : '' }}>Menunggu</option>
+                                        <option value="Dalam Proses" {{ $item->status == 'Dalam Proses' ? 'selected' : '' }}>Dalam Proses</option>
+                                        <option value="Review" {{ $item->status == 'Review' ? 'selected' : '' }}>Review (Sudah di-upload)</option>
+                                        <option value="Selesai" {{ $item->status == 'Selesai' ? 'selected' : '' }}>Selesai</option>
+                                        <option value="Batal" {{ $item->status == 'Batal' ? 'selected' : '' }}>Batal</option>
+                                    </select>
+                                </div>
+                                
+                                <div id="revisi-note-area{{ $item->id }}" class="d-none">
+                                    <label class="form-label fw-bold text-dark small mb-2">Komentar Revisi <span class="text-danger">*</span></label>
+                                    <textarea class="form-control-modern w-100 mb-3" name="catatan_revisi" rows="3" placeholder="Tuliskan bagian mana yang perlu direvisi..."></textarea>
+                                </div>
 
-                            <button class="btn btn-premium w-100 py-2">Update Status</button>
+                                <button type="submit" class="btn btn-premium w-100 py-2">Update Status</button>
+                            </form>
                         </div>
 
                         {{-- AREA GRAPHIC TEAM --}}
                         <div class="glass-card p-4 border-primary border-2">
                             <h6 class="fw-bolder text-dark mb-3"><i class="fas fa-paint-brush text-primary me-2"></i> Hasil Desain (Tim Graphic)</h6>
                             
+                            @if($item->hasil_file)
+                            <div class="d-flex align-items-center p-3 rounded-3 mb-3" style="background: #f4f7fe; border: 1px solid #bac8f3;">
+                                <i class="fas fa-file-image text-success fa-2x me-3"></i>
+                                <div class="flex-grow-1 overflow-hidden">
+                                    <div class="fw-bold text-dark text-truncate" style="font-size: 13px;">{{ basename($item->hasil_file) }}</div>
+                                    <div class="text-muted small">Telah diunggah</div>
+                                </div>
+                                <a href="{{ asset('storage/' . $item->hasil_file) }}" download class="btn btn-sm btn-light text-primary rounded-circle shadow-sm ms-2" style="width: 32px; height: 32px; display: flex; align-items: center; justify-content: center;" title="Unduh">
+                                    <i class="fas fa-download"></i>
+                                </a>
+                            </div>
+                            @else
                             <div class="text-muted small fst-italic mb-3">Belum ada hasil desain yang diunggah.</div>
+                            @endif
 
                             @if(in_array(auth()->user()->role ?? 'graphic', ['graphic', 'superadmin', 'web_dev']))
                             <hr class="my-3 opacity-25">
-                            <form action="#" method="POST" enctype="multipart/form-data">
+                            <form action="{{ route('operational.permintaan-visual.biasa.upload-hasil', $item->id) }}" method="POST" enctype="multipart/form-data">
+                                @csrf
                                 <label class="fw-bold text-dark small mb-2">Upload / Ganti File Hasil</label>
                                 <div class="input-group input-group-sm mb-2 rounded-3 overflow-hidden shadow-sm border" style="background: white;">
                                     <input type="file" class="form-control form-control-sm border-0 py-2 px-3 bg-white" name="hasil_desain" required>
-                                    <button class="btn btn-primary px-3 fw-bold border-0" type="button" style="background: #4e73df;"><i class="fas fa-upload"></i></button>
+                                    <button class="btn btn-primary px-3 fw-bold border-0" type="submit" style="background: #4e73df;"><i class="fas fa-upload"></i></button>
                                 </div>
                             </form>
                             @endif
