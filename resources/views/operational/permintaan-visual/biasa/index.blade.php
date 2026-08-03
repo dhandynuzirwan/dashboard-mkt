@@ -171,32 +171,32 @@
             <div class="glass-card p-2 d-inline-flex">
                 <ul class="nav nav-pills-custom mb-0 d-flex flex-wrap gap-2" id="pills-tab-with-icon" role="tablist">
                 <li class="nav-item">
-                    <a class="nav-link active filter-tab" href="javascript:void(0)" data-filter="Semua">
+                    <a class="nav-link active filter-tab" href="#" data-filter="Semua">
                         <i class="fas fa-layer-group"></i> Semua
                     </a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link filter-tab" href="javascript:void(0)" data-filter="Cover Proposal">
+                    <a class="nav-link filter-tab" href="#" data-filter="Cover Proposal">
                         <i class="fas fa-book"></i> Cover Proposal
                     </a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link filter-tab" href="javascript:void(0)" data-filter="Flyer/Poster">
+                    <a class="nav-link filter-tab" href="#" data-filter="Flyer/Poster">
                         <i class="fas fa-file-image"></i> Flyer/Poster
                     </a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link filter-tab" href="javascript:void(0)" data-filter="Penjualan">
+                    <a class="nav-link filter-tab" href="#" data-filter="Penjualan">
                         <i class="fas fa-shopping-cart"></i> Penjualan
                     </a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link filter-tab" href="javascript:void(0)" data-filter="Media Sosial">
+                    <a class="nav-link filter-tab" href="#" data-filter="Media Sosial">
                         <i class="fab fa-instagram"></i> Media Sosial
                     </a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link filter-tab" href="javascript:void(0)" data-filter="Presentasi">
+                    <a class="nav-link filter-tab" href="#" data-filter="Presentasi">
                         <i class="fas fa-desktop"></i> Presentasi
                     </a>
                 </li>
@@ -485,7 +485,7 @@
 @endsection
 
 @section('scripts')
-<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
 <script>
     document.addEventListener("DOMContentLoaded", function() {
         
