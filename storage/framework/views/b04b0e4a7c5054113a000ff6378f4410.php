@@ -295,6 +295,12 @@
                                     ?>
                                     <span class="<?php echo e($statusBadge); ?> px-2 py-1 rounded-pill fw-bold" style="font-size: 11px;"><i class="fas <?php echo e($statusIcon); ?> me-1"></i> <?php echo e($item->status); ?></span>
                                 </div>
+                                <?php if($item->waktu_selesai): ?>
+                                <div class="text-muted small mt-2 fw-bold" style="font-size: 10px;">
+                                    <i class="fas fa-stopwatch text-primary"></i> <?php echo e(\Carbon\Carbon::parse($item->created_at)->diffForHumans(\Carbon\Carbon::parse($item->waktu_selesai), ['syntax' => \Carbon\CarbonInterface::DIFF_ABSOLUTE, 'parts' => 2])); ?>
+
+                                </div>
+                                <?php endif; ?>
                             </td>
                             <td>
                                 <?php if($item->pic): ?>
@@ -474,6 +480,12 @@
                                 <div class="flex-grow-1 overflow-hidden">
                                     <div class="fw-bold text-dark text-truncate" style="font-size: 13px;"><?php echo e(basename($item->hasil_file)); ?></div>
                                     <div class="text-muted small">Diunggah oleh: <strong><?php echo e($item->pic->name ?? 'Graphic'); ?></strong></div>
+                                    <?php if($item->waktu_selesai): ?>
+                                    <div class="text-primary small mt-1 fw-bold">
+                                        <i class="fas fa-stopwatch me-1"></i> Durasi: <?php echo e(\Carbon\Carbon::parse($item->created_at)->diffForHumans(\Carbon\Carbon::parse($item->waktu_selesai), ['syntax' => \Carbon\CarbonInterface::DIFF_ABSOLUTE, 'parts' => 2])); ?>
+
+                                    </div>
+                                    <?php endif; ?>
                                 </div>
                                 <a href="<?php echo e(asset('storage/' . $item->hasil_file)); ?>" download class="btn btn-sm btn-light text-primary rounded-circle shadow-sm ms-2" style="width: 32px; height: 32px; display: flex; align-items: center; justify-content: center;" title="Unduh">
                                     <i class="fas fa-download"></i>

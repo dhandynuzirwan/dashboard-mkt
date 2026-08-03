@@ -408,30 +408,32 @@
                                 {!! nl2br(e($item->deskripsi)) !!}
                             </div>
 
-                            <div class="row">
-                                <div class="col-md-6 mb-3 mb-md-0">
+                            <div class="row align-items-stretch">
+                                <div class="col-md-6 mb-3 mb-md-0 d-flex flex-column">
                                     <h6 class="fw-bolder text-dark mb-2">Referensi Desain</h6>
                                     @if($item->referensi_file)
-                                    <div class="d-flex align-items-center p-3 rounded-3" style="background: #f4f7fe; border: 1px dashed #bac8f3;">
+                                    <div class="d-flex align-items-center p-3 rounded-3 flex-grow-1" style="background: #f4f7fe; border: 1px dashed #bac8f3;">
                                         <i class="fas fa-file-image text-primary fa-2x me-3"></i>
                                         <div class="flex-grow-1 overflow-hidden">
                                             <div class="fw-bold text-dark text-truncate" style="font-size: 13px;">{{ basename($item->referensi_file) }}</div>
                                             <div class="text-muted small">File Uploaded</div>
                                         </div>
-                                        <a href="{{ asset('storage/' . $item->referensi_file) }}" target="_blank" class="btn btn-light rounded-circle text-primary shadow-sm ms-2 d-flex align-items-center justify-content-center" style="width: 32px; height: 32px;" title="Lihat">
+                                        <a href="{{ asset('storage/' . $item->referensi_file) }}" target="_blank" class="btn btn-light rounded-circle text-primary shadow-sm ms-2 d-flex align-items-center justify-content-center flex-shrink-0" style="width: 32px; height: 32px;" title="Lihat">
                                             <i class="fas fa-eye"></i>
                                         </a>
                                     </div>
                                     @else
-                                    <div class="text-muted small fst-italic">Tidak ada referensi dilampirkan.</div>
+                                    <div class="p-3 rounded-3 d-flex align-items-center flex-grow-1" style="background: #f8f9fa; border: 1px dashed #dee2e6;">
+                                        <div class="text-muted small fst-italic w-100 text-center">Tidak ada referensi dilampirkan.</div>
+                                    </div>
                                     @endif
                                 </div>
-                                <div class="col-md-6">
+                                <div class="col-md-6 d-flex flex-column">
                                     <div class="d-flex justify-content-between align-items-center mb-2">
                                         <h6 class="fw-bolder text-dark mb-0">Komentar / Catatan</h6>
                                         <button class="btn btn-sm btn-link text-primary p-0 text-decoration-none fw-bold" style="font-size: 13px;"><i class="fas fa-edit me-1"></i> Edit/Tambah</button>
                                     </div>
-                                    <div class="p-3 bg-light rounded-3 border h-100 text-dark small">
+                                    <div class="p-3 bg-light rounded-3 border flex-grow-1 text-dark small overflow-auto" style="max-height: 150px;">
                                         @if($item->catatan)
                                             <em>"{!! nl2br(e($item->catatan)) !!}"</em>
                                         @else
