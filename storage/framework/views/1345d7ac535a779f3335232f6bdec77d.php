@@ -289,7 +289,7 @@
             </div>
             <div class="modal-footer border-top bg-white rounded-bottom-4 py-3 px-4">
                 <button type="button" class="btn btn-secondary px-4 fw-bold" data-bs-dismiss="modal">Tutup</button>
-                <a href="<?php echo e(route('user.edit', $user->id)); ?>" class="btn btn-primary px-4 fw-bold"><i class="fas fa-upload me-1"></i> Lengkapi Berkas</a>
+                <a href="<?php echo e(route('user.edit', $user->id)); ?>" class="btn btn-primary px-4 fw-bold"><i class="fa fa-upload me-1"></i> Lengkapi Berkas</a>
             </div>
         </div>
     </div>
