@@ -248,7 +248,6 @@
                             <th width="10%">Prioritas</th>
                             <th width="18%">Status</th>
                             <th width="12%">PIC Graphic</th>
-                            <th width="12%">Pengerjaan</th>
                             <th width="12%">Tanggal</th>
                             <th class="text-center" width="10%">Aksi</th>
                         </tr>

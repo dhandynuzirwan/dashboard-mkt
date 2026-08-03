@@ -22,6 +22,11 @@ class PermintaanBiasa extends Model
         'prioritas',
         'status',
         'pic_id',
+        'waktu_selesai',
+    ];
+
+    protected $casts = [
+        'waktu_selesai' => 'datetime',
     ];
 
     public function user()

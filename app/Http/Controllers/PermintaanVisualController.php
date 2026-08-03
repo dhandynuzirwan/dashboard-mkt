@@ -134,6 +134,9 @@ class PermintaanVisualController extends Controller
             
             $permintaan->hasil_file = $hasil_file;
             $permintaan->pic_id = \Illuminate\Support\Facades\Auth::id();
+            if (empty($permintaan->waktu_selesai)) {
+                $permintaan->waktu_selesai = now();
+            }
             $permintaan->status = 'Review'; // otomatis pindah ke Review kalau upload
             $permintaan->save();
         }
