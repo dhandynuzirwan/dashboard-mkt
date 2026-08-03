@@ -224,62 +224,51 @@
 <div class="modal fade" id="modalBerkas<?php echo e($user->id); ?>" tabindex="-1" aria-hidden="true">
     <div class="modal-dialog modal-lg modal-dialog-centered">
         <div class="modal-content border-0 rounded-4 shadow-lg">
-            <div class="modal-header border-bottom px-4 py-3" style="background: linear-gradient(135deg, #4e73df 0%, #224abe 100%); color: white; border-radius: 15px 15px 0 0;">
-                <h5 class="modal-title fw-bold">
-                    <i class="fa fa-folder-open me-2"></i> Dokumen & Berkas: <?php echo e($user->name); ?>
+            <div class="modal-header border-bottom px-4 py-3 bg-white">
+                <h5 class="modal-title fw-bold text-dark" style="font-size: 18px;">
+                    Dokumen & Berkas: <?php echo e($user->name); ?>
 
                 </h5>
-                <button type="button" class="btn-close btn-close-white shadow-none" data-bs-dismiss="modal" aria-label="Close"></button>
+                <button type="button" class="btn-close shadow-none" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body p-4 bg-light">
                 
                 <?php
                     $berkasDef = [
-                        'ktp_file' => ['title' => 'KTP', 'icon' => 'fa-address-card', 'color' => 'primary'],
-                        'kk_file' => ['title' => 'Kartu Keluarga', 'icon' => 'fa-users', 'color' => 'info'],
-                        'ijasah_file' => ['title' => 'Ijazah', 'icon' => 'fa-graduation-cap', 'color' => 'success'],
-                        'pas_foto_file' => ['title' => 'Pas Foto', 'icon' => 'fa-image', 'color' => 'warning'],
-                        'jobdesk_file' => ['title' => 'Jobdesk', 'icon' => 'fa-tasks', 'color' => 'danger'],
-                        'sop_file' => ['title' => 'SOP', 'icon' => 'fa-file', 'color' => 'secondary'],
+                        'ktp_file' => 'KTP',
+                        'kk_file' => 'Kartu Keluarga',
+                        'ijasah_file' => 'Ijazah',
+                        'pas_foto_file' => 'Pas Foto',
+                        'jobdesk_file' => 'Jobdesk',
+                        'sop_file' => 'SOP',
                     ];
                 ?>
 
                 <div class="row g-3">
-                    <?php $__currentLoopData = $berkasDef; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $field => $meta): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+                    <?php $__currentLoopData = $berkasDef; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $field => $title): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
                         <div class="col-md-6 col-lg-4">
-                            <div class="file-card h-100 d-flex flex-column">
-                                <div class="d-flex align-items-center mb-3">
-                                    <div class="file-icon bg-<?php echo e($meta['color']); ?> bg-opacity-10 text-<?php echo e($meta['color']); ?> me-3">
-                                        <i class="fa <?php echo e($meta['icon']); ?>"></i>
-                                    </div>
-                                    <div>
-                                        <div class="fw-bold text-dark" style="font-size: 14px;"><?php echo e($meta['title']); ?></div>
+                            <div class="card h-100 border-0 shadow-sm rounded-3">
+                                <div class="card-body p-3 d-flex flex-column">
+                                    <div class="d-flex justify-content-between align-items-start mb-3">
+                                        <div class="fw-bold text-dark" style="font-size: 14px;"><?php echo e($title); ?></div>
                                         <?php if(!empty($user->$field)): ?>
-                                            <div class="badge bg-success" style="font-size: 10px;">Tersedia</div>
+                                            <span class="badge bg-primary text-white border-0 px-2 py-1">Tersedia</span>
                                         <?php else: ?>
-                                            <div class="badge bg-secondary" style="font-size: 10px;">Kosong</div>
+                                            <span class="badge bg-light text-muted border px-2 py-1">Kosong</span>
                                         <?php endif; ?>
                                     </div>
-                                </div>
-                                
-                                <div class="mt-auto">
-                                    <?php if(!empty($user->$field)): ?>
-                                        <?php
-                                            $ext = strtolower(pathinfo($user->$field, PATHINFO_EXTENSION));
-                                            $isImage = in_array($ext, ['jpg','jpeg','png','webp','gif']);
-                                        ?>
-                                        <a href="<?php echo e(asset('storage/' . $user->$field)); ?>" target="_blank" class="btn btn-sm btn-outline-<?php echo e($meta['color']); ?> w-100 fw-bold">
-                                            <?php if($isImage): ?>
-                                                <i class="fa fa-image me-1"></i> Lihat Gambar
-                                            <?php else: ?>
-                                                <i class="fa fa-file-pdf me-1"></i> Buka Dokumen
-                                            <?php endif; ?>
-                                        </a>
-                                    <?php else: ?>
-                                        <button class="btn btn-sm btn-light w-100 text-muted" disabled>
-                                            <i class="fa fa-times me-1"></i> Belum Diunggah
-                                        </button>
-                                    <?php endif; ?>
+                                    
+                                    <div class="mt-auto">
+                                        <?php if(!empty($user->$field)): ?>
+                                            <a href="<?php echo e(asset('storage/' . $user->$field)); ?>" target="_blank" class="btn btn-sm btn-primary w-100 fw-bold">
+                                                Buka Berkas
+                                            </a>
+                                        <?php else: ?>
+                                            <button class="btn btn-sm btn-light border w-100 text-muted" disabled>
+                                                Belum Diunggah
+                                            </button>
+                                        <?php endif; ?>
+                                    </div>
                                 </div>
                             </div>
                         </div>
@@ -288,8 +277,8 @@
                 
             </div>
             <div class="modal-footer border-top bg-white rounded-bottom-4 py-3 px-4">
-                <button type="button" class="btn btn-secondary px-4 fw-bold" data-bs-dismiss="modal">Tutup</button>
-                <a href="<?php echo e(route('user.edit', $user->id)); ?>" class="btn btn-primary px-4 fw-bold"><i class="fa fa-upload me-1"></i> Lengkapi Berkas</a>
+                <button type="button" class="btn btn-light border px-4 fw-bold" data-bs-dismiss="modal">Tutup</button>
+                <a href="<?php echo e(route('user.edit', $user->id)); ?>" class="btn btn-primary px-4 fw-bold">Lengkapi Berkas</a>
             </div>
         </div>
     </div>

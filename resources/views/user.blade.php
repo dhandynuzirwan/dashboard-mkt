@@ -248,15 +248,15 @@
                                     <div class="d-flex justify-content-between align-items-start mb-3">
                                         <div class="fw-bold text-dark" style="font-size: 14px;">{{ $title }}</div>
                                         @if(!empty($user->$field))
-                                            <span class="badge bg-light text-dark border">Tersedia</span>
+                                            <span class="badge bg-primary text-white border-0 px-2 py-1">Tersedia</span>
                                         @else
-                                            <span class="badge bg-light text-muted border">Kosong</span>
+                                            <span class="badge bg-light text-muted border px-2 py-1">Kosong</span>
                                         @endif
                                     </div>
                                     
                                     <div class="mt-auto">
                                         @if(!empty($user->$field))
-                                            <a href="{{ asset('storage/' . $user->$field) }}" target="_blank" class="btn btn-sm btn-dark w-100 fw-bold">
+                                            <a href="{{ asset('storage/' . $user->$field) }}" target="_blank" class="btn btn-sm btn-primary w-100 fw-bold">
                                                 Buka Berkas
                                             </a>
                                         @else
@@ -274,7 +274,7 @@
             </div>
             <div class="modal-footer border-top bg-white rounded-bottom-4 py-3 px-4">
                 <button type="button" class="btn btn-light border px-4 fw-bold" data-bs-dismiss="modal">Tutup</button>
-                <a href="{{ route('user.edit', $user->id) }}" class="btn btn-dark px-4 fw-bold">Lengkapi Berkas</a>
+                <a href="{{ route('user.edit', $user->id) }}" class="btn btn-primary px-4 fw-bold">Lengkapi Berkas</a>
             </div>
         </div>
     </div>
