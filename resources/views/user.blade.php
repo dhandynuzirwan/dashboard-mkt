@@ -223,7 +223,7 @@
         <div class="modal-content border-0 rounded-4 shadow-lg">
             <div class="modal-header border-bottom px-4 py-3" style="background: linear-gradient(135deg, #4e73df 0%, #224abe 100%); color: white; border-radius: 15px 15px 0 0;">
                 <h5 class="modal-title fw-bold">
-                    <i class="fas fa-folder-open me-2"></i> Dokumen & Berkas: {{ $user->name }}
+                    <i class="fa fa-folder-open me-2"></i> Dokumen & Berkas: {{ $user->name }}
                 </h5>
                 <button type="button" class="btn-close btn-close-white shadow-none" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
@@ -231,12 +231,12 @@
                 
                 @php
                     $berkasDef = [
-                        'ktp_file' => ['title' => 'KTP', 'icon' => 'fa-id-card', 'color' => 'primary'],
+                        'ktp_file' => ['title' => 'KTP', 'icon' => 'fa-address-card', 'color' => 'primary'],
                         'kk_file' => ['title' => 'Kartu Keluarga', 'icon' => 'fa-users', 'color' => 'info'],
                         'ijasah_file' => ['title' => 'Ijazah', 'icon' => 'fa-graduation-cap', 'color' => 'success'],
                         'pas_foto_file' => ['title' => 'Pas Foto', 'icon' => 'fa-image', 'color' => 'warning'],
                         'jobdesk_file' => ['title' => 'Jobdesk', 'icon' => 'fa-tasks', 'color' => 'danger'],
-                        'sop_file' => ['title' => 'SOP', 'icon' => 'fa-file-alt', 'color' => 'secondary'],
+                        'sop_file' => ['title' => 'SOP', 'icon' => 'fa-file', 'color' => 'secondary'],
                     ];
                 @endphp
 
@@ -246,7 +246,7 @@
                             <div class="file-card h-100 d-flex flex-column">
                                 <div class="d-flex align-items-center mb-3">
                                     <div class="file-icon bg-{{ $meta['color'] }} bg-opacity-10 text-{{ $meta['color'] }} me-3">
-                                        <i class="fas {{ $meta['icon'] }}"></i>
+                                        <i class="fa {{ $meta['icon'] }}"></i>
                                     </div>
                                     <div>
                                         <div class="fw-bold text-dark" style="font-size: 14px;">{{ $meta['title'] }}</div>
@@ -266,14 +266,14 @@
                                         @endphp
                                         <a href="{{ asset('storage/' . $user->$field) }}" target="_blank" class="btn btn-sm btn-outline-{{ $meta['color'] }} w-100 fw-bold">
                                             @if($isImage)
-                                                <i class="fas fa-image me-1"></i> Lihat Gambar
+                                                <i class="fa fa-image me-1"></i> Lihat Gambar
                                             @else
-                                                <i class="fas fa-file-pdf me-1"></i> Buka Dokumen
+                                                <i class="fa fa-file-pdf me-1"></i> Buka Dokumen
                                             @endif
                                         </a>
                                     @else
                                         <button class="btn btn-sm btn-light w-100 text-muted" disabled>
-                                            <i class="fas fa-times me-1"></i> Belum Diunggah
+                                            <i class="fa fa-times me-1"></i> Belum Diunggah
                                         </button>
                                     @endif
                                 </div>
@@ -285,7 +285,7 @@
             </div>
             <div class="modal-footer border-top bg-white rounded-bottom-4 py-3 px-4">
                 <button type="button" class="btn btn-secondary px-4 fw-bold" data-bs-dismiss="modal">Tutup</button>
-                <a href="{{ route('user.edit', $user->id) }}" class="btn btn-primary px-4 fw-bold"><i class="fas fa-upload me-1"></i> Lengkapi Berkas</a>
+                <a href="{{ route('user.edit', $user->id) }}" class="btn btn-primary px-4 fw-bold"><i class="fa fa-upload me-1"></i> Lengkapi Berkas</a>
             </div>
         </div>
     </div>
