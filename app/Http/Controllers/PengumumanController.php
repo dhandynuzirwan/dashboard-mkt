@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Pengumuman;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Storage;
 
 class PengumumanController extends Controller
 {
@@ -27,10 +28,15 @@ class PengumumanController extends Controller
             'deskripsi' => 'required|string',
             'tanggal_event' => 'nullable|date',
             'is_active' => 'nullable|boolean',
+            'lampiran' => 'nullable|file|mimes:pdf,jpg,jpeg,png,docx,xlsx,xls|max:5120',
         ]);
 
         $data = $request->all();
         $data['is_active'] = $request->has('is_active') ? true : false;
+
+        if ($request->hasFile('lampiran')) {
+            $data['lampiran'] = $request->file('lampiran')->store('pengumuman_lampiran', 'public');
+        }
 
         Pengumuman::create($data);
 
@@ -50,10 +56,18 @@ class PengumumanController extends Controller
             'deskripsi' => 'required|string',
             'tanggal_event' => 'nullable|date',
             'is_active' => 'nullable|boolean',
+            'lampiran' => 'nullable|file|mimes:pdf,jpg,jpeg,png,docx,xlsx,xls|max:5120',
         ]);
 
         $data = $request->all();
         $data['is_active'] = $request->has('is_active') ? true : false;
+
+        if ($request->hasFile('lampiran')) {
+            if ($pengumuman->lampiran) {
+                Storage::disk('public')->delete($pengumuman->lampiran);
+            }
+            $data['lampiran'] = $request->file('lampiran')->store('pengumuman_lampiran', 'public');
+        }
 
         $pengumuman->update($data);
 
@@ -66,6 +80,11 @@ class PengumumanController extends Controller
     public function destroy(string $id)
     {
         $pengumuman = Pengumuman::findOrFail($id);
+        
+        if ($pengumuman->lampiran) {
+            Storage::disk('public')->delete($pengumuman->lampiran);
+        }
+        
         $pengumuman->delete();
 
         return redirect()->route('pengumuman.index')->with('success', 'Pengumuman berhasil dihapus');

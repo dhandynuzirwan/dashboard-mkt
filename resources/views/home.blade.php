@@ -340,6 +340,13 @@
                                         <span class="badge bg-{{ $color }} rounded-pill px-2" style="font-size: 9px; letter-spacing: 0.5px;">{{ $badgeText }}</span>
                                     </div>
                                     <p class="text-muted small mb-1" style="font-size: 13px;">{{ $p->deskripsi }}</p>
+                                    @if($p->lampiran)
+                                        <div class="mt-2 mb-2">
+                                            <a href="{{ Storage::url($p->lampiran) }}" target="_blank" class="btn btn-sm btn-light border shadow-sm text-primary" style="font-size: 11px; padding: 4px 10px; border-radius: 8px;">
+                                                <i class="fas fa-paperclip me-1"></i> Buka Lampiran
+                                            </a>
+                                        </div>
+                                    @endif
                                     <small class="text-secondary fw-semibold" style="font-size: 11px;"><i class="fas fa-clock me-1"></i>{{ $p->tanggal_event ? \Carbon\Carbon::parse($p->tanggal_event)->format('d M Y') : $p->created_at->diffForHumans() }}</small>
                                 </div>
                             </div>

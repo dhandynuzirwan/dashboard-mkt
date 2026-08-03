@@ -17,6 +17,7 @@ class Pengumuman extends Model
         'deskripsi',
         'tanggal_event',
         'is_active',
+        'lampiran',
     ];
 
     protected $casts = [
