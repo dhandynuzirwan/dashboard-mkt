@@ -314,9 +314,8 @@
                 <?php endif; ?>
                 
                 
-                <?php if(in_array(auth()->user()->role, ['superadmin', 'web_dev', 'operasional', 'graphic'])): ?>
-                    <?php $isPermintaanVisual = request()->routeIs(['operational.permintaan-visual.*']); ?>
-                    <li class="nav-item <?php echo e($isPermintaanVisual ? 'active' : ''); ?>">
+                <?php $isPermintaanVisual = request()->routeIs(['operational.permintaan-visual.*']); ?>
+                <li class="nav-item <?php echo e($isPermintaanVisual ? 'active' : ''); ?>">
                         <a data-bs-toggle="collapse" href="#permintaanVisual" class="<?php echo e($isPermintaanVisual ? '' : 'collapsed'); ?>" aria-expanded="<?php echo e($isPermintaanVisual ? 'true' : 'false'); ?>">
                             <i class="fas fa-palette"></i>
                             <p>Permintaan Visual</p>
@@ -338,7 +337,6 @@
                             </ul>
                         </div>
                     </li>
-                <?php endif; ?>
                 
                 
                 <?php $isDownload = request()->routeIs(['download.approval', 'download.my']); ?>

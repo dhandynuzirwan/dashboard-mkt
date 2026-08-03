@@ -29,7 +29,7 @@ class HomeController extends Controller
                 $query->whereNull('tanggal_event')
                       ->orWhereDate('tanggal_event', '>=', $now->toDateString());
             })
-            ->orderBy('created_at', 'desc')
+            ->orderBy('tanggal_event', 'asc')
             ->take(5)
             ->get();
 
