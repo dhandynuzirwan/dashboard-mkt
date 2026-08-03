@@ -101,4 +101,19 @@ class DownloadRequestController extends Controller
 
         return Excel::download(new ProspekExport($req), 'pipeline.xlsx');
     }
+
+    // ================= 5. DELETE REQUEST =================
+    public function destroy($id)
+    {
+        $req = DownloadRequest::findOrFail($id);
+
+        // Hanya superadmin atau pembuat yang boleh menghapus
+        if (auth()->user()->role !== 'superadmin' && $req->user_id !== auth()->id()) {
+            abort(403, 'Anda tidak diizinkan menghapus data ini.');
+        }
+
+        $req->delete();
+
+        return back()->with('success', 'Request download berhasil dihapus.');
+    }
 }

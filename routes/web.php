@@ -255,6 +255,7 @@ Route::middleware('auth')->group(function () {
         Route::get('/download-file/{id}', [DownloadRequestController::class, 'download'])->name('download.file');
         Route::get('/my-downloads', [DownloadRequestController::class, 'myRequests'])->name('download.my');
         Route::get('/download-approval', [DownloadRequestController::class, 'index'])->name('download.approval');
+        Route::delete('/download-request/{id}', [DownloadRequestController::class, 'destroy'])->name('download.destroy');
         
         Route::get('/panduan', [App\Http\Controllers\PanduanController::class, 'index'])->name('panduan.index');
     });
