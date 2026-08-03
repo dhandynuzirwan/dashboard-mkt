@@ -144,6 +144,20 @@ class PermintaanVisualController extends Controller
         return redirect()->back()->with('success', 'File hasil desain berhasil diunggah.');
     }
 
+    public function biasaUpdateCatatan(Request $request, $id)
+    {
+        $permintaan = \App\Models\PermintaanBiasa::findOrFail($id);
+        
+        $request->validate([
+            'catatan' => 'required|string'
+        ]);
+
+        $permintaan->catatan = $request->catatan;
+        $permintaan->save();
+
+        return redirect()->back()->with('success', 'Catatan/Komentar berhasil diperbarui.');
+    }
+
     public function biasaEdit($id)
     {
         $permintaan = \App\Models\PermintaanBiasa::findOrFail($id);

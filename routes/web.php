@@ -204,6 +204,7 @@ Route::middleware('auth')->group(function () {
                 // Update Status & Upload Hasil (untuk di index)
                 Route::put('/{id}/update-status', [App\Http\Controllers\PermintaanVisualController::class, 'biasaUpdateStatus'])->name('operational.permintaan-visual.biasa.update-status');
                 Route::post('/{id}/upload-hasil', [App\Http\Controllers\PermintaanVisualController::class, 'biasaUploadHasil'])->name('operational.permintaan-visual.biasa.upload-hasil');
+                Route::put('/{id}/update-catatan', [App\Http\Controllers\PermintaanVisualController::class, 'biasaUpdateCatatan'])->name('operational.permintaan-visual.biasa.update-catatan');
 
                 // Edit, Update, Batalkan
                 Route::get('/{id}/edit', [App\Http\Controllers\PermintaanVisualController::class, 'biasaEdit'])->name('operational.permintaan-visual.biasa.edit');

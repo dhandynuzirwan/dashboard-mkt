@@ -431,14 +431,25 @@
                                 <div class="col-md-6 d-flex flex-column">
                                     <div class="d-flex justify-content-between align-items-center mb-2">
                                         <h6 class="fw-bolder text-dark mb-0">Komentar / Catatan</h6>
-                                        <button class="btn btn-sm btn-link text-primary p-0 text-decoration-none fw-bold" style="font-size: 13px;"><i class="fas fa-edit me-1"></i> Edit/Tambah</button>
+                                        <button class="btn btn-sm btn-link text-primary p-0 text-decoration-none fw-bold" style="font-size: 13px;" onclick="toggleCatatanEdit({{ $item->id }})"><i class="fas fa-edit me-1"></i> Edit/Tambah</button>
                                     </div>
-                                    <div class="p-3 bg-light rounded-3 border flex-grow-1 text-dark small overflow-auto" style="max-height: 150px;">
+                                    <div class="p-3 bg-light rounded-3 border flex-grow-1 text-dark small overflow-auto" style="max-height: 150px;" id="catatanDisplay{{ $item->id }}">
                                         @if($item->catatan)
                                             <em>"{!! nl2br(e($item->catatan)) !!}"</em>
                                         @else
                                             <span class="text-muted fst-italic">Belum ada komentar atau catatan revisi.</span>
                                         @endif
+                                    </div>
+                                    <div class="p-3 bg-light rounded-3 border flex-grow-1 text-dark small d-none" id="catatanForm{{ $item->id }}">
+                                        <form action="{{ route('operational.permintaan-visual.biasa.update-catatan', $item->id) }}" method="POST">
+                                            @csrf
+                                            @method('PUT')
+                                            <textarea class="form-control-modern w-100 mb-2" name="catatan" rows="3" placeholder="Tuliskan catatan...">{{ $item->catatan }}</textarea>
+                                            <div class="d-flex justify-content-end gap-2">
+                                                <button type="button" class="btn btn-sm btn-light" onclick="toggleCatatanEdit({{ $item->id }})">Batal</button>
+                                                <button type="submit" class="btn btn-sm btn-primary">Simpan</button>
+                                            </div>
+                                        </form>
                                     </div>
                                 </div>
                             </div>
@@ -648,6 +659,18 @@
             revisiArea.classList.remove('d-none');
         } else {
             revisiArea.classList.add('d-none');
+        }
+    }
+
+    function toggleCatatanEdit(id) {
+        var display = document.getElementById('catatanDisplay' + id);
+        var form = document.getElementById('catatanForm' + id);
+        if (display.classList.contains('d-none')) {
+            display.classList.remove('d-none');
+            form.classList.add('d-none');
+        } else {
+            display.classList.add('d-none');
+            form.classList.remove('d-none');
         }
     }
 </script>
