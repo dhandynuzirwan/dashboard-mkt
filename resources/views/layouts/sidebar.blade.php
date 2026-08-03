@@ -314,9 +314,8 @@
                 @endif
                 
                 {{-- ================= MENU PERMINTAAN VISUAL ================= --}}
-                @if(in_array(auth()->user()->role, ['superadmin', 'web_dev', 'operasional', 'graphic']))
-                    @php $isPermintaanVisual = request()->routeIs(['operational.permintaan-visual.*']); @endphp
-                    <li class="nav-item {{ $isPermintaanVisual ? 'active' : '' }}">
+                @php $isPermintaanVisual = request()->routeIs(['operational.permintaan-visual.*']); @endphp
+                <li class="nav-item {{ $isPermintaanVisual ? 'active' : '' }}">
                         <a data-bs-toggle="collapse" href="#permintaanVisual" class="{{ $isPermintaanVisual ? '' : 'collapsed' }}" aria-expanded="{{ $isPermintaanVisual ? 'true' : 'false' }}">
                             <i class="fas fa-palette"></i>
                             <p>Permintaan Visual</p>
@@ -338,7 +337,6 @@
                             </ul>
                         </div>
                     </li>
-                @endif
                 
                 {{-- ================= MENU DOWNLOAD ================= --}}
                 @php $isDownload = request()->routeIs(['download.approval', 'download.my']); @endphp
