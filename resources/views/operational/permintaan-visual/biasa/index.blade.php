@@ -488,75 +488,7 @@
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <script>
     document.addEventListener("DOMContentLoaded", function() {
-        // Doughnut Chart (Prioritas)
-        var ctxPrioritas = document.getElementById('prioritasChart').getContext('2d');
-        var prioritasChart = new Chart(ctxPrioritas, {
-            type: 'doughnut',
-            data: {
-                labels: ['Tinggi', 'Sedang', 'Rendah'],
-                datasets: [{
-                    data: [45, 30, 25],
-                    backgroundColor: ['#e74a3b', '#f6c23e', '#36b9cc'],
-                    borderWidth: 0,
-                    hoverOffset: 4
-                }]
-            },
-            options: {
-                responsive: true,
-                maintainAspectRatio: false,
-                cutout: '75%',
-                plugins: {
-                    legend: {
-                        position: 'right',
-                        labels: {
-                            usePointStyle: true,
-                            padding: 15,
-                            font: { size: 12, family: "'Nunito', sans-serif" }
-                        }
-                    }
-                }
-            }
-        });
-
-        // Line/Bar Chart (History)
-        var ctxHistory = document.getElementById('historyChart').getContext('2d');
-        var historyChart = new Chart(ctxHistory, {
-            type: 'line',
-            data: {
-                labels: ['Minggu 1', 'Minggu 2', 'Minggu 3', 'Minggu 4'],
-                datasets: [{
-                    label: 'Jumlah Permintaan',
-                    data: [12, 19, 15, 24],
-                    backgroundColor: 'rgba(78, 115, 223, 0.1)',
-                    borderColor: '#4e73df',
-                    borderWidth: 3,
-                    pointBackgroundColor: '#fff',
-                    pointBorderColor: '#4e73df',
-                    pointBorderWidth: 2,
-                    pointRadius: 4,
-                    pointHoverRadius: 6,
-                    fill: true,
-                    tension: 0.4
-                }]
-            },
-            options: {
-                responsive: true,
-                maintainAspectRatio: false,
-                scales: {
-                    y: {
-                        beginAtZero: true,
-                        grid: { borderDash: [2, 4], color: '#edf2f9' },
-                        ticks: { stepSize: 5 }
-                    },
-                    x: {
-                        grid: { display: false }
-                    }
-                },
-                plugins: {
-                    legend: { display: false }
-                }
-            }
-        });
+        
         // Filter kategori berdasarkan tab
         const filterTabs = document.querySelectorAll('.filter-tab');
         const tableRows = document.querySelectorAll('.permintaan-row');
@@ -564,6 +496,7 @@
         filterTabs.forEach(tab => {
             tab.addEventListener('click', function(e) {
                 e.preventDefault();
+                
                 // hapus active dari semua tab
                 filterTabs.forEach(t => t.classList.remove('active'));
                 this.classList.add('active');
@@ -583,6 +516,80 @@
                 });
             });
         });
+
+        // Doughnut Chart (Prioritas)
+        if (document.getElementById('prioritasChart')) {
+            var ctxPrioritas = document.getElementById('prioritasChart').getContext('2d');
+            var prioritasChart = new Chart(ctxPrioritas, {
+                type: 'doughnut',
+                data: {
+                    labels: ['Tinggi', 'Sedang', 'Rendah'],
+                    datasets: [{
+                        data: [45, 30, 25],
+                        backgroundColor: ['#e74a3b', '#f6c23e', '#36b9cc'],
+                        borderWidth: 0,
+                        hoverOffset: 4
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    cutout: '75%',
+                    plugins: {
+                        legend: {
+                            position: 'right',
+                            labels: {
+                                usePointStyle: true,
+                                padding: 15,
+                                font: { size: 12, family: "'Nunito', sans-serif" }
+                            }
+                        }
+                    }
+                }
+            });
+        }
+
+        // Line/Bar Chart (History)
+        if (document.getElementById('historyChart')) {
+            var ctxHistory = document.getElementById('historyChart').getContext('2d');
+            var historyChart = new Chart(ctxHistory, {
+                type: 'line',
+                data: {
+                    labels: ['Minggu 1', 'Minggu 2', 'Minggu 3', 'Minggu 4'],
+                    datasets: [{
+                        label: 'Jumlah Permintaan',
+                        data: [12, 19, 15, 24],
+                        backgroundColor: 'rgba(78, 115, 223, 0.1)',
+                        borderColor: '#4e73df',
+                        borderWidth: 3,
+                        pointBackgroundColor: '#fff',
+                        pointBorderColor: '#4e73df',
+                        pointBorderWidth: 2,
+                        pointRadius: 4,
+                        pointHoverRadius: 6,
+                        fill: true,
+                        tension: 0.4
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            grid: { borderDash: [2, 4], color: '#edf2f9' },
+                            ticks: { stepSize: 5 }
+                        },
+                        x: {
+                            grid: { display: false }
+                        }
+                    },
+                    plugins: {
+                        legend: { display: false }
+                    }
+                }
+            });
+        }
     });
 
     // Toggle text area revisi
