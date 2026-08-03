@@ -1,6 +1,6 @@
 <?php $__env->startSection('content'); ?>
-<div class="container-fluid py-4 fade-in" style="background-color: #f8fafc00; min-height: 100vh;">
-    <div class="row px-2 px-md-3">
+<div class="container">
+    <div class="page-inner">
         <div class="col-12">
             
             
