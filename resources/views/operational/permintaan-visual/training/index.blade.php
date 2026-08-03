@@ -198,12 +198,16 @@
                                     @endif
                                     <span class="{{ $uploadedCount > 0 ? 'text-primary' : 'text-muted' }} fw-bolder" style="font-size: 13px;">{{ $uploadedCount }}/9 Berkas Terunggah</span>
                                 </div>
-                                <div class="text-dark small text-start mt-2" style="font-size: 13px;">
-                                    {{ $uploadedCount > 0 ? implode(', ', array_slice($uploadedNames, 0, 3)) . ($uploadedCount > 3 ? '...' : '') : 'Belum ada berkas yang diunggah' }}
+                                <div class="text-dark small text-start mt-2 mb-1" style="font-size: 13px;">
+                                    {{ $uploadedCount > 0 ? implode(', ', array_slice($uploadedNames, 0, 3)) . ($uploadedCount > 3 ? '...' : '') : '' }}
                                 </div>
                                 @if($permintaan)
-                                <div class="text-muted mt-2" style="font-size: 11px;">
-                                    Terakhir diubah: <i class="far fa-clock"></i> {{ $permintaan->updated_at->format('d M Y, H:i') }}
+                                <div class="text-muted" style="font-size: 11px;">
+                                    Diunggah oleh: <span class="fw-bold text-dark">{{ $permintaan->user->name ?? 'System' }}</span> &bull; Terakhir diubah: <i class="far fa-clock"></i> {{ $permintaan->updated_at->format('d M Y, H:i') }}
+                                </div>
+                                @else
+                                <div class="text-muted" style="font-size: 11px;">
+                                    Belum ada berkas yang diunggah
                                 </div>
                                 @endif
                             </td>

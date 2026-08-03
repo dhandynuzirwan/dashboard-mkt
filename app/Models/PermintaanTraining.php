@@ -8,6 +8,7 @@ class PermintaanTraining extends Model
 {
     protected $fillable = [
         'pelatihan_berjalan_id',
+        'user_id',
         'status',
         'background_zoom_file',
         'banner_kegiatan_file',
@@ -23,5 +24,10 @@ class PermintaanTraining extends Model
     public function pelatihanBerjalan()
     {
         return $this->belongsTo(PelatihanBerjalan::class, 'pelatihan_berjalan_id');
+    }
+
+    public function user()
+    {
+        return $this->belongsTo(User::class, 'user_id');
     }
 }

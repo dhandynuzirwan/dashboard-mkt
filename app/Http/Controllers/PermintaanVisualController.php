@@ -299,6 +299,7 @@ class PermintaanVisualController extends Controller
             $permintaan->status = 'Menunggu';
         }
 
+        $permintaan->user_id = \Illuminate\Support\Facades\Auth::id();
         $permintaan->save();
 
         return redirect()->back()->with('success', 'Berkas visual berhasil diperbarui.');

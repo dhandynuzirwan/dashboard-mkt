@@ -326,7 +326,23 @@
                                 <?php if(in_array(auth()->user()->role ?? 'graphic', ['graphic', 'superadmin', 'web_dev'])): ?>
                                 <div class="mt-auto border-top pt-3">
                                     <div class="input-group input-group-sm mb-2 rounded-3 overflow-hidden shadow-sm border" style="background: white;">
+                                        <input type="file" class="form-control form-control-sm border-0 py-2 px-3 bg-white" name="<?php echo e($inputName); ?>">
+                                    </div>
+                                </div>
+                                <?php endif; ?>
+                            </div>
+                        </div>
+                        <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer bg-white border-top-0 py-4 px-5">
+                <button type="button" class="btn btn-light-modern" data-bs-dismiss="modal">Tutup</button>
+            </div>
+        </div>
+    </div>
 </div>
+<?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
 
 <?php $__env->stopSection(); ?>
 
