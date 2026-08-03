@@ -226,7 +226,7 @@
                 </form>
             </div>
             
-            <div class="table-responsive">
+            <div class="table-responsive" style="min-height: 400px; overflow-y: visible; padding-bottom: 80px;">
                 <table class="table table-custom w-100">
                     <thead>
                         <tr>
