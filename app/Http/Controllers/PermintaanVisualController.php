@@ -20,13 +20,24 @@ class PermintaanVisualController extends Controller
 
         $permintaans = $query->get();
 
-        // Stat Cards (Menunggu, Dalam Proses, Review, Selesai)
-        $statMenunggu = \App\Models\PermintaanBiasa::where('status', 'Menunggu')->count();
-        $statProses = \App\Models\PermintaanBiasa::where('status', 'Dalam Proses')->count();
-        $statReview = \App\Models\PermintaanBiasa::where('status', 'Review')->count();
-        $statSelesai = \App\Models\PermintaanBiasa::where('status', 'Selesai')->count();
+        // Chart Data: Prioritas
+        $prioritasTinggi = \App\Models\PermintaanBiasa::where('prioritas', 'Tinggi')->count();
+        $prioritasSedang = \App\Models\PermintaanBiasa::where('prioritas', 'Sedang')->count();
+        $prioritasRendah = \App\Models\PermintaanBiasa::where('prioritas', 'Rendah')->count();
 
-        return view('operational.permintaan-visual.biasa.index', compact('permintaans', 'statMenunggu', 'statProses', 'statReview', 'statSelesai'));
+        // Chart Data: History (Mingguan dalam bulan berjalan)
+        $now = \Carbon\Carbon::now();
+        $minggu1 = \App\Models\PermintaanBiasa::whereYear('created_at', $now->year)->whereMonth('created_at', $now->month)->whereDay('created_at', '<=', 7)->count();
+        $minggu2 = \App\Models\PermintaanBiasa::whereYear('created_at', $now->year)->whereMonth('created_at', $now->month)->whereDay('created_at', '>', 7)->whereDay('created_at', '<=', 14)->count();
+        $minggu3 = \App\Models\PermintaanBiasa::whereYear('created_at', $now->year)->whereMonth('created_at', $now->month)->whereDay('created_at', '>', 14)->whereDay('created_at', '<=', 21)->count();
+        $minggu4 = \App\Models\PermintaanBiasa::whereYear('created_at', $now->year)->whereMonth('created_at', $now->month)->whereDay('created_at', '>', 21)->count();
+
+        $chartData = [
+            'prioritas' => [$prioritasTinggi, $prioritasSedang, $prioritasRendah],
+            'history' => [$minggu1, $minggu2, $minggu3, $minggu4]
+        ];
+
+        return view('operational.permintaan-visual.biasa.index', compact('permintaans', 'statMenunggu', 'statProses', 'statReview', 'statSelesai', 'chartData'));
     }
 
     public function biasaCreate()

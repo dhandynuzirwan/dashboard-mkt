@@ -149,7 +149,14 @@
                 <div class="glass-card p-4 h-100">
                     <h6 class="fw-bolder mb-3 text-dark">History Permintaan (Bulan Ini)</h6>
                     <div style="position: relative; height: 220px; width: 100%;">
-                        <canvas id="historyChart"></canvas>
+                        @if(array_sum($chartData['history']) > 0)
+                            <canvas id="historyChart"></canvas>
+                        @else
+                            <div class="d-flex flex-column justify-content-center align-items-center h-100 opacity-50">
+                                <i class="fas fa-chart-line fa-3x mb-3 text-muted"></i>
+                                <span class="small text-muted fw-bold">Belum ada data history bulan ini</span>
+                            </div>
+                        @endif
                     </div>
                 </div>
             </div>
@@ -159,7 +166,14 @@
                     <h6 class="fw-bolder mb-3 text-dark">Prioritas Permintaan</h6>
                     <div class="d-flex align-items-center justify-content-center h-100">
                         <div style="position: relative; height: 180px; width: 100%;">
-                            <canvas id="prioritasChart"></canvas>
+                            @if(array_sum($chartData['prioritas']) > 0)
+                                <canvas id="prioritasChart"></canvas>
+                            @else
+                                <div class="d-flex flex-column justify-content-center align-items-center h-100 opacity-50">
+                                    <i class="fas fa-chart-pie fa-3x mb-3 text-muted"></i>
+                                    <span class="small text-muted fw-bold">Belum ada data prioritas</span>
+                                </div>
+                            @endif
                         </div>
                     </div>
                 </div>
@@ -543,7 +557,7 @@
                 data: {
                     labels: ['Tinggi', 'Sedang', 'Rendah'],
                     datasets: [{
-                        data: [45, 30, 25],
+                        data: @json($chartData['prioritas']),
                         backgroundColor: ['#e74a3b', '#f6c23e', '#36b9cc'],
                         borderWidth: 0,
                         hoverOffset: 4
@@ -576,7 +590,7 @@
                     labels: ['Minggu 1', 'Minggu 2', 'Minggu 3', 'Minggu 4'],
                     datasets: [{
                         label: 'Jumlah Permintaan',
-                        data: [12, 19, 15, 24],
+                        data: @json($chartData['history']),
                         backgroundColor: 'rgba(78, 115, 223, 0.1)',
                         borderColor: '#4e73df',
                         borderWidth: 3,
