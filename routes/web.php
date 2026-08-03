@@ -212,6 +212,7 @@ Route::middleware('auth')->group(function () {
             });
             
             Route::get('/permintaan-visual/training', [App\Http\Controllers\PermintaanVisualController::class, 'trainingIndex'])->name('operational.permintaan-visual.training');
+            Route::post('/permintaan-visual/training/{id}/upload', [App\Http\Controllers\PermintaanVisualController::class, 'trainingUpload'])->name('operational.permintaan-visual.training.upload');
         });
 
         // Aktivitas Harian

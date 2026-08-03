@@ -210,8 +210,97 @@ class PermintaanVisualController extends Controller
         return redirect()->route('operational.permintaan-visual.biasa')->with('success', 'Data permintaan berhasil dihapus secara permanen.');
     }
 
-    public function trainingIndex()
+    public function trainingIndex(Request $request)
     {
-        return view('operational.permintaan-visual.training.index');
+        $now = \Carbon\Carbon::now();
+        $query = \App\Models\PelatihanBerjalan::with(['training', 'permintaanTraining'])
+            ->whereYear('tanggal_pelatihan', $now->year)
+            ->whereMonth('tanggal_pelatihan', $now->month)
+            ->orderBy('tanggal_pelatihan', 'asc');
+
+        if ($request->has('search') && $request->search != '') {
+            $query->whereHas('training', function($q) use ($request) {
+                $q->where('nama_pelatihan', 'like', '%' . $request->search . '%');
+            });
+        }
+
+        $pelatihans = $query->get();
+
+        $statSelesai = 0;
+        $statProses = 0;
+        
+        foreach($pelatihans as $pelatihan) {
+            $permintaan = $pelatihan->permintaanTraining;
+            if ($permintaan) {
+                if ($permintaan->status == 'Selesai') {
+                    $statSelesai++;
+                } else {
+                    $statProses++;
+                }
+            } else {
+                $statProses++; // Default if not fully uploaded
+            }
+        }
+        $statTotal = $pelatihans->count();
+
+        return view('operational.permintaan-visual.training.index', compact('pelatihans', 'statTotal', 'statSelesai', 'statProses'));
+    }
+
+    public function trainingUpload(Request $request, $id)
+    {
+        $pelatihan = \App\Models\PelatihanBerjalan::findOrFail($id);
+        
+        // Find or create PermintaanTraining record
+        $permintaan = \App\Models\PermintaanTraining::firstOrCreate(
+            ['pelatihan_berjalan_id' => $pelatihan->id],
+            ['status' => 'Menunggu']
+        );
+
+        $berkasList = [
+            'background_zoom' => 'background_zoom_file',
+            'banner_kegiatan' => 'banner_kegiatan_file',
+            'photo_profil_grup_wa' => 'photo_profil_grup_wa_file',
+            'table_name' => 'table_name_file',
+            'lanyard' => 'lanyard_file',
+            'sertifikat_internal' => 'sertifikat_internal_file',
+            'rekap_foto' => 'rekap_foto_file',
+            'rekap_video' => 'rekap_video_file',
+            'lainnya' => 'lainnya_file'
+        ];
+
+        foreach ($berkasList as $inputName => $dbColumn) {
+            if ($request->hasFile($inputName)) {
+                $file = $request->file($inputName);
+                $filename = time() . '_' . $inputName . '_' . $pelatihan->id . '.' . $file->getClientOriginalExtension();
+                $path = $file->storeAs('permintaan_training/' . $pelatihan->id, $filename, 'public');
+                
+                // Hapus file lama jika ada
+                if ($permintaan->$dbColumn) {
+                    \Illuminate\Support\Facades\Storage::disk('public')->delete($permintaan->$dbColumn);
+                }
+
+                $permintaan->$dbColumn = $path;
+            }
+        }
+        
+        // Update status based on completion
+        $uploadedCount = 0;
+        foreach ($berkasList as $dbColumn) {
+            if (!empty($permintaan->$dbColumn)) {
+                $uploadedCount++;
+            }
+        }
+
+        if ($uploadedCount >= 9) {
+            $permintaan->status = 'Selesai';
+        } elseif ($uploadedCount > 0) {
+            $permintaan->status = 'Dalam Proses';
+        } else {
+            $permintaan->status = 'Menunggu';
+        }
+
+        $permintaan->save();
+
+        return redirect()->back()->with('success', 'Berkas visual berhasil diperbarui.');
     }
 }

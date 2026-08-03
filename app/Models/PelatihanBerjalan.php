@@ -74,6 +74,11 @@ class PelatihanBerjalan extends Model
         return $this->hasMany(PendaftaranPribadi::class, 'pelatihan_berjalan_id');
     }
 
+    public function permintaanTraining()
+    {
+        return $this->hasOne(PermintaanTraining::class, 'pelatihan_berjalan_id');
+    }
+
     protected static function booted()
     {
         static::created(function ($model) {
