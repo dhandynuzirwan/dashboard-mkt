@@ -171,37 +171,37 @@
             <div class="glass-card p-2 d-inline-flex">
                 <ul class="nav nav-pills-custom mb-0 d-flex flex-wrap gap-2" id="pills-tab-with-icon" role="tablist">
                 <li class="nav-item">
-                    <a class="nav-link active" id="pills-semua-tab" data-bs-toggle="pill" href="#pills-semua" role="tab">
+                    <a class="nav-link active filter-tab" href="javascript:void(0)" data-filter="Semua">
                         <i class="fas fa-layer-group"></i> Semua
                     </a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" id="pills-proposal-tab" data-bs-toggle="pill" href="#pills-proposal" role="tab">
+                    <a class="nav-link filter-tab" href="javascript:void(0)" data-filter="Cover Proposal">
                         <i class="fas fa-book"></i> Cover Proposal
                     </a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" id="pills-flyer-tab" data-bs-toggle="pill" href="#pills-flyer" role="tab">
+                    <a class="nav-link filter-tab" href="javascript:void(0)" data-filter="Flyer/Poster">
                         <i class="fas fa-file-image"></i> Flyer/Poster
                     </a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" id="pills-penjualan-tab" data-bs-toggle="pill" href="#pills-penjualan" role="tab">
+                    <a class="nav-link filter-tab" href="javascript:void(0)" data-filter="Penjualan">
                         <i class="fas fa-shopping-cart"></i> Penjualan
                     </a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" id="pills-sosmed-tab" data-bs-toggle="pill" href="#pills-sosmed" role="tab">
+                    <a class="nav-link filter-tab" href="javascript:void(0)" data-filter="Media Sosial">
                         <i class="fab fa-instagram"></i> Media Sosial
                     </a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" id="pills-presentasi-tab" data-bs-toggle="pill" href="#pills-presentasi" role="tab">
+                    <a class="nav-link filter-tab" href="javascript:void(0)" data-filter="Presentasi">
                         <i class="fas fa-desktop"></i> Presentasi
                     </a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" id="pills-lainnya-tab" data-bs-toggle="pill" href="#pills-lainnya" role="tab">
+                    <a class="nav-link filter-tab" href="javascript:void(0)" data-filter="Lainnya">
                         <i class="fas fa-ellipsis-h"></i> Lainnya
                     </a>
                 </li>
@@ -242,7 +242,7 @@
                     </thead>
                     <tbody>
                         @forelse($permintaans as $index => $item)
-                        <tr>
+                        <tr class="permintaan-row" data-kategori="{{ $item->kategori }}">
                             <td class="text-muted fw-bold">{{ $index + 1 }}</td>
                             <td>
                                 <div class="fw-bold text-dark" style="font-size: 15px;">{{ $item->judul }}</div>
@@ -563,5 +563,29 @@
             revisiArea.classList.add('d-none');
         }
     }
+
+    // Filter kategori berdasarkan tab
+    const filterTabs = document.querySelectorAll('.filter-tab');
+    const tableRows = document.querySelectorAll('.permintaan-row');
+
+    filterTabs.forEach(tab => {
+        tab.addEventListener('click', function(e) {
+            e.preventDefault();
+            // hapus active dari semua tab
+            filterTabs.forEach(t => t.classList.remove('active'));
+            this.classList.add('active');
+
+            const filterValue = this.getAttribute('data-filter');
+
+            tableRows.forEach(row => {
+                const kategori = row.getAttribute('data-kategori');
+                if (filterValue === 'Semua' || kategori === filterValue) {
+                    row.style.display = '';
+                } else {
+                    row.style.display = 'none';
+                }
+            });
+        });
+    });
 </script>
 @endsection
