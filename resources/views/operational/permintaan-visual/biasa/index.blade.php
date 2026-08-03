@@ -268,7 +268,7 @@
                                     elseif($item->prioritas == 'Sedang') { $prioBadge = 'badge-soft-warning'; $prioIcon = 'fa-equals'; }
                                     elseif($item->prioritas == 'Rendah') { $prioBadge = 'badge-soft-info'; $prioIcon = 'fa-arrow-down'; }
                                 @endphp
-                                <span class="{{ $prioBadge }}"><i class="fas {{ $prioIcon }} me-1"></i> {{ $item->prioritas }}</span>
+                                <span class="{{ $prioBadge }} px-2 py-1 rounded-pill" style="font-size: 11px;"><i class="fas {{ $prioIcon }} me-1"></i> {{ $item->prioritas }}</span>
                             </td>
                             <td>
                                 <div class="d-flex align-items-center gap-2">
@@ -281,7 +281,7 @@
                                         elseif($item->status == 'Selesai') { $statusBadge = 'badge-soft-success'; $statusIcon = 'fa-check-double'; }
                                         elseif($item->status == 'Batal') { $statusBadge = 'badge-soft-danger'; $statusIcon = 'fa-times'; }
                                     @endphp
-                                    <span class="{{ $statusBadge }}"><i class="fas {{ $statusIcon }} me-1"></i> {{ $item->status }}</span>
+                                    <span class="{{ $statusBadge }} px-2 py-1 rounded-pill fw-bold" style="font-size: 11px;"><i class="fas {{ $statusIcon }} me-1"></i> {{ $item->status }}</span>
                                 </div>
                             </td>
                             <td>
