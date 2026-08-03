@@ -341,9 +341,22 @@
                                     </div>
                                     <p class="text-muted small mb-1" style="font-size: 13px;">{{ $p->deskripsi }}</p>
                                     @if($p->lampiran)
-                                        <div class="mt-2 mb-2">
-                                            <a href="{{ Storage::url($p->lampiran) }}" target="_blank" class="btn btn-sm btn-light border shadow-sm text-primary" style="font-size: 11px; padding: 4px 10px; border-radius: 8px;">
-                                                <i class="fas fa-paperclip me-1"></i> Buka Lampiran
+                                        @php
+                                            $fileUrl = asset(Storage::url($p->lampiran));
+                                            $ext = pathinfo($p->lampiran, PATHINFO_EXTENSION);
+                                            $previewUrl = $fileUrl;
+                                            
+                                            // Gunakan Google Docs Viewer untuk file Office
+                                            if(in_array(strtolower($ext), ['doc', 'docx', 'xls', 'xlsx', 'ppt', 'pptx'])) {
+                                                $previewUrl = 'https://docs.google.com/viewer?url=' . urlencode($fileUrl) . '&embedded=true';
+                                            }
+                                        @endphp
+                                        <div class="mt-2 mb-2 d-flex gap-2">
+                                            <a href="{{ $previewUrl }}" target="_blank" class="btn btn-sm btn-light border shadow-sm text-primary" style="font-size: 11px; padding: 4px 10px; border-radius: 8px;">
+                                                <i class="fas fa-eye me-1"></i> Preview
+                                            </a>
+                                            <a href="{{ $fileUrl }}" download class="btn btn-sm btn-light border shadow-sm text-secondary" style="font-size: 11px; padding: 4px 10px; border-radius: 8px;" title="Download">
+                                                <i class="fas fa-download"></i>
                                             </a>
                                         </div>
                                     @endif
