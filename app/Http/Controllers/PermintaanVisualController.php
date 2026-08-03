@@ -123,6 +123,66 @@ class PermintaanVisualController extends Controller
         return redirect()->back()->with('success', 'File hasil desain berhasil diunggah.');
     }
 
+    public function biasaEdit($id)
+    {
+        $permintaan = \App\Models\PermintaanBiasa::findOrFail($id);
+        return view('operational.permintaan-visual.biasa.edit', compact('permintaan'));
+    }
+
+    public function biasaUpdate(Request $request, $id)
+    {
+        $permintaan = \App\Models\PermintaanBiasa::findOrFail($id);
+
+        $request->validate([
+            'judul' => 'required|string|max:255',
+            'kategori' => 'required|string',
+            'deadline' => 'required|date',
+            'tujuan' => 'required|string|max:255',
+            'deskripsi' => 'required|string',
+            'referensi' => 'nullable|file|mimes:png,jpg,jpeg,pdf,ai,psd|max:20480'
+        ]);
+
+        // Hitung ulang prioritas
+        $deadline = \Carbon\Carbon::parse($request->deadline);
+        $today = \Carbon\Carbon::now()->startOfDay();
+        $diffDays = $today->diffInDays($deadline, false);
+
+        if ($diffDays <= 2) {
+            $prioritas = 'Tinggi';
+        } elseif ($diffDays >= 3 && $diffDays <= 6) {
+            $prioritas = 'Sedang';
+        } else {
+            $prioritas = 'Rendah';
+        }
+
+        if ($request->hasFile('referensi')) {
+            $file = $request->file('referensi');
+            $filename = time() . '_' . \Illuminate\Support\Str::slug($request->judul) . '.' . $file->getClientOriginalExtension();
+            $referensi_file = $file->storeAs('permintaan_biasa/referensi', $filename, 'public');
+            $permintaan->referensi_file = $referensi_file;
+        }
+
+        $permintaan->update([
+            'judul' => $request->judul,
+            'kategori' => $request->kategori,
+            'deadline' => $request->deadline,
+            'tujuan' => $request->tujuan,
+            'deskripsi' => $request->deskripsi,
+            'prioritas' => $prioritas,
+        ]);
+
+        return redirect()->route('operational.permintaan-visual.biasa')->with('success', 'Permintaan berhasil diperbarui.');
+    }
+
+    public function biasaDestroy($id)
+    {
+        $permintaan = \App\Models\PermintaanBiasa::findOrFail($id);
+        $permintaan->status = 'Batal'; // Soft cancel atau delete. Disini kita set status Batal saja agar historinya tetap ada.
+        $permintaan->save();
+
+        return redirect()->route('operational.permintaan-visual.biasa')->with('success', 'Permintaan berhasil dibatalkan.');
+    }
+
     public function trainingIndex()
     {
         return view('operational.permintaan-visual.training.index');

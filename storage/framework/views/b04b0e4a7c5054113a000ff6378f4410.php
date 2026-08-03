@@ -169,37 +169,37 @@
             <div class="glass-card p-2 d-inline-flex">
                 <ul class="nav nav-pills-custom mb-0 d-flex flex-wrap gap-2" id="pills-tab-with-icon" role="tablist">
                 <li class="nav-item">
-                    <a class="nav-link active" id="pills-semua-tab" data-bs-toggle="pill" href="#pills-semua" role="tab">
+                    <a class="nav-link active filter-tab" href="javascript:void(0)" data-filter="Semua">
                         <i class="fas fa-layer-group"></i> Semua
                     </a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" id="pills-proposal-tab" data-bs-toggle="pill" href="#pills-proposal" role="tab">
+                    <a class="nav-link filter-tab" href="javascript:void(0)" data-filter="Cover Proposal">
                         <i class="fas fa-book"></i> Cover Proposal
                     </a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" id="pills-flyer-tab" data-bs-toggle="pill" href="#pills-flyer" role="tab">
+                    <a class="nav-link filter-tab" href="javascript:void(0)" data-filter="Flyer/Poster">
                         <i class="fas fa-file-image"></i> Flyer/Poster
                     </a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" id="pills-penjualan-tab" data-bs-toggle="pill" href="#pills-penjualan" role="tab">
+                    <a class="nav-link filter-tab" href="javascript:void(0)" data-filter="Penjualan">
                         <i class="fas fa-shopping-cart"></i> Penjualan
                     </a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" id="pills-sosmed-tab" data-bs-toggle="pill" href="#pills-sosmed" role="tab">
+                    <a class="nav-link filter-tab" href="javascript:void(0)" data-filter="Media Sosial">
                         <i class="fab fa-instagram"></i> Media Sosial
                     </a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" id="pills-presentasi-tab" data-bs-toggle="pill" href="#pills-presentasi" role="tab">
+                    <a class="nav-link filter-tab" href="javascript:void(0)" data-filter="Presentasi">
                         <i class="fas fa-desktop"></i> Presentasi
                     </a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" id="pills-lainnya-tab" data-bs-toggle="pill" href="#pills-lainnya" role="tab">
+                    <a class="nav-link filter-tab" href="javascript:void(0)" data-filter="Lainnya">
                         <i class="fas fa-ellipsis-h"></i> Lainnya
                     </a>
                 </li>
@@ -224,23 +224,23 @@
                 </form>
             </div>
             
-            <div class="table-responsive">
+            <div class="table-responsive" style="min-height: 400px; overflow-y: visible; padding-bottom: 80px;">
                 <table class="table table-custom w-100">
                     <thead>
                         <tr>
                             <th width="5%">No</th>
                             <th>Judul Permintaan</th>
-                            <th>Kategori & Tipe</th>
-                            <th>Prioritas</th>
-                            <th>Status</th>
-                            <th>Pengerjaan</th>
-                            <th>Tanggal</th>
+                            <th width="15%">Kategori & Tipe</th>
+                            <th width="10%">Prioritas</th>
+                            <th width="18%">Status</th>
+                            <th width="12%">Pengerjaan</th>
+                            <th width="12%">Tanggal</th>
                             <th class="text-center" width="10%">Aksi</th>
                         </tr>
                     </thead>
                     <tbody>
                         <?php $__empty_1 = true; $__currentLoopData = $permintaans; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $index => $item): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); $__empty_1 = false; ?>
-                        <tr>
+                        <tr class="permintaan-row" data-kategori="<?php echo e($item->kategori); ?>">
                             <td class="text-muted fw-bold"><?php echo e($index + 1); ?></td>
                             <td>
                                 <div class="fw-bold text-dark" style="font-size: 15px;"><?php echo e($item->judul); ?></div>
@@ -266,7 +266,7 @@
                                     elseif($item->prioritas == 'Sedang') { $prioBadge = 'badge-soft-warning'; $prioIcon = 'fa-equals'; }
                                     elseif($item->prioritas == 'Rendah') { $prioBadge = 'badge-soft-info'; $prioIcon = 'fa-arrow-down'; }
                                 ?>
-                                <span class="<?php echo e($prioBadge); ?>"><i class="fas <?php echo e($prioIcon); ?> me-1"></i> <?php echo e($item->prioritas); ?></span>
+                                <span class="<?php echo e($prioBadge); ?> px-2 py-1 rounded-pill" style="font-size: 11px;"><i class="fas <?php echo e($prioIcon); ?> me-1"></i> <?php echo e($item->prioritas); ?></span>
                             </td>
                             <td>
                                 <div class="d-flex align-items-center gap-2">
@@ -279,7 +279,7 @@
                                         elseif($item->status == 'Selesai') { $statusBadge = 'badge-soft-success'; $statusIcon = 'fa-check-double'; }
                                         elseif($item->status == 'Batal') { $statusBadge = 'badge-soft-danger'; $statusIcon = 'fa-times'; }
                                     ?>
-                                    <span class="<?php echo e($statusBadge); ?>"><i class="fas <?php echo e($statusIcon); ?> me-1"></i> <?php echo e($item->status); ?></span>
+                                    <span class="<?php echo e($statusBadge); ?> px-2 py-1 rounded-pill fw-bold" style="font-size: 11px;"><i class="fas <?php echo e($statusIcon); ?> me-1"></i> <?php echo e($item->status); ?></span>
                                 </div>
                             </td>
                             <td>
@@ -296,9 +296,15 @@
                                     </button>
                                     <ul class="dropdown-menu dropdown-menu-end shadow border-0 rounded-4 p-2">
                                         <li><a class="dropdown-item py-2 rounded-3" href="#" data-bs-toggle="modal" data-bs-target="#modalDetailPermintaan<?php echo e($item->id); ?>"><i class="fas fa-eye text-primary me-2"></i> Detail</a></li>
-                                        <li><a class="dropdown-item py-2 rounded-3" href="#"><i class="fas fa-edit text-info me-2"></i> Edit</a></li>
+                                        <li><a class="dropdown-item py-2 rounded-3" href="<?php echo e(route('operational.permintaan-visual.biasa.edit', $item->id)); ?>"><i class="fas fa-edit text-info me-2"></i> Edit</a></li>
                                         <li><hr class="dropdown-divider"></li>
-                                        <li><a class="dropdown-item py-2 rounded-3 text-danger" href="#"><i class="fas fa-trash me-2"></i> Batalkan</a></li>
+                                        <li>
+                                            <form action="<?php echo e(route('operational.permintaan-visual.biasa.destroy', $item->id)); ?>" method="POST" onsubmit="return confirm('Apakah Anda yakin ingin membatalkan permintaan ini?');">
+                                                <?php echo csrf_field(); ?>
+                                                <?php echo method_field('DELETE'); ?>
+                                                <button type="submit" class="dropdown-item py-2 rounded-3 text-danger border-0 bg-transparent" style="width: 100%; text-align: left;"><i class="fas fa-trash me-2"></i> Batalkan</button>
+                                            </form>
+                                        </li>
                                     </ul>
                                 </div>
                             </td>
@@ -411,37 +417,55 @@
                     <div class="col-lg-4">
                         <div class="glass-card p-4 mb-4">
                             <h6 class="fw-bolder text-dark mb-3"><i class="fas fa-tasks text-warning me-2"></i> Status Pengerjaan</h6>
-                            <div class="mb-3">
-                                <select class="form-select-modern w-100" name="status_update" id="statusSelect<?php echo e($item->id); ?>" onchange="toggleRevisiNote(<?php echo e($item->id); ?>)" <?php if(in_array(auth()->user()->role ?? 'graphic', ['karyawan'])): ?> disabled <?php endif; ?>>
-                                    <option value="Menunggu" <?php echo e($item->status == 'Menunggu' ? 'selected' : ''); ?>>Menunggu</option>
-                                    <option value="Dalam Proses" <?php echo e($item->status == 'Dalam Proses' ? 'selected' : ''); ?>>Dalam Proses</option>
-                                    <option value="Review" <?php echo e($item->status == 'Review' ? 'selected' : ''); ?>>Review (Sudah di-upload)</option>
-                                    <option value="Selesai" <?php echo e($item->status == 'Selesai' ? 'selected' : ''); ?>>Selesai</option>
-                                    <option value="Batal" <?php echo e($item->status == 'Batal' ? 'selected' : ''); ?>>Batal</option>
-                                </select>
-                            </div>
-                            
-                            <div id="revisi-note-area<?php echo e($item->id); ?>" class="d-none">
-                                <label class="form-label fw-bold text-dark small mb-2">Komentar Revisi <span class="text-danger">*</span></label>
-                                <textarea class="form-control-modern w-100 mb-3" rows="3" placeholder="Tuliskan bagian mana yang perlu direvisi..."></textarea>
-                            </div>
+                            <form action="<?php echo e(route('operational.permintaan-visual.biasa.update-status', $item->id)); ?>" method="POST">
+                                <?php echo csrf_field(); ?>
+                                <?php echo method_field('PUT'); ?>
+                                <div class="mb-3">
+                                    <select class="form-select-modern w-100" name="status_update" id="statusSelect<?php echo e($item->id); ?>" onchange="toggleRevisiNote(<?php echo e($item->id); ?>)" <?php if(in_array(auth()->user()->role ?? 'graphic', ['karyawan'])): ?> disabled <?php endif; ?>>
+                                        <option value="Menunggu" <?php echo e($item->status == 'Menunggu' ? 'selected' : ''); ?>>Menunggu</option>
+                                        <option value="Dalam Proses" <?php echo e($item->status == 'Dalam Proses' ? 'selected' : ''); ?>>Dalam Proses</option>
+                                        <option value="Review" <?php echo e($item->status == 'Review' ? 'selected' : ''); ?>>Review (Sudah di-upload)</option>
+                                        <option value="Selesai" <?php echo e($item->status == 'Selesai' ? 'selected' : ''); ?>>Selesai</option>
+                                        <option value="Batal" <?php echo e($item->status == 'Batal' ? 'selected' : ''); ?>>Batal</option>
+                                    </select>
+                                </div>
+                                
+                                <div id="revisi-note-area<?php echo e($item->id); ?>" class="d-none">
+                                    <label class="form-label fw-bold text-dark small mb-2">Komentar Revisi <span class="text-danger">*</span></label>
+                                    <textarea class="form-control-modern w-100 mb-3" name="catatan_revisi" rows="3" placeholder="Tuliskan bagian mana yang perlu direvisi..."></textarea>
+                                </div>
 
-                            <button class="btn btn-premium w-100 py-2">Update Status</button>
+                                <button type="submit" class="btn btn-premium w-100 py-2">Update Status</button>
+                            </form>
                         </div>
 
                         
                         <div class="glass-card p-4 border-primary border-2">
                             <h6 class="fw-bolder text-dark mb-3"><i class="fas fa-paint-brush text-primary me-2"></i> Hasil Desain (Tim Graphic)</h6>
                             
+                            <?php if($item->hasil_file): ?>
+                            <div class="d-flex align-items-center p-3 rounded-3 mb-3" style="background: #f4f7fe; border: 1px solid #bac8f3;">
+                                <i class="fas fa-file-image text-success fa-2x me-3"></i>
+                                <div class="flex-grow-1 overflow-hidden">
+                                    <div class="fw-bold text-dark text-truncate" style="font-size: 13px;"><?php echo e(basename($item->hasil_file)); ?></div>
+                                    <div class="text-muted small">Telah diunggah</div>
+                                </div>
+                                <a href="<?php echo e(asset('storage/' . $item->hasil_file)); ?>" download class="btn btn-sm btn-light text-primary rounded-circle shadow-sm ms-2" style="width: 32px; height: 32px; display: flex; align-items: center; justify-content: center;" title="Unduh">
+                                    <i class="fas fa-download"></i>
+                                </a>
+                            </div>
+                            <?php else: ?>
                             <div class="text-muted small fst-italic mb-3">Belum ada hasil desain yang diunggah.</div>
+                            <?php endif; ?>
 
                             <?php if(in_array(auth()->user()->role ?? 'graphic', ['graphic', 'superadmin', 'web_dev'])): ?>
                             <hr class="my-3 opacity-25">
-                            <form action="#" method="POST" enctype="multipart/form-data">
+                            <form action="<?php echo e(route('operational.permintaan-visual.biasa.upload-hasil', $item->id)); ?>" method="POST" enctype="multipart/form-data">
+                                <?php echo csrf_field(); ?>
                                 <label class="fw-bold text-dark small mb-2">Upload / Ganti File Hasil</label>
                                 <div class="input-group input-group-sm mb-2 rounded-3 overflow-hidden shadow-sm border" style="background: white;">
                                     <input type="file" class="form-control form-control-sm border-0 py-2 px-3 bg-white" name="hasil_desain" required>
-                                    <button class="btn btn-primary px-3 fw-bold border-0" type="button" style="background: #4e73df;"><i class="fas fa-upload"></i></button>
+                                    <button class="btn btn-primary px-3 fw-bold border-0" type="submit" style="background: #4e73df;"><i class="fas fa-upload"></i></button>
                                 </div>
                             </form>
                             <?php endif; ?>
@@ -545,6 +569,30 @@
             revisiArea.classList.add('d-none');
         }
     }
+
+    // Filter kategori berdasarkan tab
+    const filterTabs = document.querySelectorAll('.filter-tab');
+    const tableRows = document.querySelectorAll('.permintaan-row');
+
+    filterTabs.forEach(tab => {
+        tab.addEventListener('click', function(e) {
+            e.preventDefault();
+            // hapus active dari semua tab
+            filterTabs.forEach(t => t.classList.remove('active'));
+            this.classList.add('active');
+
+            const filterValue = this.getAttribute('data-filter');
+
+            tableRows.forEach(row => {
+                const kategori = row.getAttribute('data-kategori');
+                if (filterValue === 'Semua' || kategori === filterValue) {
+                    row.style.display = '';
+                } else {
+                    row.style.display = 'none';
+                }
+            });
+        });
+    });
 </script>
 <?php $__env->stopSection(); ?>
 
