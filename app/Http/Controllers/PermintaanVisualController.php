@@ -133,6 +133,7 @@ class PermintaanVisualController extends Controller
             $hasil_file = $file->storeAs('permintaan_biasa/hasil', $filename, 'public');
             
             $permintaan->hasil_file = $hasil_file;
+            $permintaan->pic_id = \Illuminate\Support\Facades\Auth::id();
             $permintaan->status = 'Review'; // otomatis pindah ke Review kalau upload
             $permintaan->save();
         }

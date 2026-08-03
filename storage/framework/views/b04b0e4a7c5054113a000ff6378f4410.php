@@ -247,6 +247,7 @@
                             <th width="15%">Kategori & Tipe</th>
                             <th width="10%">Prioritas</th>
                             <th width="18%">Status</th>
+                            <th width="12%">PIC Graphic</th>
                             <th width="12%">Pengerjaan</th>
                             <th width="12%">Tanggal</th>
                             <th class="text-center" width="10%">Aksi</th>
@@ -297,7 +298,11 @@
                                 </div>
                             </td>
                             <td>
-                                <span class="text-muted small"><?php echo e($item->pic->name ?? '-'); ?></span>
+                                <?php if($item->pic): ?>
+                                    <div class="fw-bold text-dark small" style="font-size: 13px;"><?php echo e($item->pic->name); ?></div>
+                                <?php else: ?>
+                                    <span class="text-muted small fst-italic">Belum ada</span>
+                                <?php endif; ?>
                             </td>
                             <td>
                                 <div class="fw-bold text-dark"><?php echo e(\Carbon\Carbon::parse($item->created_at)->format('d M Y')); ?></div>
@@ -469,7 +474,7 @@
                                 <i class="fas fa-file-image text-success fa-2x me-3"></i>
                                 <div class="flex-grow-1 overflow-hidden">
                                     <div class="fw-bold text-dark text-truncate" style="font-size: 13px;"><?php echo e(basename($item->hasil_file)); ?></div>
-                                    <div class="text-muted small">Telah diunggah</div>
+                                    <div class="text-muted small">Diunggah oleh: <strong><?php echo e($item->pic->name ?? 'Graphic'); ?></strong></div>
                                 </div>
                                 <a href="<?php echo e(asset('storage/' . $item->hasil_file)); ?>" download class="btn btn-sm btn-light text-primary rounded-circle shadow-sm ms-2" style="width: 32px; height: 32px; display: flex; align-items: center; justify-content: center;" title="Unduh">
                                     <i class="fas fa-download"></i>
