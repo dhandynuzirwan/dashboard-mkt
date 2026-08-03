@@ -63,8 +63,8 @@
     .file-icon-box { width: 50px; height: 50px; border-radius: 14px; background: rgba(78, 115, 223, 0.1); color: #4e73df; display: flex; align-items: center; justify-content: center; font-size: 24px;}
 </style>
 
-<div class="page-wrapper-modern fade-in">
-    <div class="container-fluid py-4 px-3 px-md-4">
+<div class="container">
+    <div class="page-inner">
         
         {{-- Header --}}
         <div class="alert alert-warning alert-dismissible fade show shadow-sm rounded-4 border-0 border-start border-4 border-warning mb-4" role="alert">

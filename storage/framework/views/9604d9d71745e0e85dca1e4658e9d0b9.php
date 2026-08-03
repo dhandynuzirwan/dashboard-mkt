@@ -126,8 +126,8 @@
     }
 </style>
 
-<div class="page-wrapper-modern fade-in">
-    <div class="container-fluid py-4 px-3 px-md-4">
+<div class="container">
+    <div class="page-inner">
         
         
         <?php if(session('success_login') || true): ?> 

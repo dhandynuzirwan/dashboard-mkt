@@ -79,8 +79,8 @@
     .modal-header-modern { background: linear-gradient(135deg, #4e73df 0%, #224abe 100%); color: white; padding: 25px 30px; border-bottom: none;}
 </style>
 
-<div class="page-wrapper-modern fade-in">
-    <div class="container-fluid py-4 px-3 px-md-4">
+<div class="container">
+    <div class="page-inner">
         
         
         <div class="alert alert-warning alert-dismissible fade show shadow-sm rounded-4 border-0 border-start border-4 border-warning mb-4" role="alert">

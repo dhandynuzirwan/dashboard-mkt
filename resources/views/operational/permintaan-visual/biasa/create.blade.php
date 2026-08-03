@@ -106,8 +106,8 @@
     }
 </style>
 
-<div class="page-wrapper-modern fade-in">
-    <div class="container-fluid py-5 px-3 px-md-4">
+<div class="container">
+    <div class="page-inner">
         <div class="row">
             <div class="col-12 col-xl-9 mx-auto">
                 

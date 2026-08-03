@@ -128,8 +128,8 @@
     }
 </style>
 
-<div class="page-wrapper-modern fade-in">
-    <div class="container-fluid py-4 px-3 px-md-4">
+<div class="container">
+    <div class="page-inner">
         
         {{-- Alert Sukses Login --}}
         @if(session('success_login') || true) 
