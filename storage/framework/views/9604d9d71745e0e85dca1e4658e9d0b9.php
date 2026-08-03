@@ -340,6 +340,13 @@
                                         <span class="badge bg-<?php echo e($color); ?> rounded-pill px-2" style="font-size: 9px; letter-spacing: 0.5px;"><?php echo e($badgeText); ?></span>
                                     </div>
                                     <p class="text-muted small mb-1" style="font-size: 13px;"><?php echo e($p->deskripsi); ?></p>
+                                    <?php if($p->lampiran): ?>
+                                        <div class="mt-2 mb-2">
+                                            <a href="<?php echo e(Storage::url($p->lampiran)); ?>" target="_blank" class="btn btn-sm btn-light border shadow-sm text-primary" style="font-size: 11px; padding: 4px 10px; border-radius: 8px;">
+                                                <i class="fas fa-paperclip me-1"></i> Buka Lampiran
+                                            </a>
+                                        </div>
+                                    <?php endif; ?>
                                     <small class="text-secondary fw-semibold" style="font-size: 11px;"><i class="fas fa-clock me-1"></i><?php echo e($p->tanggal_event ? \Carbon\Carbon::parse($p->tanggal_event)->format('d M Y') : $p->created_at->diffForHumans()); ?></small>
                                 </div>
                             </div>
