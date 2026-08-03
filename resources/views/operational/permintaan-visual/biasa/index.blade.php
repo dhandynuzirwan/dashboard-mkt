@@ -297,7 +297,7 @@
                                         <i class="fas fa-ellipsis-h text-muted"></i>
                                     </button>
                                     <ul class="dropdown-menu dropdown-menu-end shadow border-0 rounded-4 p-2">
-                                        <li><a class="dropdown-item py-2 rounded-3" href="#"><i class="fas fa-eye text-primary me-2"></i> Detail</a></li>
+                                        <li><a class="dropdown-item py-2 rounded-3" href="#" data-bs-toggle="modal" data-bs-target="#modalDetailPermintaan"><i class="fas fa-eye text-primary me-2"></i> Detail</a></li>
                                         <li><a class="dropdown-item py-2 rounded-3" href="#"><i class="fas fa-edit text-info me-2"></i> Edit</a></li>
                                         <li><hr class="dropdown-divider"></li>
                                         <li><a class="dropdown-item py-2 rounded-3 text-danger" href="#"><i class="fas fa-trash me-2"></i> Batalkan</a></li>
