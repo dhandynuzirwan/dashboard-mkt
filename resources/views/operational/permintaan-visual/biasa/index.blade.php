@@ -319,6 +319,13 @@
                             </td>
                         </tr>
                         @endforelse
+                        {{-- Baris khusus jika filter tab kosong --}}
+                        <tr id="empty-state-row" style="display: none;">
+                            <td colspan="8" class="text-center py-5">
+                                <img src="https://cdni.iconscout.com/illustration/premium/thumb/empty-state-2130362-1800926.png" width="150" class="mb-3 opacity-50">
+                                <h6 class="fw-bolder text-muted mb-0">Belum ada data untuk kategori ini.</h6>
+                            </td>
+                        </tr>
                     </tbody>
                 </table>
             </div>
@@ -502,6 +509,7 @@
                 this.classList.add('active');
 
                 const filterValue = this.getAttribute('data-filter');
+                let visibleCount = 0;
 
                 tableRows.forEach(row => {
                     const kategori = (row.getAttribute('data-kategori') || '').toLowerCase().trim();
@@ -510,10 +518,20 @@
                     // Gunakan includes untuk pencarian string (misal: "Media Sosial" -> "media sosial")
                     if (filterValue === 'Semua' || kategori.includes(filter)) {
                         row.style.display = '';
+                        visibleCount++;
                     } else {
                         row.style.display = 'none';
                     }
                 });
+
+                const emptyState = document.getElementById('empty-state-row');
+                if (emptyState) {
+                    if (visibleCount === 0) {
+                        emptyState.style.display = '';
+                    } else {
+                        emptyState.style.display = 'none';
+                    }
+                }
             });
         });
 
