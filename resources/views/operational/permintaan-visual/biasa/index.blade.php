@@ -292,6 +292,7 @@
                                         if($item->status == 'Menunggu') { $statusBadge = 'badge-soft-warning'; $statusIcon = 'fa-clock'; }
                                         elseif($item->status == 'Dalam Proses') { $statusBadge = 'badge-soft-info'; $statusIcon = 'fa-spinner fa-spin'; }
                                         elseif($item->status == 'Review') { $statusBadge = 'badge-soft-primary'; $statusIcon = 'fa-search'; }
+                                        elseif($item->status == 'Revisi') { $statusBadge = 'badge-soft-danger'; $statusIcon = 'fa-edit'; }
                                         elseif($item->status == 'Selesai') { $statusBadge = 'badge-soft-success'; $statusIcon = 'fa-check-double'; }
                                         elseif($item->status == 'Batal') { $statusBadge = 'badge-soft-danger'; $statusIcon = 'fa-times'; }
                                     @endphp
@@ -468,6 +469,7 @@
                                         <option value="Menunggu" {{ $item->status == 'Menunggu' ? 'selected' : '' }}>Menunggu</option>
                                         <option value="Dalam Proses" {{ $item->status == 'Dalam Proses' ? 'selected' : '' }}>Dalam Proses</option>
                                         <option value="Review" {{ $item->status == 'Review' ? 'selected' : '' }}>Review (Sudah di-upload)</option>
+                                        <option value="Revisi" {{ $item->status == 'Revisi' ? 'selected' : '' }}>Revisi</option>
                                         <option value="Selesai" {{ $item->status == 'Selesai' ? 'selected' : '' }}>Selesai</option>
                                         <option value="Batal" {{ $item->status == 'Batal' ? 'selected' : '' }}>Batal</option>
                                     </select>
@@ -673,5 +675,12 @@
             form.classList.remove('d-none');
         }
     }
+
+    @if(session('open_modal'))
+    document.addEventListener("DOMContentLoaded", function() {
+        var myModal = new bootstrap.Modal(document.getElementById('modalDetailPermintaan{{ session('open_modal') }}'));
+        myModal.show();
+    });
+    @endif
 </script>
 @endpush

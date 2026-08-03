@@ -153,9 +153,15 @@ class PermintaanVisualController extends Controller
         ]);
 
         $permintaan->catatan = $request->catatan;
+        
+        // Auto-change status to Revisi if a design file has been uploaded
+        if (!empty($permintaan->hasil_file)) {
+            $permintaan->status = 'Revisi';
+        }
+
         $permintaan->save();
 
-        return redirect()->back()->with('success', 'Catatan/Komentar berhasil diperbarui.');
+        return redirect()->back()->with('success', 'Catatan/Komentar berhasil diperbarui.')->with('open_modal', $id);
     }
 
     public function biasaEdit($id)
