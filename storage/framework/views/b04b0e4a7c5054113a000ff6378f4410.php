@@ -119,12 +119,12 @@
             </div>
             <div class="col-6 col-lg-3">
                 <div class="glass-card p-4 d-flex align-items-center h-100">
-                    <div class="stat-icon-wrapper bg-gradient-primary me-3 shadow-sm">
-                        <i class="fas fa-search"></i>
+                    <div class="stat-icon-wrapper bg-gradient-danger me-3 shadow-sm">
+                        <i class="fas fa-edit"></i>
                     </div>
                     <div>
-                        <p class="text-muted fw-bold mb-1" style="font-size: 12px; letter-spacing: 0.5px; text-transform: uppercase;">Review</p>
-                        <h3 class="fw-black text-dark mb-0" style="font-size: 28px;"><?php echo e($statReview); ?></h3>
+                        <p class="text-muted fw-bold mb-1" style="font-size: 12px; letter-spacing: 0.5px; text-transform: uppercase;">Revisi</p>
+                        <h3 class="fw-black text-dark mb-0" style="font-size: 28px;"><?php echo e($statRevisi); ?></h3>
                     </div>
                 </div>
             </div>
@@ -290,6 +290,7 @@
                                         if($item->status == 'Menunggu') { $statusBadge = 'badge-soft-warning'; $statusIcon = 'fa-clock'; }
                                         elseif($item->status == 'Dalam Proses') { $statusBadge = 'badge-soft-info'; $statusIcon = 'fa-spinner fa-spin'; }
                                         elseif($item->status == 'Review') { $statusBadge = 'badge-soft-primary'; $statusIcon = 'fa-search'; }
+                                        elseif($item->status == 'Revisi') { $statusBadge = 'badge-soft-danger'; $statusIcon = 'fa-edit'; }
                                         elseif($item->status == 'Selesai') { $statusBadge = 'badge-soft-success'; $statusIcon = 'fa-check-double'; }
                                         elseif($item->status == 'Batal') { $statusBadge = 'badge-soft-danger'; $statusIcon = 'fa-times'; }
                                     ?>
@@ -469,6 +470,7 @@
                                         <option value="Menunggu" <?php echo e($item->status == 'Menunggu' ? 'selected' : ''); ?>>Menunggu</option>
                                         <option value="Dalam Proses" <?php echo e($item->status == 'Dalam Proses' ? 'selected' : ''); ?>>Dalam Proses</option>
                                         <option value="Review" <?php echo e($item->status == 'Review' ? 'selected' : ''); ?>>Review (Sudah di-upload)</option>
+                                        <option value="Revisi" <?php echo e($item->status == 'Revisi' ? 'selected' : ''); ?>>Revisi</option>
                                         <option value="Selesai" <?php echo e($item->status == 'Selesai' ? 'selected' : ''); ?>>Selesai</option>
                                         <option value="Batal" <?php echo e($item->status == 'Batal' ? 'selected' : ''); ?>>Batal</option>
                                     </select>
@@ -675,6 +677,13 @@
             form.classList.remove('d-none');
         }
     }
+
+    <?php if(session('open_modal')): ?>
+    document.addEventListener("DOMContentLoaded", function() {
+        var myModal = new bootstrap.Modal(document.getElementById('modalDetailPermintaan<?php echo e(session('open_modal')); ?>'));
+        myModal.show();
+    });
+    <?php endif; ?>
 </script>
 <?php $__env->stopPush(); ?>
 

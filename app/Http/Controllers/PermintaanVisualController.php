@@ -20,10 +20,10 @@ class PermintaanVisualController extends Controller
 
         $permintaans = $query->get();
 
-        // Stat Cards (Menunggu, Dalam Proses, Review, Selesai)
+        // Stat Cards (Menunggu, Dalam Proses, Revisi, Selesai)
         $statMenunggu = \App\Models\PermintaanBiasa::where('status', 'Menunggu')->count();
         $statProses = \App\Models\PermintaanBiasa::where('status', 'Dalam Proses')->count();
-        $statReview = \App\Models\PermintaanBiasa::where('status', 'Review')->count();
+        $statRevisi = \App\Models\PermintaanBiasa::where('status', 'Revisi')->count();
         $statSelesai = \App\Models\PermintaanBiasa::where('status', 'Selesai')->count();
 
         // Chart Data: Prioritas
@@ -43,7 +43,7 @@ class PermintaanVisualController extends Controller
             'history' => [$minggu1, $minggu2, $minggu3, $minggu4]
         ];
 
-        return view('operational.permintaan-visual.biasa.index', compact('permintaans', 'statMenunggu', 'statProses', 'statReview', 'statSelesai', 'chartData'));
+        return view('operational.permintaan-visual.biasa.index', compact('permintaans', 'statMenunggu', 'statProses', 'statRevisi', 'statSelesai', 'chartData'));
     }
 
     public function biasaCreate()

@@ -121,12 +121,12 @@
             </div>
             <div class="col-6 col-lg-3">
                 <div class="glass-card p-4 d-flex align-items-center h-100">
-                    <div class="stat-icon-wrapper bg-gradient-primary me-3 shadow-sm">
-                        <i class="fas fa-search"></i>
+                    <div class="stat-icon-wrapper bg-gradient-danger me-3 shadow-sm">
+                        <i class="fas fa-edit"></i>
                     </div>
                     <div>
-                        <p class="text-muted fw-bold mb-1" style="font-size: 12px; letter-spacing: 0.5px; text-transform: uppercase;">Review</p>
-                        <h3 class="fw-black text-dark mb-0" style="font-size: 28px;">{{ $statReview }}</h3>
+                        <p class="text-muted fw-bold mb-1" style="font-size: 12px; letter-spacing: 0.5px; text-transform: uppercase;">Revisi</p>
+                        <h3 class="fw-black text-dark mb-0" style="font-size: 28px;">{{ $statRevisi }}</h3>
                     </div>
                 </div>
             </div>
