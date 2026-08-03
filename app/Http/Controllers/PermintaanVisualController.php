@@ -20,6 +20,12 @@ class PermintaanVisualController extends Controller
 
         $permintaans = $query->get();
 
+        // Stat Cards (Menunggu, Dalam Proses, Review, Selesai)
+        $statMenunggu = \App\Models\PermintaanBiasa::where('status', 'Menunggu')->count();
+        $statProses = \App\Models\PermintaanBiasa::where('status', 'Dalam Proses')->count();
+        $statReview = \App\Models\PermintaanBiasa::where('status', 'Review')->count();
+        $statSelesai = \App\Models\PermintaanBiasa::where('status', 'Selesai')->count();
+
         // Chart Data: Prioritas
         $prioritasTinggi = \App\Models\PermintaanBiasa::where('prioritas', 'Tinggi')->count();
         $prioritasSedang = \App\Models\PermintaanBiasa::where('prioritas', 'Sedang')->count();
