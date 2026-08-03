@@ -1,152 +1,309 @@
  
 
 <?php $__env->startSection('content'); ?>
-<div class="container">
-    <div class="page-inner">
-        
-        
-        <div class="d-flex align-items-left align-items-md-center flex-column flex-md-row pt-2 pb-4 justify-content-between">
-            <div>
-                <h3 class="fw-bold mb-1">Data Pengguna</h3>
-                <h6 class="op-7 mb-2">Manajemen Hak Akses & Akun Sistem</h6>
-            </div>
-            <div class="mt-3 mt-md-0">
-                <div class="badge badge-info px-3 py-2 mt-1" style="font-size: 12px;">
-                    <i class="fas fa-clock me-2"></i> <span id="realtime-clock">Memuat waktu...</span>
-                </div>
-            </div>
-        </div>
+<style>
+    /* Premium Modern CSS */
+    .page-wrapper-modern {
+        background-color: #f8f9fc;
+        min-height: 100vh;
+        font-family: 'Nunito', 'Segoe UI', sans-serif;
+    }
+    .glass-card {
+        background: #ffffff;
+        border: 1px solid rgba(227, 230, 240, 0.8);
+        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.03);
+        border-radius: 20px;
+        transition: all 0.3s ease;
+    }
+    .glass-card:hover {
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.06);
+    }
+    .table-custom { border-collapse: separate; border-spacing: 0 12px; margin-top: -12px;}
+    .table-custom tr { background-color: #ffffff; box-shadow: 0 2px 10px rgba(0,0,0,0.02); border-radius: 16px; transition: all 0.2s ease; border: 1px solid #f1f3f9;}
+    .table-custom tr:hover { box-shadow: 0 5px 15px rgba(0,0,0,0.06); transform: translateY(-2px); }
+    .table-custom td { padding: 18px 22px; border: none; vertical-align: middle;}
+    .table-custom td:first-child { border-top-left-radius: 16px; border-bottom-left-radius: 16px; }
+    .table-custom td:last-child { border-top-right-radius: 16px; border-bottom-right-radius: 16px; }
+    .table-custom th { border: none; padding: 10px 22px; color: #858796; font-weight: 700; text-transform: uppercase; font-size: 11px; letter-spacing: 1px; background: transparent;}
 
+    .badge-soft-success { background-color: #e3fdf4; color: #0f9b6b; border: 1px solid #bcf2df; }
+    .badge-soft-warning { background-color: #fff8e5; color: #d99a05; border: 1px solid #ffecb5; }
+    .badge-soft-danger { background-color: #fee9e8; color: #e74a3b; border: 1px solid #fcd5d2; }
+    .badge-soft-primary { background-color: #e8eff9; color: #4e73df; border: 1px solid #cdd8f6; }
+    .badge-soft-info { background-color: #e3f8f9; color: #36b9cc; border: 1px solid #c7ecef; }
+    .badge-soft-dark { background-color: #e9ecef; color: #343a40; border: 1px solid #dee2e6; }
+
+    .file-card {
+        border: 1px solid #eaecf4;
+        border-radius: 12px;
+        padding: 15px;
+        transition: all 0.2s ease;
+        background: #fdfdfe;
+    }
+    .file-card:hover {
+        border-color: #cdd8f6;
+        background: #f4f7fe;
+    }
+    .file-icon {
+        width: 45px;
+        height: 45px;
+        border-radius: 10px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 20px;
+    }
+</style>
+
+<div class="page-wrapper-modern py-4">
+    <div class="container-fluid px-4">
         
-        <div class="card card-round mb-4 border-0 shadow-sm">
-            
-            <div class="card-header bg-white border-bottom d-flex align-items-center py-3">
-                <div class="card-title fw-bold m-0">
-                    Daftar Pengguna Aktif
+        
+        <div class="d-flex align-items-left align-items-md-center flex-column flex-md-row pb-4 justify-content-between">
+            <div>
+                <h3 class="fw-bolder mb-1 text-dark" style="font-size: 24px;">Data Pengguna</h3>
+                <h6 class="text-muted mb-0">Manajemen Hak Akses & Akun Sistem</h6>
+            </div>
+            <div class="mt-3 mt-md-0 d-flex gap-2">
+                <div class="glass-card px-4 py-2 d-flex align-items-center">
+                    <i class="fas fa-clock text-primary me-2"></i> 
+                    <span id="realtime-clock" class="fw-bold text-dark small">Memuat waktu...</span>
                 </div>
-                <a href="<?php echo e(route('form-tambah-pengguna')); ?>" class="btn btn-success btn-sm ms-auto shadow-sm">
-                    <i class="fa fa-plus me-1"></i> Tambah Pengguna
+                <a href="<?php echo e(route('form-tambah-pengguna')); ?>" class="btn btn-primary d-flex align-items-center shadow-sm" style="border-radius: 12px; font-weight: 600;">
+                    <i class="fa fa-plus me-2"></i> Tambah Pengguna
                 </a>
             </div>
-
-            <div class="card-body p-0">
-                <div class="table-responsive">
-                    <table class="table table-hover table-borderless align-middle mb-0">
-                        <thead class="table-light border-bottom">
-                            <tr>
-                                <th>INFORMASI PENGGUNA</th>
-                                <th>KONTAK</th>
-                                <th class="text-center">HAK AKSES (ROLE)</th>
-                                <th class="text-center pe-4" width="160">ACTION</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <?php $__currentLoopData = $users; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $index => $user): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
-                                <tr class="border-bottom">
-
-                                    
-                                    <td class="py-3">
-                                        <div class="d-flex align-items-center">
-                                            
-                                            <div class="avatar me-3 flex-shrink-0" style="width: 50px; height: 50px;">
-                                                <?php if($user->foto_profil): ?>
-                                                    <img src="<?php echo e(asset('storage/' . $user->foto_profil)); ?>" alt="Profil" class="avatar-img rounded-circle object-fit-cover shadow-sm" style="width: 100%; height: 100%;">
-                                                <?php else: ?>
-                                                    <span class="avatar-title rounded-circle bg-primary-gradient fw-bold text-white shadow-sm fs-4">
-                                                        <?php echo e(strtoupper(substr($user->name, 0, 1))); ?>
-
-                                                    </span>
-                                                <?php endif; ?>
-                                            </div>
-                                            <div>
-                                                <span class="fw-bold text-dark" style="font-size: 15px;"><?php echo e($user->name); ?></span><br>
-                                                <?php if($user->nama_lengkap): ?>
-                                                    <small class="text-muted"><i class="fas fa-id-card me-1"></i> <?php echo e($user->nama_lengkap); ?></small>
-                                                <?php else: ?>
-                                                    <small class="text-muted fst-italic">Nama KTP belum diisi</small>
-                                                <?php endif; ?>
-                                            </div>
-                                        </div>
-                                    </td>
-
-                                    
-                                    <td>
-                                        <div style="font-size: 13px; line-height: 1.6;">
-                                            <div><i class="fas fa-envelope text-secondary me-2"></i> <?php echo e($user->email); ?></div>
-                                            <div><i class="fab fa-whatsapp text-success me-2"></i> <?php echo e($user->no_hp ?? '-'); ?></div>
-                                        </div>
-                                    </td>
-
-                                    
-                                    <td class="text-center">
-                                        <?php
-                                            $roleColor = match(strtolower($user->role)) {
-                                                'superadmin' => 'bg-danger',
-                                                'admin' => 'bg-primary',
-                                                'rnd' => 'bg-info',
-                                                'marketing' => 'bg-success',
-                                                'digitalmarketing' => 'bg-warning text-dark',
-                                                'operasional' => 'bg-secondary',
-                                                'team_leader' => 'bg-dark',
-                                                'web_dev' => 'bg-danger',
-                                                'hrd' => 'bg-warning text-dark',
-                                                default => 'bg-secondary',
-                                            };
-                                        ?>
-                                        <span class="badge <?php echo e($roleColor); ?> px-3 py-2 shadow-sm" style="font-size: 11px; letter-spacing: 0.5px;">
-                                            <i class="fas fa-user-shield me-1"></i> <?php echo e(strtoupper($user->role)); ?>
-
-                                        </span>
-                                    </td>
-
-                                    
-                                    <td class="text-center pe-4">
-                                        <div class="d-flex justify-content-center gap-1">
-                                            <a href="<?php echo e(route('user.edit', $user->id)); ?>" class="btn btn-warning btn-sm">
-                                                <i class="fa fa-edit me-1"></i> Edit
-                                            </a>
-                                            <form action="<?php echo e(route('user.destroy', $user->id)); ?>" method="POST" class="d-inline">
-                                                <?php echo csrf_field(); ?>
-                                                <?php echo method_field('DELETE'); ?>
-                                                <button type="submit" class="btn btn-danger btn-sm" onclick="return confirm('Yakin ingin menghapus data pengguna <?php echo e($user->name); ?>?')">
-                                                    <i class="fa fa-trash me-1"></i> Delete
-                                                </button>
-                                            </form>
-                                        </div>
-                                    </td>
-                                </tr>
-                            <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
-
-                            <?php if($users->isEmpty()): ?>
-                                <tr>
-                                    <td colspan="4" class="text-center py-4 text-muted">
-                                        <i class="fas fa-users-slash fs-3 mb-2 opacity-50"></i><br>
-                                        Belum ada data pengguna di dalam sistem.
-                                    </td>
-                                </tr>
-                            <?php endif; ?>
-                        </tbody>
-                    </table>
-                </div>
-                
-                <?php if($users->hasPages()): ?>
-                    <div class="d-flex justify-content-center py-4 bg-light border-top">
-                        <?php echo e($users->links('partials.pagination')); ?>
-
-                    </div>
-                <?php endif; ?>
-                
-            </div>
         </div>
 
+        
+        <div class="table-responsive">
+            <table class="table table-custom">
+                <thead>
+                    <tr>
+                        <th width="35%">INFORMASI PENGGUNA</th>
+                        <th width="20%">KONTAK</th>
+                        <th class="text-center" width="15%">HAK AKSES</th>
+                        <th class="text-center" width="15%">STATUS BERKAS</th>
+                        <th class="text-center" width="15%">ACTION</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <?php $__empty_1 = true; $__currentLoopData = $users; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $index => $user): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); $__empty_1 = false; ?>
+                        <tr>
+                            
+                            <td>
+                                <div class="d-flex align-items-center">
+                                    <div class="avatar me-3 flex-shrink-0" style="width: 55px; height: 55px;">
+                                        <?php if($user->foto_profil): ?>
+                                            <img src="<?php echo e(asset('storage/' . $user->foto_profil)); ?>" alt="Profil" class="avatar-img rounded-circle object-fit-cover shadow-sm border" style="width: 100%; height: 100%; border-color: #eaecf4 !important;">
+                                        <?php else: ?>
+                                            <div class="d-flex align-items-center justify-content-center rounded-circle shadow-sm fw-bold text-white fs-4" style="width: 100%; height: 100%; background: linear-gradient(135deg, #4e73df, #224abe);">
+                                                <?php echo e(strtoupper(substr($user->name, 0, 1))); ?>
+
+                                            </div>
+                                        <?php endif; ?>
+                                    </div>
+                                    <div>
+                                        <div class="fw-bolder text-dark" style="font-size: 16px;"><?php echo e($user->name); ?></div>
+                                        <?php if($user->nama_lengkap): ?>
+                                            <div class="text-muted small"><i class="fas fa-id-card me-1 text-primary"></i> <?php echo e($user->nama_lengkap); ?></div>
+                                        <?php else: ?>
+                                            <div class="text-muted small fst-italic">Nama panggilan belum diisi</div>
+                                        <?php endif; ?>
+                                    </div>
+                                </div>
+                            </td>
+
+                            
+                            <td>
+                                <div style="font-size: 13px; line-height: 1.8;">
+                                    <div class="text-dark"><i class="fas fa-envelope text-secondary me-2" style="width: 16px;"></i> <?php echo e($user->email); ?></div>
+                                    <div class="text-dark"><i class="fab fa-whatsapp text-success me-2" style="width: 16px;"></i> <?php echo e($user->no_hp ?? '-'); ?></div>
+                                </div>
+                            </td>
+
+                            
+                            <td class="text-center">
+                                <?php
+                                    $roleBadge = match(strtolower($user->role)) {
+                                        'superadmin' => 'badge-soft-danger',
+                                        'admin' => 'badge-soft-primary',
+                                        'rnd' => 'badge-soft-info',
+                                        'marketing' => 'badge-soft-success',
+                                        'digitalmarketing' => 'badge-soft-warning',
+                                        'operasional' => 'badge-soft-dark',
+                                        'team_leader' => 'badge-soft-dark',
+                                        'web_dev' => 'badge-soft-danger',
+                                        'hrd' => 'badge-soft-warning',
+                                        default => 'badge-soft-dark',
+                                    };
+                                ?>
+                                <span class="badge <?php echo e($roleBadge); ?> px-3 py-2 rounded-pill fw-bold" style="font-size: 11px;">
+                                    <i class="fas fa-user-shield me-1"></i> <?php echo e(strtoupper($user->role)); ?>
+
+                                </span>
+                            </td>
+
+                            
+                            <td class="text-center">
+                                <?php
+                                    $berkasList = ['ktp_file', 'ijasah_file', 'pas_foto_file', 'kk_file', 'jobdesk_file', 'sop_file'];
+                                    $berkasTerisi = 0;
+                                    foreach($berkasList as $berkas) {
+                                        if(!empty($user->$berkas)) $berkasTerisi++;
+                                    }
+                                    $isLengkap = ($berkasTerisi == count($berkasList));
+                                ?>
+
+                                <?php if($isLengkap): ?>
+                                    <div class="badge badge-soft-success px-3 py-2 rounded-pill fw-bold mb-1" style="font-size: 11px;">
+                                        <i class="fas fa-check-circle me-1"></i> Lengkap
+                                    </div>
+                                <?php else: ?>
+                                    <div class="badge badge-soft-warning px-3 py-2 rounded-pill fw-bold mb-1" style="font-size: 11px;">
+                                        <i class="fas fa-exclamation-circle me-1"></i> <?php echo e($berkasTerisi); ?>/6 Berkas
+                                    </div>
+                                <?php endif; ?>
+                                <br>
+                                <button class="btn btn-sm btn-link text-primary p-0 fw-bold" style="font-size: 12px; text-decoration: none;" data-bs-toggle="modal" data-bs-target="#modalBerkas<?php echo e($user->id); ?>">
+                                    <i class="fas fa-folder-open me-1"></i> Lihat Berkas
+                                </button>
+                            </td>
+
+                            
+                            <td class="text-center">
+                                <div class="dropdown">
+                                    <button class="btn btn-light rounded-circle shadow-sm" type="button" data-bs-toggle="dropdown" style="width: 35px; height: 35px; border: 1px solid #e3e6f0;">
+                                        <i class="fas fa-ellipsis-h text-muted"></i>
+                                    </button>
+                                    <ul class="dropdown-menu dropdown-menu-end shadow border-0 rounded-4 p-2">
+                                        <li>
+                                            <a class="dropdown-item py-2 rounded-3" href="<?php echo e(route('user.edit', $user->id)); ?>">
+                                                <i class="fas fa-edit text-info me-2"></i> Edit Data
+                                            </a>
+                                        </li>
+                                        <li><hr class="dropdown-divider"></li>
+                                        <li>
+                                            <form action="<?php echo e(route('user.destroy', $user->id)); ?>" method="POST" onsubmit="return confirm('Yakin ingin menghapus pengguna <?php echo e($user->name); ?> secara permanen?');">
+                                                <?php echo csrf_field(); ?>
+                                                <?php echo method_field('DELETE'); ?>
+                                                <button type="submit" class="dropdown-item py-2 rounded-3 text-danger border-0 bg-transparent" style="width: 100%; text-align: left;">
+                                                    <i class="fas fa-trash me-2"></i> Hapus Permanen
+                                                </button>
+                                            </form>
+                                        </li>
+                                    </ul>
+                                </div>
+                            </td>
+                        </tr>
+                    <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); if ($__empty_1): ?>
+                        <tr>
+                            <td colspan="5" class="text-center py-5">
+                                <img src="https://cdni.iconscout.com/illustration/premium/thumb/empty-state-2130362-1800926.png" width="150" class="mb-3 opacity-50">
+                                <h6 class="fw-bolder text-muted mb-0">Belum ada data pengguna di dalam sistem.</h6>
+                            </td>
+                        </tr>
+                    <?php endif; ?>
+                </tbody>
+            </table>
+        </div>
+
+        
+        <?php if($users->hasPages()): ?>
+            <div class="d-flex justify-content-center py-4">
+                <?php echo e($users->links('partials.pagination')); ?>
+
+            </div>
+        <?php endif; ?>
+        
     </div>
 </div>
+
+
+<?php $__currentLoopData = $users; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $user): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+<div class="modal fade" id="modalBerkas<?php echo e($user->id); ?>" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-lg modal-dialog-centered">
+        <div class="modal-content border-0 rounded-4 shadow-lg">
+            <div class="modal-header border-bottom px-4 py-3" style="background: linear-gradient(135deg, #4e73df 0%, #224abe 100%); color: white; border-radius: 15px 15px 0 0;">
+                <h5 class="modal-title fw-bold">
+                    <i class="fas fa-folder-open me-2"></i> Dokumen & Berkas: <?php echo e($user->name); ?>
+
+                </h5>
+                <button type="button" class="btn-close btn-close-white shadow-none" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body p-4 bg-light">
+                
+                <?php
+                    $berkasDef = [
+                        'ktp_file' => ['title' => 'KTP', 'icon' => 'fa-id-card', 'color' => 'primary'],
+                        'kk_file' => ['title' => 'Kartu Keluarga', 'icon' => 'fa-users', 'color' => 'info'],
+                        'ijasah_file' => ['title' => 'Ijazah', 'icon' => 'fa-graduation-cap', 'color' => 'success'],
+                        'pas_foto_file' => ['title' => 'Pas Foto', 'icon' => 'fa-portrait', 'color' => 'warning'],
+                        'jobdesk_file' => ['title' => 'Jobdesk', 'icon' => 'fa-tasks', 'color' => 'danger'],
+                        'sop_file' => ['title' => 'SOP', 'icon' => 'fa-file-signature', 'color' => 'secondary'],
+                    ];
+                ?>
+
+                <div class="row g-3">
+                    <?php $__currentLoopData = $berkasDef; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $field => $meta): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+                        <div class="col-md-6 col-lg-4">
+                            <div class="file-card h-100 d-flex flex-column">
+                                <div class="d-flex align-items-center mb-3">
+                                    <div class="file-icon bg-<?php echo e($meta['color']); ?> bg-opacity-10 text-<?php echo e($meta['color']); ?> me-3">
+                                        <i class="fas <?php echo e($meta['icon']); ?>"></i>
+                                    </div>
+                                    <div>
+                                        <div class="fw-bold text-dark" style="font-size: 14px;"><?php echo e($meta['title']); ?></div>
+                                        <?php if(!empty($user->$field)): ?>
+                                            <div class="badge bg-success" style="font-size: 10px;">Tersedia</div>
+                                        <?php else: ?>
+                                            <div class="badge bg-secondary" style="font-size: 10px;">Kosong</div>
+                                        <?php endif; ?>
+                                    </div>
+                                </div>
+                                
+                                <div class="mt-auto">
+                                    <?php if(!empty($user->$field)): ?>
+                                        <?php
+                                            $ext = strtolower(pathinfo($user->$field, PATHINFO_EXTENSION));
+                                            $isImage = in_array($ext, ['jpg','jpeg','png','webp','gif']);
+                                        ?>
+                                        <a href="<?php echo e(asset('storage/' . $user->$field)); ?>" target="_blank" class="btn btn-sm btn-outline-<?php echo e($meta['color']); ?> w-100 fw-bold">
+                                            <?php if($isImage): ?>
+                                                <i class="fas fa-image me-1"></i> Lihat Gambar
+                                            <?php else: ?>
+                                                <i class="fas fa-file-pdf me-1"></i> Buka Dokumen
+                                            <?php endif; ?>
+                                        </a>
+                                    <?php else: ?>
+                                        <button class="btn btn-sm btn-light w-100 text-muted" disabled>
+                                            <i class="fas fa-times me-1"></i> Belum Diunggah
+                                        </button>
+                                    <?php endif; ?>
+                                </div>
+                            </div>
+                        </div>
+                    <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
+                </div>
+                
+            </div>
+            <div class="modal-footer border-top bg-white rounded-bottom-4 py-3 px-4">
+                <button type="button" class="btn btn-secondary px-4 fw-bold" data-bs-dismiss="modal">Tutup</button>
+                <a href="<?php echo e(route('user.edit', $user->id)); ?>" class="btn btn-primary px-4 fw-bold"><i class="fas fa-upload me-1"></i> Lengkapi Berkas</a>
+            </div>
+        </div>
+    </div>
+</div>
+<?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
 
 <script>
     function updateClock() {
         const now = new Date();
         const options = { weekday: 'long', year: 'numeric', month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit', second: '2-digit', hour12: false };
-        document.getElementById('realtime-clock').innerText = now.toLocaleDateString('id-ID', options).replace(/\./g, ':') + ' WIB';
+        const clockEl = document.getElementById('realtime-clock');
+        if(clockEl) {
+            clockEl.innerText = now.toLocaleDateString('id-ID', options).replace(/\./g, ':') + ' WIB';
+        }
     }
     setInterval(updateClock, 1000);
     updateClock();

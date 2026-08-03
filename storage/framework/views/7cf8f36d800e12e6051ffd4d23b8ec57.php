@@ -157,6 +157,19 @@ unset($__errorArgs, $__bag); ?>" id="tanggal_lahir" name="tanggal_lahir" value="
 
                                 
                                 <div class="form-group col-md-6 mb-3">
+                                    <label for="tanggal_bergabung" class="fw-bold mb-1">Tanggal Bergabung</label>
+                                    <input type="date" class="form-control <?php $__errorArgs = ['tanggal_bergabung'];
+$__bag = $errors->getBag($__errorArgs[1] ?? 'default');
+if ($__bag->has($__errorArgs[0])) :
+if (isset($message)) { $__messageOriginal = $message; }
+$message = $__bag->first($__errorArgs[0]); ?> is-invalid <?php unset($message);
+if (isset($__messageOriginal)) { $message = $__messageOriginal; }
+endif;
+unset($__errorArgs, $__bag); ?>" id="tanggal_bergabung" name="tanggal_bergabung" value="<?php echo e(old('tanggal_bergabung', $user->tanggal_bergabung)); ?>">
+                                </div>
+
+                                
+                                <div class="form-group col-md-6 mb-3">
                                     <label for="tanggal_kontrak_baru" class="fw-bold mb-1">Tanggal Kontrak Terbaru</label>
                                     <input type="date" class="form-control <?php $__errorArgs = ['tanggal_kontrak_baru'];
 $__bag = $errors->getBag($__errorArgs[1] ?? 'default');
@@ -207,6 +220,66 @@ endif;
 unset($__errorArgs, $__bag); ?>" id="sop_file" name="sop_file">
                                     <?php if($user->sop_file): ?>
                                         <small class="d-block mt-1"><a href="<?php echo e(asset('storage/' . $user->sop_file)); ?>" target="_blank"><i class="fas fa-file me-1"></i> Lihat SOP saat ini</a></small>
+                                    <?php endif; ?>
+                                </div>
+
+                                <div class="form-group col-md-6 mb-3">
+                                    <label for="ktp_file" class="fw-bold mb-1">KTP (PDF/Image)</label>
+                                    <input type="file" class="form-control <?php $__errorArgs = ['ktp_file'];
+$__bag = $errors->getBag($__errorArgs[1] ?? 'default');
+if ($__bag->has($__errorArgs[0])) :
+if (isset($message)) { $__messageOriginal = $message; }
+$message = $__bag->first($__errorArgs[0]); ?> is-invalid <?php unset($message);
+if (isset($__messageOriginal)) { $message = $__messageOriginal; }
+endif;
+unset($__errorArgs, $__bag); ?>" id="ktp_file" name="ktp_file">
+                                    <?php if($user->ktp_file): ?>
+                                        <small class="d-block mt-1"><a href="<?php echo e(asset('storage/' . $user->ktp_file)); ?>" target="_blank"><i class="fas fa-file me-1"></i> Lihat KTP saat ini</a></small>
+                                    <?php endif; ?>
+                                </div>
+
+                                <div class="form-group col-md-6 mb-3">
+                                    <label for="ijasah_file" class="fw-bold mb-1">Ijazah (PDF/Image)</label>
+                                    <input type="file" class="form-control <?php $__errorArgs = ['ijasah_file'];
+$__bag = $errors->getBag($__errorArgs[1] ?? 'default');
+if ($__bag->has($__errorArgs[0])) :
+if (isset($message)) { $__messageOriginal = $message; }
+$message = $__bag->first($__errorArgs[0]); ?> is-invalid <?php unset($message);
+if (isset($__messageOriginal)) { $message = $__messageOriginal; }
+endif;
+unset($__errorArgs, $__bag); ?>" id="ijasah_file" name="ijasah_file">
+                                    <?php if($user->ijasah_file): ?>
+                                        <small class="d-block mt-1"><a href="<?php echo e(asset('storage/' . $user->ijasah_file)); ?>" target="_blank"><i class="fas fa-file me-1"></i> Lihat Ijazah saat ini</a></small>
+                                    <?php endif; ?>
+                                </div>
+
+                                <div class="form-group col-md-6 mb-3">
+                                    <label for="pas_foto_file" class="fw-bold mb-1">Pas Foto (PDF/Image)</label>
+                                    <input type="file" class="form-control <?php $__errorArgs = ['pas_foto_file'];
+$__bag = $errors->getBag($__errorArgs[1] ?? 'default');
+if ($__bag->has($__errorArgs[0])) :
+if (isset($message)) { $__messageOriginal = $message; }
+$message = $__bag->first($__errorArgs[0]); ?> is-invalid <?php unset($message);
+if (isset($__messageOriginal)) { $message = $__messageOriginal; }
+endif;
+unset($__errorArgs, $__bag); ?>" id="pas_foto_file" name="pas_foto_file">
+                                    <?php if($user->pas_foto_file): ?>
+                                        <small class="d-block mt-1"><a href="<?php echo e(asset('storage/' . $user->pas_foto_file)); ?>" target="_blank"><i class="fas fa-file me-1"></i> Lihat Pas Foto saat ini</a></small>
+                                    <?php endif; ?>
+                                </div>
+
+                                <div class="form-group col-md-6 mb-3">
+                                    <label for="kk_file" class="fw-bold mb-1">Kartu Keluarga (PDF/Image)</label>
+                                    <input type="file" class="form-control <?php $__errorArgs = ['kk_file'];
+$__bag = $errors->getBag($__errorArgs[1] ?? 'default');
+if ($__bag->has($__errorArgs[0])) :
+if (isset($message)) { $__messageOriginal = $message; }
+$message = $__bag->first($__errorArgs[0]); ?> is-invalid <?php unset($message);
+if (isset($__messageOriginal)) { $message = $__messageOriginal; }
+endif;
+unset($__errorArgs, $__bag); ?>" id="kk_file" name="kk_file">
+                                    <?php if($user->kk_file): ?>
+                                        <small class="d-block mt-1"><a href="<?php echo e(asset('storage/' . $user->kk_file)); ?>" target="_blank"><i class="fas fa-file me-1"></i> Lihat KK saat ini</a></small>
                                     <?php endif; ?>
                                 </div>
 
