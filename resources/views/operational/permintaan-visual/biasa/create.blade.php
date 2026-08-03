@@ -170,10 +170,7 @@
                                 </div>
                             </div>
 
-                            <div class="col-12">
-                                <label class="form-label-modern">Catatan Tambahan <span class="text-muted fw-normal">(Opsional)</span></label>
-                                <textarea class="form-control-modern w-100" name="catatan" rows="3" placeholder="Tambahan informasi jika ada..."></textarea>
-                            </div>
+
                         </div>
 
                         <hr class="my-5" style="border-color: #edf2f9; opacity: 1;">

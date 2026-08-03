@@ -84,16 +84,7 @@
 <div class="container">
     <div class="page-inner">
         
-        {{-- Header --}}
-        <div class="alert alert-warning alert-dismissible fade show shadow-sm rounded-4 border-0 border-start border-4 border-warning mb-4" role="alert">
-            <div class="d-flex align-items-center">
-                <i class="fas fa-info-circle fs-4 text-warning me-3"></i>
-                <div>
-                    <strong>Informasi:</strong> Halaman ini saat ini masih dalam tahap pengembangan dan belum berfungsi (Hanya Tampilan Data Dummy).
-                </div>
-            </div>
-            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-        </div>
+
         <div class="d-flex flex-column flex-md-row justify-content-between align-items-md-center mb-5 gap-3">
             <div>
                 <h2 class="fw-bolder text-dark mb-1" style="letter-spacing: -0.5px;">Permintaan Biasa</h2>
@@ -113,7 +104,7 @@
                     </div>
                     <div>
                         <p class="text-muted fw-bold mb-1" style="font-size: 12px; letter-spacing: 0.5px; text-transform: uppercase;">Menunggu</p>
-                        <h3 class="fw-black text-dark mb-0" style="font-size: 28px;">12</h3>
+                        <h3 class="fw-black text-dark mb-0" style="font-size: 28px;">{{ $statMenunggu }}</h3>
                     </div>
                 </div>
             </div>
@@ -124,7 +115,7 @@
                     </div>
                     <div>
                         <p class="text-muted fw-bold mb-1" style="font-size: 12px; letter-spacing: 0.5px; text-transform: uppercase;">Dalam Proses</p>
-                        <h3 class="fw-black text-dark mb-0" style="font-size: 28px;">5</h3>
+                        <h3 class="fw-black text-dark mb-0" style="font-size: 28px;">{{ $statProses }}</h3>
                     </div>
                 </div>
             </div>
@@ -135,7 +126,7 @@
                     </div>
                     <div>
                         <p class="text-muted fw-bold mb-1" style="font-size: 12px; letter-spacing: 0.5px; text-transform: uppercase;">Review</p>
-                        <h3 class="fw-black text-dark mb-0" style="font-size: 28px;">3</h3>
+                        <h3 class="fw-black text-dark mb-0" style="font-size: 28px;">{{ $statReview }}</h3>
                     </div>
                 </div>
             </div>
@@ -146,7 +137,7 @@
                     </div>
                     <div>
                         <p class="text-muted fw-bold mb-1" style="font-size: 12px; letter-spacing: 0.5px; text-transform: uppercase;">Selesai</p>
-                        <h3 class="fw-black text-dark mb-0" style="font-size: 28px;">24</h3>
+                        <h3 class="fw-black text-dark mb-0" style="font-size: 28px;">{{ $statSelesai }}</h3>
                     </div>
                 </div>
             </div>
@@ -250,29 +241,55 @@
                         </tr>
                     </thead>
                     <tbody>
-                        {{-- Data Mockup --}}
+                        @forelse($permintaans as $index => $item)
                         <tr>
-                            <td class="text-muted fw-bold">1</td>
+                            <td class="text-muted fw-bold">{{ $index + 1 }}</td>
                             <td>
-                                <div class="fw-bold text-dark" style="font-size: 15px;">Desain Poster Promo Kemerdekaan</div>
-                                <div class="text-muted small mt-1">Dibuat oleh: <span class="text-primary fw-bold">Budi Santoso</span></div>
+                                <div class="fw-bold text-dark" style="font-size: 15px;">{{ $item->judul }}</div>
+                                <div class="text-muted small mt-1">Dibuat oleh: <span class="text-primary fw-bold">{{ $item->user->name ?? 'Unknown' }}</span></div>
                             </td>
                             <td>
-                                <span class="badge-soft-info d-inline-block mb-1">Flyer/Poster</span><br>
-                                <span class="badge bg-secondary text-white rounded-pill px-2" style="font-size:10px;">Baru</span>
+                                @php
+                                    $kategoriBadge = 'badge-soft-primary';
+                                    if(str_contains(strtolower($item->kategori), 'flyer')) $kategoriBadge = 'badge-soft-info';
+                                    elseif(str_contains(strtolower($item->kategori), 'media sosial')) $kategoriBadge = 'badge-soft-success';
+                                    elseif(str_contains(strtolower($item->kategori), 'penjualan')) $kategoriBadge = 'badge-soft-warning';
+                                @endphp
+                                <span class="{{ $kategoriBadge }} d-inline-block mb-1">{{ $item->kategori }}</span><br>
+                                @if($item->created_at->diffInDays(now()) < 3)
+                                    <span class="badge bg-secondary text-white rounded-pill px-2" style="font-size:10px;">Baru</span>
+                                @endif
                             </td>
-                            <td><span class="badge-soft-danger"><i class="fas fa-arrow-up me-1"></i> Tinggi</span></td>
+                            <td>
+                                @php
+                                    $prioBadge = 'badge-soft-primary';
+                                    $prioIcon = 'fa-minus';
+                                    if($item->prioritas == 'Tinggi') { $prioBadge = 'badge-soft-danger'; $prioIcon = 'fa-arrow-up'; }
+                                    elseif($item->prioritas == 'Sedang') { $prioBadge = 'badge-soft-warning'; $prioIcon = 'fa-equals'; }
+                                    elseif($item->prioritas == 'Rendah') { $prioBadge = 'badge-soft-info'; $prioIcon = 'fa-arrow-down'; }
+                                @endphp
+                                <span class="{{ $prioBadge }}"><i class="fas {{ $prioIcon }} me-1"></i> {{ $item->prioritas }}</span>
+                            </td>
                             <td>
                                 <div class="d-flex align-items-center gap-2">
-                                    <span class="badge-soft-warning"><i class="fas fa-clock me-1"></i> Menunggu</span>
+                                    @php
+                                        $statusBadge = 'badge-soft-secondary';
+                                        $statusIcon = 'fa-clock';
+                                        if($item->status == 'Menunggu') { $statusBadge = 'badge-soft-warning'; $statusIcon = 'fa-clock'; }
+                                        elseif($item->status == 'Dalam Proses') { $statusBadge = 'badge-soft-info'; $statusIcon = 'fa-spinner fa-spin'; }
+                                        elseif($item->status == 'Review') { $statusBadge = 'badge-soft-primary'; $statusIcon = 'fa-search'; }
+                                        elseif($item->status == 'Selesai') { $statusBadge = 'badge-soft-success'; $statusIcon = 'fa-check-double'; }
+                                        elseif($item->status == 'Batal') { $statusBadge = 'badge-soft-danger'; $statusIcon = 'fa-times'; }
+                                    @endphp
+                                    <span class="{{ $statusBadge }}"><i class="fas {{ $statusIcon }} me-1"></i> {{ $item->status }}</span>
                                 </div>
                             </td>
                             <td>
-                                <span class="text-muted small">-</span>
+                                <span class="text-muted small">{{ $item->pic->name ?? '-' }}</span>
                             </td>
                             <td>
-                                <div class="fw-bold text-dark">28 Jul 2026</div>
-                                <div class="text-muted small">Target: 30 Jul 2026</div>
+                                <div class="fw-bold text-dark">{{ \Carbon\Carbon::parse($item->created_at)->format('d M Y') }}</div>
+                                <div class="text-muted small">Target: {{ \Carbon\Carbon::parse($item->deadline)->format('d M Y') }}</div>
                             </td>
                             <td class="text-center">
                                 <div class="dropdown">
@@ -280,7 +297,7 @@
                                         <i class="fas fa-ellipsis-h text-muted"></i>
                                     </button>
                                     <ul class="dropdown-menu dropdown-menu-end shadow border-0 rounded-4 p-2">
-                                        <li><a class="dropdown-item py-2 rounded-3" href="#" data-bs-toggle="modal" data-bs-target="#modalDetailPermintaan"><i class="fas fa-eye text-primary me-2"></i> Detail</a></li>
+                                        <li><a class="dropdown-item py-2 rounded-3" href="#"><i class="fas fa-eye text-primary me-2"></i> Detail</a></li>
                                         <li><a class="dropdown-item py-2 rounded-3" href="#"><i class="fas fa-edit text-info me-2"></i> Edit</a></li>
                                         <li><hr class="dropdown-divider"></li>
                                         <li><a class="dropdown-item py-2 rounded-3 text-danger" href="#"><i class="fas fa-trash me-2"></i> Batalkan</a></li>
@@ -288,42 +305,14 @@
                                 </div>
                             </td>
                         </tr>
+                        @empty
                         <tr>
-                            <td class="text-muted fw-bold">2</td>
-                            <td>
-                                <div class="fw-bold text-dark" style="font-size: 15px;">Cover Proposal Klien BUMN</div>
-                                <div class="text-muted small mt-1">Dibuat oleh: <span class="text-primary fw-bold">Siti Aminah</span></div>
-                            </td>
-                            <td>
-                                <span class="badge-soft-primary d-inline-block mb-1">Cover Proposal</span><br>
-                                <span class="badge bg-secondary text-white rounded-pill px-2" style="font-size:10px;">Revisi</span>
-                            </td>
-                            <td><span class="badge-soft-warning"><i class="fas fa-minus me-1"></i> Sedang</span></td>
-                            <td>
-                                <div class="d-flex align-items-center gap-2">
-                                    <span class="badge-soft-info"><i class="fas fa-spinner fa-spin me-1"></i> Diproses</span>
-                                </div>
-                            </td>
-                            <td>
-                                <div class="fw-bold text-dark" style="font-size: 13px;"><i class="fas fa-stopwatch text-primary me-1"></i> 2 Hari 4 Jam</div>
-                                <div class="text-muted small mt-1">Oleh: <span class="text-primary fw-bold">Alex (Graphic)</span></div>
-                            </td>
-                            <td>
-                                <div class="fw-bold text-dark">27 Jul 2026</div>
-                                <div class="text-muted small">Target: 01 Ags 2026</div>
-                            </td>
-                            <td class="text-center">
-                                <div class="dropdown">
-                                    <button class="btn btn-light rounded-circle shadow-sm" type="button" data-bs-toggle="dropdown" style="width: 35px; height: 35px; border: 1px solid #e3e6f0;">
-                                        <i class="fas fa-ellipsis-h text-muted"></i>
-                                    </button>
-                                    <ul class="dropdown-menu dropdown-menu-end shadow border-0 rounded-4 p-2">
-                                        <li><a class="dropdown-item py-2 rounded-3" href="#" data-bs-toggle="modal" data-bs-target="#modalDetailPermintaan"><i class="fas fa-eye text-primary me-2"></i> Detail</a></li>
-                                        <li><a class="dropdown-item py-2 rounded-3" href="#"><i class="fas fa-edit text-info me-2"></i> Edit</a></li>
-                                    </ul>
-                                </div>
+                            <td colspan="8" class="text-center py-5">
+                                <img src="https://cdni.iconscout.com/illustration/premium/thumb/empty-state-2130362-1800926.png" width="150" class="mb-3 opacity-50">
+                                <h6 class="fw-bolder text-muted mb-0">Belum ada permintaan visual</h6>
                             </td>
                         </tr>
+                        @endforelse
                     </tbody>
                 </table>
             </div>
