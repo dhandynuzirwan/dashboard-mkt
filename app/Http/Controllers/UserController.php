@@ -14,7 +14,18 @@ class UserController extends Controller
      */
     public function index()
     {
-        $users = User::orderBy('name', 'asc')->paginate(10);
+        $allUsers = User::all()->sortBy('name', SORT_NATURAL | SORT_FLAG_CASE);
+        $perPage = 10;
+        $page = request()->get('page', 1);
+        
+        $users = new \Illuminate\Pagination\LengthAwarePaginator(
+            $allUsers->forPage($page, $perPage),
+            $allUsers->count(),
+            $perPage,
+            $page,
+            ['path' => request()->url(), 'query' => request()->query()]
+        );
+
         return view('user', compact('users'));
     }
 
