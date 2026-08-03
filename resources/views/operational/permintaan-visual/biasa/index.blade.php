@@ -297,7 +297,7 @@
                                         <i class="fas fa-ellipsis-h text-muted"></i>
                                     </button>
                                     <ul class="dropdown-menu dropdown-menu-end shadow border-0 rounded-4 p-2">
-                                        <li><a class="dropdown-item py-2 rounded-3" href="#" data-bs-toggle="modal" data-bs-target="#modalDetailPermintaan"><i class="fas fa-eye text-primary me-2"></i> Detail</a></li>
+                                        <li><a class="dropdown-item py-2 rounded-3" href="#" data-bs-toggle="modal" data-bs-target="#modalDetailPermintaan{{ $item->id }}"><i class="fas fa-eye text-primary me-2"></i> Detail</a></li>
                                         <li><a class="dropdown-item py-2 rounded-3" href="#"><i class="fas fa-edit text-info me-2"></i> Edit</a></li>
                                         <li><hr class="dropdown-divider"></li>
                                         <li><a class="dropdown-item py-2 rounded-3 text-danger" href="#"><i class="fas fa-trash me-2"></i> Batalkan</a></li>
@@ -321,17 +321,18 @@
 </div>
 
 {{-- MODAL DETAIL PERMINTAAN (PREMIUM UI) --}}
-<div class="modal fade" id="modalDetailPermintaan" tabindex="-1" aria-hidden="true">
+@foreach($permintaans as $item)
+<div class="modal fade" id="modalDetailPermintaan{{ $item->id }}" tabindex="-1" aria-hidden="true">
     <div class="modal-dialog modal-xl modal-dialog-centered modal-dialog-scrollable">
         <div class="modal-content modal-content-modern">
             <div class="modal-header modal-header-modern d-flex flex-column flex-md-row justify-content-between align-items-md-center gap-3">
                 <div>
                     <h4 class="fw-bolder mb-1"><i class="fas fa-file-invoice me-2 text-white-50"></i> Detail Permintaan Visual</h4>
-                    <p class="mb-0 text-white-50 fw-bold" style="font-size: 13px;">Desain Poster Promo Kemerdekaan &bull; Dibuat oleh Budi Santoso</p>
+                    <p class="mb-0 text-white-50 fw-bold" style="font-size: 13px;">{{ $item->judul }} &bull; Dibuat oleh {{ $item->user->name ?? 'Unknown' }}</p>
                 </div>
                 <div class="d-flex align-items-center gap-3">
-                    <div class="bg-white text-danger px-3 py-1 rounded-pill fw-bold text-uppercase" style="font-size: 11px; letter-spacing: 1px;">
-                        <i class="fas fa-arrow-up me-1"></i> Prioritas Tinggi
+                    <div class="bg-white {{ $item->prioritas == 'Tinggi' ? 'text-danger' : ($item->prioritas == 'Sedang' ? 'text-warning' : 'text-info') }} px-3 py-1 rounded-pill fw-bold text-uppercase" style="font-size: 11px; letter-spacing: 1px;">
+                        <i class="fas fa-arrow-{{ $item->prioritas == 'Tinggi' ? 'up' : ($item->prioritas == 'Sedang' ? 'right' : 'down') }} me-1"></i> Prioritas {{ $item->prioritas }}
                     </div>
                     <button type="button" class="btn-close btn-close-white ms-2" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
@@ -349,49 +350,57 @@
                             
                             <div class="row mb-3">
                                 <div class="col-sm-4 text-muted fw-bold small">Judul Permintaan</div>
-                                <div class="col-sm-8 fw-bold text-dark">Desain Poster Promo Kemerdekaan</div>
+                                <div class="col-sm-8 fw-bold text-dark">{{ $item->judul }}</div>
                             </div>
                             <div class="row mb-3">
                                 <div class="col-sm-4 text-muted fw-bold small">Kategori Desain</div>
-                                <div class="col-sm-8"><span class="badge-soft-info px-3 py-1">Flyer/Poster</span></div>
+                                <div class="col-sm-8"><span class="badge-soft-info px-3 py-1">{{ $item->kategori }}</span></div>
                             </div>
                             <div class="row mb-3">
                                 <div class="col-sm-4 text-muted fw-bold small">Target Selesai</div>
-                                <div class="col-sm-8 fw-bold text-dark"><i class="fas fa-calendar-alt text-danger me-1"></i> 30 Jul 2026</div>
+                                <div class="col-sm-8 fw-bold text-dark"><i class="fas fa-calendar-alt text-danger me-1"></i> {{ \Carbon\Carbon::parse($item->deadline)->format('d M Y') }}</div>
                             </div>
                             <div class="row mb-3">
                                 <div class="col-sm-4 text-muted fw-bold small">Tujuan/Kegunaan</div>
-                                <div class="col-sm-8 text-dark">Untuk disebar di grup WhatsApp dan Instagram feed official perusahaan.</div>
+                                <div class="col-sm-8 text-dark">{{ $item->tujuan }}</div>
                             </div>
                             
                             <hr class="my-4" style="border-color: #edf2f9; opacity: 1;">
                             
                             <h6 class="fw-bolder text-dark mb-3">Deskripsi Kebutuhan Secara Detail</h6>
                             <div class="p-3 bg-light rounded-3 border mb-4 text-dark" style="font-size: 14px; line-height: 1.6;">
-                                Tolong buatkan desain poster kemerdekaan RI ke-81. Dominan warna merah putih, tapi kasih sentuhan modern minimalist (tidak norak). Jangan lupa masukkan logo perusahaan di pojok kanan atas, dan teks promo "MERDEKA SALE 45%" di tengah.
+                                {!! nl2br(e($item->deskripsi)) !!}
                             </div>
 
                             <div class="row">
                                 <div class="col-md-6 mb-3 mb-md-0">
                                     <h6 class="fw-bolder text-dark mb-2">Referensi Desain</h6>
+                                    @if($item->referensi_file)
                                     <div class="d-flex align-items-center p-3 rounded-3" style="background: #f4f7fe; border: 1px dashed #bac8f3;">
                                         <i class="fas fa-file-image text-primary fa-2x me-3"></i>
                                         <div class="flex-grow-1 overflow-hidden">
-                                            <div class="fw-bold text-dark text-truncate" style="font-size: 13px;">referensi_poster_1.jpg</div>
-                                            <div class="text-muted small">1.2 MB</div>
+                                            <div class="fw-bold text-dark text-truncate" style="font-size: 13px;">{{ basename($item->referensi_file) }}</div>
+                                            <div class="text-muted small">File Uploaded</div>
                                         </div>
-                                        <a href="#" class="btn btn-light rounded-circle text-primary shadow-sm ms-2 d-flex align-items-center justify-content-center" style="width: 32px; height: 32px;" title="Lihat">
+                                        <a href="{{ asset('storage/' . $item->referensi_file) }}" target="_blank" class="btn btn-light rounded-circle text-primary shadow-sm ms-2 d-flex align-items-center justify-content-center" style="width: 32px; height: 32px;" title="Lihat">
                                             <i class="fas fa-eye"></i>
                                         </a>
                                     </div>
+                                    @else
+                                    <div class="text-muted small fst-italic">Tidak ada referensi dilampirkan.</div>
+                                    @endif
                                 </div>
                                 <div class="col-md-6">
                                     <div class="d-flex justify-content-between align-items-center mb-2">
-                                        <h6 class="fw-bolder text-dark mb-0">Komentar</h6>
+                                        <h6 class="fw-bolder text-dark mb-0">Komentar / Catatan</h6>
                                         <button class="btn btn-sm btn-link text-primary p-0 text-decoration-none fw-bold" style="font-size: 13px;"><i class="fas fa-edit me-1"></i> Edit/Tambah</button>
                                     </div>
                                     <div class="p-3 bg-light rounded-3 border h-100 text-dark small">
-                                        <em>"Tolong sediakan juga versi resolusi tinggi untuk dicetak ukuran A3."</em>
+                                        @if($item->catatan)
+                                            <em>"{!! nl2br(e($item->catatan)) !!}"</em>
+                                        @else
+                                            <span class="text-muted fst-italic">Belum ada komentar atau catatan revisi.</span>
+                                        @endif
                                     </div>
                                 </div>
                             </div>
@@ -403,15 +412,16 @@
                         <div class="glass-card p-4 mb-4">
                             <h6 class="fw-bolder text-dark mb-3"><i class="fas fa-tasks text-warning me-2"></i> Status Pengerjaan</h6>
                             <div class="mb-3">
-                                <select class="form-select-modern w-100" name="status_update" id="statusSelect" onchange="toggleRevisiNote()" @if(in_array(auth()->user()->role ?? 'graphic', ['karyawan'])) disabled @endif>
-                                    <option value="Menunggu">Menunggu</option>
-                                    <option value="Review" selected>Sudah di-upload graphic (Review)</option>
-                                    <option value="Selesai">Selesai</option>
-                                    <option value="Revisi">Revisi</option>
+                                <select class="form-select-modern w-100" name="status_update" id="statusSelect{{ $item->id }}" onchange="toggleRevisiNote({{ $item->id }})" @if(in_array(auth()->user()->role ?? 'graphic', ['karyawan'])) disabled @endif>
+                                    <option value="Menunggu" {{ $item->status == 'Menunggu' ? 'selected' : '' }}>Menunggu</option>
+                                    <option value="Dalam Proses" {{ $item->status == 'Dalam Proses' ? 'selected' : '' }}>Dalam Proses</option>
+                                    <option value="Review" {{ $item->status == 'Review' ? 'selected' : '' }}>Review (Sudah di-upload)</option>
+                                    <option value="Selesai" {{ $item->status == 'Selesai' ? 'selected' : '' }}>Selesai</option>
+                                    <option value="Batal" {{ $item->status == 'Batal' ? 'selected' : '' }}>Batal</option>
                                 </select>
                             </div>
                             
-                            <div id="revisi-note-area" class="d-none">
+                            <div id="revisi-note-area{{ $item->id }}" class="d-none">
                                 <label class="form-label fw-bold text-dark small mb-2">Komentar Revisi <span class="text-danger">*</span></label>
                                 <textarea class="form-control-modern w-100 mb-3" rows="3" placeholder="Tuliskan bagian mana yang perlu direvisi..."></textarea>
                             </div>
@@ -423,18 +433,7 @@
                         <div class="glass-card p-4 border-primary border-2">
                             <h6 class="fw-bolder text-dark mb-3"><i class="fas fa-paint-brush text-primary me-2"></i> Hasil Desain (Tim Graphic)</h6>
                             
-                            {{-- Jika sudah ada file --}}
-                            <div class="d-flex align-items-center p-3 rounded-3 mb-3" style="background: #f4f7fe; border: 1px solid #bac8f3;">
-                                <i class="fas fa-file-image text-success fa-2x me-3"></i>
-                                <div class="flex-grow-1 overflow-hidden">
-                                    <div class="fw-bold text-dark text-truncate" style="font-size: 13px;">poster_kemerdekaan_final.jpg</div>
-                                    <div class="text-muted small">Waktu: 2 Hari 4 Jam</div>
-                                </div>
-                                <a href="#" download class="btn btn-sm btn-light text-primary rounded-circle shadow-sm ms-2" style="width: 32px; height: 32px; display: flex; align-items: center; justify-content: center;" title="Unduh">
-                                    <i class="fas fa-download"></i>
-                                </a>
-                                <button type="button" class="btn btn-sm btn-link text-danger p-0 ms-2" title="Hapus File"><i class="fas fa-trash-alt"></i></button>
-                            </div>
+                            <div class="text-muted small fst-italic mb-3">Belum ada hasil desain yang diunggah.</div>
 
                             @if(in_array(auth()->user()->role ?? 'graphic', ['graphic', 'superadmin', 'web_dev']))
                             <hr class="my-3 opacity-25">
@@ -457,6 +456,7 @@
         </div>
     </div>
 </div>
+@endforeach
 
 @endsection
 
@@ -536,9 +536,9 @@
     });
 
     // Toggle text area revisi
-    function toggleRevisiNote() {
-        var status = document.getElementById('statusSelect').value;
-        var revisiArea = document.getElementById('revisi-note-area');
+    function toggleRevisiNote(id) {
+        var status = document.getElementById('statusSelect' + id).value;
+        var revisiArea = document.getElementById('revisi-note-area' + id);
         if (status === 'Revisi') {
             revisiArea.classList.remove('d-none');
         } else {
