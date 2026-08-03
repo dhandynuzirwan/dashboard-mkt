@@ -20,7 +20,7 @@
     }
     .table-custom { border-collapse: separate; border-spacing: 0 12px; margin-top: -12px;}
     .table-custom tr { background-color: #ffffff; box-shadow: 0 2px 10px rgba(0,0,0,0.02); border-radius: 16px; transition: all 0.2s ease; border: 1px solid #f1f3f9;}
-    .table-custom tr:hover { box-shadow: 0 5px 15px rgba(0,0,0,0.06); transform: translateY(-2px); }
+    .table-custom tr:hover { box-shadow: 0 5px 15px rgba(0,0,0,0.06); }
     .table-custom td { padding: 18px 22px; border: none; vertical-align: middle;}
     .table-custom td:first-child { border-top-left-radius: 16px; border-bottom-left-radius: 16px; }
     .table-custom td:last-child { border-top-right-radius: 16px; border-bottom-right-radius: 16px; }
