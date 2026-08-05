@@ -62,6 +62,7 @@ class UserController extends Controller
             'ijasah_file' => 'nullable|file|mimes:pdf,png,jpg,jpeg|max:5120',
             'pas_foto_file' => 'nullable|file|mimes:pdf,png,jpg,jpeg|max:5120',
             'kk_file' => 'nullable|file|mimes:pdf,png,jpg,jpeg|max:5120',
+            'kontrak_kerja' => 'nullable|file|mimes:pdf,png,jpg,jpeg|max:5120',
         ]);
 
         $data = [
@@ -97,6 +98,9 @@ class UserController extends Controller
         }
         if ($request->hasFile('kk_file')) {
             $data['kk_file'] = $request->file('kk_file')->store('users/kk', 'public');
+        }
+        if ($request->hasFile('kontrak_kerja')) {
+            $data['kontrak_kerja'] = $request->file('kontrak_kerja')->store('users/kontrak_kerja', 'public');
         }
 
         User::create($data);
@@ -143,6 +147,7 @@ class UserController extends Controller
             'ijasah_file' => 'nullable|file|mimes:pdf,png,jpg,jpeg|max:5120',
             'pas_foto_file' => 'nullable|file|mimes:pdf,png,jpg,jpeg|max:5120',
             'kk_file' => 'nullable|file|mimes:pdf,png,jpg,jpeg|max:5120',
+            'kontrak_kerja' => 'nullable|file|mimes:pdf,png,jpg,jpeg|max:5120',
         ]);
 
         // Siapkan array data untuk diupdate (KOSONGKAN FOTO PROFIL DULU DI SINI)
@@ -220,6 +225,13 @@ class UserController extends Controller
                 Storage::disk('public')->delete($user->kk_file);
             }
             $data['kk_file'] = $request->file('kk_file')->store('users/kk', 'public');
+        }
+
+        if ($request->hasFile('kontrak_kerja')) {
+            if ($user->kontrak_kerja && Storage::disk('public')->exists($user->kontrak_kerja)) {
+                Storage::disk('public')->delete($user->kontrak_kerja);
+            }
+            $data['kontrak_kerja'] = $request->file('kontrak_kerja')->store('users/kontrak_kerja', 'public');
         }
 
         // Jalankan perintah update

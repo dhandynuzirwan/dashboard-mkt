@@ -148,6 +148,11 @@
                                     <input type="file" class="form-control" id="kk_file" name="kk_file">
                                 </div>
 
+                                <div class="form-group col-md-6 mb-3">
+                                    <label for="kontrak_kerja" class="fw-bold mb-1">Kontrak Kerja (PDF/Image)</label>
+                                    <input type="file" class="form-control" id="kontrak_kerja" name="kontrak_kerja">
+                                </div>
+
                                 {{-- ROLE --}}
                                 <div class="form-group col-md-6 mb-3">
                                     <label for="role" class="fw-bold mb-1">Role / Hak Akses <span class="text-danger">*</span></label>

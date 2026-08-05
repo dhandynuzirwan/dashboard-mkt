@@ -170,6 +170,14 @@
                                 </div>
 
                                 <div class="form-group col-md-6 mb-3">
+                                    <label for="kontrak_kerja" class="fw-bold mb-1">Kontrak Kerja (PDF/Image)</label>
+                                    <input type="file" class="form-control @error('kontrak_kerja') is-invalid @enderror" id="kontrak_kerja" name="kontrak_kerja">
+                                    @if($user->kontrak_kerja)
+                                        <small class="d-block mt-1"><a href="{{ asset('storage/' . $user->kontrak_kerja) }}" target="_blank"><i class="fas fa-file me-1"></i> Lihat Kontrak Kerja saat ini</a></small>
+                                    @endif
+                                </div>
+
+                                <div class="form-group col-md-6 mb-3">
                                     <label for="role" class="fw-bold mb-1">Role / Hak Akses <span class="text-danger">*</span></label>
                                     <select class="form-select form-control @error('role') is-invalid @enderror" id="role" name="role" required>
                                         <option value="superadmin" {{ old('role', $user->role) == 'superadmin' ? 'selected' : '' }}>Super Admin</option>

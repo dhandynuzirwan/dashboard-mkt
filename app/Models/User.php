@@ -23,6 +23,7 @@ class User extends Authenticatable
         'password',
         'role',
         'foto_profil',
+        'kontrak_kerja',
         'nama_lengkap', // 🔥 TAMBAHAN BARU
         'nama_lengkap_ktp',
         'jobdesk_file',
