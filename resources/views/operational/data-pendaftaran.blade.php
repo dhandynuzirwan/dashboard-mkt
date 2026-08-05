@@ -28,7 +28,7 @@
                         <span class="fw-bold text-dark">Berhasil!</span> <span class="text-dark opacity-75">{{ session('success') }}</span>
                     </div>
                 </div>
-                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="alert" aria-label="Close"></button>
             </div>
         @endif
 
@@ -42,7 +42,7 @@
                         <span class="fw-bold text-danger">Gagal!</span> <span class="text-dark opacity-75">{{ session('error') }}</span>
                     </div>
                 </div>
-                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="alert" aria-label="Close"></button>
             </div>
         @endif
 
@@ -61,16 +61,16 @@
                         </ul>
                     </div>
                 </div>
-                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="alert" aria-label="Close"></button>
             </div>
         @endif
 
         {{-- ================= STATISTIC CARDS ================= --}}
         <div class="row mb-3 fade-in">
             <div class="col-sm-6 col-md-3 mb-3">
-                <div class="card card-modern h-100 border-primary-subtle border-2">
+                <div class="card glass-card h-100 border-0">
                     <div class="card-body p-3 p-xl-4 d-flex align-items-center">
-                        <div class="icon-modern bg-primary-subtle text-primary me-3">
+                        <div class="stat-icon-wrapper bg-gradient-primary shadow-sm me-3">
                             <i class="fas fa-users"></i>
                         </div>
                         <div>
@@ -83,9 +83,9 @@
             </div>
 
             <div class="col-sm-6 col-md-3 mb-3">
-                <div class="card card-modern h-100 border-warning-subtle border-2">
+                <div class="card glass-card h-100 border-0">
                     <div class="card-body p-3 p-xl-4 d-flex align-items-center">
-                        <div class="icon-modern bg-warning-subtle text-warning-dark me-3">
+                        <div class="stat-icon-wrapper bg-gradient-warning shadow-sm me-3">
                             <i class="fas fa-hourglass-half"></i>
                         </div>
                         <div>
@@ -98,9 +98,9 @@
             </div>
 
             <div class="col-sm-6 col-md-3 mb-3">
-                <div class="card card-modern h-100 border-danger-subtle border-2">
+                <div class="card glass-card h-100 border-0">
                     <div class="card-body p-3 p-xl-4 d-flex align-items-center">
-                        <div class="icon-modern bg-danger-subtle text-danger me-3">
+                        <div class="stat-icon-wrapper bg-gradient-danger shadow-sm me-3">
                             <i class="fas fa-undo-alt"></i>
                         </div>
                         <div>
@@ -113,9 +113,9 @@
             </div>
 
             <div class="col-sm-6 col-md-3 mb-3">
-                <div class="card card-modern h-100 border-success-subtle border-2">
+                <div class="card glass-card h-100 border-0">
                     <div class="card-body p-3 p-xl-4 d-flex align-items-center">
-                        <div class="icon-modern bg-success-subtle text-success me-3">
+                        <div class="stat-icon-wrapper bg-gradient-success shadow-sm me-3">
                             <i class="fas fa-check-circle"></i>
                         </div>
                         <div>
@@ -129,7 +129,7 @@
         </div>
 
         {{-- FILTER UNIFIED: TRACKING PROSPEK & VERIFIKASI BERKAS --}}
-        <div class="card card-modern mb-4" style="background-color: #f8faff;">
+        <div class="glass-card mb-4" style="background-color: #f8faff;">
             <div class="card-body p-3 p-md-4">
                 <div class="d-flex align-items-center mb-3 pb-3 border-bottom border-light">
                     <div class="icon-sm bg-primary-subtle text-primary rounded-circle d-flex align-items-center justify-content-center me-2" style="width: 32px; height: 32px;">
@@ -189,10 +189,10 @@
 
                     <div class="col-md-12 col-lg-6 mt-3 mt-lg-0">
                         <div class="d-flex gap-2 h-100 align-items-end justify-content-lg-end">
-                            <button type="submit" class="btn btn-primary btn-round fw-bold shadow-sm" style="padding: 8px 20px; font-size: 13px;">
+                            <button type="submit" class="btn btn-premium btn-round fw-bold shadow-sm" style="padding: 8px 20px; font-size: 13px;">
                                 <i class="fas fa-search me-1"></i> Cari Data
                             </button>
-                            <a href="{{ route('operational.data-pendaftaran') }}" class="btn btn-white border btn-round fw-bold text-dark shadow-sm d-flex align-items-center justify-content-center" style="padding: 8px 20px; font-size: 13px;">
+                            <a href="{{ route('operational.data-pendaftaran') }}" class="btn btn-light border btn-round fw-bold text-dark shadow-sm d-flex align-items-center justify-content-center" style="padding: 8px 20px; font-size: 13px;">
                                 Reset
                             </a>
                         </div>
@@ -220,13 +220,13 @@
             <div class="tab-pane fade show active" id="pills-tracking" role="tabpanel">
 
                 {{-- TABEL TRACKING PROSPEK DEAL --}}
-                <div class="card card-modern border-0 shadow-sm mb-4">
+                <div class="glass-card mb-4">
                     <div class="card-header bg-light border-bottom p-3" style="border-radius: 16px 16px 0 0;">
                         <h6 class="m-0 fw-bolder text-dark">Tracking Progress Pendaftaran dari Prospek Deal</h6>
                     </div>
                     <div class="card-body p-0">
                         <div class="table-responsive">
-                            <table class="table table-modern table-hover align-middle mb-0">
+                            <table class="table table-custom align-middle mb-0">
                                 <thead class="bg-light">
                                     <tr>
                                         <th class="text-center" width="90">ID & Tgl</th>
@@ -354,13 +354,13 @@
                                                         </div>
                                                     @endif
                                                 @endforeach
-                                                <button class="btn btn-sm btn-white border shadow-sm fw-bold w-100 text-dark mt-1" data-bs-toggle="modal" data-bs-target="#modalUpdateKomentarProspek-{{ $deal->id }}">
+                                                <button class="btn btn-sm btn-light border shadow-sm fw-bold w-100 text-dark mt-1" data-bs-toggle="modal" data-bs-target="#modalUpdateKomentarProspek-{{ $deal->id }}">
                                                     <i class="fas fa-pen me-1"></i> Edit
                                                 </button>
                                             @else
                                                 <div class="bg-light border border-dashed p-3 rounded-4 text-center">
                                                     <p class="mb-2 text-muted small fw-bold">Belum ada komentar.</p>
-                                                    <button class="btn btn-sm btn-white border btn-round shadow-sm hover-lift text-dark fw-bold px-3" data-bs-toggle="modal" data-bs-target="#modalUpdateKomentarProspek-{{ $deal->id }}">
+                                                    <button class="btn btn-sm btn-light border btn-round shadow-sm hover-lift text-dark fw-bold px-3" data-bs-toggle="modal" data-bs-target="#modalUpdateKomentarProspek-{{ $deal->id }}">
                                                         <i class="fas fa-plus me-1"></i> Tambah
                                                     </button>
                                                 </div>
@@ -369,12 +369,12 @@
                                             {{-- MODAL KOMENTAR --}}
                                             <div class="modal fade text-start" id="modalUpdateKomentarProspek-{{ $deal->id }}" tabindex="-1" aria-hidden="true">
                                                 <div class="modal-dialog modal-dialog-centered">
-                                                    <form action="{{ route('operational.pendaftaran.update-komentar', $deal->id) }}" method="POST" class="modal-content border-0 shadow-lg" style="border-radius: 20px;">
+                                                    <form action="{{ route('operational.pendaftaran.update-komentar', $deal->id) }}" method="POST" class="modal-content modal-content-modern">
                                                         @csrf
                                                         @method('PUT')
-                                                        <div class="modal-header border-bottom pb-3 pt-4 px-4 bg-light" style="border-radius: 20px 20px 0 0;">
-                                                            <h5 class="modal-title fw-bolder text-dark"><i class="fas fa-comments text-primary me-2"></i> Komentar / Feedback Prospek</h5>
-                                                            <button type="button" class="btn-close shadow-none" data-bs-dismiss="modal"></button>
+                                                        <div class="modal-header modal-header-modern" >
+                                                            <h5 class="modal-title fw-bolder text-warning"><i class="fas fa-comments text-warning me-2"></i> Komentar / Feedback Prospek</h5>
+                                                            <button type="button" class="btn-close btn-close-white shadow-none" data-bs-dismiss="modal"></button>
                                                         </div>
                                                         <div class="modal-body px-4 pt-4 pb-4">
                                                             @php 
@@ -405,7 +405,7 @@
                                                         </div>
                                                         <div class="modal-footer border-top bg-light py-3 px-4" style="border-radius: 0 0 20px 20px;">
                                                             @if(in_array($userRole, ['superadmin', 'spv_marketing', 'team_leader']))
-                                                                <button type="submit" class="btn btn-primary fw-bold btn-round w-100 shadow-sm hover-lift">Simpan Komentar</button>
+                                                                <button type="submit" class="btn btn-premium fw-bold btn-round w-100 shadow-sm hover-lift">Simpan Komentar</button>
                                                             @else
                                                                 <button type="button" class="btn btn-secondary fw-bold btn-round w-100 shadow-sm" data-bs-dismiss="modal">Tutup</button>
                                                             @endif
@@ -489,12 +489,12 @@
                                             @if($isTitipVendor && $deal->first_cta_id)
                                             <div class="modal fade text-start" id="modalUpdateStatusVendor-{{ $deal->first_cta_id }}" tabindex="-1" aria-hidden="true">
                                                 <div class="modal-dialog modal-dialog-centered">
-                                                    <form action="{{ route('operational.pendaftaran.update-status-vendor', $deal->first_cta_id) }}" method="POST" class="modal-content border-0 shadow-lg" style="border-radius: 20px;">
+                                                    <form action="{{ route('operational.pendaftaran.update-status-vendor', $deal->first_cta_id) }}" method="POST" class="modal-content modal-content-modern">
                                                         @csrf
                                                         @method('PUT')
-                                                        <div class="modal-header border-bottom pb-3 pt-4 px-4 bg-light" style="border-radius: 20px 20px 0 0;">
-                                                            <h5 class="modal-title fw-bolder text-dark"><i class="fas fa-sync-alt text-primary me-2"></i> Ubah Status Registrasi Vendor</h5>
-                                                            <button type="button" class="btn-close shadow-none" data-bs-dismiss="modal"></button>
+                                                        <div class="modal-header modal-header-modern" >
+                                                            <h5 class="modal-title fw-bolder text-warning"><i class="fas fa-sync-alt text-warning me-2"></i> Ubah Status Registrasi Vendor</h5>
+                                                            <button type="button" class="btn-close btn-close-white shadow-none" data-bs-dismiss="modal"></button>
                                                         </div>
                                                         <div class="modal-body px-4 pt-4 pb-4">
                                                             <div class="mb-0">
@@ -507,7 +507,7 @@
                                                             </div>
                                                         </div>
                                                         <div class="modal-footer border-top bg-light py-3 px-4" style="border-radius: 0 0 20px 20px;">
-                                                            <button type="submit" class="btn btn-primary fw-bold btn-round w-100 shadow-sm hover-lift">Simpan Status</button>
+                                                            <button type="submit" class="btn btn-premium fw-bold btn-round w-100 shadow-sm hover-lift">Simpan Status</button>
                                                         </div>
                                                     </form>
                                                 </div>
@@ -542,13 +542,13 @@
 
 
                 {{-- TABEL VERIFIKASI BERKAS --}}
-                <div class="card card-modern border-0 shadow-sm mb-4">
+                <div class="glass-card mb-4">
                     <div class="card-header bg-transparent border-bottom pt-4 px-4 pb-3">
                         <h6 class="card-title fw-bolder mb-0 text-dark">Daftar Registrasi & Verifikasi Berkas</h6>
                     </div>
                     <div class="card-body p-0">
                         <div class="table-responsive">
-                            <table class="table table-modern table-hover align-middle mb-0">
+                            <table class="table table-custom align-middle mb-0">
                                 <thead class="bg-light sticky-top">
                                     <tr>
                                         <th class="text-center" width="90">ID Reg</th>
@@ -629,7 +629,7 @@
                                                 </a>
                                                 @endif
                                                 @else
-                                                <button class="btn btn-primary btn-sm w-100 btn-round fw-bold shadow-sm" data-bs-toggle="modal" data-bs-target="#modalReviewIndividu-{{ $pendaftar->id }}">
+                                                <button class="btn btn-premium btn-sm w-100 btn-round fw-bold shadow-sm" data-bs-toggle="modal" data-bs-target="#modalReviewIndividu-{{ $pendaftar->id }}">
                                                     <i class="fas fa-search me-1"></i> Review
                                                 </button>
                                                 @endif
@@ -673,30 +673,44 @@
 
 {{-- ================= STYLES ================= --}}
 <style>
-    /* CSS MODERNISASI UI */
-    .card-modern { border-radius: 16px; border: 1px solid #eef2f7; box-shadow: 0 4px 15px rgba(0,0,0,0.03); background: #ffffff; transition: all 0.3s ease; }
-    .icon-modern { width: 48px; height: 48px; border-radius: 12px; display: flex; align-items: center; justify-content: center; font-size: 20px; }
+    /* Base UI / Premium Modern CSS */
+    .page-wrapper-modern { background-color: #f8f9fc; min-height: 100vh; font-family: 'Nunito', 'Segoe UI', sans-serif; }
+    .glass-card { background: #ffffff; border: 1px solid rgba(227, 230, 240, 0.8); box-shadow: 0 4px 20px rgba(0, 0, 0, 0.03); border-radius: 20px; transition: all 0.3s ease; }
+    .glass-card:hover { box-shadow: 0 10px 30px rgba(0, 0, 0, 0.06); }
+    .stat-icon-wrapper { width: 60px; height: 60px; border-radius: 18px; display: flex; align-items: center; justify-content: center; font-size: 26px; }
+    .bg-gradient-primary { background: linear-gradient(135deg, #4e73df 0%, #224abe 100%); color: white; }
+    .bg-gradient-warning { background: linear-gradient(135deg, #f6c23e 0%, #dda20a 100%); color: white; }
+    .bg-gradient-info { background: linear-gradient(135deg, #36b9cc 0%, #258391 100%); color: white; }
+    .bg-gradient-success { background: linear-gradient(135deg, #1cc88a 0%, #13855c 100%); color: white; }
+    .bg-gradient-danger { background: linear-gradient(135deg, #e74a3b 0%, #be2617 100%); color: white; }
 
-    .bg-primary-subtle { background-color: #eff6ff !important; }
-    .bg-success-subtle { background-color: #f0fdf4 !important; }
-    .bg-info-subtle { background-color: #ecfeff !important; }
-    .bg-warning-subtle { background-color: #fefce8 !important; }
-    .bg-danger-subtle { background-color: #fef2f2 !important; }
-    .bg-secondary-subtle { background-color: #f8fafc !important; }
-    .text-warning-dark { color: #b45309 !important; }
+    /* Tables */
+    .table-custom { border-collapse: separate; border-spacing: 0 12px; margin-top: -12px;}
+    .table-custom tr { background-color: #ffffff; box-shadow: 0 2px 10px rgba(0,0,0,0.02); border-radius: 16px; transition: all 0.2s ease; border: 1px solid #f1f3f9;}
+    .table-custom tr:hover { box-shadow: 0 5px 15px rgba(0,0,0,0.06); }
+    .table-custom td { padding: 18px 22px; border: none; vertical-align: middle;}
+    .table-custom td:first-child { border-top-left-radius: 16px; border-bottom-left-radius: 16px; }
+    .table-custom td:last-child { border-top-right-radius: 16px; border-bottom-right-radius: 16px; }
+    .table-custom th { border: none; padding: 10px 22px; color: #858796; font-weight: 700; text-transform: uppercase; font-size: 11px; letter-spacing: 1px; background: transparent;}
 
-    .border-primary-subtle { border-color: #bfdbfe !important; }
-    .border-success-subtle { border-color: #bbf7d0 !important; }
-    .border-warning-subtle { border-color: #fef08a !important; }
-    .border-danger-subtle { border-color: #fecaca !important; }
+    /* Badges */
+    .badge-soft-primary { background-color: rgba(78, 115, 223, 0.1); color: #4e73df; font-weight: 700; padding: 6px 12px; border-radius: 8px; }
+    .badge-soft-warning { background-color: rgba(246, 194, 62, 0.15); color: #dda20a; font-weight: 700; padding: 6px 12px; border-radius: 8px; }
+    .badge-soft-danger { background-color: rgba(231, 74, 59, 0.1); color: #e74a3b; font-weight: 700; padding: 6px 12px; border-radius: 8px; }
+    .badge-soft-info { background-color: rgba(54, 185, 204, 0.1); color: #258391; font-weight: 700; padding: 6px 12px; border-radius: 8px; }
+    .badge-soft-success { background-color: rgba(28, 200, 138, 0.1); color: #1cc88a; font-weight: 700; padding: 6px 12px; border-radius: 8px; }
 
-    .badge-soft-primary { background-color: #eff6ff; color: #3b82f6; }
-    .badge-soft-success { background-color: #f0fdf4; color: #16a34a; }
-    .badge-soft-danger { background-color: #fef2f2; color: #dc2626; }
-    .badge-soft-warning { background-color: #fefce8; color: #b45309; }
-    .badge-soft-info { background-color: #ecfeff; color: #0891b2; }
-    .badge-soft-secondary { background-color: #f8fafc; color: #475569; }
+    /* Buttons */
+    .btn-premium { background: linear-gradient(135deg, #4e73df 0%, #224abe 100%); color: white; border: none; border-radius: 50px; padding: 10px 24px; font-weight: 600; box-shadow: 0 4px 15px rgba(78, 115, 223, 0.3); transition: all 0.3s; }
+    .btn-premium:hover { box-shadow: 0 6px 20px rgba(78, 115, 223, 0.4); color: white;}
+    .btn-outline-premium { border: 2px solid #4e73df; color: #4e73df; border-radius: 50px; padding: 8px 20px; font-weight: 700; transition: all 0.3s; background: white;}
+    .btn-outline-premium:hover { background: #4e73df; color: white; box-shadow: 0 4px 15px rgba(78, 115, 223, 0.3); }
 
+    /* MODAL STYLES */
+    .modal-content-modern { border-radius: 24px; border: none; overflow: hidden; box-shadow: 0 20px 50px rgba(0,0,0,0.15);}
+    .modal-header-modern { background: linear-gradient(135deg, #4e73df 0%, #224abe 100%); color: white; padding: 25px 30px; border-bottom: none;}
+
+    /* Alerts */
     .alert-modern-success { background-color: #f0fdf4; border-left: 4px solid #22c55e; border-radius: 12px; padding: 16px; box-shadow: 0 4px 6px rgba(0,0,0,0.02); }
     .alert-modern-danger { background-color: #fef2f2; border-left: 4px solid #ef4444; border-radius: 12px; padding: 16px; box-shadow: 0 4px 6px rgba(0,0,0,0.02); }
 
@@ -705,10 +719,6 @@
     .nav-modern .nav-link { border-radius: 50px; color: #64748b; font-weight: 600; font-size: 14px; padding: 8px 24px; border: none; transition: all 0.3s ease; background: transparent; }
     .nav-modern .nav-link:hover { color: #0f172a; }
     .nav-modern .nav-link.active { background-color: #ffffff; color: #3b82f6; box-shadow: 0 2px 8px rgba(0,0,0,0.08); }
-
-    /* Table Modern */
-    .table-modern th { text-transform: uppercase; font-size: 11px; letter-spacing: 0.5px; color: #64748b; background: #f8fafc; border-bottom: 2px solid #e2e8f0; padding: 12px 16px; }
-    .table-modern td { border-bottom: 1px solid #f1f5f9; padding: 14px 16px; }
 
     /* Form Modern */
     .label-modern { font-weight: 700; color: #64748b; font-size: 10px; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 6px; display: block; }
@@ -803,7 +813,7 @@
                     <label class="form-label fw-bold text-dark fs-7 mb-2 text-uppercase" style="letter-spacing: 0.5px; font-size: 11px;">1. Link Registrasi Klien</label>
                     <div class="input-group mb-4 shadow-sm" style="border-radius: 10px; overflow: hidden; border: 1px solid #e0e0e0;">
                         <input type="text" class="form-control bg-white border-0 py-2 text-primary fw-bold" value="${url}" readonly id="inputUrlLink" style="font-size: 13px;">
-                        <button class="btn btn-primary px-3 py-2 border-0" type="button" id="btnCopyLinkOnly" style="background: #0d6efd;">
+                        <button class="btn btn-premium px-3 py-2 border-0" type="button" id="btnCopyLinkOnly" style="background: #0d6efd;">
                             <i class="fas fa-link"></i> Salin
                         </button>
                     </div>
@@ -830,7 +840,7 @@
             }
             
             htmlContent += `
-                        <button type="button" class="btn btn-outline-primary fw-bold w-100 d-flex justify-content-center align-items-center" id="btnCopyRedaksi" style="border-radius: 10px; padding: 10px; border-width: 2px; transition: 0.2s;">
+                        <button type="button" class="btn btn-outline-premium fw-bold w-100 d-flex justify-content-center align-items-center" id="btnCopyRedaksi" style="border-radius: 10px; padding: 10px; border-width: 2px; transition: 0.2s;">
                             <i class="fas fa-copy fs-5 me-2"></i> Salin Teks Redaksi Lengkap
                         </button>
                     </div>
@@ -856,12 +866,12 @@
                         btnRedaksi.addEventListener('click', () => {
                             copyText(pesanWa).then(() => {
                                 btnRedaksi.innerHTML = '<i class="fas fa-check fs-5 me-2"></i>Teks Disalin!';
-                                btnRedaksi.classList.remove('btn-outline-primary');
-                                btnRedaksi.classList.add('btn-primary');
+                                btnRedaksi.classList.remove('btn-outline-premium');
+                                btnRedaksi.classList.add('btn-premium');
                                 setTimeout(() => {
                                     btnRedaksi.innerHTML = '<i class="fas fa-copy fs-5 me-2"></i>Salin Teks Redaksi Lengkap';
-                                    btnRedaksi.classList.remove('btn-primary');
-                                    btnRedaksi.classList.add('btn-outline-primary');
+                                    btnRedaksi.classList.remove('btn-premium');
+                                    btnRedaksi.classList.add('btn-outline-premium');
                                 }, 2000);
                             });
                         });
@@ -873,11 +883,11 @@
                         btnUrl.addEventListener('click', () => {
                             copyText(url).then(() => {
                                 btnUrl.innerHTML = '<i class="fas fa-check"></i> Disalin!';
-                                btnUrl.classList.replace('btn-primary', 'btn-success');
+                                btnUrl.classList.replace('btn-premium', 'btn-success');
                                 btnUrl.style.background = '#198754';
                                 setTimeout(() => {
                                     btnUrl.innerHTML = '<i class="fas fa-link"></i> Salin';
-                                    btnUrl.classList.replace('btn-success', 'btn-primary');
+                                    btnUrl.classList.replace('btn-success', 'btn-premium');
                                     btnUrl.style.background = '#0d6efd';
                                 }, 2000);
                             });
