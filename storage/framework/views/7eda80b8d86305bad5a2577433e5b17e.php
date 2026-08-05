@@ -991,7 +991,7 @@
             <form action="<?php echo e(route('monitoring.pelatihan.update', $pelatihan->id)); ?>" method="POST" enctype="multipart/form-data">
                 <?php echo csrf_field(); ?>
                 <?php echo method_field('PUT'); ?>
-                <div class="modal-body px-4 px-md-5 pt-4 pb-4" style="background-color: #f8fafc;">
+                <div class="modal-body px-4 px-md-5 pt-4 pb-4" style="background-color: #f8fafc; overflow-y: auto; max-height: calc(100vh - 120px);">
                     <?php $checklist = json_decode($pelatihan->checklist_validasi, true) ?? []; ?>
                     <div class="row g-4">
                         
@@ -1046,9 +1046,16 @@
                                         <input class="form-check-input" type="checkbox" name="checklist_validasi[]" value="Background Zoom" <?php echo e(in_array('Background Zoom', $checklist) ? 'checked' : ''); ?>>
                                         <label class="form-check-label text-dark small fw-medium">Background Zoom / Banner</label>
                                     </div>
-                                    <div class="mb-2 mt-1 d-flex gap-2">
+                                    <div class="mb-2 mt-1">
                                         <input type="file" name="background_zoom" class="form-control form-control-sm shadow-none" accept=".jpg,.jpeg,.png">
-                                        <?php if($pelatihan->background_zoom): ?> <a href="<?php echo e(asset($pelatihan->background_zoom)); ?>" target="_blank" class="btn btn-sm btn-outline-premium"><i class="fas fa-image"></i></a> <?php endif; ?>
+                                        <?php if($pelatihan->background_zoom): ?>
+                                        <div class="mt-2">
+                                            <a href="<?php echo e(asset($pelatihan->background_zoom)); ?>" target="_blank" class="badge badge-soft-info text-decoration-none px-3 py-2 border border-info rounded-pill" style="font-size: 10px;">
+                                                <i class="fas fa-image me-1"></i> <?php echo e(basename($pelatihan->background_zoom)); ?>
+
+                                            </a>
+                                        </div>
+                                        <?php endif; ?>
                                     </div>
                                     <div class="form-check custom-checkbox mb-2">
                                         <input class="form-check-input" type="checkbox" name="checklist_validasi[]" value="Foto Profil Grup WA" <?php echo e(in_array('Foto Profil Grup WA', $checklist) ? 'checked' : ''); ?>>
@@ -1058,17 +1065,63 @@
                                         <input class="form-check-input" type="checkbox" name="checklist_validasi[]" value="Modul Pelatihan" <?php echo e(in_array('Modul Pelatihan', $checklist) ? 'checked' : ''); ?>>
                                         <label class="form-check-label text-dark small fw-medium">Modul Pelatihan (Maks 5MB)</label>
                                     </div>
-                                    <div class="mb-2 mt-1 d-flex gap-2">
+                                    <div class="mb-2 mt-1">
                                         <input type="file" name="modul" class="form-control form-control-sm shadow-none" accept=".pdf,.doc,.docx,.zip,.rar">
-                                        <?php if($pelatihan->modul): ?> <a href="<?php echo e(asset($pelatihan->modul)); ?>" target="_blank" class="btn btn-sm btn-outline-premium"><i class="fas fa-file-pdf"></i></a> <?php endif; ?>
+                                        <?php if($pelatihan->modul): ?>
+                                        <div class="mt-2">
+                                            <a href="<?php echo e(asset($pelatihan->modul)); ?>" target="_blank" class="badge badge-soft-info text-decoration-none px-3 py-2 border border-info rounded-pill" style="font-size: 10px;">
+                                                <i class="fas fa-file-pdf me-1"></i> <?php echo e(basename($pelatihan->modul)); ?>
+
+                                            </a>
+                                        </div>
+                                        <?php endif; ?>
+                                    </div>
+                                    
+                                    
+                                    <?php
+                                        $latestModul = null;
+                                        if($pelatihan->modul) {
+                                            $latestModul = \App\Models\ModulPelatihan::where('file_path', $pelatihan->modul)->orderBy('id', 'desc')->first();
+                                        }
+                                        $valJudul = $latestModul ? $latestModul->judul_modul : ($pelatihan->training->nama_training ?? ($pelatihan->riwayat->judul_pelatihan ?? ''));
+                                        $valSertifikasi = $latestModul ? $latestModul->sertifikasi : '';
+                                        $valKategori = $latestModul ? $latestModul->kategori : '';
+                                    ?>
+                                    <div class="bg-light p-2 rounded-3 border mb-3 mt-2" style="font-size: 11px;">
+                                        <div class="fw-bold text-dark mb-2"><i class="fas fa-sync text-info me-1"></i> Sinkronisasi ke Modul Pelatihan</div>
+                                        <div class="row g-2">
+                                            <div class="col-12">
+                                                <input type="text" name="judul_modul_sync" class="form-control form-control-sm" placeholder="Judul Modul" value="<?php echo e($valJudul); ?>">
+                                            </div>
+                                            <div class="col-6">
+                                                <select name="sertifikasi_modul_sync" class="form-select form-select-sm">
+                                                    <option value="KEMNAKER" <?php echo e($valSertifikasi == 'KEMNAKER' ? 'selected' : ''); ?>>KEMNAKER</option>
+                                                    <option value="BNSP" <?php echo e($valSertifikasi == 'BNSP' ? 'selected' : ''); ?>>BNSP</option>
+                                                    <option value="UPSKILLS" <?php echo e($valSertifikasi == 'UPSKILLS' ? 'selected' : ''); ?>>UPSKILLS</option>
+                                                </select>
+                                            </div>
+                                            <div class="col-6">
+                                                <input type="text" name="kategori_modul_sync" class="form-control form-control-sm" placeholder="Kategori (Mis. K3)" value="<?php echo e($valKategori); ?>">
+                                            </div>
+                                            <div class="col-12">
+                                                <small class="text-muted d-block mt-1">Isi form di atas agar Modul Pelatihan tersimpan ke perpustakaan Modul.</small>
+                                            </div>
+                                        </div>
                                     </div>
                                     <div class="form-check custom-checkbox mb-2">
                                         <input class="form-check-input" type="checkbox" name="checklist_validasi[]" value="Rundown Pelatihan" <?php echo e(in_array('Rundown Pelatihan', $checklist) ? 'checked' : ''); ?>>
                                         <label class="form-check-label text-dark small fw-medium">Rundown Pelatihan</label>
                                     </div>
-                                    <div class="mb-2 mt-1 d-flex gap-2">
+                                    <div class="mb-2 mt-1">
                                         <input type="file" name="rundown_pelatihan" class="form-control form-control-sm shadow-none" accept=".pdf,.doc,.docx">
-                                        <?php if($pelatihan->rundown_pelatihan): ?> <a href="<?php echo e(asset($pelatihan->rundown_pelatihan)); ?>" target="_blank" class="btn btn-sm btn-outline-premium"><i class="fas fa-file-alt"></i></a> <?php endif; ?>
+                                        <?php if($pelatihan->rundown_pelatihan): ?>
+                                        <div class="mt-2">
+                                            <a href="<?php echo e(asset($pelatihan->rundown_pelatihan)); ?>" target="_blank" class="badge badge-soft-info text-decoration-none px-3 py-2 border border-info rounded-pill" style="font-size: 10px;">
+                                                <i class="fas fa-file-alt me-1"></i> <?php echo e(basename($pelatihan->rundown_pelatihan)); ?>
+
+                                            </a>
+                                        </div>
+                                        <?php endif; ?>
                                     </div>
                                 </div>
                             </div>
