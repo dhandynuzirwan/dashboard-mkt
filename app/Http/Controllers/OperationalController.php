@@ -270,13 +270,37 @@ class OperationalController extends Controller implements HasMiddleware
             'rundown_pelatihan'
         ];
 
+        $modulUploaded = false;
+        $ukuranModul = 0;
+
         foreach ($fileFields as $field) {
             if ($request->hasFile($field)) {
                 $file = $request->file($field);
+                
+                if ($field === 'modul') {
+                    $modulUploaded = true;
+                    $ukuranModul = $file->getSize();
+                }
+
                 $filename = time() . '_' . $field . '.' . $file->getClientOriginalExtension();
                 $file->move(public_path('uploads/operasional'), $filename);
                 $data[$field] = 'uploads/operasional/' . $filename;
             }
+        }
+
+        // Sync ke ModulPelatihan jika ada upload modul
+        if ($modulUploaded) {
+            \App\Models\ModulPelatihan::create([
+                'judul_modul' => $request->judul_modul_sync ?? ($pelatihan->training->nama_training ?? 'Modul Pelatihan'),
+                'sertifikasi' => $request->sertifikasi_modul_sync ?? 'KEMNAKER',
+                'kategori'    => $request->kategori_modul_sync ?? 'Umum',
+                'pengajar'    => $pelatihan->instruktur ?? 'Belum Ditentukan',
+                'tahun'       => date('Y', strtotime($pelatihan->tanggal_pelatihan)),
+                'ukuran_file' => $ukuranModul,
+                'status'      => 'Aktif',
+                'file_path'   => $data['modul'],
+                'pengupload_id' => auth()->id() ?? 1
+            ]);
         }
 
         if (isset($data['checklist_validasi']) && is_array($data['checklist_validasi'])) {
