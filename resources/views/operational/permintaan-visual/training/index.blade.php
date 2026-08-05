@@ -181,7 +181,15 @@
                         <tr>
                             <td class="text-center text-muted fw-bold fs-5">{{ $index + 1 }}</td>
                             <td>
-                                <div class="fw-bold text-dark mb-2" style="font-size: 16px;">{{ $pelatihan->training->nama_pelatihan ?? 'Pelatihan Custom' }}</div>
+                                @php
+                                    $isSyncRiwayat = $pelatihan->pendaftaranPribadis && $pelatihan->pendaftaranPribadis->isEmpty() && $pelatihan->riwayat;
+                                @endphp
+                                <div class="fw-bold text-dark mb-2" style="font-size: 16px;">
+                                    {{ $isSyncRiwayat ? ($pelatihan->riwayat->judul_pelatihan ?? (optional($pelatihan->training)->nama_training ?? 'Pelatihan Custom')) : (optional($pelatihan->training)->nama_training ?? 'Pelatihan Custom') }}
+                                    @if($isSyncRiwayat)
+                                        <span class="badge bg-light text-primary border border-primary ms-2" style="font-size: 11px;">Input Manual</span>
+                                    @endif
+                                </div>
                                 <div class="d-flex flex-wrap gap-3">
                                     <div class="text-muted small fw-bold"><i class="fas fa-calendar-alt text-primary me-1"></i> {{ \Carbon\Carbon::parse($pelatihan->tanggal_pelatihan)->format('d M') }} - {{ \Carbon\Carbon::parse($pelatihan->tanggal_selesai)->format('d M Y') }}</div>
                                     <div class="text-muted small fw-bold"><i class="fas fa-map-marker-alt text-danger me-1"></i> {{ $pelatihan->lokasi ?? 'N/A' }}</div>
@@ -255,7 +263,11 @@
             <div class="modal-header modal-header-modern d-flex flex-column flex-md-row justify-content-between align-items-md-center gap-3">
                 <div>
                     <h4 class="fw-bolder mb-1"><i class="fas fa-folder-open me-2 text-white-50"></i> Manajemen Berkas Desain Training</h4>
-                    <p class="mb-0 text-white-50 fw-bold" style="font-size: 13px;">{{ $pelatihan->training->nama_pelatihan ?? 'Pelatihan Custom' }} &bull; {{ \Carbon\Carbon::parse($pelatihan->tanggal_pelatihan)->format('d M') }} - {{ \Carbon\Carbon::parse($pelatihan->tanggal_selesai)->format('d M Y') }} &bull; {{ $pelatihan->lokasi ?? 'N/A' }}</p>
+                    @php
+                        $isSyncRiwayat = $pelatihan->pendaftaranPribadis && $pelatihan->pendaftaranPribadis->isEmpty() && $pelatihan->riwayat;
+                        $judulPelatihan = $isSyncRiwayat ? ($pelatihan->riwayat->judul_pelatihan ?? (optional($pelatihan->training)->nama_training ?? 'Pelatihan Custom')) : (optional($pelatihan->training)->nama_training ?? 'Pelatihan Custom');
+                    @endphp
+                    <p class="mb-0 text-white-50 fw-bold" style="font-size: 13px;">{{ $judulPelatihan }} {{ $isSyncRiwayat ? '(Input Manual)' : '' }} &bull; {{ \Carbon\Carbon::parse($pelatihan->tanggal_pelatihan)->format('d M') }} - {{ \Carbon\Carbon::parse($pelatihan->tanggal_selesai)->format('d M Y') }} &bull; {{ $pelatihan->lokasi ?? 'N/A' }}</p>
                 </div>
                 <div class="d-flex align-items-center gap-3">
                     <div class="bg-white text-primary px-3 py-1 rounded-pill fw-bold text-uppercase" style="font-size: 11px; letter-spacing: 1px;">
