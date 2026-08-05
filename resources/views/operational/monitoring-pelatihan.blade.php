@@ -20,9 +20,9 @@
         {{-- ================= STATISTIC CARDS ================= --}}
         <div class="row mb-3 fade-in">
             <div class="col-sm-6 col-md-3 mb-3">
-                <div class="card card-modern h-100 hover-lift border-primary-subtle border-2">
+                <div class="card glass-card h-100 border-0">
                     <div class="card-body p-3 p-xl-4 d-flex align-items-center">
-                        <div class="icon-modern bg-primary-subtle text-primary me-3">
+                        <div class="stat-icon-wrapper bg-gradient-primary shadow-sm me-3">
                             <i class="fas fa-play-circle"></i>
                         </div>
                         <div>
@@ -34,9 +34,9 @@
             </div>
 
             <div class="col-sm-6 col-md-3 mb-3">
-                <div class="card card-modern h-100 hover-lift border-warning-subtle border-2">
+                <div class="card glass-card h-100 border-0">
                     <div class="card-body p-3 p-xl-4 d-flex align-items-center">
-                        <div class="icon-modern bg-warning-subtle text-warning-dark me-3">
+                        <div class="stat-icon-wrapper bg-gradient-warning shadow-sm me-3">
                             <i class="fas fa-folder-open"></i>
                         </div>
                         <div>
@@ -48,9 +48,9 @@
             </div>
 
             <div class="col-sm-6 col-md-3 mb-3">
-                <div class="card card-modern h-100 hover-lift border-info-subtle border-2">
+                <div class="card glass-card h-100 border-0">
                     <div class="card-body p-3 p-xl-4 d-flex align-items-center">
-                        <div class="icon-modern bg-info-subtle text-info me-3">
+                        <div class="stat-icon-wrapper bg-gradient-info shadow-sm me-3">
                             <i class="fas fa-hourglass-half"></i>
                         </div>
                         <div>
@@ -62,9 +62,9 @@
             </div>
 
             <div class="col-sm-6 col-md-3 mb-3">
-                <div class="card card-modern h-100 hover-lift border-success-subtle border-2">
+                <div class="card glass-card h-100 border-0">
                     <div class="card-body p-3 p-xl-4 d-flex align-items-center">
-                        <div class="icon-modern bg-success-subtle text-success me-3">
+                        <div class="stat-icon-wrapper bg-gradient-success shadow-sm me-3">
                             <i class="fas fa-shipping-fast"></i>
                         </div>
                         <div>
@@ -105,13 +105,13 @@
             
             {{-- TAB 1: PELAKSANAAN & JADWAL --}}
             <div class="tab-pane fade show active" id="pills-pelaksanaan" role="tabpanel">
-                <div class="card card-modern border-0 shadow-sm mb-4">
+                <div class="glass-card mb-4">
                     <div class="card-header bg-light border-bottom p-3" style="border-radius: 16px 16px 0 0;">
                         <h6 class="m-0 fw-bolder text-dark">Data Kelas (Sertifikasi, Jadwal, Tim Pengajar, Kelembagaan)</h6>
                     </div>
                     <div class="card-body p-0">
                         <div class="table-responsive">
-                            <table class="table table-modern table-hover align-middle mb-0">
+                            <table class="table table-custom align-middle mb-0">
                                 <thead class="bg-light sticky-top">
                                     <tr>
                                         <th class="ps-4" width="250">Program Pelatihan & Sertifikasi</th>
@@ -214,7 +214,7 @@
                                                 @endforelse
                                             </div>
                                             
-                                            <button class="btn btn-sm btn-white border shadow-sm btn-round text-primary hover-lift mt-2 w-100" style="font-size: 10px; max-width: 180px;" data-bs-toggle="modal" data-bs-target="#modalDetailPeserta-{{ $pelatihan->id }}">
+                                            <button class="btn btn-sm btn-light border shadow-sm btn-round text-primary hover-lift mt-2 w-100" style="font-size: 10px; max-width: 180px;" data-bs-toggle="modal" data-bs-target="#modalDetailPeserta-{{ $pelatihan->id }}">
                                                 <i class="fas fa-users me-1"></i> Lihat Detail Peserta
                                             </button>
                                         </td>
@@ -316,7 +316,7 @@
                                         
                                         <td class="text-center pe-4">
                                             <span class="badge {{ $badgeInfo['class'] }} rounded-pill px-3 py-2 shadow-sm d-block mb-2 w-100">{{ $badgeInfo['text'] }}</span>
-                                            <button class="btn btn-sm btn-white border btn-round text-muted d-block w-100 hover-lift px-3 mb-1" style="font-size: 10px;" data-bs-toggle="modal" data-bs-target="#modalUpdateStatusKelas-{{ $pelatihan->id }}">Ubah Status</button>
+                                            <button class="btn btn-sm btn-light border btn-round text-muted d-block w-100 hover-lift px-3 mb-1" style="font-size: 10px;" data-bs-toggle="modal" data-bs-target="#modalUpdateStatusKelas-{{ $pelatihan->id }}">Ubah Status</button>
                                             <button class="btn btn-sm btn-danger btn-round text-white d-block w-100 hover-lift px-3" style="font-size: 10px;" data-bs-toggle="modal" data-bs-target="#modalHapusPelatihan-{{ $pelatihan->id }}">Hapus Data</button>
                                         </td>
                                     </tr>
@@ -334,7 +334,7 @@
 
             {{-- TAB 2: ADMINISTRASI & EVALUASI --}}
             <div class="tab-pane fade" id="pills-administrasi" role="tabpanel">
-                <div class="card card-modern border-0 shadow-sm mb-4">
+                <div class="glass-card mb-4">
                     <div class="card-header bg-light border-bottom p-3 d-flex justify-content-between align-items-center" style="border-radius: 16px 16px 0 0;">
                         <h6 class="m-0 fw-bolder text-dark">Pemberkasan Laporan, Validasi & Evaluasi Lapangan</h6>
                     </div>
@@ -350,7 +350,7 @@
                         </div>
 
                         <div class="table-responsive">
-                            <table class="table table-modern table-hover align-middle mb-0" style="min-width: 2000px;">
+                            <table class="table table-custom align-middle mb-0" style="min-width: 2000px;">
                                 <thead class="bg-light sticky-top">
                                     <tr>
                                         <th class="ps-4" width="300">Sertifikasi, Judul & Klien</th>
@@ -418,7 +418,7 @@
                                                     <div class="progress-bar bg-{{ $percentColor }} {{ $percent == 100 ? 'rounded-pill' : '' }}" style="width: {{ $percent }}%"></div>
                                                 </div>
                                                 <div class="d-flex gap-2 mt-2">
-                                                    <button class="btn btn-sm btn-white border btn-round fw-bold text-dark flex-grow-1 shadow-sm hover-lift" data-bs-toggle="modal" data-bs-target="#modalUpdateValidasi-{{ $pelatihan->id }}" style="font-size: 11px;">
+                                                    <button class="btn btn-sm btn-light border btn-round fw-bold text-dark flex-grow-1 shadow-sm hover-lift" data-bs-toggle="modal" data-bs-target="#modalUpdateValidasi-{{ $pelatihan->id }}" style="font-size: 11px;">
                                                         <i class="fas fa-check-square me-1"></i> Update Checklist
                                                     </button>
                                                 </div>
@@ -430,7 +430,7 @@
                                                         <a href="{{ asset($pelatihan->file_laporan_internal) }}" target="_blank" class="btn btn-sm btn-light border text-start fw-bold hover-lift flex-grow-1" style="color: #0ea5e9;">
                                                             <i class="fas fa-check-circle me-1"></i> Lap. Internal
                                                         </a>
-                                                        <button class="btn btn-sm btn-white border text-muted hover-lift px-2" title="Ganti File" data-bs-toggle="modal" data-bs-target="#modalUploadLaporan-{{ $pelatihan->id }}"><i class="fas fa-sync-alt"></i></button>
+                                                        <button class="btn btn-sm btn-light border text-muted hover-lift px-2" title="Ganti File" data-bs-toggle="modal" data-bs-target="#modalUploadLaporan-{{ $pelatihan->id }}"><i class="fas fa-sync-alt"></i></button>
                                                     </div>
                                                     @else
                                                     <button class="btn btn-sm btn-white text-primary text-start fw-bold hover-lift w-100" style="border: 1.5px dashed #bfdbfe;" data-bs-toggle="modal" data-bs-target="#modalUploadLaporan-{{ $pelatihan->id }}">
@@ -443,7 +443,7 @@
                                                         <a href="{{ asset($pelatihan->file_laporan_kemnaker) }}" target="_blank" class="btn btn-sm btn-light border text-start fw-bold hover-lift flex-grow-1 text-success">
                                                             <i class="fas fa-check-circle me-1"></i> Lap. Instansi
                                                         </a>
-                                                        <button class="btn btn-sm btn-white border text-muted hover-lift px-2" title="Ganti File" data-bs-toggle="modal" data-bs-target="#modalUploadLaporan-{{ $pelatihan->id }}"><i class="fas fa-sync-alt"></i></button>
+                                                        <button class="btn btn-sm btn-light border text-muted hover-lift px-2" title="Ganti File" data-bs-toggle="modal" data-bs-target="#modalUploadLaporan-{{ $pelatihan->id }}"><i class="fas fa-sync-alt"></i></button>
                                                     </div>
                                                     @else
                                                     <button class="btn btn-sm btn-white text-success text-start fw-bold hover-lift w-100" style="border: 1.5px dashed #bbf7d0;" data-bs-toggle="modal" data-bs-target="#modalUploadLaporan-{{ $pelatihan->id }}">
@@ -465,7 +465,7 @@
                                                 @else
                                                 <div class="bg-light border border-dashed p-3 rounded-4 text-center">
                                                     <p class="mb-2 text-muted small fw-bold">Belum ada evaluasi pelaksanaan.</p>
-                                                    <button class="btn btn-sm btn-white border btn-round shadow-sm hover-lift text-dark fw-bold px-3" data-bs-toggle="modal" data-bs-target="#modalUpdateEvaluasi-{{ $pelatihan->id }}">
+                                                    <button class="btn btn-sm btn-light border btn-round shadow-sm hover-lift text-dark fw-bold px-3" data-bs-toggle="modal" data-bs-target="#modalUpdateEvaluasi-{{ $pelatihan->id }}">
                                                         <i class="fas fa-pen me-1"></i> Tulis Evaluasi
                                                     </button>
                                                 </div>
@@ -516,13 +516,13 @@
                                                         </div>
                                                         @endif
                                                         
-                                                        <button class="btn btn-sm btn-white border shadow-sm fw-bold w-100 text-dark mt-1" data-bs-toggle="modal" data-bs-target="#modalUpdateKomentar-{{ $pelatihan->id }}">
+                                                        <button class="btn btn-sm btn-light border shadow-sm fw-bold w-100 text-dark mt-1" data-bs-toggle="modal" data-bs-target="#modalUpdateKomentar-{{ $pelatihan->id }}">
                                                             <i class="fas fa-pen me-1"></i> Edit Komentar
                                                         </button>
                                                     @else
                                                         <div class="bg-light border border-dashed p-3 rounded-4 text-center">
                                                             <p class="mb-2 text-muted small fw-bold">Belum ada komentar.</p>
-                                                            <button class="btn btn-sm btn-white border btn-round shadow-sm hover-lift text-dark fw-bold px-3" data-bs-toggle="modal" data-bs-target="#modalUpdateKomentar-{{ $pelatihan->id }}">
+                                                            <button class="btn btn-sm btn-light border btn-round shadow-sm hover-lift text-dark fw-bold px-3" data-bs-toggle="modal" data-bs-target="#modalUpdateKomentar-{{ $pelatihan->id }}">
                                                                 <i class="fas fa-plus me-1"></i> Tambah
                                                             </button>
                                                         </div>
@@ -545,13 +545,13 @@
 
             {{-- TAB 3: MONITORING SERTIFIKAT --}}
             <div class="tab-pane fade" id="pills-sertifikat" role="tabpanel">
-                <div class="card card-modern border-0 shadow-sm mb-4">
+                <div class="glass-card mb-4">
                     <div class="card-header bg-light border-bottom p-3" style="border-radius: 16px 16px 0 0;">
                         <h6 class="m-0 fw-bolder text-dark">Status Penerbitan, Pengiriman & Logistik</h6>
                     </div>
                     <div class="card-body p-0">
                         <div class="table-responsive">
-                            <table class="table table-modern table-hover align-middle mb-0" style="min-width: 1600px;">
+                            <table class="table table-custom align-middle mb-0" style="min-width: 1600px;">
                                 <thead class="bg-light sticky-top">
                                     <tr>
                                         <th class="ps-4" width="250">Program Pelatihan & Sertifikasi</th>
@@ -590,7 +590,7 @@
                                                 <span class="badge badge-soft-{{ $badgeSertif }} border border-{{ $badgeSertif }} text-{{ $badgeSertif == 'warning' ? 'dark' : $badgeSertif }} px-4 py-2 rounded-pill shadow-sm" style="font-size: 11px;">
                                                     <i class="fas fa-{{ $iconSertif }} me-1"></i> {{ $pelatihan->status_sertifikat ?? 'OGP' }}
                                                 </span>
-                                                <button class="btn btn-sm btn-white border btn-round text-muted d-block mx-auto mt-2 hover-lift px-3" style="font-size: 10px;" data-bs-toggle="modal" data-bs-target="#modalUpdateStatusSertif-{{ $pelatihan->id }}">Ubah Status</button>
+                                                <button class="btn btn-sm btn-light border btn-round text-muted d-block mx-auto mt-2 hover-lift px-3" style="font-size: 10px;" data-bs-toggle="modal" data-bs-target="#modalUpdateStatusSertif-{{ $pelatihan->id }}">Ubah Status</button>
                                             </td>
                                             <td>
                                                 <div class="d-flex flex-column gap-2" style="font-size: 11px;">
@@ -622,7 +622,7 @@
                                                     <a href="{{ asset($pelatihan->file_scan_sertifikat) }}" target="_blank" class="btn btn-sm btn-light border text-info fw-bold btn-round shadow-sm hover-lift w-100">
                                                         <i class="fas fa-file-pdf me-1"></i> Lihat Scan
                                                     </a>
-                                                    <button class="btn btn-sm btn-white border text-muted btn-round hover-lift w-100" style="font-size: 10px;" data-bs-toggle="modal" data-bs-target="#modalUploadScanSertif-{{ $pelatihan->id }}">Ganti File</button>
+                                                    <button class="btn btn-sm btn-light border text-muted btn-round hover-lift w-100" style="font-size: 10px;" data-bs-toggle="modal" data-bs-target="#modalUploadScanSertif-{{ $pelatihan->id }}">Ganti File</button>
                                                 </div>
                                                 @else
                                                 <button class="btn btn-sm btn-white text-info fw-bold btn-round shadow-sm hover-lift w-100" style="border: 1.5px dashed #7dd3fc;" data-bs-toggle="modal" data-bs-target="#modalUploadScanSertif-{{ $pelatihan->id }}">
@@ -638,7 +638,7 @@
                                                             <span class="badge badge-soft-danger border border-danger mb-1 fw-bold">{{ $pelatihan->ekspedisi ?? 'EKSPEDISI' }}</span>
                                                             <span class="fw-bolder text-dark d-block" style="letter-spacing: 1px; font-size: 13px;">{{ $pelatihan->resi_pengiriman }}</span>
                                                         </div>
-                                                        <button class="btn btn-sm btn-white border text-muted px-2 py-1 hover-lift" title="Edit Resi" data-bs-toggle="modal" data-bs-target="#modalUpdateResi-{{ $pelatihan->id }}"><i class="fas fa-pen"></i></button>
+                                                        <button class="btn btn-sm btn-light border text-muted px-2 py-1 hover-lift" title="Edit Resi" data-bs-toggle="modal" data-bs-target="#modalUpdateResi-{{ $pelatihan->id }}"><i class="fas fa-pen"></i></button>
                                                     </div>
                                                     @if($pelatihan->foto_resi)
                                                     <a href="{{ asset($pelatihan->foto_resi) }}" target="_blank" class="badge bg-white text-primary border border-primary text-decoration-none shadow-sm px-2 py-1 w-100 text-center hover-lift">
@@ -658,7 +658,7 @@
                                                     <a href="{{ asset($pelatihan->foto_tanda_terima) }}" target="_blank" class="btn btn-sm btn-success text-white btn-round shadow-sm hover-lift w-100 fw-bold">
                                                         <i class="fas fa-image me-1"></i> TTD
                                                     </a>
-                                                    <button class="btn btn-sm btn-white border text-muted btn-round hover-lift w-100" style="font-size: 10px;" data-bs-toggle="modal" data-bs-target="#modalUploadTandaTerima-{{ $pelatihan->id }}">Ganti Foto</button>
+                                                    <button class="btn btn-sm btn-light border text-muted btn-round hover-lift w-100" style="font-size: 10px;" data-bs-toggle="modal" data-bs-target="#modalUploadTandaTerima-{{ $pelatihan->id }}">Ganti Foto</button>
                                                 </div>
                                                 @else
                                                 <button class="btn btn-sm btn-white text-success fw-bold btn-round shadow-sm hover-lift w-100 py-2" style="border: 1.5px dashed #86efac;" data-bs-toggle="modal" data-bs-target="#modalUploadTandaTerima-{{ $pelatihan->id }}">
@@ -690,12 +690,12 @@
 {{-- Modal: Update Info Riwayat (Khusus Hasil Sync Riwayat) --}}
 <div class="modal fade" id="modalUpdateInfoRiwayat-{{ $pelatihan->id }}" tabindex="-1" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered">
-        <form method="POST" action="{{ route('monitoring.pelatihan.update', $pelatihan->id) }}" class="modal-content border-0 shadow-lg" style="border-radius: 20px;">
+        <form method="POST" action="{{ route('monitoring.pelatihan.update', $pelatihan->id) }}" class="modal-content modal-content-modern">
             @csrf
             @method('PUT')
-            <div class="modal-header border-bottom pb-3 pt-4 px-4 bg-light" style="border-radius: 20px 20px 0 0;">
-                <h5 class="modal-title fw-bolder text-dark"><i class="fas fa-edit text-primary me-2"></i> Edit Judul & Sertifikasi</h5>
-                <button type="button" class="btn-close shadow-none" data-bs-dismiss="modal" aria-label="Close"></button>
+            <div class="modal-header modal-header-modern" >
+                <h5 class="modal-title fw-bolder text-warning"><i class="fas fa-edit text-warning me-2"></i> Edit Judul & Sertifikasi</h5>
+                <button type="button" class="btn-close btn-close-white shadow-none" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body px-4 pt-4 pb-4">
                 <div class="alert alert-info border-info bg-light-info text-info p-3 rounded" style="font-size: 13px;">
@@ -713,8 +713,8 @@
                 </div>
             </div>
             <div class="modal-footer border-top bg-light py-3 px-4" style="border-radius: 0 0 20px 20px;">
-                <button type="button" class="btn btn-white border btn-round fw-bold text-dark px-4 shadow-none" data-bs-dismiss="modal">Batal</button>
-                <button type="submit" class="btn btn-primary btn-round fw-bold px-4 shadow-sm hover-lift">Simpan Data</button>
+                <button type="button" class="btn btn-light border btn-round fw-bold text-dark px-4 shadow-none" data-bs-dismiss="modal">Batal</button>
+                <button type="submit" class="btn btn-premium btn-round fw-bold px-4 shadow-sm hover-lift">Simpan Data</button>
             </div>
         </form>
     </div>
@@ -723,13 +723,13 @@
 {{-- Modal 1: Update Jadwal & Lokasi --}}
 <div class="modal fade" id="modalUpdateJadwal-{{ $pelatihan->id }}" tabindex="-1" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered">
-        <form method="POST" action="{{ route('monitoring.pelatihan.update', $pelatihan->id) }}" class="modal-content border-0 shadow-lg" style="border-radius: 20px;">
+        <form method="POST" action="{{ route('monitoring.pelatihan.update', $pelatihan->id) }}" class="modal-content modal-content-modern">
             @csrf
             @method('PUT')
             <input type="hidden" name="status_kelas" value="{{ $pelatihan->status_kelas }}">
-            <div class="modal-header border-bottom pb-3 pt-4 px-4 bg-light" style="border-radius: 20px 20px 0 0;">
-                <h5 class="modal-title fw-bolder text-dark"><i class="fas fa-calendar-alt text-primary me-2"></i> Set Jadwal & Lokasi Kelas</h5>
-                <button type="button" class="btn-close shadow-none" data-bs-dismiss="modal" aria-label="Close"></button>
+            <div class="modal-header modal-header-modern" >
+                <h5 class="modal-title fw-bolder text-warning"><i class="fas fa-calendar-alt text-warning me-2"></i> Set Jadwal & Lokasi Kelas</h5>
+                <button type="button" class="btn-close btn-close-white shadow-none" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body px-4 pt-4 pb-4">
                 <div class="row g-3">
@@ -753,8 +753,8 @@
                 </div>
             </div>
             <div class="modal-footer border-top bg-light py-3 px-4" style="border-radius: 0 0 20px 20px;">
-                <button type="button" class="btn btn-white border btn-round fw-bold text-dark px-4 shadow-none" data-bs-dismiss="modal">Batal</button>
-                <button type="submit" class="btn btn-primary btn-round fw-bold px-4 shadow-sm hover-lift">Simpan Data</button>
+                <button type="button" class="btn btn-light border btn-round fw-bold text-dark px-4 shadow-none" data-bs-dismiss="modal">Batal</button>
+                <button type="submit" class="btn btn-premium btn-round fw-bold px-4 shadow-sm hover-lift">Simpan Data</button>
             </div>
         </form>
     </div>
@@ -763,14 +763,14 @@
 {{-- Modal 2: Update Tim Lapangan --}}
 <div class="modal fade" id="modalUpdateTim-{{ $pelatihan->id }}" tabindex="-1" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered">
-        <form method="POST" action="{{ route('monitoring.pelatihan.update', $pelatihan->id) }}" class="modal-content border-0 shadow-lg" style="border-radius: 20px;">
+        <form method="POST" action="{{ route('monitoring.pelatihan.update', $pelatihan->id) }}" class="modal-content modal-content-modern">
             @csrf
             @method('PUT')
             <input type="hidden" name="status_kelas" value="{{ $pelatihan->status_kelas }}">
             <input type="hidden" name="tanggal_pelatihan" value="{{ $pelatihan->tanggal_pelatihan }}">
-            <div class="modal-header border-bottom pb-3 pt-4 px-4 bg-light" style="border-radius: 20px 20px 0 0;">
-                <h5 class="modal-title fw-bolder text-dark"><i class="fas fa-users-cog text-success me-2"></i> Set Tim Pengajar & Pengawas</h5>
-                <button type="button" class="btn-close shadow-none" data-bs-dismiss="modal" aria-label="Close"></button>
+            <div class="modal-header modal-header-modern" >
+                <h5 class="modal-title fw-bolder text-warning"><i class="fas fa-users-cog text-warning me-2"></i> Set Tim Pengajar & Pengawas</h5>
+                <button type="button" class="btn-close btn-close-white shadow-none" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body px-4 pt-4 pb-4">
                 <div class="mb-3">
@@ -795,7 +795,7 @@
                 </div>
             </div>
             <div class="modal-footer border-top bg-light py-3 px-4" style="border-radius: 0 0 20px 20px;">
-                <button type="button" class="btn btn-white border btn-round fw-bold text-dark px-4 shadow-none" data-bs-dismiss="modal">Batal</button>
+                <button type="button" class="btn btn-light border btn-round fw-bold text-dark px-4 shadow-none" data-bs-dismiss="modal">Batal</button>
                 <button type="submit" class="btn btn-success text-white btn-round fw-bold px-4 shadow-sm hover-lift">Simpan Tim</button>
             </div>
         </form>
@@ -805,14 +805,14 @@
 {{-- Modal 3: Update Kelembagaan & PIC --}}
 <div class="modal fade" id="modalUpdateLembaga-{{ $pelatihan->id }}" tabindex="-1" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered">
-        <form method="POST" action="{{ route('monitoring.pelatihan.update', $pelatihan->id) }}" class="modal-content border-0 shadow-lg" style="border-radius: 20px;">
+        <form method="POST" action="{{ route('monitoring.pelatihan.update', $pelatihan->id) }}" class="modal-content modal-content-modern">
             @csrf
             @method('PUT')
             <input type="hidden" name="status_kelas" value="{{ $pelatihan->status_kelas }}">
             <input type="hidden" name="tanggal_pelatihan" value="{{ $pelatihan->tanggal_pelatihan }}">
-            <div class="modal-header border-bottom pb-3 pt-4 px-4 bg-light" style="border-radius: 20px 20px 0 0;">
-                <h5 class="modal-title fw-bolder text-dark"><i class="fas fa-building text-info me-2"></i> Set Kelembagaan & PIC</h5>
-                <button type="button" class="btn-close shadow-none" data-bs-dismiss="modal" aria-label="Close"></button>
+            <div class="modal-header modal-header-modern" >
+                <h5 class="modal-title fw-bolder text-warning"><i class="fas fa-building text-warning me-2"></i> Set Kelembagaan & PIC</h5>
+                <button type="button" class="btn-close btn-close-white shadow-none" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body px-4 pt-4 pb-4">
                 <div class="row g-3 mb-3">
@@ -842,8 +842,8 @@
                 </div>
             </div>
             <div class="modal-footer border-top bg-light py-3 px-4" style="border-radius: 0 0 20px 20px;">
-                <button type="button" class="btn btn-white border btn-round fw-bold text-dark px-4 shadow-none" data-bs-dismiss="modal">Batal</button>
-                <button type="submit" class="btn btn-info text-white btn-round fw-bold px-4 shadow-sm hover-lift">Simpan Data</button>
+                <button type="button" class="btn btn-light border btn-round fw-bold text-dark px-4 shadow-none" data-bs-dismiss="modal">Batal</button>
+                <button type="submit" class="btn btn-premium btn-round fw-bold px-4 shadow-sm hover-lift">Simpan Data</button>
             </div>
         </form>
     </div>
@@ -852,13 +852,13 @@
 {{-- Modal 4: Update Status Kelas --}}
 <div class="modal fade" id="modalUpdateStatusKelas-{{ $pelatihan->id }}" tabindex="-1" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered modal-sm">
-        <form method="POST" action="{{ route('monitoring.pelatihan.update', $pelatihan->id) }}" class="modal-content border-0 shadow-lg" style="border-radius: 20px;">
+        <form method="POST" action="{{ route('monitoring.pelatihan.update', $pelatihan->id) }}" class="modal-content modal-content-modern">
             @csrf
             @method('PUT')
             <input type="hidden" name="tanggal_pelatihan" value="{{ $pelatihan->tanggal_pelatihan }}">
-            <div class="modal-header border-bottom pb-3 pt-4 px-4 bg-light" style="border-radius: 20px 20px 0 0;">
-                <h5 class="modal-title fw-bolder text-dark"><i class="fas fa-flag text-warning me-2"></i> Update Status Kelas</h5>
-                <button type="button" class="btn-close shadow-none" data-bs-dismiss="modal" aria-label="Close"></button>
+            <div class="modal-header modal-header-modern" >
+                <h5 class="modal-title fw-bolder text-warning"><i class="fas fa-flag text-warning me-2"></i> Update Status Kelas</h5>
+                <button type="button" class="btn-close btn-close-white shadow-none" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body px-4 pt-4 pb-4">
                 <label class="label-modern">Pilih Status Baru</label>
@@ -870,7 +870,7 @@
                 </select>
             </div>
             <div class="modal-footer border-top bg-light py-3 px-4" style="border-radius: 0 0 20px 20px;">
-                <button type="submit" class="btn btn-primary btn-round fw-bold w-100 shadow-sm hover-lift">Simpan Status</button>
+                <button type="submit" class="btn btn-premium btn-round fw-bold w-100 shadow-sm hover-lift">Simpan Status</button>
             </div>
         </form>
     </div>
@@ -879,14 +879,14 @@
 {{-- Modal 5: Detail Peserta --}}
 <div class="modal fade" id="modalDetailPeserta-{{ $pelatihan->id }}" tabindex="-1" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered modal-xl">
-        <div class="modal-content border-0 shadow-lg" style="border-radius: 20px;">
-            <div class="modal-header border-bottom pb-3 pt-4 px-4 bg-light" style="border-radius: 20px 20px 0 0;">
-                <h5 class="modal-title fw-bolder text-dark"><i class="fas fa-users text-primary me-2"></i> Detail Peserta Pelatihan</h5>
-                <button type="button" class="btn-close shadow-none" data-bs-dismiss="modal" aria-label="Close"></button>
+        <div class="modal-content modal-content-modern">
+            <div class="modal-header modal-header-modern" >
+                <h5 class="modal-title fw-bolder text-warning"><i class="fas fa-users text-warning me-2"></i> Detail Peserta Pelatihan</h5>
+                <button type="button" class="btn-close btn-close-white shadow-none" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body p-0">
                 <div class="table-responsive" style="max-height: 400px; overflow-y: auto;">
-                    <table class="table table-modern table-hover align-middle mb-0" style="min-width: 1000px;">
+                    <table class="table table-custom align-middle mb-0" style="min-width: 1000px;">
                         <thead class="bg-light sticky-top">
                             <tr>
                                 <th class="ps-4" width="200">Nama Peserta</th>
@@ -949,7 +949,7 @@
                 </div>
             </div>
             <div class="modal-footer border-top bg-light py-3 px-4" style="border-radius: 0 0 20px 20px;">
-                <button type="button" class="btn btn-white border btn-round fw-bold text-dark px-4 shadow-none" data-bs-dismiss="modal">Tutup</button>
+                <button type="button" class="btn btn-light border btn-round fw-bold text-dark px-4 shadow-none" data-bs-dismiss="modal">Tutup</button>
             </div>
         </div>
     </div>
@@ -960,19 +960,19 @@
 {{-- ================= MODAL UPDATE VALIDASI CHECKLIST ================= --}}
 <div class="modal fade" id="modalUpdateValidasi-{{ $pelatihan->id }}" tabindex="-1" aria-hidden="true">
     <div class="modal-dialog modal-xl modal-dialog-centered modal-dialog-scrollable">
-        <div class="modal-content border-0 shadow-lg" style="border-radius: 20px;">
-            <div class="modal-header border-bottom pb-3 pt-4 px-4 px-md-5 bg-light" style="border-radius: 20px 20px 0 0;">
+        <div class="modal-content modal-content-modern">
+            <div class="modal-header modal-header-modern" >
                 <div class="d-flex align-items-center">
                     <div class="bg-primary text-white d-flex align-items-center justify-content-center me-3 shadow-sm" style="width: 40px; height: 40px; font-size: 18px; border-radius: 10px;">
                         <i class="fas fa-tasks"></i>
                     </div>
                     <div>
-                        <h5 class="modal-title fw-bolder text-dark mb-0">Update Validasi Checklist</h5>
+                        <h5 class="modal-title fw-bolder text-white mb-0">Update Validasi Checklist</h5>
                         @php $isSyncRiwayat = $pelatihan->pendaftaranPribadis->isEmpty() && $pelatihan->riwayat; @endphp
                         <p class="text-muted mb-0" style="font-size: 12px;">Program: <strong class="text-dark">{{ $isSyncRiwayat ? ($pelatihan->riwayat->judul_pelatihan ?? (optional($pelatihan->training)->nama_training ?? '-')) : (optional($pelatihan->training)->nama_training ?? '-') }}</strong></p>
                     </div>
                 </div>
-                <button type="button" class="btn-close shadow-none" data-bs-dismiss="modal" aria-label="Close"></button>
+                <button type="button" class="btn-close btn-close-white shadow-none" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <form action="{{ route('monitoring.pelatihan.update', $pelatihan->id) }}" method="POST" enctype="multipart/form-data">
                 @csrf
@@ -1034,7 +1034,7 @@
                                     </div>
                                     <div class="mb-2 mt-1 d-flex gap-2">
                                         <input type="file" name="background_zoom" class="form-control form-control-sm shadow-none" accept=".jpg,.jpeg,.png">
-                                        @if($pelatihan->background_zoom) <a href="{{ asset($pelatihan->background_zoom) }}" target="_blank" class="btn btn-sm btn-outline-primary"><i class="fas fa-image"></i></a> @endif
+                                        @if($pelatihan->background_zoom) <a href="{{ asset($pelatihan->background_zoom) }}" target="_blank" class="btn btn-sm btn-outline-premium"><i class="fas fa-image"></i></a> @endif
                                     </div>
                                     <div class="form-check custom-checkbox mb-2">
                                         <input class="form-check-input" type="checkbox" name="checklist_validasi[]" value="Foto Profil Grup WA" {{ in_array('Foto Profil Grup WA', $checklist) ? 'checked' : '' }}>
@@ -1046,7 +1046,7 @@
                                     </div>
                                     <div class="mb-2 mt-1 d-flex gap-2">
                                         <input type="file" name="modul" class="form-control form-control-sm shadow-none" accept=".pdf,.doc,.docx,.zip,.rar">
-                                        @if($pelatihan->modul) <a href="{{ asset($pelatihan->modul) }}" target="_blank" class="btn btn-sm btn-outline-primary"><i class="fas fa-file-pdf"></i></a> @endif
+                                        @if($pelatihan->modul) <a href="{{ asset($pelatihan->modul) }}" target="_blank" class="btn btn-sm btn-outline-premium"><i class="fas fa-file-pdf"></i></a> @endif
                                     </div>
                                     <div class="form-check custom-checkbox mb-2">
                                         <input class="form-check-input" type="checkbox" name="checklist_validasi[]" value="Rundown Pelatihan" {{ in_array('Rundown Pelatihan', $checklist) ? 'checked' : '' }}>
@@ -1054,7 +1054,7 @@
                                     </div>
                                     <div class="mb-2 mt-1 d-flex gap-2">
                                         <input type="file" name="rundown_pelatihan" class="form-control form-control-sm shadow-none" accept=".pdf,.doc,.docx">
-                                        @if($pelatihan->rundown_pelatihan) <a href="{{ asset($pelatihan->rundown_pelatihan) }}" target="_blank" class="btn btn-sm btn-outline-primary"><i class="fas fa-file-alt"></i></a> @endif
+                                        @if($pelatihan->rundown_pelatihan) <a href="{{ asset($pelatihan->rundown_pelatihan) }}" target="_blank" class="btn btn-sm btn-outline-premium"><i class="fas fa-file-alt"></i></a> @endif
                                     </div>
                                 </div>
                             </div>
@@ -1119,8 +1119,8 @@
                     </div>
                 </div>
                 <div class="modal-footer border-top px-4 px-md-5 py-3 bg-white" style="border-radius: 0 0 20px 20px;">
-                    <button type="button" class="btn btn-white border fw-bold px-4 btn-round hover-lift text-dark" data-bs-dismiss="modal">Batal</button>
-                    <button type="submit" class="btn btn-primary fw-bold px-4 btn-round shadow-sm hover-lift">
+                    <button type="button" class="btn btn-light border fw-bold px-4 btn-round hover-lift text-dark" data-bs-dismiss="modal">Batal</button>
+                    <button type="submit" class="btn btn-premium fw-bold px-4 btn-round shadow-sm hover-lift">
                         <i class="fas fa-save me-1"></i> Simpan Progress
                     </button>
                 </div>
@@ -1132,17 +1132,17 @@
 {{-- MODAL UPLOAD LAPORAN --}}
 <div class="modal fade" id="modalUploadLaporan-{{ $pelatihan->id }}" tabindex="-1" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered">
-        <form action="{{ route('monitoring.pelatihan.update', $pelatihan->id) }}" method="POST" enctype="multipart/form-data" class="modal-content border-0 shadow-lg" style="border-radius: 20px;">
+        <form action="{{ route('monitoring.pelatihan.update', $pelatihan->id) }}" method="POST" enctype="multipart/form-data" class="modal-content modal-content-modern">
             @csrf
             @method('PUT')
-            <div class="modal-header border-bottom pb-3 pt-4 px-4 bg-light" style="border-radius: 20px 20px 0 0;">
+            <div class="modal-header modal-header-modern" >
                 <div class="d-flex align-items-center">
                     <div class="bg-info text-white d-flex align-items-center justify-content-center me-3 shadow-sm" style="width: 40px; height: 40px; font-size: 18px; border-radius: 10px;">
                         <i class="fas fa-cloud-upload-alt"></i>
                     </div>
-                    <div><h5 class="modal-title fw-bolder text-dark mb-0">Upload Laporan</h5></div>
+                    <div><h5 class="modal-title fw-bolder text-white mb-0">Upload Laporan</h5></div>
                 </div>
-                <button type="button" class="btn-close shadow-none" data-bs-dismiss="modal" aria-label="Close"></button>
+                <button type="button" class="btn-close btn-close-white shadow-none" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body px-4 pt-4 pb-4">
                 <div class="mb-3">
@@ -1155,7 +1155,7 @@
                 </div>
             </div>
             <div class="modal-footer border-top bg-light py-3 px-4" style="border-radius: 0 0 20px 20px;">
-                <button type="submit" class="btn btn-info text-white fw-bold btn-round w-100 shadow-sm">Upload File</button>
+                <button type="submit" class="btn btn-premium fw-bold btn-round w-100 shadow-sm">Upload File</button>
             </div>
         </form>
     </div>
@@ -1164,12 +1164,12 @@
 {{-- MODAL UPDATE EVALUASI --}}
 <div class="modal fade" id="modalUpdateEvaluasi-{{ $pelatihan->id }}" tabindex="-1" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered">
-        <form action="{{ route('monitoring.pelatihan.update', $pelatihan->id) }}" method="POST" class="modal-content border-0 shadow-lg" style="border-radius: 20px;">
+        <form action="{{ route('monitoring.pelatihan.update', $pelatihan->id) }}" method="POST" class="modal-content modal-content-modern">
             @csrf
             @method('PUT')
-            <div class="modal-header border-bottom pb-3 pt-4 px-4 bg-light" style="border-radius: 20px 20px 0 0;">
-                <h5 class="modal-title fw-bolder text-dark"><i class="fas fa-comment-dots text-warning me-2"></i> Catatan Evaluasi</h5>
-                <button type="button" class="btn-close shadow-none" data-bs-dismiss="modal"></button>
+            <div class="modal-header modal-header-modern" >
+                <h5 class="modal-title fw-bolder text-warning"><i class="fas fa-comment-dots text-warning me-2"></i> Catatan Evaluasi</h5>
+                <button type="button" class="btn-close btn-close-white shadow-none" data-bs-dismiss="modal"></button>
             </div>
             <div class="modal-body px-4 pt-4 pb-4">
                 <label class="label-modern">Evaluasi Pelaksanaan</label>
@@ -1185,12 +1185,12 @@
 {{-- MODAL UPDATE KOMENTAR (SUPERADMIN, SPV MARKETING, TEAM LEADER) --}}
 <div class="modal fade" id="modalUpdateKomentar-{{ $pelatihan->id }}" tabindex="-1" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered">
-        <form action="{{ route('monitoring.pelatihan.update', $pelatihan->id) }}" method="POST" class="modal-content border-0 shadow-lg" style="border-radius: 20px;">
+        <form action="{{ route('monitoring.pelatihan.update', $pelatihan->id) }}" method="POST" class="modal-content modal-content-modern">
             @csrf
             @method('PUT')
-            <div class="modal-header border-bottom pb-3 pt-4 px-4 bg-light" style="border-radius: 20px 20px 0 0;">
-                <h5 class="modal-title fw-bolder text-dark"><i class="fas fa-comments text-primary me-2"></i> Komentar / Feedback</h5>
-                <button type="button" class="btn-close shadow-none" data-bs-dismiss="modal"></button>
+            <div class="modal-header modal-header-modern" >
+                <h5 class="modal-title fw-bolder text-warning"><i class="fas fa-comments text-warning me-2"></i> Komentar / Feedback</h5>
+                <button type="button" class="btn-close btn-close-white shadow-none" data-bs-dismiss="modal"></button>
             </div>
             <div class="modal-body px-4 pt-4 pb-4">
                 @php 
@@ -1226,7 +1226,7 @@
             </div>
             <div class="modal-footer border-top bg-light py-3 px-4" style="border-radius: 0 0 20px 20px;">
                 @if(in_array($userRole, ['superadmin', 'spv_marketing', 'team_leader']))
-                    <button type="submit" class="btn btn-primary fw-bold btn-round w-100 shadow-sm hover-lift">Simpan Komentar</button>
+                    <button type="submit" class="btn btn-premium fw-bold btn-round w-100 shadow-sm hover-lift">Simpan Komentar</button>
                 @else
                     <button type="button" class="btn btn-secondary fw-bold btn-round w-100 shadow-sm" data-bs-dismiss="modal">Tutup</button>
                 @endif
@@ -1238,12 +1238,12 @@
 {{-- MODAL UPDATE STATUS SERTIFIKAT --}}
 <div class="modal fade" id="modalUpdateStatusSertif-{{ $pelatihan->id }}" tabindex="-1" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered">
-        <form action="{{ route('monitoring.pelatihan.update', $pelatihan->id) }}" method="POST" class="modal-content border-0 shadow-lg" style="border-radius: 20px;">
+        <form action="{{ route('monitoring.pelatihan.update', $pelatihan->id) }}" method="POST" class="modal-content modal-content-modern">
             @csrf
             @method('PUT')
-            <div class="modal-header border-bottom pb-3 pt-4 px-4 bg-light" style="border-radius: 20px 20px 0 0;">
-                <h5 class="modal-title fw-bolder text-dark"><i class="fas fa-award text-success me-2"></i> Update Status Sertifikat</h5>
-                <button type="button" class="btn-close shadow-none" data-bs-dismiss="modal"></button>
+            <div class="modal-header modal-header-modern" >
+                <h5 class="modal-title fw-bolder text-warning"><i class="fas fa-award text-warning me-2"></i> Update Status Sertifikat</h5>
+                <button type="button" class="btn-close btn-close-white shadow-none" data-bs-dismiss="modal"></button>
             </div>
             <div class="modal-body px-4 pt-4 pb-4">
                 <div class="mb-3">
@@ -1279,19 +1279,19 @@
 {{-- MODAL UPLOAD SCAN SERTIFIKAT --}}
 <div class="modal fade" id="modalUploadScanSertif-{{ $pelatihan->id }}" tabindex="-1" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered">
-        <form action="{{ route('monitoring.pelatihan.update', $pelatihan->id) }}" method="POST" enctype="multipart/form-data" class="modal-content border-0 shadow-lg" style="border-radius: 20px;">
+        <form action="{{ route('monitoring.pelatihan.update', $pelatihan->id) }}" method="POST" enctype="multipart/form-data" class="modal-content modal-content-modern">
             @csrf
             @method('PUT')
-            <div class="modal-header border-bottom pb-3 pt-4 px-4 bg-light" style="border-radius: 20px 20px 0 0;">
-                <h5 class="modal-title fw-bolder text-dark"><i class="fas fa-file-pdf text-info me-2"></i> Upload Scan Sertifikat</h5>
-                <button type="button" class="btn-close shadow-none" data-bs-dismiss="modal"></button>
+            <div class="modal-header modal-header-modern" >
+                <h5 class="modal-title fw-bolder text-warning"><i class="fas fa-file-pdf text-warning me-2"></i> Upload Scan Sertifikat</h5>
+                <button type="button" class="btn-close btn-close-white shadow-none" data-bs-dismiss="modal"></button>
             </div>
             <div class="modal-body px-4 pt-4 pb-4">
                 <label class="label-modern">Pilih File (PDF/Zip)</label>
                 <input type="file" name="file_scan_sertifikat" class="form-control input-modern shadow-none" accept=".pdf,.zip,.rar" required>
             </div>
             <div class="modal-footer border-top bg-light py-3 px-4" style="border-radius: 0 0 20px 20px;">
-                <button type="submit" class="btn btn-info text-white fw-bold btn-round w-100 shadow-sm">Upload Scan</button>
+                <button type="submit" class="btn btn-premium fw-bold btn-round w-100 shadow-sm">Upload Scan</button>
             </div>
         </form>
     </div>
@@ -1300,12 +1300,12 @@
 {{-- MODAL INPUT RESI PENGIRIMAN --}}
 <div class="modal fade" id="modalUpdateResi-{{ $pelatihan->id }}" tabindex="-1" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered">
-        <form action="{{ route('monitoring.pelatihan.update', $pelatihan->id) }}" method="POST" enctype="multipart/form-data" class="modal-content border-0 shadow-lg" style="border-radius: 20px;">
+        <form action="{{ route('monitoring.pelatihan.update', $pelatihan->id) }}" method="POST" enctype="multipart/form-data" class="modal-content modal-content-modern">
             @csrf
             @method('PUT')
-            <div class="modal-header border-bottom pb-3 pt-4 px-4 bg-light" style="border-radius: 20px 20px 0 0;">
-                <h5 class="modal-title fw-bolder text-dark"><i class="fas fa-truck-loading text-primary me-2"></i> Input Resi & Pengiriman</h5>
-                <button type="button" class="btn-close shadow-none" data-bs-dismiss="modal"></button>
+            <div class="modal-header modal-header-modern" >
+                <h5 class="modal-title fw-bolder text-warning"><i class="fas fa-truck-loading text-warning me-2"></i> Input Resi & Pengiriman</h5>
+                <button type="button" class="btn-close btn-close-white shadow-none" data-bs-dismiss="modal"></button>
             </div>
             <div class="modal-body px-4 pt-4 pb-4">
                 <div class="mb-3">
@@ -1328,7 +1328,7 @@
                 </div>
             </div>
             <div class="modal-footer border-top bg-light py-3 px-4" style="border-radius: 0 0 20px 20px;">
-                <button type="submit" class="btn btn-primary text-white fw-bold btn-round w-100 shadow-sm">Simpan Resi</button>
+                <button type="submit" class="btn btn-premium text-white fw-bold btn-round w-100 shadow-sm">Simpan Resi</button>
             </div>
         </form>
     </div>
@@ -1337,12 +1337,12 @@
 {{-- MODAL UPLOAD TANDA TERIMA --}}
 <div class="modal fade" id="modalUploadTandaTerima-{{ $pelatihan->id }}" tabindex="-1" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered">
-        <form action="{{ route('monitoring.pelatihan.update', $pelatihan->id) }}" method="POST" enctype="multipart/form-data" class="modal-content border-0 shadow-lg" style="border-radius: 20px;">
+        <form action="{{ route('monitoring.pelatihan.update', $pelatihan->id) }}" method="POST" enctype="multipart/form-data" class="modal-content modal-content-modern">
             @csrf
             @method('PUT')
-            <div class="modal-header border-bottom pb-3 pt-4 px-4 bg-light" style="border-radius: 20px 20px 0 0;">
-                <h5 class="modal-title fw-bolder text-dark"><i class="fas fa-file-signature text-success me-2"></i> Upload Tanda Terima</h5>
-                <button type="button" class="btn-close shadow-none" data-bs-dismiss="modal"></button>
+            <div class="modal-header modal-header-modern" >
+                <h5 class="modal-title fw-bolder text-warning"><i class="fas fa-file-signature text-warning me-2"></i> Upload Tanda Terima</h5>
+                <button type="button" class="btn-close btn-close-white shadow-none" data-bs-dismiss="modal"></button>
             </div>
             <div class="modal-body px-4 pt-4 pb-4">
                 <div class="mb-0">
@@ -1362,10 +1362,10 @@
 @foreach($pelatihans as $pelatihan)
 <div class="modal fade" id="modalHapusPelatihan-{{ $pelatihan->id }}" tabindex="-1" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered">
-        <div class="modal-content border-0 shadow" style="border-radius: 20px;">
-            <div class="modal-header border-0 bg-danger text-white pb-3" style="border-radius: 20px 20px 0 0;">
+        <div class="modal-content modal-content-modern">
+            <div class="modal-header modal-header-modern" >
                 <h5 class="modal-title fw-bolder"><i class="fas fa-exclamation-triangle me-2"></i> Konfirmasi Hapus</h5>
-                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+                <button type="button" class="btn-close btn-close-white btn-close btn-close-white-white" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body p-4 text-center">
                 <div class="mb-3 text-danger">
@@ -1390,43 +1390,47 @@
 
 {{-- ================= STYLES ================= --}}
 <style>
-    /* Base UI */
-    .card-modern { border-radius: 16px; border: 1px solid #eef2f7; box-shadow: 0 4px 15px rgba(0,0,0,0.03); background: #ffffff; transition: all 0.3s ease; }
-    .hover-lift { transition: transform 0.2s ease, box-shadow 0.2s ease; }
-    .hover-lift:hover { transform: translateY(-3px); box-shadow: 0 10px 20px rgba(0,0,0,0.08) !important; }
-    .icon-modern { width: 48px; height: 48px; border-radius: 12px; display: flex; align-items: center; justify-content: center; font-size: 20px; }
-    
-    /* Colors */
-    .bg-primary-subtle { background-color: #eff6ff !important; }
-    .bg-success-subtle { background-color: #f0fdf4 !important; }
-    .bg-info-subtle { background-color: #ecfeff !important; }
-    .bg-warning-subtle { background-color: #fefce8 !important; }
-    .bg-danger-subtle { background-color: #fef2f2 !important; }
-    .text-warning-dark { color: #b45309 !important; }
+    /* Base UI / Premium Modern CSS */
+    .page-wrapper-modern { background-color: #f8f9fc; min-height: 100vh; font-family: 'Nunito', 'Segoe UI', sans-serif; }
+    .glass-card { background: #ffffff; border: 1px solid rgba(227, 230, 240, 0.8); box-shadow: 0 4px 20px rgba(0, 0, 0, 0.03); border-radius: 20px; transition: all 0.3s ease; }
+    .glass-card:hover { box-shadow: 0 10px 30px rgba(0, 0, 0, 0.06); }
+    .stat-icon-wrapper { width: 60px; height: 60px; border-radius: 18px; display: flex; align-items: center; justify-content: center; font-size: 26px; }
+    .bg-gradient-primary { background: linear-gradient(135deg, #4e73df 0%, #224abe 100%); color: white; }
+    .bg-gradient-warning { background: linear-gradient(135deg, #f6c23e 0%, #dda20a 100%); color: white; }
+    .bg-gradient-info { background: linear-gradient(135deg, #36b9cc 0%, #258391 100%); color: white; }
+    .bg-gradient-success { background: linear-gradient(135deg, #1cc88a 0%, #13855c 100%); color: white; }
 
-    /* Borders */
-    .border-primary-subtle { border-color: #bfdbfe !important; }
-    .border-success-subtle { border-color: #bbf7d0 !important; }
-    .border-info-subtle { border-color: #a5f3fc !important; }
-    .border-warning-subtle { border-color: #fef08a !important; }
-    .border-danger-subtle { border-color: #fca5a5 !important; }
+    /* Tables */
+    .table-custom { border-collapse: separate; border-spacing: 0 12px; margin-top: -12px;}
+    .table-custom tr { background-color: #ffffff; box-shadow: 0 2px 10px rgba(0,0,0,0.02); border-radius: 16px; transition: all 0.2s ease; border: 1px solid #f1f3f9;}
+    .table-custom tr:hover { box-shadow: 0 5px 15px rgba(0,0,0,0.06); }
+    .table-custom td { padding: 18px 22px; border: none; vertical-align: middle;}
+    .table-custom td:first-child { border-top-left-radius: 16px; border-bottom-left-radius: 16px; }
+    .table-custom td:last-child { border-top-right-radius: 16px; border-bottom-right-radius: 16px; }
+    .table-custom th { border: none; padding: 10px 22px; color: #858796; font-weight: 700; text-transform: uppercase; font-size: 11px; letter-spacing: 1px; background: transparent;}
 
     /* Badges */
-    .badge-soft-primary { background-color: #eff6ff; color: #3b82f6; }
-    .badge-soft-success { background-color: #f0fdf4; color: #16a34a; }
-    .badge-soft-warning { background-color: #fefce8; color: #b45309; }
-    .badge-soft-info { background-color: #ecfeff; color: #0891b2; }
-    .badge-soft-danger { background-color: #fef2f2; color: #dc2626; }
+    .badge-soft-primary { background-color: rgba(78, 115, 223, 0.1); color: #4e73df; font-weight: 700; padding: 6px 12px; border-radius: 8px; }
+    .badge-soft-warning { background-color: rgba(246, 194, 62, 0.15); color: #dda20a; font-weight: 700; padding: 6px 12px; border-radius: 8px; }
+    .badge-soft-danger { background-color: rgba(231, 74, 59, 0.1); color: #e74a3b; font-weight: 700; padding: 6px 12px; border-radius: 8px; }
+    .badge-soft-info { background-color: rgba(54, 185, 204, 0.1); color: #258391; font-weight: 700; padding: 6px 12px; border-radius: 8px; }
+    .badge-soft-success { background-color: rgba(28, 200, 138, 0.1); color: #1cc88a; font-weight: 700; padding: 6px 12px; border-radius: 8px; }
+
+    /* Buttons */
+    .btn-premium { background: linear-gradient(135deg, #4e73df 0%, #224abe 100%); color: white; border: none; border-radius: 50px; padding: 10px 24px; font-weight: 600; box-shadow: 0 4px 15px rgba(78, 115, 223, 0.3); transition: all 0.3s; }
+    .btn-premium:hover { box-shadow: 0 6px 20px rgba(78, 115, 223, 0.4); color: white;}
+    .btn-outline-premium { border: 2px solid #4e73df; color: #4e73df; border-radius: 50px; padding: 8px 20px; font-weight: 700; transition: all 0.3s; background: white;}
+    .btn-outline-premium:hover { background: #4e73df; color: white; box-shadow: 0 4px 15px rgba(78, 115, 223, 0.3); }
+
+    /* MODAL STYLES */
+    .modal-content-modern { border-radius: 24px; border: none; overflow: hidden; box-shadow: 0 20px 50px rgba(0,0,0,0.15);}
+    .modal-header-modern { background: linear-gradient(135deg, #4e73df 0%, #224abe 100%); color: white; padding: 25px 30px; border-bottom: none;}
 
     /* Tabs */
     .nav-modern { background-color: #f1f5f9; padding: 4px; border-radius: 50px; }
     .nav-modern .nav-link { border-radius: 50px; color: #64748b; font-weight: 600; font-size: 14px; padding: 8px 24px; border: none; transition: all 0.3s ease; background: transparent; }
     .nav-modern .nav-link:hover { color: #0f172a; }
     .nav-modern .nav-link.active { background-color: #ffffff; color: #3b82f6; box-shadow: 0 2px 8px rgba(0,0,0,0.08); }
-
-    /* Tables */
-    .table-modern th { text-transform: uppercase; font-size: 11px; letter-spacing: 0.5px; color: #64748b; background: #f8fafc; border-bottom: 2px solid #e2e8f0; padding: 14px 16px; }
-    .table-modern td { border-bottom: 1px solid #f1f5f9; padding: 16px; }
 
     /* Custom Elements */
     .alert-modern-danger { background-color: #fef2f2; border-radius: 8px; border-left: 3px solid #ef4444 !important; }
