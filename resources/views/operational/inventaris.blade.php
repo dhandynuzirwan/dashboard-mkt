@@ -33,7 +33,7 @@
                         <span class="fw-bold text-dark">Berhasil!</span> <span class="text-dark opacity-75">{{ session('success') }}</span>
                     </div>
                 </div>
-                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="alert" aria-label="Close"></button>
             </div>
         @endif
 
@@ -52,16 +52,16 @@
                         </ul>
                     </div>
                 </div>
-                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="alert" aria-label="Close"></button>
             </div>
         @endif
 
         {{-- ================= STATISTIC CARDS (MODERN UI) ================= --}}
         <div class="row mb-3 fade-in">
             <div class="col-sm-6 col-md-3 mb-3">
-                <div class="card card-modern h-100 hover-lift border-primary-subtle border-2">
+                <div class="card glass-card h-100 border-0">
                     <div class="card-body p-3 p-xl-4 d-flex align-items-center">
-                        <div class="icon-modern bg-primary-subtle text-primary me-3">
+                        <div class="stat-icon-wrapper bg-gradient-primary shadow-sm me-3">
                             <i class="fas fa-boxes"></i>
                         </div>
                         <div>
@@ -74,9 +74,9 @@
             </div>
 
             <div class="col-sm-6 col-md-3 mb-3">
-                <div class="card card-modern h-100 hover-lift border-success-subtle border-2">
+                <div class="card glass-card h-100 border-0">
                     <div class="card-body p-3 p-xl-4 d-flex align-items-center">
-                        <div class="icon-modern bg-success-subtle text-success me-3">
+                        <div class="stat-icon-wrapper bg-gradient-success shadow-sm me-3">
                             <i class="fas fa-layer-group"></i>
                         </div>
                         <div>
@@ -89,9 +89,9 @@
             </div>
 
             <div class="col-sm-6 col-md-3 mb-3">
-                <div class="card card-modern h-100 hover-lift border-warning-subtle border-2">
+                <div class="card glass-card h-100 border-0">
                     <div class="card-body p-3 p-xl-4 d-flex align-items-center">
-                        <div class="icon-modern bg-warning-subtle text-warning-dark me-3">
+                        <div class="stat-icon-wrapper bg-gradient-warning shadow-sm me-3">
                             <i class="fas fa-exclamation-circle"></i>
                         </div>
                         <div>
@@ -104,9 +104,9 @@
             </div>
 
             <div class="col-sm-6 col-md-3 mb-3">
-                <div class="card card-modern h-100 hover-lift border-danger-subtle border-2">
+                <div class="card glass-card h-100 border-0">
                     <div class="card-body p-3 p-xl-4 d-flex align-items-center">
-                        <div class="icon-modern bg-danger-subtle text-danger me-3">
+                        <div class="stat-icon-wrapper bg-gradient-danger shadow-sm me-3">
                             <i class="fas fa-cogs"></i>
                         </div>
                         <div>
@@ -137,7 +137,7 @@
             {{-- ================= TAB 1: BARANG PERSEDIAAN (Tampil Pertama) ================= --}}
             <div class="tab-pane fade show active" id="pills-persediaan" role="tabpanel">
                 
-                <div class="card card-modern border-0 shadow-sm mb-4">
+                <div class="glass-card mb-4">
                     <div class="card-body p-3 p-md-4 d-flex flex-wrap justify-content-between align-items-center gap-3 bg-light" style="border-radius: 16px;">
                         <form action="{{ route('operational.inventaris') }}" method="GET" class="d-flex gap-2 flex-grow-1 align-items-end flex-wrap">
                             <div style="min-width: 280px; flex-grow: 1; max-width: 400px;">
@@ -150,16 +150,16 @@
                             <button type="submit" class="btn btn-primary btn-sm btn-round fw-bold px-4 shadow-sm hover-lift">Filter</button>
                             <a href="{{ route('operational.inventaris') }}" class="btn btn-white btn-sm border btn-round fw-bold text-dark px-4 shadow-sm hover-lift">Reset</a>
                         </form>
-                        <button class="btn btn-success btn-round btn-sm fw-bold shadow-sm hover-lift px-4" data-bs-toggle="modal" data-bs-target="#modalTambahPersediaan">
+                        <button class="btn btn-premium btn-round btn-sm fw-bold shadow-sm px-4" data-bs-toggle="modal" data-bs-target="#modalTambahPersediaan">
                             <i class="fas fa-plus me-1"></i> Tambah Barang Baru
                         </button>
                     </div>
                 </div>
 
-                <div class="card card-modern border-0 shadow-sm mb-4">
+                <div class="glass-card mb-4">
                     <div class="card-body p-0">
                         <div class="table-responsive">
-                            <table class="table table-modern table-hover align-middle mb-0 text-center">
+                            <table class="table table-custom table-hover align-middle mb-0 text-center">
                                 <thead class="bg-light sticky-top">
                                     <tr>
                                         <th class="text-start ps-4">Nama Barang</th>
@@ -233,7 +233,7 @@
             {{-- ================= TAB 2: ASET TETAP ================= --}}
             <div class="tab-pane fade" id="pills-aset" role="tabpanel">
                 
-                <div class="card card-modern border-0 shadow-sm mb-4">
+                <div class="glass-card mb-4">
                     <div class="card-body p-3 p-md-4 d-flex flex-wrap justify-content-between align-items-center gap-3 bg-light" style="border-radius: 16px;">
                         <form action="{{ route('operational.inventaris') }}" method="GET" class="d-flex gap-2 flex-grow-1 align-items-end flex-wrap">
                             <div style="min-width: 280px; flex-grow: 1; max-width: 400px;">
@@ -246,16 +246,16 @@
                             <button type="submit" class="btn btn-primary btn-sm btn-round fw-bold px-4 shadow-sm hover-lift">Filter</button>
                             <a href="{{ route('operational.inventaris') }}" class="btn btn-white btn-sm border btn-round fw-bold text-dark px-4 shadow-sm hover-lift">Reset</a>
                         </form>
-                        <button class="btn btn-primary btn-round btn-sm fw-bold shadow-sm hover-lift px-4" data-bs-toggle="modal" data-bs-target="#modalTambahAset">
+                        <button class="btn btn-premium btn-round btn-sm fw-bold shadow-sm px-4" data-bs-toggle="modal" data-bs-target="#modalTambahAset">
                             <i class="fas fa-plus me-1"></i> Tambah Aset Tetap
                         </button>
                     </div>
                 </div>
 
-                <div class="card card-modern border-0 shadow-sm mb-4">
+                <div class="glass-card mb-4">
                     <div class="card-body p-0">
                         <div class="table-responsive">
-                            <table class="table table-modern table-hover align-middle mb-0">
+                            <table class="table table-custom table-hover align-middle mb-0">
                                 <thead class="bg-light sticky-top">
                                     <tr>
                                         <th class="text-start ps-4" width="130">Kode Aset</th>
@@ -381,7 +381,7 @@
                 <h5 class="modal-title fw-bolder">
                     <i class="fas fa-laptop me-2"></i> Form Tambah Aset Tetap
                 </h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             
             <form action="{{ route('inventaris.aset.store') }}" method="POST" enctype="multipart/form-data">
@@ -470,7 +470,7 @@
                     <h5 class="modal-title fw-bolder">
                         <i class="fas fa-edit me-2"></i> Edit Data Aset Tetap
                     </h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 
                 <form action="{{ route('inventaris.aset.update', $aset->id) }}" method="POST" enctype="multipart/form-data">
@@ -562,7 +562,7 @@
                 <h5 class="modal-title fw-bolder">
                     <i class="fas fa-box me-2"></i> Item Persediaan Baru
                 </h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             
             <form action="{{ route('inventaris.item.store') }}" method="POST">
@@ -616,7 +616,7 @@
                     <h5 class="modal-title fw-bolder">
                         <i class="fas fa-edit me-2"></i> Edit Item Persediaan
                     </h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 
                 <form action="{{ route('inventaris.item.update', $item->id) }}" method="POST">
@@ -665,7 +665,7 @@
                     <h5 class="modal-title fw-bolder">
                         <i class="fas fa-arrow-down me-2"></i> Tambah Stok (Masuk)
                     </h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <form action="{{ route('inventaris.mutasi', $item->id) }}" method="POST">
                     @csrf
@@ -698,7 +698,7 @@
                     <h5 class="modal-title fw-bolder">
                         <i class="fas fa-arrow-up me-2"></i> Kurangi Stok (Pemakaian)
                     </h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <form action="{{ route('inventaris.mutasi', $item->id) }}" method="POST">
                     @csrf
@@ -730,6 +730,35 @@
 {{-- ================= STYLES ================= --}}
 <style>
     /* CSS MODERNISASI UI */
+    /* Premium UI Additions */
+    .glass-card { background: #ffffff; border: 1px solid rgba(227, 230, 240, 0.8); box-shadow: 0 4px 20px rgba(0, 0, 0, 0.03); border-radius: 20px; transition: all 0.3s ease; }
+    .glass-card:hover { box-shadow: 0 10px 30px rgba(0, 0, 0, 0.06); }
+    .stat-icon-wrapper { width: 60px; height: 60px; border-radius: 18px; display: flex; align-items: center; justify-content: center; font-size: 26px; }
+    .bg-gradient-primary { background: linear-gradient(135deg, #4e73df 0%, #224abe 100%); color: white; }
+    .bg-gradient-warning { background: linear-gradient(135deg, #f6c23e 0%, #dda20a 100%); color: white; }
+    .bg-gradient-info { background: linear-gradient(135deg, #36b9cc 0%, #258391 100%); color: white; }
+    .bg-gradient-success { background: linear-gradient(135deg, #1cc88a 0%, #13855c 100%); color: white; }
+    .bg-gradient-danger { background: linear-gradient(135deg, #e74a3b 0%, #be2617 100%); color: white; }
+
+    /* Tables */
+    .table-custom { border-collapse: separate; border-spacing: 0 12px; margin-top: -12px;}
+    .table-custom tr { background-color: #ffffff; box-shadow: 0 2px 10px rgba(0,0,0,0.02); border-radius: 16px; transition: all 0.2s ease; border: 1px solid #f1f3f9;}
+    .table-custom tr:hover { box-shadow: 0 5px 15px rgba(0,0,0,0.06); }
+    .table-custom td { padding: 18px 22px; border: none; vertical-align: middle;}
+    .table-custom td:first-child { border-top-left-radius: 16px; border-bottom-left-radius: 16px; }
+    .table-custom td:last-child { border-top-right-radius: 16px; border-bottom-right-radius: 16px; }
+    .table-custom th { border: none; padding: 10px 22px; color: #858796; font-weight: 700; text-transform: uppercase; font-size: 11px; letter-spacing: 1px; background: transparent;}
+
+    /* Buttons */
+    .btn-premium { background: linear-gradient(135deg, #4e73df 0%, #224abe 100%); color: white; border: none; border-radius: 50px; padding: 10px 24px; font-weight: 600; box-shadow: 0 4px 15px rgba(78, 115, 223, 0.3); transition: all 0.3s; }
+    .btn-premium:hover { box-shadow: 0 6px 20px rgba(78, 115, 223, 0.4); color: white;}
+
+    /* MODAL STYLES */
+    .modal-content-modern { border-radius: 24px; border: none; overflow: hidden; box-shadow: 0 20px 50px rgba(0,0,0,0.15);}
+    .modal-header-modern { background: linear-gradient(135deg, #4e73df 0%, #224abe 100%); color: white; padding: 25px 30px; border-bottom: none;}
+    .modal-header-modern .btn-close { filter: brightness(0) invert(1); opacity: 0.8;}
+    .modal-header-modern .btn-close:hover { opacity: 1;}
+
     .card-modern {
         border-radius: 16px;
         border: 1px solid #eef2f7;
