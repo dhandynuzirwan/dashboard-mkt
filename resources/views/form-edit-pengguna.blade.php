@@ -178,6 +178,14 @@
                                 </div>
 
                                 <div class="form-group col-md-6 mb-3">
+                                    <label for="pakta_integritas_file" class="fw-bold mb-1">Pakta Integritas (PDF/Image)</label>
+                                    <input type="file" class="form-control @error('pakta_integritas_file') is-invalid @enderror" id="pakta_integritas_file" name="pakta_integritas_file">
+                                    @if($user->pakta_integritas_file)
+                                        <small class="d-block mt-1"><a href="{{ asset('storage/' . $user->pakta_integritas_file) }}" target="_blank"><i class="fas fa-file me-1"></i> Lihat Pakta Integritas saat ini</a></small>
+                                    @endif
+                                </div>
+
+                                <div class="form-group col-md-6 mb-3">
                                     <label for="role" class="fw-bold mb-1">Role / Hak Akses <span class="text-danger">*</span></label>
                                     <select class="form-select form-control @error('role') is-invalid @enderror" id="role" name="role" required>
                                         <option value="superadmin" {{ old('role', $user->role) == 'superadmin' ? 'selected' : '' }}>Super Admin</option>

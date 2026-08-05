@@ -153,6 +153,11 @@
                                     <input type="file" class="form-control" id="kontrak_kerja" name="kontrak_kerja">
                                 </div>
 
+                                <div class="form-group col-md-6 mb-3">
+                                    <label for="pakta_integritas_file" class="fw-bold mb-1">Pakta Integritas (PDF/Image)</label>
+                                    <input type="file" class="form-control" id="pakta_integritas_file" name="pakta_integritas_file">
+                                </div>
+
                                 {{-- ROLE --}}
                                 <div class="form-group col-md-6 mb-3">
                                     <label for="role" class="fw-bold mb-1">Role / Hak Akses <span class="text-danger">*</span></label>

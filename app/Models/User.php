@@ -39,6 +39,7 @@ class User extends Authenticatable
         'tanggal_kontrak_baru',
         'tanggal_kontrak_berakhir',
         'deal_sound_path',
+        'pakta_integritas_file',
     ];
 
     /**

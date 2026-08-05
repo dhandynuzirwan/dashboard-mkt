@@ -63,6 +63,7 @@ class UserController extends Controller
             'pas_foto_file' => 'nullable|file|mimes:pdf,png,jpg,jpeg|max:5120',
             'kk_file' => 'nullable|file|mimes:pdf,png,jpg,jpeg|max:5120',
             'kontrak_kerja' => 'nullable|file|mimes:pdf,png,jpg,jpeg|max:5120',
+            'pakta_integritas_file' => 'nullable|file|mimes:pdf,png,jpg,jpeg|max:5120',
         ]);
 
         $data = [
@@ -101,6 +102,9 @@ class UserController extends Controller
         }
         if ($request->hasFile('kontrak_kerja')) {
             $data['kontrak_kerja'] = $request->file('kontrak_kerja')->store('users/kontrak_kerja', 'public');
+        }
+        if ($request->hasFile('pakta_integritas_file')) {
+            $data['pakta_integritas_file'] = $request->file('pakta_integritas_file')->store('users/pakta_integritas', 'public');
         }
 
         User::create($data);
@@ -148,6 +152,7 @@ class UserController extends Controller
             'pas_foto_file' => 'nullable|file|mimes:pdf,png,jpg,jpeg|max:5120',
             'kk_file' => 'nullable|file|mimes:pdf,png,jpg,jpeg|max:5120',
             'kontrak_kerja' => 'nullable|file|mimes:pdf,png,jpg,jpeg|max:5120',
+            'pakta_integritas_file' => 'nullable|file|mimes:pdf,png,jpg,jpeg|max:5120',
         ]);
 
         // Siapkan array data untuk diupdate (KOSONGKAN FOTO PROFIL DULU DI SINI)
@@ -232,6 +237,13 @@ class UserController extends Controller
                 Storage::disk('public')->delete($user->kontrak_kerja);
             }
             $data['kontrak_kerja'] = $request->file('kontrak_kerja')->store('users/kontrak_kerja', 'public');
+        }
+
+        if ($request->hasFile('pakta_integritas_file')) {
+            if ($user->pakta_integritas_file && Storage::disk('public')->exists($user->pakta_integritas_file)) {
+                Storage::disk('public')->delete($user->pakta_integritas_file);
+            }
+            $data['pakta_integritas_file'] = $request->file('pakta_integritas_file')->store('users/pakta_integritas', 'public');
         }
 
         // Jalankan perintah update

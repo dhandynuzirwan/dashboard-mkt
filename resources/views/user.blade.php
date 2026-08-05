@@ -145,7 +145,7 @@
                             {{-- Kolom 4: Status Berkas --}}
                             <td class="text-center">
                                 @php
-                                    $berkasList = ['ktp_file', 'ijasah_file', 'pas_foto_file', 'kk_file', 'jobdesk_file', 'sop_file', 'kontrak_kerja'];
+                                    $berkasList = ['ktp_file', 'ijasah_file', 'pas_foto_file', 'kk_file', 'jobdesk_file', 'sop_file', 'kontrak_kerja', 'pakta_integritas_file'];
                                     $berkasTerisi = 0;
                                     foreach($berkasList as $berkas) {
                                         if(!empty($user->$berkas)) $berkasTerisi++;
@@ -159,7 +159,7 @@
                                     </div>
                                 @else
                                     <div class="badge badge-soft-warning px-3 py-2 rounded-pill fw-bold mb-1" style="font-size: 11px;">
-                                        <i class="fas fa-exclamation-circle me-1"></i> {{ $berkasTerisi }}/7 Berkas
+                                        <i class="fas fa-exclamation-circle me-1"></i> {{ $berkasTerisi }}/8 Berkas
                                     </div>
                                 @endif
                                 <br>
@@ -238,6 +238,7 @@
                         'jobdesk_file' => 'Jobdesk',
                         'sop_file' => 'SOP',
                         'kontrak_kerja' => 'Kontrak Kerja',
+                        'pakta_integritas_file' => 'Pakta Integritas',
                     ];
                 @endphp
 
