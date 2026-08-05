@@ -22,7 +22,7 @@
                         <i class="fas fa-file-excel me-2"></i> Import Excel
                     </button>
                     
-                    <button class="btn btn-primary btn-round fw-bold shadow-sm hover-lift px-4" data-bs-toggle="modal" data-bs-target="#modalTambahAktivitas">
+                    <button class="btn btn-premium btn-round fw-bold shadow-sm hover-lift px-4" data-bs-toggle="modal" data-bs-target="#modalTambahAktivitas">
                         <i class="fas fa-plus me-2"></i> Isi Aktivitas Harian
                     </button>
                 </div>
@@ -40,16 +40,16 @@
                         <span class="fw-bold text-dark">Berhasil!</span> <span class="text-dark opacity-75">{{ session('success') }}</span>
                     </div>
                 </div>
-                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="alert" aria-label="Close"></button>
             </div>
         @endif
 
         {{-- ================= STATISTIC CARDS (MODERN UI) ================= --}}
         <div class="row mb-3 fade-in">
             <div class="col-sm-6 col-md-3 mb-3">
-                <div class="card card-modern h-100 hover-lift border-primary-subtle border-2">
+                <div class="card glass-card h-100 border-0">
                     <div class="card-body p-3 p-xl-4 d-flex align-items-center">
-                        <div class="icon-modern bg-primary-subtle text-primary me-3">
+                        <div class="stat-icon-wrapper bg-gradient-primary shadow-sm me-3">
                             <i class="fas fa-clipboard-list"></i>
                         </div>
                         <div>
@@ -61,9 +61,9 @@
             </div>
 
             <div class="col-sm-6 col-md-3 mb-3">
-                <div class="card card-modern h-100 hover-lift border-info-subtle border-2">
+                <div class="card glass-card h-100 border-0">
                     <div class="card-body p-3 p-xl-4 d-flex align-items-center">
-                        <div class="icon-modern bg-info-subtle text-info me-3">
+                        <div class="stat-icon-wrapper bg-gradient-info shadow-sm me-3">
                             <i class="fas fa-stopwatch"></i>
                         </div>
                         <div>
@@ -75,9 +75,9 @@
             </div>
 
             <div class="col-sm-6 col-md-3 mb-3">
-                <div class="card card-modern h-100 hover-lift border-success-subtle border-2">
+                <div class="card glass-card h-100 border-0">
                     <div class="card-body p-3 p-xl-4 d-flex align-items-center">
-                        <div class="icon-modern bg-success-subtle text-success me-3">
+                        <div class="stat-icon-wrapper bg-gradient-success shadow-sm me-3">
                             <i class="fas fa-users"></i>
                         </div>
                         <div>
@@ -89,9 +89,9 @@
             </div>
 
             <div class="col-sm-6 col-md-3 mb-3">
-                <div class="card card-modern h-100 hover-lift border-warning-subtle border-2">
+                <div class="card glass-card h-100 border-0">
                     <div class="card-body p-3 p-xl-4 d-flex align-items-center">
-                        <div class="icon-modern bg-warning-subtle text-warning me-3">
+                        <div class="stat-icon-wrapper bg-gradient-warning shadow-sm me-3">
                             <i class="fas fa-paperclip"></i>
                         </div>
                         <div class="flex-grow-1">
@@ -108,7 +108,7 @@
         </div>
 
         {{-- ================= FILTER SECTION (MODERN SAAS) ================= --}}
-        <div class="card card-modern border-0 shadow-sm mb-4 fade-in" style="background-color: #f8faff;">
+        <div class="glass-card mb-4 fade-in" style="background-color: #f8faff;">
             <div class="card-body p-3 p-md-4">
                 <div class="d-flex align-items-center mb-3 pb-3 border-bottom border-light">
                     <div class="icon-sm bg-primary-subtle text-primary rounded-circle d-flex align-items-center justify-content-center me-2" style="width: 32px; height: 32px;">
@@ -136,10 +136,10 @@
                         </select>
                     </div>
                     <div class="col-md-4 d-flex gap-2 mt-4 mt-md-0">
-                        <button type="submit" class="btn btn-primary btn-sm flex-grow-1 btn-round fw-bold shadow-sm hover-lift px-3">
+                        <button type="submit" class="btn btn-premium btn-sm flex-grow-1 btn-round fw-bold shadow-sm hover-lift px-3">
                             <i class="fas fa-search me-1"></i> Terapkan
                         </button>
-                        <a href="{{ route('operational.aktivitas-harian') }}" class="btn btn-white border btn-sm flex-grow-1 btn-round fw-bold shadow-sm hover-lift text-dark px-3 text-center pt-2">
+                        <a href="{{ route('operational.aktivitas-harian') }}" class="btn btn-light border btn-sm flex-grow-1 btn-round fw-bold shadow-sm hover-lift text-dark px-3 text-center pt-2">
                             Reset
                         </a>
                     </div>
@@ -148,7 +148,7 @@
         </div>
 
         {{-- ================= DATA TABEL AKTIVITAS ================= --}}
-        <div class="card card-modern border-0 shadow-sm mb-4 fade-in">
+        <div class="glass-card mb-4 fade-in">
             <div class="card-header bg-transparent border-bottom pt-4 px-4 pb-3">
                 <h6 class="card-title fw-bolder mb-0 text-dark">
                     Log Aktivitas ({{ \Carbon\Carbon::parse($start_date)->translatedFormat('d M Y') }} - {{ \Carbon\Carbon::parse($end_date)->translatedFormat('d M Y') }})
@@ -156,7 +156,7 @@
             </div>
             <div class="card-body p-0">
                 <div class="table-responsive">
-                    <table class="table table-modern table-hover align-middle mb-0">
+                    <table class="table table-custom align-middle mb-0">
                         <thead class="bg-light sticky-top">
                             <tr>
                                 <th class="ps-4" width="220">Pegawai & Waktu</th>
@@ -247,12 +247,12 @@
                                     <td class="text-center pe-4 py-3">
                                         @if(auth()->id() == $log->user_id)
                                             <div class="d-flex justify-content-center gap-2">
-                                                <button class="btn btn-white border text-primary btn-sm btn-round shadow-sm hover-lift px-3" data-bs-toggle="modal" data-bs-target="#modalEditAktivitas{{ $log->id }}">
+                                                <button class="btn btn-light border text-primary btn-sm btn-round shadow-sm hover-lift px-3" data-bs-toggle="modal" data-bs-target="#modalEditAktivitas{{ $log->id }}">
                                                     <i class="fas fa-edit"></i>
                                                 </button>
                                                 <form action="{{ route('operational.aktivitas-harian.destroy', $log->id) }}" method="POST" class="m-0 p-0 form-hapus">
                                                     @csrf @method('DELETE')
-                                                    <button type="button" class="btn btn-white border text-danger btn-sm btn-round shadow-sm hover-lift btn-delete px-3">
+                                                    <button type="button" class="btn btn-light border text-danger btn-sm btn-round shadow-sm hover-lift btn-delete px-3">
                                                         <i class="fas fa-trash-alt"></i>
                                                     </button>
                                                 </form>
@@ -287,10 +287,10 @@
 {{-- Modal Tambah --}}
 <div class="modal fade" id="modalTambahAktivitas" tabindex="-1" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered modal-lg">
-        <div class="modal-content card-modern border-0 shadow-lg">
-            <div class="modal-header bg-primary-subtle text-primary border-bottom-0 pb-3 pt-4 px-4">
+        <div class="modal-content modal-content-modern">
+            <div class="modal-header modal-header-modern">
                 <h5 class="modal-title fw-bolder"><i class="fas fa-clipboard-check me-2"></i> Form Aktivitas Harian</h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <form action="{{ route('operational.aktivitas-harian.store') }}" method="POST" enctype="multipart/form-data">
                 @csrf
@@ -345,8 +345,8 @@
                     </div>
                 </div>
                 <div class="modal-footer bg-light border-top-0 pt-3 pb-3 px-4 rounded-bottom-4">
-                    <button type="button" class="btn btn-white border fw-bold text-dark hover-lift" data-bs-dismiss="modal">Batal</button>
-                    <button type="submit" class="btn btn-primary btn-round fw-bold shadow-sm hover-lift px-4">Simpan Aktivitas</button>
+                    <button type="button" class="btn btn-light border fw-bold text-dark hover-lift" data-bs-dismiss="modal">Batal</button>
+                    <button type="submit" class="btn btn-premium btn-round fw-bold shadow-sm hover-lift px-4">Simpan Aktivitas</button>
                 </div>
             </form>
         </div>
@@ -358,10 +358,10 @@
     <div class="modal-dialog modal-dialog-centered">
         <form action="{{ route('aktivitas-harian.import') }}" method="POST" enctype="multipart/form-data">
             @csrf
-            <div class="modal-content border-0 shadow-lg rounded-4">
-                <div class="modal-header bg-success-subtle text-success border-bottom-0 pb-0 px-4 pt-4">
+            <div class="modal-content modal-content-modern">
+                <div class="modal-header modal-header-modern">
                     <h5 class="modal-title fw-bolder"><i class="fas fa-file-excel me-2"></i>Import Aktivitas (Excel)</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
                 </div>
                 <div class="modal-body pt-3 px-4">
                     <div class="alert alert-modern-warning border-0 rounded-3 small mb-4 shadow-sm">
@@ -373,7 +373,7 @@
                     </div>
                 </div>
                 <div class="modal-footer bg-light border-top-0 pt-3 px-4 pb-3" style="border-radius: 0 0 16px 16px;">
-                    <button type="button" class="btn btn-white border fw-bold text-dark hover-lift" data-bs-dismiss="modal">Batal</button>
+                    <button type="button" class="btn btn-light border fw-bold text-dark hover-lift" data-bs-dismiss="modal">Batal</button>
                     <button type="submit" class="btn btn-success fw-bold btn-round shadow-sm px-4 hover-lift text-white">Mulai Import</button>
                 </div>
             </div>
@@ -386,12 +386,12 @@
     @if(auth()->id() == $log->user_id || in_array(auth()->user()->role, ['team_leader', 'web_dev', 'superadmin']))
     <div class="modal fade" id="modalEditAktivitas{{ $log->id }}" tabindex="-1" aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered modal-lg">
-            <div class="modal-content card-modern border-0 shadow-lg">
-                <div class="modal-header bg-warning-subtle text-warning-dark border-bottom-0 pb-3 pt-4 px-4">
+            <div class="modal-content modal-content-modern">
+                <div class="modal-header modal-header-modern">
                     <h5 class="modal-title fw-bolder">
                         <i class="fas fa-edit me-2"></i> Edit Aktivitas Harian
                     </h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 
                 <form action="{{ route('operational.aktivitas-harian.update', $log->id) }}" method="POST" enctype="multipart/form-data">
@@ -479,24 +479,52 @@
 
 {{-- ================= STYLES & SCRIPTS ================= --}}
 <style>
-    .card-modern { border-radius: 16px; border: 1px solid #eef2f7; box-shadow: 0 4px 15px rgba(0,0,0,0.03); background: #ffffff; }
-    .hover-lift { transition: transform 0.2s ease, box-shadow 0.2s ease; }
-    .hover-lift:hover { transform: translateY(-3px); box-shadow: 0 10px 20px rgba(0,0,0,0.08) !important; }
-    .icon-modern { width: 48px; height: 48px; border-radius: 12px; display: flex; align-items: center; justify-content: center; font-size: 20px; }
-    .bg-primary-subtle { background-color: #eff6ff !important; }
-    .bg-success-subtle { background-color: #f0fdf4 !important; }
-    .bg-info-subtle { background-color: #ecfeff !important; }
-    .bg-warning-subtle { background-color: #fefce8 !important; }
-    .bg-danger-subtle { background-color: #fef2f2 !important; }
-    .badge-soft-primary { background-color: #eff6ff; color: #3b82f6; }
-    .badge-soft-success { background-color: #f0fdf4; color: #16a34a; }
-    .badge-soft-info { background-color: #ecfeff; color: #0891b2; }
-    .alert-modern-success { background-color: #f0fdf4; border-left: 4px solid #22c55e; border-radius: 12px; padding: 16px; }
+    /* Base UI / Premium Modern CSS */
+    .page-wrapper-modern { background-color: #f8f9fc; min-height: 100vh; font-family: 'Nunito', 'Segoe UI', sans-serif; }
+    .glass-card { background: #ffffff; border: 1px solid rgba(227, 230, 240, 0.8); box-shadow: 0 4px 20px rgba(0, 0, 0, 0.03); border-radius: 20px; transition: all 0.3s ease; }
+    .glass-card:hover { box-shadow: 0 10px 30px rgba(0, 0, 0, 0.06); }
+    .stat-icon-wrapper { width: 60px; height: 60px; border-radius: 18px; display: flex; align-items: center; justify-content: center; font-size: 26px; }
+    .bg-gradient-primary { background: linear-gradient(135deg, #4e73df 0%, #224abe 100%); color: white; }
+    .bg-gradient-warning { background: linear-gradient(135deg, #f6c23e 0%, #dda20a 100%); color: white; }
+    .bg-gradient-info { background: linear-gradient(135deg, #36b9cc 0%, #258391 100%); color: white; }
+    .bg-gradient-success { background: linear-gradient(135deg, #1cc88a 0%, #13855c 100%); color: white; }
+    .bg-gradient-danger { background: linear-gradient(135deg, #e74a3b 0%, #be2617 100%); color: white; }
+
+    /* Tables */
+    .table-custom { border-collapse: separate; border-spacing: 0 12px; margin-top: -12px;}
+    .table-custom tr { background-color: #ffffff; box-shadow: 0 2px 10px rgba(0,0,0,0.02); border-radius: 16px; transition: all 0.2s ease; border: 1px solid #f1f3f9;}
+    .table-custom tr:hover { box-shadow: 0 5px 15px rgba(0,0,0,0.06); }
+    .table-custom td { padding: 18px 22px; border: none; vertical-align: middle;}
+    .table-custom td:first-child { border-top-left-radius: 16px; border-bottom-left-radius: 16px; }
+    .table-custom td:last-child { border-top-right-radius: 16px; border-bottom-right-radius: 16px; }
+    .table-custom th { border: none; padding: 10px 22px; color: #858796; font-weight: 700; text-transform: uppercase; font-size: 11px; letter-spacing: 1px; background: transparent;}
+
+    /* Badges */
+    .badge-soft-primary { background-color: rgba(78, 115, 223, 0.1); color: #4e73df; font-weight: 700; padding: 6px 12px; border-radius: 8px; }
+    .badge-soft-warning { background-color: rgba(246, 194, 62, 0.15); color: #dda20a; font-weight: 700; padding: 6px 12px; border-radius: 8px; }
+    .badge-soft-danger { background-color: rgba(231, 74, 59, 0.1); color: #e74a3b; font-weight: 700; padding: 6px 12px; border-radius: 8px; }
+    .badge-soft-info { background-color: rgba(54, 185, 204, 0.1); color: #258391; font-weight: 700; padding: 6px 12px; border-radius: 8px; }
+    .badge-soft-success { background-color: rgba(28, 200, 138, 0.1); color: #1cc88a; font-weight: 700; padding: 6px 12px; border-radius: 8px; }
+
+    /* Buttons */
+    .btn-premium { background: linear-gradient(135deg, #4e73df 0%, #224abe 100%); color: white; border: none; border-radius: 50px; padding: 10px 24px; font-weight: 600; box-shadow: 0 4px 15px rgba(78, 115, 223, 0.3); transition: all 0.3s; }
+    .btn-premium:hover { box-shadow: 0 6px 20px rgba(78, 115, 223, 0.4); color: white;}
+    .btn-outline-premium { border: 2px solid #4e73df; color: #4e73df; border-radius: 50px; padding: 8px 20px; font-weight: 700; transition: all 0.3s; background: white;}
+    .btn-outline-premium:hover { background: #4e73df; color: white; box-shadow: 0 4px 15px rgba(78, 115, 223, 0.3); }
+
+    /* MODAL STYLES */
+    .modal-content-modern { border-radius: 24px; border: none; overflow: hidden; box-shadow: 0 20px 50px rgba(0,0,0,0.15);}
+    .modal-header-modern { background: linear-gradient(135deg, #4e73df 0%, #224abe 100%); color: white; padding: 25px 30px; border-bottom: none;}
+
+    /* Alerts */
+    .alert-modern-success { background-color: #f0fdf4; border-left: 4px solid #22c55e; border-radius: 12px; padding: 16px; box-shadow: 0 4px 6px rgba(0,0,0,0.02); }
+    .alert-modern-danger { background-color: #fef2f2; border-left: 4px solid #ef4444; border-radius: 12px; padding: 16px; box-shadow: 0 4px 6px rgba(0,0,0,0.02); }
+
+    /* Segmented Tabs (Modern Toggle) */
     .nav-modern { background-color: #f1f5f9; padding: 4px; border-radius: 50px; }
-    .nav-modern .nav-link { border-radius: 50px; color: #64748b; font-weight: 600; font-size: 14px; padding: 8px 24px; border: none; background: transparent; }
+    .nav-modern .nav-link { border-radius: 50px; color: #64748b; font-weight: 600; font-size: 14px; padding: 8px 24px; border: none; transition: all 0.3s ease; background: transparent; }
+    .nav-modern .nav-link:hover { color: #0f172a; }
     .nav-modern .nav-link.active { background-color: #ffffff; color: #3b82f6; box-shadow: 0 2px 8px rgba(0,0,0,0.08); }
-    .table-modern th { text-transform: uppercase; font-size: 11px; color: #64748b; background: #f8fafc; border-bottom: 2px solid #e2e8f0; padding: 12px 16px; }
-    .table-modern td { border-bottom: 1px solid #f1f5f9; padding: 14px 16px; }
     .label-modern { font-weight: 700; color: #64748b; font-size: 10px; text-transform: uppercase; margin-bottom: 4px; display: block; }
     .input-modern { border: 1px solid #cbd5e1; border-radius: 8px; padding: 8px 12px; font-size: 13px; }
     .fade-in { animation: fadeIn 0.6s ease-in-out; }
