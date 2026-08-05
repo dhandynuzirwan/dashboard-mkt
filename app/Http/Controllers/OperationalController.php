@@ -161,6 +161,7 @@ class OperationalController extends Controller implements HasMiddleware
     {
         $pelatihans = \App\Models\PelatihanBerjalan::with([
             'training', 
+            'riwayat',
             'pendaftaranPribadis.cta.prospek.marketing',
             'pendaftaranPribadis.kolektif.cta.prospek.marketing'
         ])
@@ -175,6 +176,13 @@ class OperationalController extends Controller implements HasMiddleware
             $firstPendaftaran = $pelatihan->pendaftaranPribadis->first();
             $sertifikasi = 'Lainnya';
             $skema = '';
+            $isSyncRiwayat = $pelatihan->pendaftaranPribadis->isEmpty() && $pelatihan->riwayat;
+            
+            $judulPelatihan = $isSyncRiwayat ? ($pelatihan->riwayat->judul_pelatihan ?? (optional($pelatihan->training)->nama_training ?? 'Belum Ada Pelatihan')) : (optional($pelatihan->training)->nama_training ?? 'Belum Ada Pelatihan');
+            
+            if ($isSyncRiwayat) {
+                $judulPelatihan .= ' (Input Manual)';
+            }
             
             if ($firstPendaftaran) {
                 if ($firstPendaftaran->tipe_pendaftaran == 'kolektif' && $firstPendaftaran->kolektif && $firstPendaftaran->kolektif->cta) {
@@ -197,7 +205,7 @@ class OperationalController extends Controller implements HasMiddleware
 
             return [
                 'id' => $pelatihan->id,
-                'judul' => optional($pelatihan->training)->nama_training ?? 'Belum Ada Pelatihan',
+                'judul' => $judulPelatihan,
                 'sertifikasi' => $sertifikasi,
                 'skema' => $skema,
                 'tanggal_pelatihan' => $pelatihan->tanggal_pelatihan ? \Carbon\Carbon::parse($pelatihan->tanggal_pelatihan)->translatedFormat('d M Y') : '-',
