@@ -14,7 +14,7 @@ class RiwayatPelatihanController extends Controller
     {
         $query = RiwayatPelatihan::query();
 
-        if (auth()->check() && auth()->user()->role === 'operational') {
+        if (auth()->check() && auth()->user()->role === 'operasional') {
             $query->where('pic', auth()->user()->name);
         }
 
