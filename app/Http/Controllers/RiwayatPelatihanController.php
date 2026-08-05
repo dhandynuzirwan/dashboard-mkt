@@ -14,6 +14,10 @@ class RiwayatPelatihanController extends Controller
     {
         $query = RiwayatPelatihan::query();
 
+        if (auth()->check() && auth()->user()->role === 'operational') {
+            $query->where('pic', auth()->user()->name);
+        }
+
         // 1. Filter: Bulan & Tahun
         if ($request->filled('month_year')) {
             $date = Carbon::createFromFormat('Y-m', $request->month_year);

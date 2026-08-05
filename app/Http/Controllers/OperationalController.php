@@ -127,16 +127,20 @@ class OperationalController extends Controller implements HasMiddleware
         $currentMonth = \Carbon\Carbon::now()->month;
         $currentYear = \Carbon\Carbon::now()->year;
 
-        $pelatihans = \App\Models\PelatihanBerjalan::with([
+        $query = \App\Models\PelatihanBerjalan::with([
             'training', 
             'riwayat',
             'pendaftaranPribadis.cta.prospek.marketing',
             'pendaftaranPribadis.kolektif.cta.prospek.marketing'
         ])
             ->whereMonth('tanggal_pelatihan', $currentMonth)
-            ->whereYear('tanggal_pelatihan', $currentYear)
-            ->orderBy('tanggal_pelatihan', 'desc')
-            ->get();
+            ->whereYear('tanggal_pelatihan', $currentYear);
+
+        if (auth()->check() && auth()->user()->role === 'operational') {
+            $query->where('pic', auth()->user()->name);
+        }
+
+        $pelatihans = $query->orderBy('tanggal_pelatihan', 'desc')->get();
             
         $users = \App\Models\User::all();
         
