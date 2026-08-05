@@ -1062,21 +1062,30 @@
                                     </div>
                                     
                                     {{-- Kolom Sinkronisasi Modul Pelatihan --}}
+                                    @php
+                                        $latestModul = null;
+                                        if($pelatihan->modul) {
+                                            $latestModul = \App\Models\ModulPelatihan::where('file_path', $pelatihan->modul)->orderBy('id', 'desc')->first();
+                                        }
+                                        $valJudul = $latestModul ? $latestModul->judul_modul : ($pelatihan->training->nama_training ?? ($pelatihan->riwayat->judul_pelatihan ?? ''));
+                                        $valSertifikasi = $latestModul ? $latestModul->sertifikasi : '';
+                                        $valKategori = $latestModul ? $latestModul->kategori : '';
+                                    @endphp
                                     <div class="bg-light p-2 rounded-3 border mb-3 mt-2" style="font-size: 11px;">
                                         <div class="fw-bold text-dark mb-2"><i class="fas fa-sync text-info me-1"></i> Sinkronisasi ke Modul Pelatihan</div>
                                         <div class="row g-2">
                                             <div class="col-12">
-                                                <input type="text" name="judul_modul_sync" class="form-control form-control-sm" placeholder="Judul Modul" value="{{ $pelatihan->training->nama_training ?? ($pelatihan->riwayat->judul_pelatihan ?? '') }}">
+                                                <input type="text" name="judul_modul_sync" class="form-control form-control-sm" placeholder="Judul Modul" value="{{ $valJudul }}">
                                             </div>
                                             <div class="col-6">
                                                 <select name="sertifikasi_modul_sync" class="form-select form-select-sm">
-                                                    <option value="KEMNAKER">KEMNAKER</option>
-                                                    <option value="BNSP">BNSP</option>
-                                                    <option value="UPSKILLS">UPSKILLS</option>
+                                                    <option value="KEMNAKER" {{ $valSertifikasi == 'KEMNAKER' ? 'selected' : '' }}>KEMNAKER</option>
+                                                    <option value="BNSP" {{ $valSertifikasi == 'BNSP' ? 'selected' : '' }}>BNSP</option>
+                                                    <option value="UPSKILLS" {{ $valSertifikasi == 'UPSKILLS' ? 'selected' : '' }}>UPSKILLS</option>
                                                 </select>
                                             </div>
                                             <div class="col-6">
-                                                <input type="text" name="kategori_modul_sync" class="form-control form-control-sm" placeholder="Kategori (Mis. K3)">
+                                                <input type="text" name="kategori_modul_sync" class="form-control form-control-sm" placeholder="Kategori (Mis. K3)" value="{{ $valKategori }}">
                                             </div>
                                             <div class="col-12">
                                                 <small class="text-muted d-block mt-1">Isi form di atas agar Modul Pelatihan tersimpan ke perpustakaan Modul.</small>
