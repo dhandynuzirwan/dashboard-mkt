@@ -196,14 +196,18 @@
                                     <?php endif; ?>
                                     <span class="<?php echo e($uploadedCount > 0 ? 'text-primary' : 'text-muted'); ?> fw-bolder" style="font-size: 13px;"><?php echo e($uploadedCount); ?>/9 Berkas Terunggah</span>
                                 </div>
-                                <div class="text-dark small text-start mt-2" style="font-size: 13px;">
-                                    <?php echo e($uploadedCount > 0 ? implode(', ', array_slice($uploadedNames, 0, 3)) . ($uploadedCount > 3 ? '...' : '') : 'Belum ada berkas yang diunggah'); ?>
+                                <div class="text-dark small text-start mt-2 mb-1" style="font-size: 13px;">
+                                    <?php echo e($uploadedCount > 0 ? implode(', ', array_slice($uploadedNames, 0, 3)) . ($uploadedCount > 3 ? '...' : '') : ''); ?>
 
                                 </div>
                                 <?php if($permintaan): ?>
-                                <div class="text-muted mt-2" style="font-size: 11px;">
-                                    Terakhir diubah: <i class="far fa-clock"></i> <?php echo e($permintaan->updated_at->format('d M Y, H:i')); ?>
+                                <div class="text-muted" style="font-size: 11px;">
+                                    Diunggah oleh: <span class="fw-bold text-dark"><?php echo e($permintaan->user->name ?? 'System'); ?></span> &bull; Terakhir diubah: <i class="far fa-clock"></i> <?php echo e($permintaan->updated_at->format('d M Y, H:i')); ?>
 
+                                </div>
+                                <?php else: ?>
+                                <div class="text-muted" style="font-size: 11px;">
+                                    Belum ada berkas yang diunggah
                                 </div>
                                 <?php endif; ?>
                             </td>

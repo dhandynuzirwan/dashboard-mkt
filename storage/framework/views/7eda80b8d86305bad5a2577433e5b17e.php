@@ -196,6 +196,7 @@
                                             <div class="fw-bolder text-dark" style="font-size: 14px;">
                                                 <?php echo e($isSyncRiwayat ? ($pelatihan->riwayat->judul_pelatihan ?? (optional($pelatihan->training)->nama_training ?? 'Belum Ada Pelatihan')) : (optional($pelatihan->training)->nama_training ?? 'Belum Ada Pelatihan')); ?>
 
+                                                <?php if($isSyncRiwayat): ?> <span class="badge bg-light text-secondary border ms-1" style="font-size: 10px;">Input Manual</span> <?php endif; ?>
                                             </div>
                                             <div class="fw-bold text-primary mt-1 mb-2" style="font-size: 13px;">
                                                 <i class="fas fa-certificate me-1"></i> 
@@ -392,10 +393,15 @@
                                             $progress = count($checklist);
                                             $percent = $progress > 0 ? round(($progress / 21) * 100) : 0;
                                             $percentColor = $percent == 100 ? 'primary' : 'warning';
+                                            $isSyncRiwayat = $pelatihan->pendaftaranPribadis->isEmpty() && $pelatihan->riwayat;
                                         ?>
                                         <tr>
                                             <td class="ps-4">
-                                                <div class="fw-bolder text-dark" style="font-size: 14px;"><?php echo e(optional($pelatihan->training)->nama_training ?? 'Belum Ada Pelatihan'); ?></div>
+                                                <div class="fw-bolder text-dark" style="font-size: 14px;">
+                                                    <?php echo e($isSyncRiwayat ? ($pelatihan->riwayat->judul_pelatihan ?? (optional($pelatihan->training)->nama_training ?? 'Belum Ada Pelatihan')) : (optional($pelatihan->training)->nama_training ?? 'Belum Ada Pelatihan')); ?>
+
+                                                    <?php if($isSyncRiwayat): ?> <span class="badge bg-light text-secondary border ms-1" style="font-size: 10px;">Input Manual</span> <?php endif; ?>
+                                                </div>
                                                 <div class="d-flex align-items-center gap-2 mt-1">
                                                     <span class="text-primary fw-bold" style="font-size: 13px;"><i class="fas fa-certificate me-1"></i> <?php echo e($sertifikasi); ?></span>
                                                     <?php if($pelatihan->komentar_superadmin || $pelatihan->komentar_spv_marketing || $pelatihan->komentar_team_leader): ?>
@@ -579,10 +585,16 @@
                                             if($pelatihan->status_sertifikat == 'Terbit') { $badgeSertif = 'success'; $iconSertif = 'check-circle'; }
                                             elseif($pelatihan->status_sertifikat == 'Delay') { $badgeSertif = 'warning'; $iconSertif = 'exclamation-triangle'; }
                                             elseif($pelatihan->status_sertifikat == 'OGP') { $badgeSertif = 'primary'; $iconSertif = 'cog fa-spin'; }
+                                            
+                                            $isSyncRiwayat = $pelatihan->pendaftaranPribadis->isEmpty() && $pelatihan->riwayat;
                                         ?>
                                         <tr>
                                             <td class="ps-4">
-                                                <div class="fw-bolder text-dark" style="font-size: 14px;"><?php echo e(optional($pelatihan->training)->nama_training ?? 'Belum Ada Pelatihan'); ?></div>
+                                                <div class="fw-bolder text-dark" style="font-size: 14px;">
+                                                    <?php echo e($isSyncRiwayat ? ($pelatihan->riwayat->judul_pelatihan ?? (optional($pelatihan->training)->nama_training ?? 'Belum Ada Pelatihan')) : (optional($pelatihan->training)->nama_training ?? 'Belum Ada Pelatihan')); ?>
+
+                                                    <?php if($isSyncRiwayat): ?> <span class="badge bg-light text-secondary border ms-1" style="font-size: 10px;">Input Manual</span> <?php endif; ?>
+                                                </div>
                                                 <div class="text-primary fw-bold mt-1" style="font-size: 13px;"><i class="fas fa-certificate me-1"></i> <?php echo e($sertifikasi); ?></div>
                                                 <div class="text-primary small fw-bold mt-1"><i class="fas fa-user-tie me-1"></i> PIC: <?php echo e($picInfo); ?></div>
                                             </td>
@@ -970,7 +982,8 @@
                     </div>
                     <div>
                         <h5 class="modal-title fw-bolder text-dark mb-0">Update Validasi Checklist</h5>
-                        <p class="text-muted mb-0" style="font-size: 12px;">Program: <strong class="text-dark"><?php echo e(optional($pelatihan->training)->nama_training ?? '-'); ?></strong></p>
+                        <?php $isSyncRiwayat = $pelatihan->pendaftaranPribadis->isEmpty() && $pelatihan->riwayat; ?>
+                        <p class="text-muted mb-0" style="font-size: 12px;">Program: <strong class="text-dark"><?php echo e($isSyncRiwayat ? ($pelatihan->riwayat->judul_pelatihan ?? (optional($pelatihan->training)->nama_training ?? '-')) : (optional($pelatihan->training)->nama_training ?? '-')); ?></strong></p>
                     </div>
                 </div>
                 <button type="button" class="btn-close shadow-none" data-bs-dismiss="modal" aria-label="Close"></button>
@@ -1373,7 +1386,8 @@
                     <i class="fas fa-trash-alt fa-3x"></i>
                 </div>
                 <h6 class="fw-bold text-dark mb-2">Hapus Pelatihan Berjalan ini?</h6>
-                <p class="text-muted small mb-0">Apakah Anda yakin ingin menghapus data pelatihan <strong><?php echo e(optional($pelatihan->training)->nama_training ?? 'Belum Ada Pelatihan'); ?></strong>? Tindakan ini tidak dapat dibatalkan.</p>
+                <?php $isSyncRiwayat = $pelatihan->pendaftaranPribadis->isEmpty() && $pelatihan->riwayat; ?>
+                <p class="text-muted small mb-0">Apakah Anda yakin ingin menghapus data pelatihan <strong><?php echo e($isSyncRiwayat ? ($pelatihan->riwayat->judul_pelatihan ?? (optional($pelatihan->training)->nama_training ?? 'Belum Ada Pelatihan')) : (optional($pelatihan->training)->nama_training ?? 'Belum Ada Pelatihan')); ?></strong>? Tindakan ini tidak dapat dibatalkan.</p>
             </div>
             <div class="modal-footer border-0 p-3 bg-light d-flex justify-content-end" style="border-radius: 0 0 20px 20px;">
                 <button type="button" class="btn btn-light border btn-round fw-bold px-4" data-bs-dismiss="modal">Batal</button>
