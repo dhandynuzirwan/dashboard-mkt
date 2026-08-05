@@ -977,7 +977,7 @@
             <form action="{{ route('monitoring.pelatihan.update', $pelatihan->id) }}" method="POST" enctype="multipart/form-data">
                 @csrf
                 @method('PUT')
-                <div class="modal-body px-4 px-md-5 pt-4 pb-4" style="background-color: #f8fafc;">
+                <div class="modal-body px-4 px-md-5 pt-4 pb-4" style="background-color: #f8fafc; overflow-y: auto; max-height: calc(100vh - 120px);">
                     @php $checklist = json_decode($pelatihan->checklist_validasi, true) ?? []; @endphp
                     <div class="row g-4">
                         {{-- Kategori 1: Administrasi --}}
@@ -1032,9 +1032,15 @@
                                         <input class="form-check-input" type="checkbox" name="checklist_validasi[]" value="Background Zoom" {{ in_array('Background Zoom', $checklist) ? 'checked' : '' }}>
                                         <label class="form-check-label text-dark small fw-medium">Background Zoom / Banner</label>
                                     </div>
-                                    <div class="mb-2 mt-1 d-flex gap-2">
+                                    <div class="mb-2 mt-1">
                                         <input type="file" name="background_zoom" class="form-control form-control-sm shadow-none" accept=".jpg,.jpeg,.png">
-                                        @if($pelatihan->background_zoom) <a href="{{ asset($pelatihan->background_zoom) }}" target="_blank" class="btn btn-sm btn-outline-premium"><i class="fas fa-image"></i></a> @endif
+                                        @if($pelatihan->background_zoom)
+                                        <div class="mt-2">
+                                            <a href="{{ asset($pelatihan->background_zoom) }}" target="_blank" class="badge badge-soft-info text-decoration-none px-3 py-2 border border-info rounded-pill" style="font-size: 10px;">
+                                                <i class="fas fa-image me-1"></i> {{ basename($pelatihan->background_zoom) }}
+                                            </a>
+                                        </div>
+                                        @endif
                                     </div>
                                     <div class="form-check custom-checkbox mb-2">
                                         <input class="form-check-input" type="checkbox" name="checklist_validasi[]" value="Foto Profil Grup WA" {{ in_array('Foto Profil Grup WA', $checklist) ? 'checked' : '' }}>
@@ -1044,9 +1050,15 @@
                                         <input class="form-check-input" type="checkbox" name="checklist_validasi[]" value="Modul Pelatihan" {{ in_array('Modul Pelatihan', $checklist) ? 'checked' : '' }}>
                                         <label class="form-check-label text-dark small fw-medium">Modul Pelatihan (Maks 5MB)</label>
                                     </div>
-                                    <div class="mb-2 mt-1 d-flex gap-2">
+                                    <div class="mb-2 mt-1">
                                         <input type="file" name="modul" class="form-control form-control-sm shadow-none" accept=".pdf,.doc,.docx,.zip,.rar">
-                                        @if($pelatihan->modul) <a href="{{ asset($pelatihan->modul) }}" target="_blank" class="btn btn-sm btn-outline-premium"><i class="fas fa-file-pdf"></i></a> @endif
+                                        @if($pelatihan->modul)
+                                        <div class="mt-2">
+                                            <a href="{{ asset($pelatihan->modul) }}" target="_blank" class="badge badge-soft-info text-decoration-none px-3 py-2 border border-info rounded-pill" style="font-size: 10px;">
+                                                <i class="fas fa-file-pdf me-1"></i> {{ basename($pelatihan->modul) }}
+                                            </a>
+                                        </div>
+                                        @endif
                                     </div>
                                     
                                     {{-- Kolom Sinkronisasi Modul Pelatihan --}}
@@ -1075,9 +1087,15 @@
                                         <input class="form-check-input" type="checkbox" name="checklist_validasi[]" value="Rundown Pelatihan" {{ in_array('Rundown Pelatihan', $checklist) ? 'checked' : '' }}>
                                         <label class="form-check-label text-dark small fw-medium">Rundown Pelatihan</label>
                                     </div>
-                                    <div class="mb-2 mt-1 d-flex gap-2">
+                                    <div class="mb-2 mt-1">
                                         <input type="file" name="rundown_pelatihan" class="form-control form-control-sm shadow-none" accept=".pdf,.doc,.docx">
-                                        @if($pelatihan->rundown_pelatihan) <a href="{{ asset($pelatihan->rundown_pelatihan) }}" target="_blank" class="btn btn-sm btn-outline-premium"><i class="fas fa-file-alt"></i></a> @endif
+                                        @if($pelatihan->rundown_pelatihan)
+                                        <div class="mt-2">
+                                            <a href="{{ asset($pelatihan->rundown_pelatihan) }}" target="_blank" class="badge badge-soft-info text-decoration-none px-3 py-2 border border-info rounded-pill" style="font-size: 10px;">
+                                                <i class="fas fa-file-alt me-1"></i> {{ basename($pelatihan->rundown_pelatihan) }}
+                                            </a>
+                                        </div>
+                                        @endif
                                     </div>
                                 </div>
                             </div>
