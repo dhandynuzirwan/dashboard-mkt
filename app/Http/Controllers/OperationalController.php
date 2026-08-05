@@ -306,7 +306,7 @@ class OperationalController extends Controller implements HasMiddleware
         }
 
         $riwayatData = [
-            'judul_pelatihan' => $request->has('judul_pelatihan') ? $request->judul_pelatihan : ($pelatihan->training->nama_training ?? null),
+            'judul_pelatihan' => $request->has('judul_pelatihan') ? $request->judul_pelatihan : ($pelatihan->riwayat ? $pelatihan->riwayat->judul_pelatihan : ($pelatihan->training->nama_training ?? null)),
             'metode' => $pelatihan->lokasi ?? null,
             'tanggal_mulai' => $pelatihan->tanggal_pelatihan,
             'tanggal_selesai' => $pelatihan->tanggal_selesai,
