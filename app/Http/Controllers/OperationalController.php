@@ -159,6 +159,8 @@ class OperationalController extends Controller implements HasMiddleware
     // JSON API untuk TV Monitor
     public function monitorTvData()
     {
+        $users = \App\Models\User::all()->keyBy('name');
+        
         $pelatihans = \App\Models\PelatihanBerjalan::with([
             'training', 
             'riwayat',
@@ -172,7 +174,7 @@ class OperationalController extends Controller implements HasMiddleware
         ->orderBy('tanggal_pelatihan', 'asc')
         ->get();
 
-        $data = $pelatihans->map(function ($pelatihan) {
+        $data = $pelatihans->map(function ($pelatihan) use ($users) {
             $firstPendaftaran = $pelatihan->pendaftaranPribadis->first();
             $sertifikasi = 'Lainnya';
             $skema = '';
@@ -202,6 +204,13 @@ class OperationalController extends Controller implements HasMiddleware
             $progress = count($checklist);
             // Asumsi 21 item total, sesuaikan jika beda
             $percent = $progress > 0 ? round(($progress / 21) * 100) : 0;
+            
+            $pic_name = $pelatihan->pic_operasional;
+            $pic_operasional_display = '-';
+            if ($pic_name) {
+                $user = $users->get($pic_name);
+                $pic_operasional_display = $user ? ($user->nama_lengkap ?? $user->name) : $pic_name;
+            }
 
             return [
                 'id' => $pelatihan->id,
@@ -211,7 +220,7 @@ class OperationalController extends Controller implements HasMiddleware
                 'tanggal_pelatihan' => $pelatihan->tanggal_pelatihan ? \Carbon\Carbon::parse($pelatihan->tanggal_pelatihan)->translatedFormat('d M Y') : '-',
                 'tanggal_selesai' => $pelatihan->tanggal_selesai ? \Carbon\Carbon::parse($pelatihan->tanggal_selesai)->translatedFormat('d M Y') : null,
                 'lokasi' => $pelatihan->lokasi ?? 'Belum Diset',
-                'pic_operasional' => $pelatihan->pic_operasional ?? '-',
+                'pic_operasional' => $pic_operasional_display,
                 'instruktur' => $pelatihan->instruktur ?? '-',
                 'asesor' => $pelatihan->asesor ?? '-',
                 'status_kelas' => $pelatihan->status_kelas,
