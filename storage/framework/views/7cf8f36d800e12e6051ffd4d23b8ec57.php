@@ -284,6 +284,21 @@ unset($__errorArgs, $__bag); ?>" id="kk_file" name="kk_file">
                                 </div>
 
                                 <div class="form-group col-md-6 mb-3">
+                                    <label for="kontrak_kerja" class="fw-bold mb-1">Kontrak Kerja (PDF/Image)</label>
+                                    <input type="file" class="form-control <?php $__errorArgs = ['kontrak_kerja'];
+$__bag = $errors->getBag($__errorArgs[1] ?? 'default');
+if ($__bag->has($__errorArgs[0])) :
+if (isset($message)) { $__messageOriginal = $message; }
+$message = $__bag->first($__errorArgs[0]); ?> is-invalid <?php unset($message);
+if (isset($__messageOriginal)) { $message = $__messageOriginal; }
+endif;
+unset($__errorArgs, $__bag); ?>" id="kontrak_kerja" name="kontrak_kerja">
+                                    <?php if($user->kontrak_kerja): ?>
+                                        <small class="d-block mt-1"><a href="<?php echo e(asset('storage/' . $user->kontrak_kerja)); ?>" target="_blank"><i class="fas fa-file me-1"></i> Lihat Kontrak Kerja saat ini</a></small>
+                                    <?php endif; ?>
+                                </div>
+
+                                <div class="form-group col-md-6 mb-3">
                                     <label for="role" class="fw-bold mb-1">Role / Hak Akses <span class="text-danger">*</span></label>
                                     <select class="form-select form-control <?php $__errorArgs = ['role'];
 $__bag = $errors->getBag($__errorArgs[1] ?? 'default');

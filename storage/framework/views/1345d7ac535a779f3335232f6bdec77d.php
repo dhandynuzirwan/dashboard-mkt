@@ -147,7 +147,7 @@
                             
                             <td class="text-center">
                                 <?php
-                                    $berkasList = ['ktp_file', 'ijasah_file', 'pas_foto_file', 'kk_file', 'jobdesk_file', 'sop_file'];
+                                    $berkasList = ['ktp_file', 'ijasah_file', 'pas_foto_file', 'kk_file', 'jobdesk_file', 'sop_file', 'kontrak_kerja'];
                                     $berkasTerisi = 0;
                                     foreach($berkasList as $berkas) {
                                         if(!empty($user->$berkas)) $berkasTerisi++;
@@ -161,7 +161,7 @@
                                     </div>
                                 <?php else: ?>
                                     <div class="badge badge-soft-warning px-3 py-2 rounded-pill fw-bold mb-1" style="font-size: 11px;">
-                                        <i class="fas fa-exclamation-circle me-1"></i> <?php echo e($berkasTerisi); ?>/6 Berkas
+                                        <i class="fas fa-exclamation-circle me-1"></i> <?php echo e($berkasTerisi); ?>/7 Berkas
                                     </div>
                                 <?php endif; ?>
                                 <br>
@@ -241,6 +241,7 @@
                         'pas_foto_file' => 'Pas Foto',
                         'jobdesk_file' => 'Jobdesk',
                         'sop_file' => 'SOP',
+                        'kontrak_kerja' => 'Kontrak Kerja',
                     ];
                 ?>
 
