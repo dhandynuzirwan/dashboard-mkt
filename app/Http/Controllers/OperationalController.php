@@ -137,7 +137,7 @@ class OperationalController extends Controller implements HasMiddleware
             ->whereYear('tanggal_pelatihan', $currentYear);
 
         if (auth()->check() && auth()->user()->role === 'operasional') {
-            $query->where('pic', auth()->user()->name);
+            $query->where('pic_operasional', auth()->user()->name);
         }
 
         $pelatihans = $query->orderBy('tanggal_pelatihan', 'desc')->get();
