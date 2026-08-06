@@ -67,7 +67,7 @@
         </div>
 
         {{-- Toolbar Filter gaya Pipeline --}}
-        <div class="bento-card p-3 mb-4">
+        <div class="card bento-card p-3 mb-4 shadow-none border">
             <form action="{{ route('absensi') }}" method="GET" class="d-flex flex-wrap gap-2">
                 {{-- Filter Tanggal Mulai --}}
                 <div class="form-group p-0 m-0">
@@ -113,7 +113,7 @@
         <div class="row">
             {{-- Total Karyawan --}}
             <div class="col-sm-6 col-md-3">
-                <div class="bento-card card-animate mb-4">
+                <div class="card bento-card card-stats card-round card-animate shadow-sm border-0 mb-4">
                     <div class="card-body">
                         <div class="row align-items-center">
                             <div class="col-icon">
@@ -134,7 +134,7 @@
 
             {{-- Hadir Hari Ini --}}
             <div class="col-sm-6 col-md-3">
-                <div class="bento-card card-animate mb-4">
+                <div class="card bento-card card-stats card-round card-animate shadow-sm border-0 mb-4">
                     <div class="card-body">
                         <div class="row align-items-center">
                             <div class="col-icon">
@@ -155,7 +155,7 @@
 
             {{-- Telat Hari Ini --}}
             <div class="col-sm-6 col-md-3">
-                <div class="bento-card card-animate mb-4">
+                <div class="card bento-card card-stats card-round card-animate shadow-sm border-0 mb-4">
                     <div class="card-body">
                         <div class="row align-items-center">
                             <div class="col-icon">
@@ -176,7 +176,7 @@
 
             {{-- Izin/Sakit Hari Ini --}}
             <div class="col-sm-6 col-md-3">
-                <div class="bento-card card-animate mb-4">
+                <div class="card bento-card card-stats card-round card-animate shadow-sm border-0 mb-4">
                     <div class="card-body">
                         <div class="row align-items-center">
                             <div class="col-icon">
@@ -199,7 +199,7 @@
         {{-- Row Charts --}}
         <div class="row mb-2">
             <div class="col-md-4">
-                <div class="bento-card mb-4" style="height: 350px;">
+                <div class="card bento-card border-0 shadow-sm mb-4" style="height: 350px;">
                     <div class="card-body p-4 text-center">
                         <h6 class="fw-bold mb-3 text-start"><i class="fas fa-chart-pie text-primary me-2"></i> Proporsi Filter</h6>
                         <div class="position-relative mx-auto" style="width: 180px; height: 180px;">
@@ -229,7 +229,7 @@
                 </div>
             </div>
             <div class="col-md-8">
-                <div class="bento-card mb-4" style="height: 350px;">
+                <div class="card bento-card border-0 shadow-sm mb-4" style="height: 350px;">
                     <div class="bg-transparent border-0 pt-4 pb-0 px-4">
                         <h6 class="fw-bold mb-0"><i class="fas fa-chart-line text-info me-2"></i> Tren Kehadiran (6 Bulan Terakhir)</h6>
                     </div>
@@ -307,7 +307,7 @@
 
         <div class="row">
             <div class="col-md-12">
-                <div class="bento-card mb-4">
+                <div class="card bento-card shadow-sm mb-4">
                     <div class="bg-transparent border-0 pb-0 pt-3 px-4">
                         <div class="d-flex align-items-center">
                             <h4 class="fw-bold mb-0 text-dark">Data Absensi & Perizinan</h4>
