@@ -237,7 +237,13 @@ class PermintaanVisualController extends Controller
     public function trainingIndex(Request $request)
     {
         $now = \Carbon\Carbon::now();
-        $query = \App\Models\PelatihanBerjalan::with(['training', 'permintaanTraining', 'riwayat', 'pendaftaranPribadis'])
+        $query = \App\Models\PelatihanBerjalan::with([
+            'training', 
+            'permintaanTraining', 
+            'riwayat', 
+            'pendaftaranPribadis.cta',
+            'pendaftaranPribadis.kolektif.cta'
+        ])
             ->whereYear('tanggal_pelatihan', $now->year)
             ->whereMonth('tanggal_pelatihan', $now->month)
             ->orderBy('tanggal_pelatihan', 'asc');
