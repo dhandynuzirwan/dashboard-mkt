@@ -17,6 +17,40 @@
         padding: 16px; 
         border-bottom: 1px solid #f1f5f9; 
     }
+    
+    /* Bento Card UI */
+    .bento-card {
+        background: rgba(255, 255, 255, 0.95);
+        border: 1px solid rgba(227, 230, 240, 0.8);
+        box-shadow: 0 8px 30px rgba(0, 0, 0, 0.03);
+        border-radius: 24px;
+        transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+        overflow: hidden;
+        backdrop-filter: blur(10px);
+    }
+    
+    .bento-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 15px 35px rgba(0, 0, 0, 0.08);
+    }
+
+    .bento-card-no-hover {
+        background: rgba(255, 255, 255, 0.95);
+        border: 1px solid rgba(227, 230, 240, 0.8);
+        box-shadow: 0 8px 30px rgba(0, 0, 0, 0.03);
+        border-radius: 24px;
+        overflow: hidden;
+    }
+    
+    .fade-in {
+        animation: fadeIn 0.8s ease forwards;
+        opacity: 0;
+    }
+    
+    @keyframes fadeIn {
+        from { opacity: 0; transform: translateY(20px); }
+        to { opacity: 1; transform: translateY(0); }
+    }
 </style>
 <div class="container">
     <div class="page-inner">
@@ -31,7 +65,7 @@
         </div>
 
         
-        <div class="card p-2 mb-3 shadow-none border" style="background: #f9fbfd;">
+        <div class="card bento-card p-3 mb-4 shadow-none border">
             <form action="<?php echo e(route('absensi')); ?>" method="GET" class="d-flex flex-wrap gap-2">
                 
                 <div class="form-group p-0 m-0">
@@ -78,7 +112,7 @@
         <div class="row">
             
             <div class="col-sm-6 col-md-3">
-                <div class="card card-stats card-round card-animate shadow-sm border-0 mb-4">
+                <div class="card bento-card card-stats card-round card-animate shadow-sm border-0 mb-4">
                     <div class="card-body">
                         <div class="row align-items-center">
                             <div class="col-icon">
@@ -99,7 +133,7 @@
 
             
             <div class="col-sm-6 col-md-3">
-                <div class="card card-stats card-round card-animate shadow-sm border-0 mb-4">
+                <div class="card bento-card card-stats card-round card-animate shadow-sm border-0 mb-4">
                     <div class="card-body">
                         <div class="row align-items-center">
                             <div class="col-icon">
@@ -120,7 +154,7 @@
 
             
             <div class="col-sm-6 col-md-3">
-                <div class="card card-stats card-round card-animate shadow-sm border-0 mb-4">
+                <div class="card bento-card card-stats card-round card-animate shadow-sm border-0 mb-4">
                     <div class="card-body">
                         <div class="row align-items-center">
                             <div class="col-icon">
@@ -141,7 +175,7 @@
 
             
             <div class="col-sm-6 col-md-3">
-                <div class="card card-stats card-round card-animate shadow-sm border-0 mb-4">
+                <div class="card bento-card card-stats card-round card-animate shadow-sm border-0 mb-4">
                     <div class="card-body">
                         <div class="row align-items-center">
                             <div class="col-icon">
@@ -164,7 +198,7 @@
         
         <div class="row mb-2">
             <div class="col-md-4">
-                <div class="card border-0 shadow-sm rounded-4 mb-4" style="height: 350px;">
+                <div class="card bento-card border-0 shadow-sm mb-4" style="height: 350px;">
                     <div class="card-body p-4 text-center">
                         <h6 class="fw-bold mb-3 text-start"><i class="fas fa-chart-pie text-primary me-2"></i> Proporsi Filter</h6>
                         <div class="position-relative mx-auto" style="width: 180px; height: 180px;">
@@ -194,8 +228,8 @@
                 </div>
             </div>
             <div class="col-md-8">
-                <div class="card border-0 shadow-sm rounded-4 mb-4" style="height: 350px;">
-                    <div class="card-header bg-white border-0 pt-4 pb-0 px-4">
+                <div class="card bento-card border-0 shadow-sm mb-4" style="height: 350px;">
+                    <div class="bg-transparent border-0 pt-4 pb-0 px-4">
                         <h6 class="fw-bold mb-0"><i class="fas fa-chart-line text-info me-2"></i> Tren Kehadiran (6 Bulan Terakhir)</h6>
                     </div>
                     <div class="card-body p-4">
@@ -274,10 +308,10 @@
 
         <div class="row">
             <div class="col-md-12">
-                <div class="card card-round shadow-sm">
-                    <div class="card-header border-0 pb-0">
+                <div class="card bento-card shadow-sm mb-4">
+                    <div class="bg-transparent border-0 pb-0 pt-3 px-4">
                         <div class="d-flex align-items-center">
-                            <h4 class="card-title">Data Absensi & Perizinan</h4>
+                            <h4 class="fw-bold mb-0 text-dark">Data Absensi & Perizinan</h4>
                             <ul class="nav nav-pills nav-secondary ms-auto" id="pills-tab" role="tablist">
                                 <li class="nav-item">
                                     <a class="nav-link active btn-sm" id="pills-log-tab" data-bs-toggle="pill" href="#pills-log" role="tab">Log Absensi</a>
@@ -294,7 +328,7 @@
                             </ul>
                         </div>
                     </div>
-                    <div class="card-body">
+                    <div class="p-4">
                         <div class="tab-content mt-2 mb-3" id="pills-tabContent">
                             <div class="tab-pane fade show active" id="pills-log" role="tabpanel">
                                 <div class="table-responsive">

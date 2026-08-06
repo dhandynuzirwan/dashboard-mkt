@@ -180,13 +180,34 @@
                             <td class="text-center text-muted fw-bold fs-5"><?php echo e($index + 1); ?></td>
                             <td>
                                 <?php
-                                    $isSyncRiwayat = $pelatihan->pendaftaranPribadis && $pelatihan->pendaftaranPribadis->isEmpty() && $pelatihan->riwayat;
+                                    $pesertaList = $pelatihan->pendaftaranPribadis;
+                                    $firstPendaftaran = $pesertaList ? $pesertaList->first() : null;
+                                    $sertifikasi = null;
+                                    if ($firstPendaftaran) {
+                                        if ($firstPendaftaran->tipe_pendaftaran == 'kolektif' && $firstPendaftaran->kolektif && $firstPendaftaran->kolektif->cta) {
+                                            $sertifikasi = strtoupper($firstPendaftaran->kolektif->cta->sertifikasi);
+                                        } else if ($firstPendaftaran->cta) {
+                                            $sertifikasi = strtoupper($firstPendaftaran->cta->sertifikasi);
+                                        }
+                                    }
+                                    
+                                    // If empty, fallback to jenis in riwayat if it exists
+                                    if (empty($sertifikasi) && $pelatihan->riwayat && !empty($pelatihan->riwayat->jenis)) {
+                                        $sertifikasi = strtoupper($pelatihan->riwayat->jenis);
+                                    }
+                                    
+                                    $isSyncRiwayat = $pesertaList && $pesertaList->isEmpty() && $pelatihan->riwayat;
                                 ?>
                                 <div class="fw-bold text-dark mb-2" style="font-size: 16px;">
                                     <?php echo e($isSyncRiwayat ? ($pelatihan->riwayat->judul_pelatihan ?? (optional($pelatihan->training)->nama_training ?? 'Pelatihan Custom')) : (optional($pelatihan->training)->nama_training ?? 'Pelatihan Custom')); ?>
 
+                                    
+                                    <?php if(!empty($sertifikasi)): ?>
+                                    <span class="badge bg-primary text-white ms-2" style="font-size: 10px; vertical-align: text-top; letter-spacing: 0.5px;"><?php echo e($sertifikasi); ?></span>
+                                    <?php endif; ?>
+
                                     <?php if($isSyncRiwayat): ?>
-                                        <span class="badge bg-light text-primary border border-primary ms-2" style="font-size: 11px;">Input Manual</span>
+                                        <span class="badge bg-light text-primary border border-primary ms-1" style="font-size: 10px; vertical-align: text-top;">Input Manual</span>
                                     <?php endif; ?>
                                 </div>
                                 <div class="d-flex flex-wrap gap-3">
