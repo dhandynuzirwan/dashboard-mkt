@@ -184,7 +184,7 @@
                                 @php
                                     $pesertaList = $pelatihan->pendaftaranPribadis;
                                     $firstPendaftaran = $pesertaList ? $pesertaList->first() : null;
-                                    $sertifikasi = 'LAINNYA';
+                                    $sertifikasi = null;
                                     if ($firstPendaftaran) {
                                         if ($firstPendaftaran->tipe_pendaftaran == 'kolektif' && $firstPendaftaran->kolektif && $firstPendaftaran->kolektif->cta) {
                                             $sertifikasi = strtoupper($firstPendaftaran->kolektif->cta->sertifikasi);
@@ -192,16 +192,18 @@
                                             $sertifikasi = strtoupper($firstPendaftaran->cta->sertifikasi);
                                         }
                                     }
-                                    if (empty($sertifikasi)) {
-                                        $sertifikasi = 'LAINNYA';
-                                    }
-
+                                    
+                                    // If empty, fallback to jenis in riwayat if it exists (Optional, but let's just stick to CTA)
+                                    // Let's ensure it's not "LAINNYA"
+                                    
                                     $isSyncRiwayat = $pesertaList && $pesertaList->isEmpty() && $pelatihan->riwayat;
                                 @endphp
                                 <div class="fw-bold text-dark mb-2" style="font-size: 16px;">
                                     {{ $isSyncRiwayat ? ($pelatihan->riwayat->judul_pelatihan ?? (optional($pelatihan->training)->nama_training ?? 'Pelatihan Custom')) : (optional($pelatihan->training)->nama_training ?? 'Pelatihan Custom') }}
                                     
+                                    @if(!empty($sertifikasi))
                                     <span class="badge bg-primary text-white ms-2" style="font-size: 10px; vertical-align: text-top; letter-spacing: 0.5px;">{{ $sertifikasi }}</span>
+                                    @endif
 
                                     @if($isSyncRiwayat)
                                         <span class="badge bg-light text-primary border border-primary ms-1" style="font-size: 10px; vertical-align: text-top;">Input Manual</span>
