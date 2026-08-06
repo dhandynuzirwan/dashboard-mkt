@@ -193,8 +193,10 @@
                                         }
                                     }
                                     
-                                    // If empty, fallback to jenis in riwayat if it exists (Optional, but let's just stick to CTA)
-                                    // Let's ensure it's not "LAINNYA"
+                                    // If empty, fallback to jenis in riwayat if it exists
+                                    if (empty($sertifikasi) && $pelatihan->riwayat && !empty($pelatihan->riwayat->jenis)) {
+                                        $sertifikasi = strtoupper($pelatihan->riwayat->jenis);
+                                    }
                                     
                                     $isSyncRiwayat = $pesertaList && $pesertaList->isEmpty() && $pelatihan->riwayat;
                                 @endphp
