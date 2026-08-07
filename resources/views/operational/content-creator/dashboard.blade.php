@@ -539,7 +539,7 @@
                     <div class="bg-white p-3 rounded" style="border: 1px solid #e2e8f0;">
                         <p class="text-muted small mb-3">Formulir evaluasi akhir yang diisi oleh Manager / Creative Lead.</p>
 
-                        @if(auth()->check() && auth()->user()->role == 'graphic')
+                        @if(auth()->check() && in_array(auth()->user()->role, ['superadmin', 'hrd']))
                             <form>
                                 <div class="row">
                                     <div class="col-md-6 mb-3">
