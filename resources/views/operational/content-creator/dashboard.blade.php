@@ -427,31 +427,31 @@
                                 </div>
                                 <div class="col-md-6 mb-3">
                                     <label class="form-label fw-bold small">Tanggal Tayang</label>
-                                    <input type="date" class="form-control" required>
+                                    <input type="date" class="form-control" required {{ auth()->check() && auth()->user()->role == 'graphic' ? '' : 'disabled' }}>
                                 </div>
                                 <div class="col-md-3 mb-3">
                                     <label class="form-label fw-bold small">Impressions</label>
-                                    <input type="number" class="form-control" placeholder="0">
+                                    <input type="number" class="form-control" placeholder="0" {{ auth()->check() && auth()->user()->role == 'graphic' ? '' : 'disabled' }}>
                                 </div>
                                 <div class="col-md-3 mb-3">
                                     <label class="form-label fw-bold small">Reach</label>
-                                    <input type="number" class="form-control" placeholder="0">
+                                    <input type="number" class="form-control" placeholder="0" {{ auth()->check() && auth()->user()->role == 'graphic' ? '' : 'disabled' }}>
                                 </div>
                                 <div class="col-md-3 mb-3">
                                     <label class="form-label fw-bold small">Likes</label>
-                                    <input type="number" class="form-control" placeholder="0">
+                                    <input type="number" class="form-control" placeholder="0" {{ auth()->check() && auth()->user()->role == 'graphic' ? '' : 'disabled' }}>
                                 </div>
                                 <div class="col-md-3 mb-3">
                                     <label class="form-label fw-bold small">Comments</label>
-                                    <input type="number" class="form-control" placeholder="0">
+                                    <input type="number" class="form-control" placeholder="0" {{ auth()->check() && auth()->user()->role == 'graphic' ? '' : 'disabled' }}>
                                 </div>
                                 <div class="col-md-4 mb-3">
                                     <label class="form-label fw-bold small">Saves</label>
-                                    <input type="number" class="form-control" placeholder="0">
+                                    <input type="number" class="form-control" placeholder="0" {{ auth()->check() && auth()->user()->role == 'graphic' ? '' : 'disabled' }}>
                                 </div>
                                 <div class="col-md-4 mb-3">
                                     <label class="form-label fw-bold small">Shares</label>
-                                    <input type="number" class="form-control" placeholder="0">
+                                    <input type="number" class="form-control" placeholder="0" {{ auth()->check() && auth()->user()->role == 'graphic' ? '' : 'disabled' }}>
                                 </div>
                                 <div class="col-md-4 mb-3">
                                     <label class="form-label fw-bold text-primary small">Engagement Rate (%)</label>
@@ -479,7 +479,7 @@
                             <div class="row">
                                 <div class="col-md-6 mb-3">
                                     <label class="form-label fw-bold small">Kesesuaian Brand Guideline</label>
-                                    <select class="form-select">
+                                    <select class="form-select" {{ auth()->check() && auth()->user()->role == 'graphic' ? '' : 'disabled' }}>
                                         <option value="5">5 - Sangat Sesuai</option>
                                         <option value="4">4 - Sesuai</option>
                                         <option value="3">3 - Cukup Sesuai</option>
@@ -489,11 +489,11 @@
                                 </div>
                                 <div class="col-md-6 mb-3">
                                     <label class="form-label fw-bold small">Jumlah Template Baru</label>
-                                    <input type="number" class="form-control" placeholder="0">
+                                    <input type="number" class="form-control" placeholder="0" {{ auth()->check() && auth()->user()->role == 'graphic' ? '' : 'disabled' }}>
                                 </div>
                                 <div class="col-md-12 mb-3">
                                     <label class="form-label fw-bold small">Status Laporan Riset Konten</label>
-                                    <select class="form-select">
+                                    <select class="form-select" {{ auth()->check() && auth()->user()->role == 'graphic' ? '' : 'disabled' }}>
                                         <option>Selesai</option>
                                         <option>Pending</option>
                                         <option>Tidak Berlaku</option>
