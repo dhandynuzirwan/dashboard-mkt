@@ -231,31 +231,8 @@
             </div>
         </div>
 
-        <!-- Navigation Tabs -->
-        <ul class="nav nav-tabs modern-tabs fade-up" id="ccTab" role="tablist">
-            <li class="nav-item" role="presentation">
-                <button class="nav-link active" id="dashboard-tab" data-bs-toggle="tab" data-bs-target="#dashboard" type="button" role="tab" aria-controls="dashboard" aria-selected="true">
-                    <i class="fas fa-chart-line me-2"></i> Dashboard
-                </button>
-            </li>
-            <li class="nav-item" role="presentation">
-                <button class="nav-link" id="metrik-tab" data-bs-toggle="tab" data-bs-target="#metrik" type="button" role="tab" aria-controls="metrik" aria-selected="false">
-                    <i class="fas fa-edit me-2"></i> Input Metrik Performa
-                </button>
-            </li>
-            <li class="nav-item" role="presentation">
-                <button class="nav-link" id="evaluasi-tab" data-bs-toggle="tab" data-bs-target="#evaluasi" type="button" role="tab" aria-controls="evaluasi" aria-selected="false">
-                    <i class="fas fa-clipboard-check me-2"></i> Evaluasi Internal
-                </button>
-            </li>
-        </ul>
-
-        <div class="tab-content" id="ccTabContent">
-            <!-- TAB 1: DASHBOARD -->
-            <div class="tab-pane fade show active" id="dashboard" role="tabpanel" aria-labelledby="dashboard-tab">
-                
-                <!-- Section Atas: Executive Summary / KPI Cards -->
-                <div class="row">
+        <!-- Section Atas: Executive Summary / KPI Cards -->
+        <div class="row">
             <!-- Total Output -->
             <div class="col-sm-6 col-md-3 mb-4 fade-up delay-1">
                 <div class="kpi-card gradient-blue">
@@ -360,6 +337,7 @@
                                     <th>Status</th>
                                     <th>Revisi</th>
                                     <th>Link Aset</th>
+                                    <th>Aksi</th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -373,6 +351,9 @@
                                     <td><span class="badge-modern badge-track">On Track</span></td>
                                     <td class="text-center">0</td>
                                     <td><a href="#" class="btn btn-sm btn-outline-primary rounded-pill"><i class="fas fa-link"></i> GDrive</a></td>
+                                    <td class="text-center">
+                                        <button class="btn btn-sm btn-info rounded-pill text-white fw-bold" data-bs-toggle="modal" data-bs-target="#detailModal"><i class="fas fa-eye"></i> Detail</button>
+                                    </td>
                                 </tr>
                                 <!-- Dummy Data 2 -->
                                 <tr>
@@ -384,6 +365,9 @@
                                     <td><span class="badge-modern badge-track">On Track</span></td>
                                     <td class="text-center">1</td>
                                     <td><a href="#" class="btn btn-sm btn-outline-primary rounded-pill"><i class="fas fa-link"></i> GDrive</a></td>
+                                    <td class="text-center">
+                                        <button class="btn btn-sm btn-info rounded-pill text-white fw-bold" data-bs-toggle="modal" data-bs-target="#detailModal"><i class="fas fa-eye"></i> Detail</button>
+                                    </td>
                                 </tr>
                                 <!-- Dummy Data 3 -->
                                 <tr>
@@ -395,6 +379,9 @@
                                     <td><span class="badge-modern badge-done">Completed</span></td>
                                     <td class="text-center">2</td>
                                     <td><a href="#" class="btn btn-sm btn-outline-primary rounded-pill"><i class="fas fa-link"></i> GDrive</a></td>
+                                    <td class="text-center">
+                                        <button class="btn btn-sm btn-info rounded-pill text-white fw-bold" data-bs-toggle="modal" data-bs-target="#detailModal"><i class="fas fa-eye"></i> Detail</button>
+                                    </td>
                                 </tr>
                             </tbody>
                         </table>
@@ -403,104 +390,129 @@
             </div>
         </div>
 
-            </div><!-- End Tab Dashboard -->
+    </div>
+</div>
 
-            <!-- TAB 2: METRIK PERFORMA -->
-            <div class="tab-pane fade" id="metrik" role="tabpanel" aria-labelledby="metrik-tab">
-                <div class="glass-card p-4 fade-up">
-                    <h5 class="fw-bold mb-4">Input Data Metrik Performa Media Sosial</h5>
-                    <p class="text-muted mb-4">Catat insight dari platform media sosial untuk setiap konten yang telah dipublikasikan (H+7 tayang).</p>
-                    
-                    <form>
-                        <div class="row">
-                            <div class="col-md-6 mb-3">
-                                <label class="form-label fw-bold">ID Konten</label>
-                                <input type="text" class="form-control" placeholder="Contoh: #CNT-010" required>
-                            </div>
-                            <div class="col-md-6 mb-3">
-                                <label class="form-label fw-bold">Tanggal Tayang</label>
-                                <input type="date" class="form-control" required>
-                            </div>
-                            <div class="col-md-3 mb-3">
-                                <label class="form-label fw-bold">Impressions</label>
-                                <input type="number" class="form-control" placeholder="0">
-                            </div>
-                            <div class="col-md-3 mb-3">
-                                <label class="form-label fw-bold">Reach</label>
-                                <input type="number" class="form-control" placeholder="0">
-                            </div>
-                            <div class="col-md-3 mb-3">
-                                <label class="form-label fw-bold">Likes</label>
-                                <input type="number" class="form-control" placeholder="0">
-                            </div>
-                            <div class="col-md-3 mb-3">
-                                <label class="form-label fw-bold">Comments</label>
-                                <input type="number" class="form-control" placeholder="0">
-                            </div>
-                            <div class="col-md-4 mb-3">
-                                <label class="form-label fw-bold">Saves</label>
-                                <input type="number" class="form-control" placeholder="0">
-                            </div>
-                            <div class="col-md-4 mb-3">
-                                <label class="form-label fw-bold">Shares</label>
-                                <input type="number" class="form-control" placeholder="0">
-                            </div>
-                            <div class="col-md-4 mb-3">
-                                <label class="form-label fw-bold text-primary">Engagement Rate (%)</label>
-                                <input type="number" step="0.01" class="form-control" placeholder="0.00" readonly title="Dihitung Otomatis">
-                                <small class="text-muted">Kalkulasi otomatis dari sistem</small>
-                            </div>
-                        </div>
-                        <div class="mt-4 text-end">
-                            <button type="submit" class="btn btn-primary btn-round px-5">Simpan Metrik</button>
-                        </div>
-                    </form>
-                </div>
+<!-- MODAL DETAIL & INPUT (Metrik & Evaluasi) -->
+<div class="modal fade" id="detailModal" tabindex="-1" aria-labelledby="detailModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg modal-dialog-centered">
+        <div class="modal-content" style="border-radius: 20px; border: none; overflow: hidden; font-family: 'Outfit', sans-serif;">
+            <div class="modal-header bg-dark text-white border-0 py-3">
+                <h5 class="modal-title fw-bold" id="detailModalLabel">Detail & Input Performa - #CNT-010</h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
-
-            <!-- TAB 3: EVALUASI INTERNAL -->
-            <div class="tab-pane fade" id="evaluasi" role="tabpanel" aria-labelledby="evaluasi-tab">
-                <div class="glass-card p-4 fade-up">
-                    <h5 class="fw-bold mb-4">Evaluasi Internal & Kualitatif (Manajemen)</h5>
-                    <p class="text-muted mb-4">Formulir evaluasi akhir periode yang diisi oleh Manager / Creative Lead.</p>
-
-                    <form>
-                        <div class="row">
-                            <div class="col-md-6 mb-3">
-                                <label class="form-label fw-bold">ID Konten / Periode</label>
-                                <input type="text" class="form-control" placeholder="Contoh: Agustus 2026">
-                            </div>
-                            <div class="col-md-6 mb-3">
-                                <label class="form-label fw-bold">Kesesuaian Brand Guideline (Skor 1-5)</label>
-                                <select class="form-select">
-                                    <option value="5">5 - Sangat Sesuai</option>
-                                    <option value="4">4 - Sesuai</option>
-                                    <option value="3">3 - Cukup Sesuai</option>
-                                    <option value="2">2 - Kurang Sesuai</option>
-                                    <option value="1">1 - Tidak Sesuai</option>
-                                </select>
-                            </div>
-                            <div class="col-md-6 mb-3">
-                                <label class="form-label fw-bold">Jumlah Template Baru</label>
-                                <input type="number" class="form-control" placeholder="0">
-                            </div>
-                            <div class="col-md-6 mb-3">
-                                <label class="form-label fw-bold">Status Laporan Riset Konten</label>
-                                <select class="form-select">
-                                    <option>Selesai</option>
-                                    <option>Pending</option>
-                                    <option>Tidak Berlaku</option>
-                                </select>
+            <div class="modal-body p-4 bg-light">
+                
+                <!-- Akordion untuk Input -->
+                <div class="accordion" id="accordionDetail">
+                    <!-- Akordion 1: Metrik Performa -->
+                    <div class="accordion-item border-0 mb-3" style="border-radius: 12px; overflow: hidden; box-shadow: 0 4px 6px rgba(0,0,0,0.05);">
+                        <h2 class="accordion-header" id="headingMetrik">
+                            <button class="accordion-button fw-bold" type="button" data-bs-toggle="collapse" data-bs-target="#collapseMetrik" aria-expanded="true" aria-controls="collapseMetrik">
+                                <i class="fas fa-chart-line text-primary me-2"></i> Input Data Metrik Performa Media Sosial
+                            </button>
+                        </h2>
+                        <div id="collapseMetrik" class="accordion-collapse collapse show" aria-labelledby="headingMetrik" data-bs-parent="#accordionDetail">
+                            <div class="accordion-body bg-white">
+                                <p class="text-muted small mb-4">Catat insight dari platform media sosial untuk setiap konten yang telah dipublikasikan (H+7 tayang).</p>
+                                
+                                <form>
+                                    <div class="row">
+                                        <div class="col-md-6 mb-3">
+                                            <label class="form-label fw-bold small">ID Konten</label>
+                                            <input type="text" class="form-control" value="#CNT-010" readonly>
+                                        </div>
+                                        <div class="col-md-6 mb-3">
+                                            <label class="form-label fw-bold small">Tanggal Tayang</label>
+                                            <input type="date" class="form-control" required>
+                                        </div>
+                                        <div class="col-md-3 mb-3">
+                                            <label class="form-label fw-bold small">Impressions</label>
+                                            <input type="number" class="form-control" placeholder="0">
+                                        </div>
+                                        <div class="col-md-3 mb-3">
+                                            <label class="form-label fw-bold small">Reach</label>
+                                            <input type="number" class="form-control" placeholder="0">
+                                        </div>
+                                        <div class="col-md-3 mb-3">
+                                            <label class="form-label fw-bold small">Likes</label>
+                                            <input type="number" class="form-control" placeholder="0">
+                                        </div>
+                                        <div class="col-md-3 mb-3">
+                                            <label class="form-label fw-bold small">Comments</label>
+                                            <input type="number" class="form-control" placeholder="0">
+                                        </div>
+                                        <div class="col-md-4 mb-3">
+                                            <label class="form-label fw-bold small">Saves</label>
+                                            <input type="number" class="form-control" placeholder="0">
+                                        </div>
+                                        <div class="col-md-4 mb-3">
+                                            <label class="form-label fw-bold small">Shares</label>
+                                            <input type="number" class="form-control" placeholder="0">
+                                        </div>
+                                        <div class="col-md-4 mb-3">
+                                            <label class="form-label fw-bold text-primary small">Engagement Rate (%)</label>
+                                            <input type="number" step="0.01" class="form-control bg-light" placeholder="0.00" readonly title="Dihitung Otomatis">
+                                        </div>
+                                    </div>
+                                    <div class="mt-3 text-end">
+                                        <button type="button" class="btn btn-primary btn-round px-4">Simpan Metrik</button>
+                                    </div>
+                                </form>
                             </div>
                         </div>
-                        <div class="mt-4 text-end">
-                            <button type="submit" class="btn btn-primary btn-round px-5">Simpan Evaluasi</button>
+                    </div>
+
+                    <!-- Akordion 2: Evaluasi Internal -->
+                    <div class="accordion-item border-0" style="border-radius: 12px; overflow: hidden; box-shadow: 0 4px 6px rgba(0,0,0,0.05);">
+                        <h2 class="accordion-header" id="headingEvaluasi">
+                            <button class="accordion-button collapsed fw-bold" type="button" data-bs-toggle="collapse" data-bs-target="#collapseEvaluasi" aria-expanded="false" aria-controls="collapseEvaluasi">
+                                <i class="fas fa-clipboard-check text-success me-2"></i> Evaluasi Internal & Kualitatif (Manajemen)
+                            </button>
+                        </h2>
+                        <div id="collapseEvaluasi" class="accordion-collapse collapse" aria-labelledby="headingEvaluasi" data-bs-parent="#accordionDetail">
+                            <div class="accordion-body bg-white">
+                                <p class="text-muted small mb-4">Formulir evaluasi akhir yang diisi oleh Manager / Creative Lead.</p>
+
+                                <form>
+                                    <div class="row">
+                                        <div class="col-md-6 mb-3">
+                                            <label class="form-label fw-bold small">Kesesuaian Brand Guideline</label>
+                                            <select class="form-select">
+                                                <option value="5">5 - Sangat Sesuai</option>
+                                                <option value="4">4 - Sesuai</option>
+                                                <option value="3">3 - Cukup Sesuai</option>
+                                                <option value="2">2 - Kurang Sesuai</option>
+                                                <option value="1">1 - Tidak Sesuai</option>
+                                            </select>
+                                        </div>
+                                        <div class="col-md-6 mb-3">
+                                            <label class="form-label fw-bold small">Jumlah Template Baru</label>
+                                            <input type="number" class="form-control" placeholder="0">
+                                        </div>
+                                        <div class="col-md-12 mb-3">
+                                            <label class="form-label fw-bold small">Status Laporan Riset Konten</label>
+                                            <select class="form-select">
+                                                <option>Selesai</option>
+                                                <option>Pending</option>
+                                                <option>Tidak Berlaku</option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                    <div class="mt-3 text-end">
+                                        <button type="button" class="btn btn-success btn-round px-4">Simpan Evaluasi</button>
+                                    </div>
+                                </form>
+                            </div>
                         </div>
-                    </form>
-                </div>
+                    </div>
+                </div> <!-- End Accordion -->
+
             </div>
-
-        </div> <!-- End Tab Content -->
+            <div class="modal-footer border-0 bg-light">
+                <button type="button" class="btn btn-secondary btn-round px-4" data-bs-dismiss="modal">Tutup</button>
+            </div>
+        </div>
     </div>
 </div>
 
