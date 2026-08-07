@@ -21,4 +21,14 @@ class ContentOperasional extends Model
         'jumlah_revisi',
         'link_aset',
     ];
+
+    public function metric()
+    {
+        return $this->hasOne(ContentMetric::class, 'content_id', 'content_id');
+    }
+
+    public function evaluation()
+    {
+        return $this->hasOne(ContentEvaluation::class, 'content_id', 'content_id');
+    }
 }

@@ -351,48 +351,48 @@
                                 </tr>
                             </thead>
                             <tbody>
-                                <!-- Dummy Data 1 -->
-                                <tr>
-                                    <td class="fw-bold text-primary">#CNT-010</td>
-                                    <td class="fw-bold text-dark">Promo Agustus Merdeka</td>
-                                    <td><i class="fab fa-instagram text-danger me-2"></i> Instagram</td>
-                                    <td>Carousel</td>
-                                    <td>08 Agu 2026</td>
-                                    <td><span class="badge-modern badge-track">On Track</span></td>
-                                    <td class="text-center">0</td>
-                                    <td><a href="#" class="btn btn-sm btn-outline-primary rounded-pill"><i class="fas fa-link"></i> GDrive</a></td>
-                                    <td class="text-center">
-                                        <button class="btn btn-sm btn-info rounded-pill text-white fw-bold" data-bs-toggle="modal" data-bs-target="#detailModal"><i class="fas fa-eye"></i> Detail</button>
-                                    </td>
-                                </tr>
-                                <!-- Dummy Data 2 -->
-                                <tr>
-                                    <td class="fw-bold text-primary">#CNT-011</td>
-                                    <td class="fw-bold text-dark">Tips K3 di Lapangan</td>
-                                    <td><i class="fab fa-tiktok text-dark me-2"></i> TikTok</td>
-                                    <td>Video Pendek</td>
-                                    <td>10 Agu 2026</td>
-                                    <td><span class="badge-modern badge-track">On Track</span></td>
-                                    <td class="text-center">1</td>
-                                    <td><a href="#" class="btn btn-sm btn-outline-primary rounded-pill"><i class="fas fa-link"></i> GDrive</a></td>
-                                    <td class="text-center">
-                                        <button class="btn btn-sm btn-info rounded-pill text-white fw-bold" data-bs-toggle="modal" data-bs-target="#detailModal"><i class="fas fa-eye"></i> Detail</button>
-                                    </td>
-                                </tr>
-                                <!-- Dummy Data 3 -->
-                                <tr>
-                                    <td class="fw-bold text-primary">#CNT-012</td>
-                                    <td class="fw-bold text-dark">Webinar Leadership Seri 3</td>
-                                    <td><i class="fab fa-linkedin text-info me-2"></i> LinkedIn</td>
-                                    <td>Single Image</td>
-                                    <td>05 Agu 2026</td>
-                                    <td><span class="badge-modern badge-done">Completed</span></td>
-                                    <td class="text-center">2</td>
-                                    <td><a href="#" class="btn btn-sm btn-outline-primary rounded-pill"><i class="fas fa-link"></i> GDrive</a></td>
-                                    <td class="text-center">
-                                        <button class="btn btn-sm btn-info rounded-pill text-white fw-bold" data-bs-toggle="modal" data-bs-target="#detailModal"><i class="fas fa-eye"></i> Detail</button>
-                                    </td>
-                                </tr>
+                                @forelse($operasionals as $op)
+                                    <tr>
+                                        <td class="fw-bold text-primary">{{ $op->content_id }}</td>
+                                        <td class="fw-bold text-dark">{{ $op->judul_konten }}</td>
+                                        <td>
+                                            @if($op->platform == 'Instagram') <i class="fab fa-instagram text-danger me-2"></i> 
+                                            @elseif($op->platform == 'TikTok') <i class="fab fa-tiktok text-dark me-2"></i>
+                                            @elseif($op->platform == 'LinkedIn') <i class="fab fa-linkedin text-info me-2"></i>
+                                            @elseif($op->platform == 'Facebook') <i class="fab fa-facebook text-primary me-2"></i>
+                                            @endif
+                                            {{ $op->platform }}
+                                        </td>
+                                        <td>{{ $op->format_konten }}</td>
+                                        <td>{{ \Carbon\Carbon::parse($op->target_deadline)->translatedFormat('d M Y') }}</td>
+                                        <td>
+                                            @if($op->status_deadline == 'On-Time' || $op->status_deadline == 'On Track')
+                                                <span class="badge-modern badge-track">{{ $op->status_deadline }}</span>
+                                            @elseif($op->status_deadline == 'Terlambat')
+                                                <span class="badge-modern badge-late">{{ $op->status_deadline }}</span>
+                                            @elseif($op->status_deadline == 'Completed' || $op->status_deadline == 'Selesai')
+                                                <span class="badge-modern badge-done">{{ $op->status_deadline }}</span>
+                                            @else
+                                                <span class="badge-modern bg-secondary text-white">{{ $op->status_deadline }}</span>
+                                            @endif
+                                        </td>
+                                        <td class="text-center">{{ $op->jumlah_revisi }}</td>
+                                        <td>
+                                            @if($op->link_aset)
+                                                <a href="{{ $op->link_aset }}" target="_blank" class="btn btn-sm btn-outline-primary rounded-pill"><i class="fas fa-link"></i> GDrive</a>
+                                            @else
+                                                <span class="text-muted small">Belum ada</span>
+                                            @endif
+                                        </td>
+                                        <td class="text-center">
+                                            <button class="btn btn-sm btn-info rounded-pill text-white fw-bold" data-bs-toggle="modal" data-bs-target="#detailModal-{{ $op->id }}"><i class="fas fa-eye"></i> Detail</button>
+                                        </td>
+                                    </tr>
+                                @empty
+                                    <tr>
+                                        <td colspan="9" class="text-center py-4 text-muted">Belum ada data operasional konten.</td>
+                                    </tr>
+                                @endforelse
                             </tbody>
                         </table>
                     </div>
@@ -404,7 +404,8 @@
 </div>
 
 <!-- MODAL DETAIL & INPUT (Metrik & Evaluasi) -->
-<div class="modal fade" id="detailModal" tabindex="-1" aria-labelledby="detailModalLabel" aria-hidden="true">
+@foreach($operasionals as $op)
+<div class="modal fade" id="detailModal-{{ $op->id }}" tabindex="-1" aria-labelledby="detailModalLabel-{{ $op->id }}" aria-hidden="true">
     <div class="modal-dialog modal-lg modal-dialog-centered">
         <div class="modal-content" style="border-radius: 24px; border: none; overflow: hidden; font-family: 'Outfit', sans-serif; box-shadow: 0 20px 50px rgba(0,0,0,0.15);">
             <div class="modal-header" style="background: linear-gradient(135deg, #4e73df 0%, #224abe 100%); color: white; padding: 25px 30px; border-bottom: none;">
@@ -413,8 +414,8 @@
                         <i class="fas fa-chart-pie"></i>
                     </div>
                     <div>
-                        <h5 class="modal-title fw-bolder text-white mb-0" id="detailModalLabel">Detail & Input Performa</h5>
-                        <p class="text-white-50 mb-0" style="font-size: 13px;">ID Konten: <strong class="text-white">#CNT-010</strong></p>
+                        <h5 class="modal-title fw-bolder text-white mb-0" id="detailModalLabel-{{ $op->id }}">Detail & Input Performa</h5>
+                        <p class="text-white-50 mb-0" style="font-size: 13px;">ID Konten: <strong class="text-white">{{ $op->content_id }}</strong></p>
                     </div>
                 </div>
                 <button type="button" class="btn-close btn-close-white shadow-none" data-bs-dismiss="modal" aria-label="Close"></button>
@@ -428,11 +429,12 @@
                         <p class="text-muted small mb-3">Catat insight dari platform media sosial untuk setiap konten yang telah dipublikasikan (H+7 tayang).</p>
                         
                         @if(auth()->check() && auth()->user()->role == 'graphic')
-                            <form>
+                            <form action="{{ route('operational.content-creator.metric.store', $op->id) }}" method="POST">
+                                @csrf
                                 <div class="row">
                                     <div class="col-md-6 mb-3">
                                         <label class="form-label fw-bold small">ID Konten</label>
-                                        <input type="text" class="form-control" value="#CNT-010" readonly>
+                                        <input type="text" class="form-control" value="{{ $op->content_id }}" readonly>
                                     </div>
                                     <div class="col-md-6 mb-3">
                                         <label class="form-label fw-bold small">Tanggal Tayang</label>
@@ -440,35 +442,35 @@
                                     </div>
                                     <div class="col-md-3 mb-3">
                                         <label class="form-label fw-bold small">Impressions</label>
-                                        <input type="number" class="form-control" placeholder="0">
+                                        <input type="number" name="impressions" class="form-control" placeholder="0" value="{{ $op->metric->impressions ?? '' }}">
                                     </div>
                                     <div class="col-md-3 mb-3">
                                         <label class="form-label fw-bold small">Reach</label>
-                                        <input type="number" class="form-control" placeholder="0">
+                                        <input type="number" name="reach" class="form-control" placeholder="0" value="{{ $op->metric->reach ?? '' }}">
                                     </div>
                                     <div class="col-md-3 mb-3">
                                         <label class="form-label fw-bold small">Likes</label>
-                                        <input type="number" class="form-control" placeholder="0">
+                                        <input type="number" name="likes" class="form-control" placeholder="0" value="{{ $op->metric->likes ?? '' }}">
                                     </div>
                                     <div class="col-md-3 mb-3">
                                         <label class="form-label fw-bold small">Comments</label>
-                                        <input type="number" class="form-control" placeholder="0">
+                                        <input type="number" name="comments" class="form-control" placeholder="0" value="{{ $op->metric->comments ?? '' }}">
                                     </div>
-                                    <div class="col-md-4 mb-3">
-                                        <label class="form-label fw-bold small">Saves</label>
-                                        <input type="number" class="form-control" placeholder="0">
-                                    </div>
-                                    <div class="col-md-4 mb-3">
+                                    <div class="col-md-3 mb-3">
                                         <label class="form-label fw-bold small">Shares</label>
-                                        <input type="number" class="form-control" placeholder="0">
+                                        <input type="number" name="shares" class="form-control" placeholder="0" value="{{ $op->metric->shares ?? '' }}">
                                     </div>
-                                    <div class="col-md-4 mb-3">
-                                        <label class="form-label fw-bold text-primary small">Engagement Rate (%)</label>
-                                        <input type="number" step="0.01" class="form-control bg-light" placeholder="0.00" readonly title="Dihitung Otomatis">
+                                    <div class="col-md-3 mb-3">
+                                        <label class="form-label fw-bold small">Saves</label>
+                                        <input type="number" name="saves" class="form-control" placeholder="0" value="{{ $op->metric->saves ?? '' }}">
+                                    </div>
+                                    <div class="col-md-12 mb-3">
+                                        <label class="form-label fw-bold small">Link Insight Platform</label>
+                                        <input type="url" name="link_insight" class="form-control" placeholder="https://" value="{{ $op->metric->link_insight ?? '' }}">
                                     </div>
                                 </div>
                                 <div class="mt-3 text-end">
-                                    <button type="button" class="btn btn-primary btn-round px-4">Simpan Metrik</button>
+                                    <button type="submit" class="btn btn-primary btn-round px-4">Simpan Metrik</button>
                                 </div>
                             </form>
                         @else
@@ -488,22 +490,29 @@
                                 
                                 <div class="col-6 col-md-4">
                                     <div class="p-3 border rounded bg-light text-center shadow-sm">
-                                        <i class="fas fa-eye text-info mb-2 fs-4"></i>
-                                        <h5 class="fw-bold mb-0">1,250</h5>
+                                        <i class="fas fa-eye text-primary mb-2 fs-4"></i>
+                                        <h5 class="fw-bold mb-0">{{ $op->metric->impressions ?? 0 }}</h5>
                                         <span class="text-muted small">Impressions</span>
                                     </div>
                                 </div>
                                 <div class="col-6 col-md-4">
                                     <div class="p-3 border rounded bg-light text-center shadow-sm">
-                                        <i class="fas fa-users text-primary mb-2 fs-4"></i>
-                                        <h5 class="fw-bold mb-0">980</h5>
+                                        <i class="fas fa-users text-info mb-2 fs-4"></i>
+                                        <h5 class="fw-bold mb-0">{{ $op->metric->reach ?? 0 }}</h5>
                                         <span class="text-muted small">Reach</span>
+                                    </div>
+                                </div>
+                                <div class="col-12 col-md-4">
+                                    <div class="p-3 rounded text-center shadow-sm text-white" style="background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);">
+                                        <i class="fas fa-chart-line mb-2 fs-4"></i>
+                                        <h5 class="fw-bolder mb-0">{{ $op->metric->engagement_rate ?? '0' }}%</h5>
+                                        <span class="small fw-medium">Engagement Rate</span>
                                     </div>
                                 </div>
                                 <div class="col-6 col-md-4">
                                     <div class="p-3 border rounded bg-light text-center shadow-sm">
                                         <i class="fas fa-heart text-danger mb-2 fs-4"></i>
-                                        <h5 class="fw-bold mb-0">450</h5>
+                                        <h5 class="fw-bold mb-0">{{ $op->metric->likes ?? 0 }}</h5>
                                         <span class="text-muted small">Likes</span>
                                     </div>
                                 </div>
@@ -540,33 +549,34 @@
                         <p class="text-muted small mb-3">Formulir evaluasi akhir yang diisi oleh Manager / Creative Lead.</p>
 
                         @if(auth()->check() && in_array(auth()->user()->role, ['superadmin', 'hrd']))
-                            <form>
+                            <form action="{{ route('operational.content-creator.eval.store', $op->id) }}" method="POST">
+                                @csrf
                                 <div class="row">
                                     <div class="col-md-6 mb-3">
                                         <label class="form-label fw-bold small">Kesesuaian Brand Guideline</label>
-                                        <select class="form-select">
-                                            <option value="5">5 - Sangat Sesuai</option>
-                                            <option value="4">4 - Sesuai</option>
-                                            <option value="3">3 - Cukup Sesuai</option>
-                                            <option value="2">2 - Kurang Sesuai</option>
-                                            <option value="1">1 - Tidak Sesuai</option>
+                                        <select name="kesesuaian_brand" class="form-select">
+                                            <option value="5" {{ ($op->evaluation->kesesuaian_brand ?? '') == '5' ? 'selected' : '' }}>5 - Sangat Sesuai</option>
+                                            <option value="4" {{ ($op->evaluation->kesesuaian_brand ?? '') == '4' ? 'selected' : '' }}>4 - Sesuai</option>
+                                            <option value="3" {{ ($op->evaluation->kesesuaian_brand ?? '') == '3' ? 'selected' : '' }}>3 - Cukup Sesuai</option>
+                                            <option value="2" {{ ($op->evaluation->kesesuaian_brand ?? '') == '2' ? 'selected' : '' }}>2 - Kurang Sesuai</option>
+                                            <option value="1" {{ ($op->evaluation->kesesuaian_brand ?? '') == '1' ? 'selected' : '' }}>1 - Tidak Sesuai</option>
                                         </select>
                                     </div>
                                     <div class="col-md-6 mb-3">
                                         <label class="form-label fw-bold small">Jumlah Template Baru</label>
-                                        <input type="number" class="form-control" placeholder="0">
+                                        <input type="number" name="jumlah_template_baru" class="form-control" placeholder="0" value="{{ $op->evaluation->jumlah_template_baru ?? '' }}">
                                     </div>
                                     <div class="col-md-12 mb-3">
                                         <label class="form-label fw-bold small">Status Laporan Riset Konten</label>
-                                        <select class="form-select">
-                                            <option>Selesai</option>
-                                            <option>Pending</option>
-                                            <option>Tidak Berlaku</option>
+                                        <select name="status_laporan_riset" class="form-select">
+                                            <option {{ ($op->evaluation->status_laporan_riset ?? '') == 'Selesai' ? 'selected' : '' }}>Selesai</option>
+                                            <option {{ ($op->evaluation->status_laporan_riset ?? '') == 'Pending' ? 'selected' : '' }}>Pending</option>
+                                            <option {{ ($op->evaluation->status_laporan_riset ?? '') == 'Tidak Berlaku' ? 'selected' : '' }}>Tidak Berlaku</option>
                                         </select>
                                     </div>
                                 </div>
                                 <div class="mt-3 text-end">
-                                    <button type="button" class="btn btn-success btn-round px-4">Simpan Evaluasi</button>
+                                    <button type="submit" class="btn btn-success btn-round px-4">Simpan Evaluasi</button>
                                 </div>
                             </form>
                         @else
@@ -578,7 +588,7 @@
                                         </div>
                                         <div>
                                             <p class="text-muted small mb-0">Kesesuaian Brand</p>
-                                            <h6 class="fw-bold mb-0">5 - Sangat Sesuai</h6>
+                                            <h6 class="fw-bold mb-0">{{ $op->evaluation->kesesuaian_brand ?? 0 }} / 5</h6>
                                         </div>
                                     </div>
                                 </div>
@@ -589,7 +599,7 @@
                                         </div>
                                         <div>
                                             <p class="text-muted small mb-0">Template Baru</p>
-                                            <h6 class="fw-bold mb-0">2 Template</h6>
+                                            <h6 class="fw-bold mb-0">{{ $op->evaluation->jumlah_template_baru ?? 0 }} Template</h6>
                                         </div>
                                     </div>
                                 </div>
@@ -600,7 +610,13 @@
                                         </div>
                                         <div>
                                             <p class="text-muted small mb-0">Laporan Riset Konten</p>
-                                            <span class="badge bg-success mt-1 px-3 py-2 rounded-pill">Selesai</span>
+                                            @if(($op->evaluation->status_laporan_riset ?? '') == 'Selesai')
+                                                <span class="badge bg-success mt-1 px-3 py-2 rounded-pill">Selesai</span>
+                                            @elseif(($op->evaluation->status_laporan_riset ?? '') == 'Pending')
+                                                <span class="badge bg-warning text-dark mt-1 px-3 py-2 rounded-pill">Pending</span>
+                                            @else
+                                                <span class="badge bg-secondary mt-1 px-3 py-2 rounded-pill">{{ $op->evaluation->status_laporan_riset ?? 'Belum ada' }}</span>
+                                            @endif
                                         </div>
                                     </div>
                                 </div>
@@ -616,6 +632,7 @@
         </div>
     </div>
 </div>
+@endforeach
 
 <script>
     document.addEventListener("DOMContentLoaded", function() {
@@ -630,10 +647,10 @@
         new Chart(ctxER, {
             type: 'line',
             data: {
-                labels: ['Minggu 1', 'Minggu 2', 'Minggu 3', 'Minggu 4'],
+                labels: @json($chartLabels),
                 datasets: [{
                     label: 'Engagement Rate (%)',
-                    data: [3.2, 3.8, 4.5, 4.2],
+                    data: @json($chartErData),
                     borderColor: '#3b82f6',
                     backgroundColor: gradient,
                     borderWidth: 3,
@@ -672,6 +689,33 @@
                 }
             }
         });
+
+        // Bar Chart - Top 5 Visual Content
+        const ctxTop = document.getElementById('topContentChart');
+        if(ctxTop) {
+            new Chart(ctxTop.getContext('2d'), {
+                type: 'bar',
+                data: {
+                    labels: @json($chartTopVisualNames),
+                    datasets: [{
+                        label: 'Engagement Rate (%)',
+                        data: @json($chartTopVisualEr),
+                        backgroundColor: '#10b981',
+                        borderRadius: 6
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: { display: false }
+                    },
+                    scales: {
+                        y: { beginAtZero: true }
+                    }
+                }
+            });
+        }
 
         // Pie Chart - Format Distribution
         const ctxFormat = document.getElementById('formatChart').getContext('2d');

@@ -255,6 +255,8 @@ Route::middleware('auth')->group(function () {
         
         // Halaman Content Creator
         Route::get('operational/content-creator', [ContentCreatorController::class, 'index'])->name('operational.content-creator.dashboard');
+        Route::post('operational/content-creator/metric/{id}', [ContentCreatorController::class, 'storeMetric'])->name('operational.content-creator.metric.store');
+        Route::post('operational/content-creator/eval/{id}', [ContentCreatorController::class, 'storeEvaluation'])->name('operational.content-creator.eval.store');
         Route::post('/download-request', [DownloadRequestController::class, 'store'])->name('download.request');
         Route::get('/download-file/{id}', [DownloadRequestController::class, 'download'])->name('download.file');
         Route::get('/my-downloads', [DownloadRequestController::class, 'myRequests'])->name('download.my');
