@@ -41,8 +41,32 @@ class ContentCreatorController extends Controller
             $chartTopVisualEr[] = $op->metric->engagement_rate;
         }
 
+        // Kalkulasi Stat Cards Dinamis
+        $totalOutput = $operasionals->count();
+        $targetOutput = $kpi ? $kpi->target_konten : 50; // Fallback jika KPI belum diset
+        $outputPercentage = $targetOutput > 0 ? round(($totalOutput / $targetOutput) * 100) : 0;
+        
+        $onTimeCount = $operasionals->whereIn('status_deadline', ['On-Time', 'On Track', 'Completed', 'Selesai'])->count();
+        $onTimePercentage = $totalOutput > 0 ? round(($onTimeCount / $totalOutput) * 100) : 0;
+        
+        $avgEr = $operasionals->filter(fn($op) => $op->metric != null)->avg(fn($op) => $op->metric->engagement_rate) ?? 0;
+        $avgEr = round($avgEr, 2);
+
+        $avgRevisi = $operasionals->avg('jumlah_revisi') ?? 0;
+        $avgRevisi = round($avgRevisi, 1);
+
+        $stats = [
+            'totalOutput' => $totalOutput,
+            'targetOutput' => $targetOutput,
+            'outputPercentage' => min(100, $outputPercentage),
+            'onTimeCount' => $onTimeCount,
+            'onTimePercentage' => $onTimePercentage,
+            'avgEr' => $avgEr,
+            'avgRevisi' => $avgRevisi,
+        ];
+
         return view('operational.content-creator.dashboard', compact(
-            'kpi', 'operasionals', 'chartLabels', 'chartErData', 'chartTopVisualNames', 'chartTopVisualEr'
+            'kpi', 'operasionals', 'chartLabels', 'chartErData', 'chartTopVisualNames', 'chartTopVisualEr', 'stats'
         ));
     }
 

@@ -240,11 +240,11 @@
                         <div class="kpi-label">Output Konten</div>
                         <div class="kpi-icon"><i class="fas fa-layer-group"></i></div>
                     </div>
-                    <div class="kpi-value">45<span style="font-size: 1rem; font-weight: 400; opacity: 0.8"> / 50</span></div>
+                    <div class="kpi-value">{{ $stats['totalOutput'] }}<span style="font-size: 1rem; font-weight: 400; opacity: 0.8"> / {{ $stats['targetOutput'] }}</span></div>
                     <div class="custom-progress">
-                        <div class="custom-progress-bar" style="width: 90%;"></div>
+                        <div class="custom-progress-bar" style="width: {{ $stats['outputPercentage'] }}%;"></div>
                     </div>
-                    <div class="mt-2 text-white" style="font-size: 0.85rem; opacity: 0.9;">90% dari target bulanan</div>
+                    <div class="mt-2 text-white" style="font-size: 0.85rem; opacity: 0.9;">{{ $stats['outputPercentage'] }}% dari target bulanan</div>
                 </div>
             </div>
 
@@ -267,8 +267,11 @@
                         <div class="kpi-label">On-Time Rate</div>
                         <div class="kpi-icon"><i class="fas fa-clock"></i></div>
                     </div>
-                    <div class="kpi-value">88%</div>
-                    <div class="mt-2 text-white" style="font-size: 0.85rem; opacity: 0.9;">40 dari 45 selesai tepat waktu</div>
+                    <div class="kpi-value">{{ $stats['onTimePercentage'] }}%</div>
+                    <div class="custom-progress">
+                        <div class="custom-progress-bar bg-white" style="width: {{ $stats['onTimePercentage'] }}%;"></div>
+                    </div>
+                    <div class="mt-2 text-white" style="font-size: 0.85rem; opacity: 0.9;">{{ $stats['onTimeCount'] }} dari {{ $stats['totalOutput'] }} selesai tepat waktu</div>
                 </div>
             </div>
 
@@ -279,8 +282,8 @@
                         <div class="kpi-label">Avg. Engagement</div>
                         <div class="kpi-icon"><i class="fas fa-heart"></i></div>
                     </div>
-                    <div class="kpi-value">4.2%</div>
-                    <div class="mt-2 text-white" style="font-size: 0.85rem; opacity: 0.9;">Tinggi di atas rata-rata industri (2%)</div>
+                    <div class="kpi-value">{{ $stats['avgEr'] }}%</div>
+                    <div class="mt-2 text-white" style="font-size: 0.85rem; opacity: 0.9;">Rata-rata dari seluruh konten bulan ini</div>
                 </div>
             </div>
         </div>
@@ -330,7 +333,7 @@
                         <div class="d-flex align-items-center gap-3">
                             <div class="bg-light px-3 py-2 rounded-3">
                                 <span class="text-muted small">Rata-rata Revisi:</span>
-                                <span class="fw-bold text-dark ms-2" style="font-size: 1.1rem;">1.2x</span>
+                                <span class="fw-bold text-dark ms-2" style="font-size: 1.1rem;">{{ $stats['avgRevisi'] }}x</span>
                             </div>
                         </div>
                     </div>
