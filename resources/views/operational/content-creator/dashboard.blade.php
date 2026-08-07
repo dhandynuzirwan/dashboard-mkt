@@ -309,6 +309,16 @@
                     </div>
                 </div>
             </div>
+
+            <!-- Bar Chart: Top 5 Visual Content -->
+            <div class="col-md-12 mb-4 fade-up delay-3">
+                <div class="glass-card p-4 h-100">
+                    <h5 class="fw-bold mb-4">Top 5 Visual Content (Berdasarkan Saves & Shares)</h5>
+                    <div style="height: 350px;">
+                        <canvas id="topContentChart"></canvas>
+                    </div>
+                </div>
+            </div>
         </div>
         
         <!-- Section Bawah: Efisiensi & Detail Proyek -->
@@ -456,7 +466,11 @@
                                         </div>
                                     </div>
                                     <div class="mt-3 text-end">
-                                        <button type="button" class="btn btn-primary btn-round px-4">Simpan Metrik</button>
+                                        @if(auth()->check() && auth()->user()->role == 'graphic')
+                                            <button type="button" class="btn btn-primary btn-round px-4">Simpan Metrik</button>
+                                        @else
+                                            <span class="text-muted small fst-italic">Hanya Graphic yang dapat menyimpan</span>
+                                        @endif
                                     </div>
                                 </form>
                             </div>
@@ -500,7 +514,11 @@
                                         </div>
                                     </div>
                                     <div class="mt-3 text-end">
-                                        <button type="button" class="btn btn-success btn-round px-4">Simpan Evaluasi</button>
+                                        @if(auth()->check() && auth()->user()->role == 'graphic')
+                                            <button type="button" class="btn btn-success btn-round px-4">Simpan Evaluasi</button>
+                                        @else
+                                            <span class="text-muted small fst-italic">Hanya Graphic yang dapat menyimpan</span>
+                                        @endif
                                     </div>
                                 </form>
                             </div>

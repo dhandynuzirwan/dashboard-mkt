@@ -25,6 +25,7 @@ use App\Http\Controllers\PendaftaranKolektifController;
 use App\Http\Controllers\PendaftaranPribadiController;
 use App\Http\Controllers\ParameterFinansialController;
 use App\Http\Controllers\MonitorController;
+use App\Http\Controllers\ContentCreatorController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
@@ -252,9 +253,8 @@ Route::middleware('auth')->group(function () {
             Route::post('/training/{id}/upload', [App\Http\Controllers\PermintaanVisualController::class, 'trainingUpload'])->name('operational.permintaan-visual.training.upload');
         });
         
-        Route::get('operational/content-creator', function() {
-            return view('operational.content-creator.dashboard');
-        })->name('operational.content-creator.dashboard');
+        // Halaman Content Creator
+        Route::get('operational/content-creator', [ContentCreatorController::class, 'index'])->name('operational.content-creator.dashboard');
         Route::post('/download-request', [DownloadRequestController::class, 'store'])->name('download.request');
         Route::get('/download-file/{id}', [DownloadRequestController::class, 'download'])->name('download.file');
         Route::get('/my-downloads', [DownloadRequestController::class, 'myRequests'])->name('download.my');
