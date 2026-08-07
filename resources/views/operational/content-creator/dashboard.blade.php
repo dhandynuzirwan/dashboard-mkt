@@ -165,6 +165,43 @@
     .badge-late { background: #fee2e2; color: #991b1b; }
     .badge-done { background: #e0e7ff; color: #3730a3; }
 
+    /* Tabs Styling */
+    .modern-tabs {
+        border-bottom: 2px solid rgba(0,0,0,0.05);
+        margin-bottom: 2rem;
+    }
+    
+    .modern-tabs .nav-link {
+        border: none;
+        color: #64748b;
+        font-weight: 600;
+        font-size: 1rem;
+        padding: 12px 24px;
+        position: relative;
+        background: transparent;
+        transition: all 0.3s ease;
+    }
+    
+    .modern-tabs .nav-link:hover {
+        color: #3b82f6;
+    }
+    
+    .modern-tabs .nav-link.active {
+        color: #3b82f6;
+        background: transparent;
+    }
+    
+    .modern-tabs .nav-link.active::after {
+        content: '';
+        position: absolute;
+        bottom: -2px;
+        left: 0;
+        right: 0;
+        height: 3px;
+        background: #3b82f6;
+        border-radius: 3px 3px 0 0;
+    }
+
     /* Animation */
     .fade-up {
         animation: fadeUp 0.6s cubic-bezier(0.16, 1, 0.3, 1) forwards;
@@ -189,18 +226,36 @@
         <!-- Header -->
         <div class="d-flex align-items-left align-items-md-center flex-column flex-md-row mb-4 justify-content-between fade-up">
             <div>
-                <h3 class="fw-bolder mb-1 text-dark" style="letter-spacing: -0.5px; font-size: 2rem;">Dashboard Content Creator</h3>
+                <h3 class="fw-bolder mb-1 text-dark" style="letter-spacing: -0.5px; font-size: 2rem;">Content Creator</h3>
                 <h6 class="text-muted fw-normal" style="font-size: 1.1rem;">Pantau performa, KPI, dan efisiensi tim kreatif.</h6>
-            </div>
-            <div class="ms-md-auto py-2 py-md-0 mt-3 mt-md-0">
-                <a href="#" class="btn btn-dark btn-round px-4 py-2" style="font-weight: 600;">
-                    <i class="fas fa-plus-circle me-2"></i> Input Data Baru
-                </a>
             </div>
         </div>
 
-        <!-- Section Atas: Executive Summary / KPI Cards -->
-        <div class="row">
+        <!-- Navigation Tabs -->
+        <ul class="nav nav-tabs modern-tabs fade-up" id="ccTab" role="tablist">
+            <li class="nav-item" role="presentation">
+                <button class="nav-link active" id="dashboard-tab" data-bs-toggle="tab" data-bs-target="#dashboard" type="button" role="tab" aria-controls="dashboard" aria-selected="true">
+                    <i class="fas fa-chart-line me-2"></i> Dashboard
+                </button>
+            </li>
+            <li class="nav-item" role="presentation">
+                <button class="nav-link" id="metrik-tab" data-bs-toggle="tab" data-bs-target="#metrik" type="button" role="tab" aria-controls="metrik" aria-selected="false">
+                    <i class="fas fa-edit me-2"></i> Input Metrik Performa
+                </button>
+            </li>
+            <li class="nav-item" role="presentation">
+                <button class="nav-link" id="evaluasi-tab" data-bs-toggle="tab" data-bs-target="#evaluasi" type="button" role="tab" aria-controls="evaluasi" aria-selected="false">
+                    <i class="fas fa-clipboard-check me-2"></i> Evaluasi Internal
+                </button>
+            </li>
+        </ul>
+
+        <div class="tab-content" id="ccTabContent">
+            <!-- TAB 1: DASHBOARD -->
+            <div class="tab-pane fade show active" id="dashboard" role="tabpanel" aria-labelledby="dashboard-tab">
+                
+                <!-- Section Atas: Executive Summary / KPI Cards -->
+                <div class="row">
             <!-- Total Output -->
             <div class="col-sm-6 col-md-3 mb-4 fade-up delay-1">
                 <div class="kpi-card gradient-blue">
@@ -348,6 +403,104 @@
             </div>
         </div>
 
+            </div><!-- End Tab Dashboard -->
+
+            <!-- TAB 2: METRIK PERFORMA -->
+            <div class="tab-pane fade" id="metrik" role="tabpanel" aria-labelledby="metrik-tab">
+                <div class="glass-card p-4 fade-up">
+                    <h5 class="fw-bold mb-4">Input Data Metrik Performa Media Sosial</h5>
+                    <p class="text-muted mb-4">Catat insight dari platform media sosial untuk setiap konten yang telah dipublikasikan (H+7 tayang).</p>
+                    
+                    <form>
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label class="form-label fw-bold">ID Konten</label>
+                                <input type="text" class="form-control" placeholder="Contoh: #CNT-010" required>
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label class="form-label fw-bold">Tanggal Tayang</label>
+                                <input type="date" class="form-control" required>
+                            </div>
+                            <div class="col-md-3 mb-3">
+                                <label class="form-label fw-bold">Impressions</label>
+                                <input type="number" class="form-control" placeholder="0">
+                            </div>
+                            <div class="col-md-3 mb-3">
+                                <label class="form-label fw-bold">Reach</label>
+                                <input type="number" class="form-control" placeholder="0">
+                            </div>
+                            <div class="col-md-3 mb-3">
+                                <label class="form-label fw-bold">Likes</label>
+                                <input type="number" class="form-control" placeholder="0">
+                            </div>
+                            <div class="col-md-3 mb-3">
+                                <label class="form-label fw-bold">Comments</label>
+                                <input type="number" class="form-control" placeholder="0">
+                            </div>
+                            <div class="col-md-4 mb-3">
+                                <label class="form-label fw-bold">Saves</label>
+                                <input type="number" class="form-control" placeholder="0">
+                            </div>
+                            <div class="col-md-4 mb-3">
+                                <label class="form-label fw-bold">Shares</label>
+                                <input type="number" class="form-control" placeholder="0">
+                            </div>
+                            <div class="col-md-4 mb-3">
+                                <label class="form-label fw-bold text-primary">Engagement Rate (%)</label>
+                                <input type="number" step="0.01" class="form-control" placeholder="0.00" readonly title="Dihitung Otomatis">
+                                <small class="text-muted">Kalkulasi otomatis dari sistem</small>
+                            </div>
+                        </div>
+                        <div class="mt-4 text-end">
+                            <button type="submit" class="btn btn-primary btn-round px-5">Simpan Metrik</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+
+            <!-- TAB 3: EVALUASI INTERNAL -->
+            <div class="tab-pane fade" id="evaluasi" role="tabpanel" aria-labelledby="evaluasi-tab">
+                <div class="glass-card p-4 fade-up">
+                    <h5 class="fw-bold mb-4">Evaluasi Internal & Kualitatif (Manajemen)</h5>
+                    <p class="text-muted mb-4">Formulir evaluasi akhir periode yang diisi oleh Manager / Creative Lead.</p>
+
+                    <form>
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label class="form-label fw-bold">ID Konten / Periode</label>
+                                <input type="text" class="form-control" placeholder="Contoh: Agustus 2026">
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label class="form-label fw-bold">Kesesuaian Brand Guideline (Skor 1-5)</label>
+                                <select class="form-select">
+                                    <option value="5">5 - Sangat Sesuai</option>
+                                    <option value="4">4 - Sesuai</option>
+                                    <option value="3">3 - Cukup Sesuai</option>
+                                    <option value="2">2 - Kurang Sesuai</option>
+                                    <option value="1">1 - Tidak Sesuai</option>
+                                </select>
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label class="form-label fw-bold">Jumlah Template Baru</label>
+                                <input type="number" class="form-control" placeholder="0">
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label class="form-label fw-bold">Status Laporan Riset Konten</label>
+                                <select class="form-select">
+                                    <option>Selesai</option>
+                                    <option>Pending</option>
+                                    <option>Tidak Berlaku</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="mt-4 text-end">
+                            <button type="submit" class="btn btn-primary btn-round px-5">Simpan Evaluasi</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+
+        </div> <!-- End Tab Content -->
     </div>
 </div>
 
