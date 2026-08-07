@@ -419,53 +419,109 @@
                     <div class="bg-white p-3 rounded" style="border: 1px solid #e2e8f0;">
                         <p class="text-muted small mb-3">Catat insight dari platform media sosial untuk setiap konten yang telah dipublikasikan (H+7 tayang).</p>
                         
-                        <form>
-                            <div class="row">
-                                <div class="col-md-6 mb-3">
-                                    <label class="form-label fw-bold small">ID Konten</label>
-                                    <input type="text" class="form-control" value="#CNT-010" readonly>
+                        @if(auth()->check() && auth()->user()->role == 'graphic')
+                            <form>
+                                <div class="row">
+                                    <div class="col-md-6 mb-3">
+                                        <label class="form-label fw-bold small">ID Konten</label>
+                                        <input type="text" class="form-control" value="#CNT-010" readonly>
+                                    </div>
+                                    <div class="col-md-6 mb-3">
+                                        <label class="form-label fw-bold small">Tanggal Tayang</label>
+                                        <input type="date" class="form-control" required>
+                                    </div>
+                                    <div class="col-md-3 mb-3">
+                                        <label class="form-label fw-bold small">Impressions</label>
+                                        <input type="number" class="form-control" placeholder="0">
+                                    </div>
+                                    <div class="col-md-3 mb-3">
+                                        <label class="form-label fw-bold small">Reach</label>
+                                        <input type="number" class="form-control" placeholder="0">
+                                    </div>
+                                    <div class="col-md-3 mb-3">
+                                        <label class="form-label fw-bold small">Likes</label>
+                                        <input type="number" class="form-control" placeholder="0">
+                                    </div>
+                                    <div class="col-md-3 mb-3">
+                                        <label class="form-label fw-bold small">Comments</label>
+                                        <input type="number" class="form-control" placeholder="0">
+                                    </div>
+                                    <div class="col-md-4 mb-3">
+                                        <label class="form-label fw-bold small">Saves</label>
+                                        <input type="number" class="form-control" placeholder="0">
+                                    </div>
+                                    <div class="col-md-4 mb-3">
+                                        <label class="form-label fw-bold small">Shares</label>
+                                        <input type="number" class="form-control" placeholder="0">
+                                    </div>
+                                    <div class="col-md-4 mb-3">
+                                        <label class="form-label fw-bold text-primary small">Engagement Rate (%)</label>
+                                        <input type="number" step="0.01" class="form-control bg-light" placeholder="0.00" readonly title="Dihitung Otomatis">
+                                    </div>
                                 </div>
-                                <div class="col-md-6 mb-3">
-                                    <label class="form-label fw-bold small">Tanggal Tayang</label>
-                                    <input type="date" class="form-control" required {{ auth()->check() && auth()->user()->role == 'graphic' ? '' : 'disabled' }}>
-                                </div>
-                                <div class="col-md-3 mb-3">
-                                    <label class="form-label fw-bold small">Impressions</label>
-                                    <input type="number" class="form-control" placeholder="0" {{ auth()->check() && auth()->user()->role == 'graphic' ? '' : 'disabled' }}>
-                                </div>
-                                <div class="col-md-3 mb-3">
-                                    <label class="form-label fw-bold small">Reach</label>
-                                    <input type="number" class="form-control" placeholder="0" {{ auth()->check() && auth()->user()->role == 'graphic' ? '' : 'disabled' }}>
-                                </div>
-                                <div class="col-md-3 mb-3">
-                                    <label class="form-label fw-bold small">Likes</label>
-                                    <input type="number" class="form-control" placeholder="0" {{ auth()->check() && auth()->user()->role == 'graphic' ? '' : 'disabled' }}>
-                                </div>
-                                <div class="col-md-3 mb-3">
-                                    <label class="form-label fw-bold small">Comments</label>
-                                    <input type="number" class="form-control" placeholder="0" {{ auth()->check() && auth()->user()->role == 'graphic' ? '' : 'disabled' }}>
-                                </div>
-                                <div class="col-md-4 mb-3">
-                                    <label class="form-label fw-bold small">Saves</label>
-                                    <input type="number" class="form-control" placeholder="0" {{ auth()->check() && auth()->user()->role == 'graphic' ? '' : 'disabled' }}>
-                                </div>
-                                <div class="col-md-4 mb-3">
-                                    <label class="form-label fw-bold small">Shares</label>
-                                    <input type="number" class="form-control" placeholder="0" {{ auth()->check() && auth()->user()->role == 'graphic' ? '' : 'disabled' }}>
-                                </div>
-                                <div class="col-md-4 mb-3">
-                                    <label class="form-label fw-bold text-primary small">Engagement Rate (%)</label>
-                                    <input type="number" step="0.01" class="form-control bg-light" placeholder="0.00" readonly title="Dihitung Otomatis">
-                                </div>
-                            </div>
-                            <div class="mt-3 text-end">
-                                @if(auth()->check() && auth()->user()->role == 'graphic')
+                                <div class="mt-3 text-end">
                                     <button type="button" class="btn btn-primary btn-round px-4">Simpan Metrik</button>
-                                @else
-                                    <span class="text-muted small fst-italic">Hanya Graphic yang dapat menyimpan</span>
-                                @endif
+                                </div>
+                            </form>
+                        @else
+                            <div class="row g-3">
+                                <div class="col-md-6">
+                                    <div class="p-3 border rounded bg-white text-center shadow-sm">
+                                        <p class="text-muted small mb-1">Tanggal Tayang</p>
+                                        <h6 class="fw-bold mb-0">15 Agu 2026</h6>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="p-3 border rounded bg-white text-center shadow-sm">
+                                        <p class="text-muted small mb-1">Engagement Rate</p>
+                                        <h5 class="fw-bold text-primary mb-0">4.50%</h5>
+                                    </div>
+                                </div>
+                                
+                                <div class="col-6 col-md-4">
+                                    <div class="p-3 border rounded bg-light text-center shadow-sm">
+                                        <i class="fas fa-eye text-info mb-2 fs-4"></i>
+                                        <h5 class="fw-bold mb-0">1,250</h5>
+                                        <span class="text-muted small">Impressions</span>
+                                    </div>
+                                </div>
+                                <div class="col-6 col-md-4">
+                                    <div class="p-3 border rounded bg-light text-center shadow-sm">
+                                        <i class="fas fa-users text-primary mb-2 fs-4"></i>
+                                        <h5 class="fw-bold mb-0">980</h5>
+                                        <span class="text-muted small">Reach</span>
+                                    </div>
+                                </div>
+                                <div class="col-6 col-md-4">
+                                    <div class="p-3 border rounded bg-light text-center shadow-sm">
+                                        <i class="fas fa-heart text-danger mb-2 fs-4"></i>
+                                        <h5 class="fw-bold mb-0">450</h5>
+                                        <span class="text-muted small">Likes</span>
+                                    </div>
+                                </div>
+                                <div class="col-6 col-md-4">
+                                    <div class="p-3 border rounded bg-light text-center shadow-sm">
+                                        <i class="fas fa-comment text-warning mb-2 fs-4"></i>
+                                        <h5 class="fw-bold mb-0">32</h5>
+                                        <span class="text-muted small">Comments</span>
+                                    </div>
+                                </div>
+                                <div class="col-6 col-md-4">
+                                    <div class="p-3 border rounded bg-light text-center shadow-sm">
+                                        <i class="fas fa-bookmark text-success mb-2 fs-4"></i>
+                                        <h5 class="fw-bold mb-0">110</h5>
+                                        <span class="text-muted small">Saves</span>
+                                    </div>
+                                </div>
+                                <div class="col-6 col-md-4">
+                                    <div class="p-3 border rounded bg-light text-center shadow-sm">
+                                        <i class="fas fa-share text-secondary mb-2 fs-4"></i>
+                                        <h5 class="fw-bold mb-0">45</h5>
+                                        <span class="text-muted small">Shares</span>
+                                    </div>
+                                </div>
                             </div>
-                        </form>
+                        @endif
                     </div>
                 </div>
 
@@ -475,39 +531,73 @@
                     <div class="bg-white p-3 rounded" style="border: 1px solid #e2e8f0;">
                         <p class="text-muted small mb-3">Formulir evaluasi akhir yang diisi oleh Manager / Creative Lead.</p>
 
-                        <form>
-                            <div class="row">
-                                <div class="col-md-6 mb-3">
-                                    <label class="form-label fw-bold small">Kesesuaian Brand Guideline</label>
-                                    <select class="form-select" {{ auth()->check() && auth()->user()->role == 'graphic' ? '' : 'disabled' }}>
-                                        <option value="5">5 - Sangat Sesuai</option>
-                                        <option value="4">4 - Sesuai</option>
-                                        <option value="3">3 - Cukup Sesuai</option>
-                                        <option value="2">2 - Kurang Sesuai</option>
-                                        <option value="1">1 - Tidak Sesuai</option>
-                                    </select>
+                        @if(auth()->check() && auth()->user()->role == 'graphic')
+                            <form>
+                                <div class="row">
+                                    <div class="col-md-6 mb-3">
+                                        <label class="form-label fw-bold small">Kesesuaian Brand Guideline</label>
+                                        <select class="form-select">
+                                            <option value="5">5 - Sangat Sesuai</option>
+                                            <option value="4">4 - Sesuai</option>
+                                            <option value="3">3 - Cukup Sesuai</option>
+                                            <option value="2">2 - Kurang Sesuai</option>
+                                            <option value="1">1 - Tidak Sesuai</option>
+                                        </select>
+                                    </div>
+                                    <div class="col-md-6 mb-3">
+                                        <label class="form-label fw-bold small">Jumlah Template Baru</label>
+                                        <input type="number" class="form-control" placeholder="0">
+                                    </div>
+                                    <div class="col-md-12 mb-3">
+                                        <label class="form-label fw-bold small">Status Laporan Riset Konten</label>
+                                        <select class="form-select">
+                                            <option>Selesai</option>
+                                            <option>Pending</option>
+                                            <option>Tidak Berlaku</option>
+                                        </select>
+                                    </div>
                                 </div>
-                                <div class="col-md-6 mb-3">
-                                    <label class="form-label fw-bold small">Jumlah Template Baru</label>
-                                    <input type="number" class="form-control" placeholder="0" {{ auth()->check() && auth()->user()->role == 'graphic' ? '' : 'disabled' }}>
-                                </div>
-                                <div class="col-md-12 mb-3">
-                                    <label class="form-label fw-bold small">Status Laporan Riset Konten</label>
-                                    <select class="form-select" {{ auth()->check() && auth()->user()->role == 'graphic' ? '' : 'disabled' }}>
-                                        <option>Selesai</option>
-                                        <option>Pending</option>
-                                        <option>Tidak Berlaku</option>
-                                    </select>
-                                </div>
-                            </div>
-                            <div class="mt-3 text-end">
-                                @if(auth()->check() && auth()->user()->role == 'graphic')
+                                <div class="mt-3 text-end">
                                     <button type="button" class="btn btn-success btn-round px-4">Simpan Evaluasi</button>
-                                @else
-                                    <span class="text-muted small fst-italic">Hanya Graphic yang dapat menyimpan</span>
-                                @endif
+                                </div>
+                            </form>
+                        @else
+                            <div class="row g-3">
+                                <div class="col-md-6">
+                                    <div class="p-3 border rounded bg-light d-flex align-items-center shadow-sm">
+                                        <div class="bg-white p-2 rounded text-center me-3" style="min-width: 45px;">
+                                            <i class="fas fa-star text-warning fs-5"></i>
+                                        </div>
+                                        <div>
+                                            <p class="text-muted small mb-0">Kesesuaian Brand</p>
+                                            <h6 class="fw-bold mb-0">5 - Sangat Sesuai</h6>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="p-3 border rounded bg-light d-flex align-items-center shadow-sm">
+                                        <div class="bg-white p-2 rounded text-center me-3" style="min-width: 45px;">
+                                            <i class="fas fa-copy text-info fs-5"></i>
+                                        </div>
+                                        <div>
+                                            <p class="text-muted small mb-0">Template Baru</p>
+                                            <h6 class="fw-bold mb-0">2 Template</h6>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-12">
+                                    <div class="p-3 border rounded bg-light d-flex align-items-center shadow-sm">
+                                        <div class="bg-white p-2 rounded text-center me-3" style="min-width: 45px;">
+                                            <i class="fas fa-file-alt text-success fs-5"></i>
+                                        </div>
+                                        <div>
+                                            <p class="text-muted small mb-0">Laporan Riset Konten</p>
+                                            <span class="badge bg-success mt-1 px-3 py-2 rounded-pill">Selesai</span>
+                                        </div>
+                                    </div>
+                                </div>
                             </div>
-                        </form>
+                        @endif
                     </div>
                 </div>
 
