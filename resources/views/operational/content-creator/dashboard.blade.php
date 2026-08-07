@@ -406,12 +406,20 @@
 <!-- MODAL DETAIL & INPUT (Metrik & Evaluasi) -->
 <div class="modal fade" id="detailModal" tabindex="-1" aria-labelledby="detailModalLabel" aria-hidden="true">
     <div class="modal-dialog modal-lg modal-dialog-centered">
-        <div class="modal-content" style="border-radius: 20px; border: none; overflow: hidden; font-family: 'Outfit', sans-serif;">
-            <div class="modal-header bg-dark text-white border-0 py-3">
-                <h5 class="modal-title fw-bold" id="detailModalLabel">Detail & Input Performa - #CNT-010</h5>
-                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+        <div class="modal-content" style="border-radius: 24px; border: none; overflow: hidden; font-family: 'Outfit', sans-serif; box-shadow: 0 20px 50px rgba(0,0,0,0.15);">
+            <div class="modal-header" style="background: linear-gradient(135deg, #4e73df 0%, #224abe 100%); color: white; padding: 25px 30px; border-bottom: none;">
+                <div class="d-flex align-items-center">
+                    <div class="bg-white text-primary d-flex align-items-center justify-content-center me-3 shadow-sm" style="width: 45px; height: 45px; font-size: 20px; border-radius: 12px;">
+                        <i class="fas fa-chart-pie"></i>
+                    </div>
+                    <div>
+                        <h5 class="modal-title fw-bolder text-white mb-0" id="detailModalLabel">Detail & Input Performa</h5>
+                        <p class="text-white-50 mb-0" style="font-size: 13px;">ID Konten: <strong class="text-white">#CNT-010</strong></p>
+                    </div>
+                </div>
+                <button type="button" class="btn-close btn-close-white shadow-none" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
-            <div class="modal-body p-4 bg-light">
+            <div class="modal-body px-4 px-md-5 pt-4 pb-4" style="background-color: #f8fafc; overflow-y: auto; max-height: calc(100vh - 120px);">
                 
                 <!-- Section 1: Metrik Performa -->
                 <div class="mb-4">
@@ -602,8 +610,8 @@
                 </div>
 
             </div>
-            <div class="modal-footer border-0 bg-light">
-                <button type="button" class="btn btn-secondary btn-round px-4" data-bs-dismiss="modal">Tutup</button>
+            <div class="modal-footer border-top bg-light py-3 px-4" style="border-radius: 0 0 24px 24px;">
+                <button type="button" class="btn btn-light border btn-round fw-bold text-dark px-4 shadow-none" data-bs-dismiss="modal">Tutup</button>
             </div>
         </div>
     </div>
