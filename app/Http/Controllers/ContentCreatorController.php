@@ -70,6 +70,26 @@ class ContentCreatorController extends Controller
         ));
     }
 
+    public function store(Request $request)
+    {
+        $request->validate([
+            'content_id' => 'required|unique:content_operasionals,content_id',
+            'tanggal_brief' => 'required|date',
+            'target_deadline' => 'required|date',
+            'tanggal_selesai' => 'nullable|date',
+            'status_deadline' => 'required|in:On Track,Late,Completed',
+            'platform' => 'required',
+            'format_konten' => 'required',
+            'judul_konten' => 'required',
+            'jumlah_revisi' => 'required|integer|min:0',
+            'link_aset' => 'nullable|url'
+        ]);
+
+        \App\Models\ContentOperasional::create($request->all());
+
+        return redirect()->back()->with('success', 'Data Konten Operasional berhasil ditambahkan.');
+    }
+
     public function storeMetric(Request $request, $id)
     {
         $op = \App\Models\ContentOperasional::findOrFail($id);
