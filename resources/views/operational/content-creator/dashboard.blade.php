@@ -343,85 +343,7 @@
                         </div>
                     </div>
                     
-                    @if(auth()->check() && auth()->user()->role == 'graphic')
-                    <!-- Tambah Data Modal -->
-                    <div class="modal fade" id="tambahDataModal" tabindex="-1" aria-hidden="true">
-                        <div class="modal-dialog modal-lg modal-dialog-centered">
-                            <div class="modal-content border-0 shadow-lg" style="border-radius: 16px;">
-                                <div class="modal-header border-0 bg-primary bg-gradient text-white" style="border-radius: 16px 16px 0 0;">
-                                    <h5 class="modal-title fw-bold">Tambah Data Konten Operasional</h5>
-                                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
-                                </div>
-                                <form action="{{ route('operational.content-creator.store') }}" method="POST">
-                                    @csrf
-                                    <div class="modal-body p-4 bg-light">
-                                        <div class="row g-3">
-                                            <div class="col-md-6">
-                                                <label class="form-label fw-bold">ID Konten</label>
-                                                <input type="text" name="content_id" class="form-control bg-white" placeholder="CT-001" required>
-                                            </div>
-                                            <div class="col-md-6">
-                                                <label class="form-label fw-bold">Judul Konten</label>
-                                                <input type="text" name="judul_konten" class="form-control bg-white" placeholder="Misal: Promo Merdeka" required>
-                                            </div>
-                                            <div class="col-md-6">
-                                                <label class="form-label fw-bold">Tanggal Brief</label>
-                                                <input type="date" name="tanggal_brief" class="form-control bg-white" required>
-                                            </div>
-                                            <div class="col-md-6">
-                                                <label class="form-label fw-bold">Target Deadline</label>
-                                                <input type="date" name="target_deadline" class="form-control bg-white" required>
-                                            </div>
-                                            <div class="col-md-6">
-                                                <label class="form-label fw-bold">Platform</label>
-                                                <select name="platform" class="form-select bg-white" required>
-                                                    <option value="Instagram">Instagram</option>
-                                                    <option value="Tiktok">Tiktok</option>
-                                                    <option value="Linkedin">Linkedin</option>
-                                                    <option value="Facebook">Facebook</option>
-                                                </select>
-                                            </div>
-                                            <div class="col-md-6">
-                                                <label class="form-label fw-bold">Format Konten</label>
-                                                <select name="format_konten" class="form-select bg-white" required>
-                                                    <option value="Reels">Reels</option>
-                                                    <option value="Korsel">Carousel</option>
-                                                    <option value="Single Post">Single Post</option>
-                                                    <option value="Story">Story</option>
-                                                    <option value="Article">Article</option>
-                                                </select>
-                                            </div>
-                                            <div class="col-md-4">
-                                                <label class="form-label fw-bold">Status Deadline</label>
-                                                <select name="status_deadline" class="form-select bg-white" required>
-                                                    <option value="On Track">On Track</option>
-                                                    <option value="Late">Terlambat</option>
-                                                    <option value="Completed">Selesai</option>
-                                                </select>
-                                            </div>
-                                            <div class="col-md-4">
-                                                <label class="form-label fw-bold">Jumlah Revisi</label>
-                                                <input type="number" name="jumlah_revisi" class="form-control bg-white" value="0" min="0" required>
-                                            </div>
-                                            <div class="col-md-4">
-                                                <label class="form-label fw-bold">Tanggal Selesai (Opsional)</label>
-                                                <input type="date" name="tanggal_selesai" class="form-control bg-white">
-                                            </div>
-                                            <div class="col-12">
-                                                <label class="form-label fw-bold">Link Aset (Opsional)</label>
-                                                <input type="url" name="link_aset" class="form-control bg-white" placeholder="https://drive.google.com/...">
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div class="modal-footer border-0">
-                                        <button type="button" class="btn btn-light" data-bs-dismiss="modal">Batal</button>
-                                        <button type="submit" class="btn btn-primary px-4 fw-bold">Simpan Data</button>
-                                    </div>
-                                </form>
-                            </div>
-                        </div>
-                    </div>
-                    @endif
+
                     
                     <div class="table-responsive">
                         <table class="table modern-table w-100">
@@ -845,4 +767,84 @@
         });
     });
 </script>
+@if(auth()->check() && auth()->user()->role == 'graphic')
+<!-- Tambah Data Modal -->
+<div class="modal fade" id="tambahDataModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-lg modal-dialog-centered">
+        <div class="modal-content border-0 shadow-lg" style="border-radius: 16px;">
+            <div class="modal-header border-0 bg-primary bg-gradient text-white" style="border-radius: 16px 16px 0 0;">
+                <h5 class="modal-title fw-bold">Tambah Data Konten Operasional</h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <form action="{{ route('operational.content-creator.store') }}" method="POST">
+                @csrf
+                <div class="modal-body p-4 bg-light">
+                    <div class="row g-3">
+                        <div class="col-md-6">
+                            <label class="form-label fw-bold">ID Konten</label>
+                            <input type="text" name="content_id" class="form-control bg-white" placeholder="CT-001" required>
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label fw-bold">Judul Konten</label>
+                            <input type="text" name="judul_konten" class="form-control bg-white" placeholder="Misal: Promo Merdeka" required>
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label fw-bold">Tanggal Brief</label>
+                            <input type="date" name="tanggal_brief" class="form-control bg-white" required>
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label fw-bold">Target Deadline</label>
+                            <input type="date" name="target_deadline" class="form-control bg-white" required>
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label fw-bold">Platform</label>
+                            <select name="platform" class="form-select bg-white" required>
+                                <option value="Instagram">Instagram</option>
+                                <option value="Tiktok">Tiktok</option>
+                                <option value="Linkedin">Linkedin</option>
+                                <option value="Facebook">Facebook</option>
+                            </select>
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label fw-bold">Format Konten</label>
+                            <select name="format_konten" class="form-select bg-white" required>
+                                <option value="Reels">Reels</option>
+                                <option value="Korsel">Carousel</option>
+                                <option value="Single Post">Single Post</option>
+                                <option value="Story">Story</option>
+                                <option value="Article">Article</option>
+                            </select>
+                        </div>
+                        <div class="col-md-4">
+                            <label class="form-label fw-bold">Status Deadline</label>
+                            <select name="status_deadline" class="form-select bg-white" required>
+                                <option value="On Track">On Track</option>
+                                <option value="Late">Terlambat</option>
+                                <option value="Completed">Selesai</option>
+                            </select>
+                        </div>
+                        <div class="col-md-4">
+                            <label class="form-label fw-bold">Jumlah Revisi</label>
+                            <input type="number" name="jumlah_revisi" class="form-control bg-white" value="0" min="0" required>
+                        </div>
+                        <div class="col-md-4">
+                            <label class="form-label fw-bold">Tanggal Selesai (Opsional)</label>
+                            <input type="date" name="tanggal_selesai" class="form-control bg-white">
+                        </div>
+                        <div class="col-12">
+                            <label class="form-label fw-bold">Link Aset (Opsional)</label>
+                            <input type="url" name="link_aset" class="form-control bg-white" placeholder="https://drive.google.com/...">
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer border-0">
+                    <button type="button" class="btn btn-light" data-bs-dismiss="modal">Batal</button>
+                    <button type="submit" class="btn btn-primary px-4 fw-bold">Simpan Data</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+@endif
+
 @endsection
