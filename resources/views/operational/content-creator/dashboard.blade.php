@@ -1,0 +1,450 @@
+@extends('layouts.app')
+
+@section('content')
+<!-- Include Google Fonts for Premium Typography -->
+<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<!-- Include Chart.js via CDN to ensure latest features -->
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+<style>
+    /* Premium Modern Aesthetics */
+    body {
+        font-family: 'Outfit', sans-serif !important;
+        background-color: #f3f6fb;
+    }
+    
+    .cc-dashboard {
+        font-family: 'Outfit', sans-serif !important;
+    }
+
+    /* Gradients and Shadows */
+    .glass-card {
+        background: rgba(255, 255, 255, 0.95);
+        backdrop-filter: blur(10px);
+        -webkit-backdrop-filter: blur(10px);
+        border: 1px solid rgba(255, 255, 255, 0.3);
+        border-radius: 20px;
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.05);
+        transition: transform 0.3s ease, box-shadow 0.3s ease;
+    }
+
+    .glass-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 15px 35px rgba(0, 0, 0, 0.08);
+    }
+
+    .gradient-green {
+        background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+        color: white;
+    }
+    
+    .gradient-blue {
+        background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%);
+        color: white;
+    }
+
+    .gradient-orange {
+        background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);
+        color: white;
+    }
+
+    .gradient-purple {
+        background: linear-gradient(135deg, #8b5cf6 0%, #6d28d9 100%);
+        color: white;
+    }
+
+    .kpi-card {
+        border-radius: 20px;
+        padding: 24px;
+        position: relative;
+        overflow: hidden;
+        box-shadow: 0 10px 20px rgba(0,0,0,0.06);
+        transition: all 0.3s ease;
+    }
+
+    .kpi-card::after {
+        content: '';
+        position: absolute;
+        top: 0; right: 0;
+        width: 100px; height: 100px;
+        background: radial-gradient(circle, rgba(255,255,255,0.3) 0%, rgba(255,255,255,0) 70%);
+        border-radius: 50%;
+        transform: translate(20%, -20%);
+    }
+
+    .kpi-card:hover {
+        transform: translateY(-5px) scale(1.02);
+        box-shadow: 0 15px 25px rgba(0,0,0,0.1);
+    }
+
+    .kpi-icon {
+        background: rgba(255, 255, 255, 0.2);
+        border-radius: 12px;
+        width: 48px;
+        height: 48px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 20px;
+        backdrop-filter: blur(5px);
+    }
+
+    .kpi-value {
+        font-size: 2.5rem;
+        font-weight: 700;
+        margin: 10px 0;
+        letter-spacing: -1px;
+    }
+
+    .kpi-label {
+        font-size: 1rem;
+        font-weight: 500;
+        opacity: 0.9;
+    }
+
+    /* Custom Progress Bar */
+    .custom-progress {
+        height: 8px;
+        border-radius: 4px;
+        background: rgba(255,255,255,0.3);
+        margin-top: 15px;
+        overflow: hidden;
+    }
+
+    .custom-progress-bar {
+        height: 100%;
+        border-radius: 4px;
+        background: #fff;
+        transition: width 1s ease-in-out;
+    }
+
+    /* Table Styling */
+    .modern-table {
+        border-collapse: separate;
+        border-spacing: 0 8px;
+    }
+    
+    .modern-table th {
+        border: none;
+        color: #64748b;
+        font-weight: 600;
+        text-transform: uppercase;
+        font-size: 0.75rem;
+        letter-spacing: 0.5px;
+        padding: 12px 16px;
+    }
+    
+    .modern-table td {
+        background: #fff;
+        border-top: 1px solid #f1f5f9;
+        border-bottom: 1px solid #f1f5f9;
+        padding: 16px;
+        vertical-align: middle;
+    }
+    
+    .modern-table td:first-child {
+        border-left: 1px solid #f1f5f9;
+        border-top-left-radius: 12px;
+        border-bottom-left-radius: 12px;
+    }
+    
+    .modern-table td:last-child {
+        border-right: 1px solid #f1f5f9;
+        border-top-right-radius: 12px;
+        border-bottom-right-radius: 12px;
+    }
+
+    .badge-modern {
+        padding: 6px 12px;
+        border-radius: 20px;
+        font-weight: 600;
+        font-size: 0.75rem;
+    }
+
+    .badge-track { background: #dcfce7; color: #166534; }
+    .badge-late { background: #fee2e2; color: #991b1b; }
+    .badge-done { background: #e0e7ff; color: #3730a3; }
+
+    /* Animation */
+    .fade-up {
+        animation: fadeUp 0.6s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    
+    .delay-1 { animation-delay: 0.1s; }
+    .delay-2 { animation-delay: 0.2s; }
+    .delay-3 { animation-delay: 0.3s; }
+
+    @keyframes fadeUp {
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+</style>
+
+<div class="container cc-dashboard">
+    <div class="page-inner">
+        <!-- Header -->
+        <div class="d-flex align-items-left align-items-md-center flex-column flex-md-row mb-4 justify-content-between fade-up">
+            <div>
+                <h3 class="fw-bolder mb-1 text-dark" style="letter-spacing: -0.5px; font-size: 2rem;">Dashboard Content Creator</h3>
+                <h6 class="text-muted fw-normal" style="font-size: 1.1rem;">Pantau performa, KPI, dan efisiensi tim kreatif.</h6>
+            </div>
+            <div class="ms-md-auto py-2 py-md-0 mt-3 mt-md-0">
+                <a href="#" class="btn btn-dark btn-round px-4 py-2" style="font-weight: 600;">
+                    <i class="fas fa-plus-circle me-2"></i> Input Data Baru
+                </a>
+            </div>
+        </div>
+
+        <!-- Section Atas: Executive Summary / KPI Cards -->
+        <div class="row">
+            <!-- Total Output -->
+            <div class="col-sm-6 col-md-3 mb-4 fade-up delay-1">
+                <div class="kpi-card gradient-blue">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <div class="kpi-label">Output Konten</div>
+                        <div class="kpi-icon"><i class="fas fa-layer-group"></i></div>
+                    </div>
+                    <div class="kpi-value">45<span style="font-size: 1rem; font-weight: 400; opacity: 0.8"> / 50</span></div>
+                    <div class="custom-progress">
+                        <div class="custom-progress-bar" style="width: 90%;"></div>
+                    </div>
+                    <div class="mt-2 text-white" style="font-size: 0.85rem; opacity: 0.9;">90% dari target bulanan</div>
+                </div>
+            </div>
+
+            <!-- Overall KPI Score -->
+            <div class="col-sm-6 col-md-3 mb-4 fade-up delay-1">
+                <div class="kpi-card gradient-green">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <div class="kpi-label">Skor KPI</div>
+                        <div class="kpi-icon"><i class="fas fa-trophy"></i></div>
+                    </div>
+                    <div class="kpi-value">92%</div>
+                    <div class="mt-2 text-white" style="font-size: 0.85rem; opacity: 0.9;"><i class="fas fa-arrow-up me-1"></i> +5% dari bulan lalu</div>
+                </div>
+            </div>
+
+            <!-- On Time Delivery -->
+            <div class="col-sm-6 col-md-3 mb-4 fade-up delay-2">
+                <div class="kpi-card gradient-orange">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <div class="kpi-label">On-Time Rate</div>
+                        <div class="kpi-icon"><i class="fas fa-clock"></i></div>
+                    </div>
+                    <div class="kpi-value">88%</div>
+                    <div class="mt-2 text-white" style="font-size: 0.85rem; opacity: 0.9;">40 dari 45 selesai tepat waktu</div>
+                </div>
+            </div>
+
+            <!-- Engagement Rate -->
+            <div class="col-sm-6 col-md-3 mb-4 fade-up delay-2">
+                <div class="kpi-card gradient-purple">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <div class="kpi-label">Avg. Engagement</div>
+                        <div class="kpi-icon"><i class="fas fa-heart"></i></div>
+                    </div>
+                    <div class="kpi-value">4.2%</div>
+                    <div class="mt-2 text-white" style="font-size: 0.85rem; opacity: 0.9;">Tinggi di atas rata-rata industri (2%)</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Section Tengah: Performa Visual & Engagement -->
+        <div class="row">
+            <!-- Line Chart: Tren Engagement -->
+            <div class="col-md-8 mb-4 fade-up delay-3">
+                <div class="glass-card p-4 h-100">
+                    <h5 class="fw-bold mb-4">Tren Engagement Rate (Mingguan)</h5>
+                    <div style="height: 300px;">
+                        <canvas id="erChart"></canvas>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Pie Chart: Distribusi Format -->
+            <div class="col-md-4 mb-4 fade-up delay-3">
+                <div class="glass-card p-4 h-100">
+                    <h5 class="fw-bold mb-4">Distribusi Format</h5>
+                    <div style="height: 250px; display: flex; justify-content: center; align-items: center;">
+                        <canvas id="formatChart"></canvas>
+                    </div>
+                    <div class="mt-4 text-center">
+                        <p class="text-muted small mb-0">Reels & Carousel mendominasi performa bulan ini.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Section Bawah: Efisiensi & Detail Proyek -->
+        <div class="row">
+            <div class="col-md-12 fade-up delay-3">
+                <div class="glass-card p-4">
+                    <div class="d-flex justify-content-between align-items-center mb-4">
+                        <h5 class="fw-bold mb-0">Daftar Proyek Berjalan & Log Aset</h5>
+                        <div class="d-flex align-items-center gap-3">
+                            <div class="bg-light px-3 py-2 rounded-3">
+                                <span class="text-muted small">Rata-rata Revisi:</span>
+                                <span class="fw-bold text-dark ms-2" style="font-size: 1.1rem;">1.2x</span>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="table-responsive">
+                        <table class="table modern-table w-100">
+                            <thead>
+                                <tr>
+                                    <th>ID Konten</th>
+                                    <th>Judul Konten</th>
+                                    <th>Platform</th>
+                                    <th>Format</th>
+                                    <th>Deadline</th>
+                                    <th>Status</th>
+                                    <th>Revisi</th>
+                                    <th>Link Aset</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <!-- Dummy Data 1 -->
+                                <tr>
+                                    <td class="fw-bold text-primary">#CNT-010</td>
+                                    <td class="fw-bold text-dark">Promo Agustus Merdeka</td>
+                                    <td><i class="fab fa-instagram text-danger me-2"></i> Instagram</td>
+                                    <td>Carousel</td>
+                                    <td>08 Agu 2026</td>
+                                    <td><span class="badge-modern badge-track">On Track</span></td>
+                                    <td class="text-center">0</td>
+                                    <td><a href="#" class="btn btn-sm btn-outline-primary rounded-pill"><i class="fas fa-link"></i> GDrive</a></td>
+                                </tr>
+                                <!-- Dummy Data 2 -->
+                                <tr>
+                                    <td class="fw-bold text-primary">#CNT-011</td>
+                                    <td class="fw-bold text-dark">Tips K3 di Lapangan</td>
+                                    <td><i class="fab fa-tiktok text-dark me-2"></i> TikTok</td>
+                                    <td>Video Pendek</td>
+                                    <td>10 Agu 2026</td>
+                                    <td><span class="badge-modern badge-track">On Track</span></td>
+                                    <td class="text-center">1</td>
+                                    <td><a href="#" class="btn btn-sm btn-outline-primary rounded-pill"><i class="fas fa-link"></i> GDrive</a></td>
+                                </tr>
+                                <!-- Dummy Data 3 -->
+                                <tr>
+                                    <td class="fw-bold text-primary">#CNT-012</td>
+                                    <td class="fw-bold text-dark">Webinar Leadership Seri 3</td>
+                                    <td><i class="fab fa-linkedin text-info me-2"></i> LinkedIn</td>
+                                    <td>Single Image</td>
+                                    <td>05 Agu 2026</td>
+                                    <td><span class="badge-modern badge-done">Completed</span></td>
+                                    <td class="text-center">2</td>
+                                    <td><a href="#" class="btn btn-sm btn-outline-primary rounded-pill"><i class="fas fa-link"></i> GDrive</a></td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+</div>
+
+<script>
+    document.addEventListener("DOMContentLoaded", function() {
+        // Line Chart - Engagement Rate Trend
+        const ctxER = document.getElementById('erChart').getContext('2d');
+        
+        // Gradient for line chart
+        let gradient = ctxER.createLinearGradient(0, 0, 0, 300);
+        gradient.addColorStop(0, 'rgba(59, 130, 246, 0.5)');
+        gradient.addColorStop(1, 'rgba(59, 130, 246, 0.0)');
+
+        new Chart(ctxER, {
+            type: 'line',
+            data: {
+                labels: ['Minggu 1', 'Minggu 2', 'Minggu 3', 'Minggu 4'],
+                datasets: [{
+                    label: 'Engagement Rate (%)',
+                    data: [3.2, 3.8, 4.5, 4.2],
+                    borderColor: '#3b82f6',
+                    backgroundColor: gradient,
+                    borderWidth: 3,
+                    pointBackgroundColor: '#fff',
+                    pointBorderColor: '#3b82f6',
+                    pointBorderWidth: 2,
+                    pointRadius: 5,
+                    pointHoverRadius: 7,
+                    fill: true,
+                    tension: 0.4
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: { display: false },
+                    tooltip: {
+                        backgroundColor: '#1e293b',
+                        padding: 12,
+                        titleFont: { family: 'Outfit', size: 13 },
+                        bodyFont: { family: 'Outfit', size: 14, weight: 'bold' },
+                        displayColors: false
+                    }
+                },
+                scales: {
+                    x: { 
+                        grid: { display: false },
+                        ticks: { font: { family: 'Outfit' } }
+                    },
+                    y: { 
+                        grid: { color: '#f1f5f9', borderDash: [5, 5] },
+                        ticks: { font: { family: 'Outfit' } },
+                        beginAtZero: true
+                    }
+                }
+            }
+        });
+
+        // Pie Chart - Format Distribution
+        const ctxFormat = document.getElementById('formatChart').getContext('2d');
+        new Chart(ctxFormat, {
+            type: 'doughnut',
+            data: {
+                labels: ['Carousel', 'Video/Reels', 'Single Image'],
+                datasets: [{
+                    data: [45, 35, 20],
+                    backgroundColor: ['#3b82f6', '#8b5cf6', '#10b981'],
+                    borderWidth: 0,
+                    hoverOffset: 4
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                cutout: '70%',
+                plugins: {
+                    legend: {
+                        position: 'bottom',
+                        labels: {
+                            font: { family: 'Outfit', size: 12 },
+                            usePointStyle: true,
+                            padding: 20
+                        }
+                    },
+                    tooltip: {
+                        backgroundColor: '#1e293b',
+                        bodyFont: { family: 'Outfit' },
+                        callbacks: {
+                            label: function(context) {
+                                return ' ' + context.label + ': ' + context.raw + '%';
+                            }
+                        }
+                    }
+                }
+            }
+        });
+    });
+</script>
+@endsection

@@ -251,6 +251,10 @@ Route::middleware('auth')->group(function () {
             Route::get('/training', [App\Http\Controllers\PermintaanVisualController::class, 'trainingIndex'])->name('operational.permintaan-visual.training');
             Route::post('/training/{id}/upload', [App\Http\Controllers\PermintaanVisualController::class, 'trainingUpload'])->name('operational.permintaan-visual.training.upload');
         });
+        
+        Route::get('operational/content-creator', function() {
+            return view('operational.content-creator.dashboard');
+        })->name('operational.content-creator.dashboard');
         Route::post('/download-request', [DownloadRequestController::class, 'store'])->name('download.request');
         Route::get('/download-file/{id}', [DownloadRequestController::class, 'download'])->name('download.file');
         Route::get('/my-downloads', [DownloadRequestController::class, 'myRequests'])->name('download.my');

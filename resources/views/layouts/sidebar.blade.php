@@ -313,12 +313,12 @@
                     </li>
                 @endif
                 
-                {{-- ================= MENU PERMINTAAN VISUAL ================= --}}
-                @php $isPermintaanVisual = request()->routeIs(['operational.permintaan-visual.*']); @endphp
+                {{-- ================= MENU DESAIN GRAFIS ================= --}}
+                @php $isPermintaanVisual = request()->routeIs(['operational.permintaan-visual.*', 'operational.content-creator.*']); @endphp
                 <li class="nav-item {{ $isPermintaanVisual ? 'active' : '' }}">
                         <a data-bs-toggle="collapse" href="#permintaanVisual" class="{{ $isPermintaanVisual ? '' : 'collapsed' }}" aria-expanded="{{ $isPermintaanVisual ? 'true' : 'false' }}">
                             <i class="fas fa-palette"></i>
-                            <p>Permintaan Visual</p>
+                            <p>Desain Grafis</p>
                             <span class="badge badge-dark">Beta</span>
                             <span class="caret"></span>
                         </a>
@@ -332,6 +332,11 @@
                                 <li class="{{ request()->routeIs('operational.permintaan-visual.training*') ? 'active' : '' }}">
                                     <a href="{{ route('operational.permintaan-visual.training') }}">
                                         <span class="sub-item">Permintaan Training</span>
+                                    </a>
+                                </li>
+                                <li class="{{ request()->routeIs('operational.content-creator.dashboard') ? 'active' : '' }}">
+                                    <a href="{{ route('operational.content-creator.dashboard') }}">
+                                        <span class="sub-item">Content Creator</span>
                                     </a>
                                 </li>
                             </ul>
