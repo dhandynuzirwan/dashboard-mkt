@@ -413,118 +413,103 @@
             </div>
             <div class="modal-body p-4 bg-light">
                 
-                <!-- Akordion untuk Input -->
-                <div class="accordion" id="accordionDetail">
-                    <!-- Akordion 1: Metrik Performa -->
-                    <div class="accordion-item border-0 mb-3" style="border-radius: 12px; overflow: hidden; box-shadow: 0 4px 6px rgba(0,0,0,0.05);">
-                        <h2 class="accordion-header" id="headingMetrik">
-                            <button class="accordion-button fw-bold" type="button" data-bs-toggle="collapse" data-bs-target="#collapseMetrik" aria-expanded="true" aria-controls="collapseMetrik">
-                                <i class="fas fa-chart-line text-primary me-2"></i> Input Data Metrik Performa Media Sosial
-                            </button>
-                        </h2>
-                        <div id="collapseMetrik" class="accordion-collapse collapse show" aria-labelledby="headingMetrik" data-bs-parent="#accordionDetail">
-                            <div class="accordion-body bg-white">
-                                <p class="text-muted small mb-4">Catat insight dari platform media sosial untuk setiap konten yang telah dipublikasikan (H+7 tayang).</p>
-                                
-                                <form>
-                                    <div class="row">
-                                        <div class="col-md-6 mb-3">
-                                            <label class="form-label fw-bold small">ID Konten</label>
-                                            <input type="text" class="form-control" value="#CNT-010" readonly>
-                                        </div>
-                                        <div class="col-md-6 mb-3">
-                                            <label class="form-label fw-bold small">Tanggal Tayang</label>
-                                            <input type="date" class="form-control" required>
-                                        </div>
-                                        <div class="col-md-3 mb-3">
-                                            <label class="form-label fw-bold small">Impressions</label>
-                                            <input type="number" class="form-control" placeholder="0">
-                                        </div>
-                                        <div class="col-md-3 mb-3">
-                                            <label class="form-label fw-bold small">Reach</label>
-                                            <input type="number" class="form-control" placeholder="0">
-                                        </div>
-                                        <div class="col-md-3 mb-3">
-                                            <label class="form-label fw-bold small">Likes</label>
-                                            <input type="number" class="form-control" placeholder="0">
-                                        </div>
-                                        <div class="col-md-3 mb-3">
-                                            <label class="form-label fw-bold small">Comments</label>
-                                            <input type="number" class="form-control" placeholder="0">
-                                        </div>
-                                        <div class="col-md-4 mb-3">
-                                            <label class="form-label fw-bold small">Saves</label>
-                                            <input type="number" class="form-control" placeholder="0">
-                                        </div>
-                                        <div class="col-md-4 mb-3">
-                                            <label class="form-label fw-bold small">Shares</label>
-                                            <input type="number" class="form-control" placeholder="0">
-                                        </div>
-                                        <div class="col-md-4 mb-3">
-                                            <label class="form-label fw-bold text-primary small">Engagement Rate (%)</label>
-                                            <input type="number" step="0.01" class="form-control bg-light" placeholder="0.00" readonly title="Dihitung Otomatis">
-                                        </div>
-                                    </div>
-                                    <div class="mt-3 text-end">
-                                        @if(auth()->check() && auth()->user()->role == 'graphic')
-                                            <button type="button" class="btn btn-primary btn-round px-4">Simpan Metrik</button>
-                                        @else
-                                            <span class="text-muted small fst-italic">Hanya Graphic yang dapat menyimpan</span>
-                                        @endif
-                                    </div>
-                                </form>
+                <!-- Section 1: Metrik Performa -->
+                <div class="mb-4">
+                    <h6 class="fw-bold text-primary mb-3"><i class="fas fa-chart-line me-2"></i> Input Data Metrik Performa Media Sosial</h6>
+                    <div class="bg-white p-3 rounded" style="border: 1px solid #e2e8f0;">
+                        <p class="text-muted small mb-3">Catat insight dari platform media sosial untuk setiap konten yang telah dipublikasikan (H+7 tayang).</p>
+                        
+                        <form>
+                            <div class="row">
+                                <div class="col-md-6 mb-3">
+                                    <label class="form-label fw-bold small">ID Konten</label>
+                                    <input type="text" class="form-control" value="#CNT-010" readonly>
+                                </div>
+                                <div class="col-md-6 mb-3">
+                                    <label class="form-label fw-bold small">Tanggal Tayang</label>
+                                    <input type="date" class="form-control" required>
+                                </div>
+                                <div class="col-md-3 mb-3">
+                                    <label class="form-label fw-bold small">Impressions</label>
+                                    <input type="number" class="form-control" placeholder="0">
+                                </div>
+                                <div class="col-md-3 mb-3">
+                                    <label class="form-label fw-bold small">Reach</label>
+                                    <input type="number" class="form-control" placeholder="0">
+                                </div>
+                                <div class="col-md-3 mb-3">
+                                    <label class="form-label fw-bold small">Likes</label>
+                                    <input type="number" class="form-control" placeholder="0">
+                                </div>
+                                <div class="col-md-3 mb-3">
+                                    <label class="form-label fw-bold small">Comments</label>
+                                    <input type="number" class="form-control" placeholder="0">
+                                </div>
+                                <div class="col-md-4 mb-3">
+                                    <label class="form-label fw-bold small">Saves</label>
+                                    <input type="number" class="form-control" placeholder="0">
+                                </div>
+                                <div class="col-md-4 mb-3">
+                                    <label class="form-label fw-bold small">Shares</label>
+                                    <input type="number" class="form-control" placeholder="0">
+                                </div>
+                                <div class="col-md-4 mb-3">
+                                    <label class="form-label fw-bold text-primary small">Engagement Rate (%)</label>
+                                    <input type="number" step="0.01" class="form-control bg-light" placeholder="0.00" readonly title="Dihitung Otomatis">
+                                </div>
                             </div>
-                        </div>
-                    </div>
-
-                    <!-- Akordion 2: Evaluasi Internal -->
-                    <div class="accordion-item border-0" style="border-radius: 12px; overflow: hidden; box-shadow: 0 4px 6px rgba(0,0,0,0.05);">
-                        <h2 class="accordion-header" id="headingEvaluasi">
-                            <button class="accordion-button collapsed fw-bold" type="button" data-bs-toggle="collapse" data-bs-target="#collapseEvaluasi" aria-expanded="false" aria-controls="collapseEvaluasi">
-                                <i class="fas fa-clipboard-check text-success me-2"></i> Evaluasi Internal & Kualitatif (Manajemen)
-                            </button>
-                        </h2>
-                        <div id="collapseEvaluasi" class="accordion-collapse collapse" aria-labelledby="headingEvaluasi" data-bs-parent="#accordionDetail">
-                            <div class="accordion-body bg-white">
-                                <p class="text-muted small mb-4">Formulir evaluasi akhir yang diisi oleh Manager / Creative Lead.</p>
-
-                                <form>
-                                    <div class="row">
-                                        <div class="col-md-6 mb-3">
-                                            <label class="form-label fw-bold small">Kesesuaian Brand Guideline</label>
-                                            <select class="form-select">
-                                                <option value="5">5 - Sangat Sesuai</option>
-                                                <option value="4">4 - Sesuai</option>
-                                                <option value="3">3 - Cukup Sesuai</option>
-                                                <option value="2">2 - Kurang Sesuai</option>
-                                                <option value="1">1 - Tidak Sesuai</option>
-                                            </select>
-                                        </div>
-                                        <div class="col-md-6 mb-3">
-                                            <label class="form-label fw-bold small">Jumlah Template Baru</label>
-                                            <input type="number" class="form-control" placeholder="0">
-                                        </div>
-                                        <div class="col-md-12 mb-3">
-                                            <label class="form-label fw-bold small">Status Laporan Riset Konten</label>
-                                            <select class="form-select">
-                                                <option>Selesai</option>
-                                                <option>Pending</option>
-                                                <option>Tidak Berlaku</option>
-                                            </select>
-                                        </div>
-                                    </div>
-                                    <div class="mt-3 text-end">
-                                        @if(auth()->check() && auth()->user()->role == 'graphic')
-                                            <button type="button" class="btn btn-success btn-round px-4">Simpan Evaluasi</button>
-                                        @else
-                                            <span class="text-muted small fst-italic">Hanya Graphic yang dapat menyimpan</span>
-                                        @endif
-                                    </div>
-                                </form>
+                            <div class="mt-3 text-end">
+                                @if(auth()->check() && auth()->user()->role == 'graphic')
+                                    <button type="button" class="btn btn-primary btn-round px-4">Simpan Metrik</button>
+                                @else
+                                    <span class="text-muted small fst-italic">Hanya Graphic yang dapat menyimpan</span>
+                                @endif
                             </div>
-                        </div>
+                        </form>
                     </div>
-                </div> <!-- End Accordion -->
+                </div>
+
+                <!-- Section 2: Evaluasi Internal -->
+                <div>
+                    <h6 class="fw-bold text-success mb-3"><i class="fas fa-clipboard-check me-2"></i> Evaluasi Internal & Kualitatif (Manajemen)</h6>
+                    <div class="bg-white p-3 rounded" style="border: 1px solid #e2e8f0;">
+                        <p class="text-muted small mb-3">Formulir evaluasi akhir yang diisi oleh Manager / Creative Lead.</p>
+
+                        <form>
+                            <div class="row">
+                                <div class="col-md-6 mb-3">
+                                    <label class="form-label fw-bold small">Kesesuaian Brand Guideline</label>
+                                    <select class="form-select">
+                                        <option value="5">5 - Sangat Sesuai</option>
+                                        <option value="4">4 - Sesuai</option>
+                                        <option value="3">3 - Cukup Sesuai</option>
+                                        <option value="2">2 - Kurang Sesuai</option>
+                                        <option value="1">1 - Tidak Sesuai</option>
+                                    </select>
+                                </div>
+                                <div class="col-md-6 mb-3">
+                                    <label class="form-label fw-bold small">Jumlah Template Baru</label>
+                                    <input type="number" class="form-control" placeholder="0">
+                                </div>
+                                <div class="col-md-12 mb-3">
+                                    <label class="form-label fw-bold small">Status Laporan Riset Konten</label>
+                                    <select class="form-select">
+                                        <option>Selesai</option>
+                                        <option>Pending</option>
+                                        <option>Tidak Berlaku</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="mt-3 text-end">
+                                @if(auth()->check() && auth()->user()->role == 'graphic')
+                                    <button type="button" class="btn btn-success btn-round px-4">Simpan Evaluasi</button>
+                                @else
+                                    <span class="text-muted small fst-italic">Hanya Graphic yang dapat menyimpan</span>
+                                @endif
+                            </div>
+                        </form>
+                    </div>
+                </div>
 
             </div>
             <div class="modal-footer border-0 bg-light">
